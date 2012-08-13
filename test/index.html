@@ -49,7 +49,7 @@
         test(
             "TCDriver Object",
             function () {
-                _TCDriver_Log("TCDriver Object");
+                _TCDriver_Log("test: TCDriver Object");
                 ok(typeof tc_driver === "object", "tc_driver is object");
                 deepEqual(tc_driver.actor, actor, "tc_driver: actor");
                 deepEqual(tc_driver.activityId, null, "tc_driver: activityId");
@@ -60,7 +60,7 @@
         test(
             "TCDriver_SendStatement: sync",
             function () {
-                _TCDriver_Log("TCDriver_SendStatement sync");
+                _TCDriver_Log("test: TCDriver_SendStatement sync");
                 var result = TCDriver_SendStatement(
                     tc_driver,
                     {
@@ -78,7 +78,7 @@
             "TCDriver_SendStatement: async (one LRS)",
             2,
             function () {
-                _TCDriver_Log("TCDriver_SendStatement async (one LRS)");
+                _TCDriver_Log("test: TCDriver_SendStatement async (one LRS)");
                 var result = TCDriver_SendStatement(
                     tc_driver,
                     {
@@ -97,14 +97,17 @@
             }
         );
 
+        <!-- TODO: test multiple LRSes where scheme does not match and split out IE testing -->
         asyncTest(
             "TCDriver_SendStatement: async (multiple LRSes)",
             2,
             function () {
+                _TCDriver_Log("test: TCDriver_SendStatement async (multiple LRSes)");
                 var result;
 
                 // tack on an extra LRS
-                tc_driver.recordStores.push(
+                TCDriver_AddRecordStore(
+                    tc_driver,
                     {
                         endpoint: "http://cloud.scorm.com/ScormEngineInterface/TCAPI/public/sandbox/",
                         auth: "Basic VGVzdFVzZXI6cGFzc3dvcmQ="
