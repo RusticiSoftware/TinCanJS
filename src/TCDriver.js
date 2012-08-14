@@ -1,7 +1,4 @@
-/* TODO:
- * check endpoint for trailing '/'
- * check for unique endpoints
-*/
+// TODO: have TCDriver work without "location" object
 function TCDriver_ConfigObject() {
     _TCDriver_Log("TCDriver_ConfigObject");
     var result,
@@ -15,10 +12,12 @@ function TCDriver_ConfigObject() {
         },
         lrs = {},
         qsVars = __parseQueryString(),
-        prop
+        prop,
+        _tempRS = []
     ;
 
     result = {
+        _isIE: (typeof XDomainRequest !== "undefined"),
         recordStores: [],
         actor: null,
         actorJSON: null,
@@ -80,32 +79,95 @@ function TCDriver_ConfigObject() {
         lrs.extended = qsVars;
         lrs.allowFail = false;
 
-        result.recordStores.unshift(lrs);
+        TCDriver_AddRecordStore(result, lrs);
     }
 
     if (typeof TC_RECORD_STORES !== "undefined" && TC_RECORD_STORES.length > 0) {
         for (var i = 0; i < TC_RECORD_STORES.length; i += 1) {
-            if (TC_RECORD_STORES[i].hasOwnProperty("endpoint")) {
-                result.recordStores.push(TC_RECORD_STORES[i]);
-            }
-            else {
-                _TCDriver_Log("TCDriver_ConfigObject - invalid record store (no 'endpoint'): " + i);
-            }
-
-            if (! TC_RECORD_STORES[i].hasOwnProperty("allowFail")) {
-                TC_RECORD_STORES[i].allowFail = true;
-            }
+            TCDriver_AddRecordStore(result, TC_RECORD_STORES[i]);
         }
     }
 
     if (result.recordStores.length === 0) {
         _TCDriver_Log("TCDriver_ConfigObject - resulted in no LRS: DATA CANNOT BE STORED");
-        alert("No LRS: DATA CANNOT BE STORED");
+        alert("[error] No LRS: DATA CANNOT BE STORED");
+        throw {
+            code: 1,
+            mesg: "No LRS: DATA CANNOT BE STORED"
+        };
     }
 
     //_TCDriver_Log("TCDriver_ConfigObject - result: " + JSON.stringify(result, null, 4));
 
     return result;
+}
+
+/* TODO:
+ * check endpoint for trailing '/'
+ * check for unique endpoints
+*/
+function TCDriver_AddRecordStore (driver, cfg) {
+    _TCDriver_Log("TCDriver_AddRecordStore");
+    var urlParts,
+        schemeMatches,
+        isXD
+    ;
+
+    if (! cfg.hasOwnProperty("endpoint")) {
+        alert("[error] LRS invalid: no endpoint");
+        throw {
+            code: 3,
+            mesg: "LRS invalid: no endpoint"
+        };
+    }
+    if (! cfg.hasOwnProperty("allowFail")) {
+        cfg.allowFail = true;
+    }
+
+    urlParts = cfg.endpoint.toLowerCase().match(/^(.+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
+
+    //
+    // determine whether this is a cross domain request,
+    // if it is then if we are in IE check that the schemes
+    // match to see if we should be able to talk to the LRS
+    //
+    schemeMatches = location.protocol.toLowerCase() === urlParts[1];
+    isXD = (
+        // is same scheme?
+        ! schemeMatches
+
+        // is same host?
+        || location.hostname.toLowerCase() !== urlParts[2]
+
+        // is same port?
+        || location.port !== (
+            urlParts[3] !== null ? urlParts[3] : (urlParts[1] === 'http:' ? '80' : '443')
+        )
+    );
+    if (isXD && driver._isIE) {
+        if (schemeMatches) {
+            cfg._requestMode = "ie";
+
+            driver.recordStores.push(cfg);
+        }
+        else {
+            if (cfg.allowFail) {
+                alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+            }
+            else {
+                alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                throw {
+                    code: 2,
+                    mesg: "LRS invalid: cross domain request for differing scheme in IE"
+                };
+            }
+        }
+    }
+    else {
+        cfg._requestMode = "native";
+
+        driver.recordStores.push(cfg);
+    }
 }
 
 // Synchronous if callback is not provided (not recommended)
@@ -304,8 +366,6 @@ function TCDriver_DeleteState (driver, activityId, stateKey, callback) {
     }
 }
 
-
-
 // Synchronous if callback is not provided (not recommended)
 function TCDriver_SendActivityProfile (driver, activityId, profileKey, profileStr, lastSha1Hash, callback) {
     _TCDriver_Log("TCDriver_SendActivityProfile: " + profileKey);
@@ -496,21 +556,14 @@ function _TCDriver_XHR_request (lrs, url, method, data, callback, ignore404, ext
     _TCDriver_Log("_TCDriver_XHR_request: " + url);
     var xhr,
         finished = false,
-        xDomainRequest = false,
-        ieXDomain = false,
+        ieXDomain = (lrs._requestMode === "ie"),
         ieModeRequest,
-        title,
-        ticks = ['/', '-', '\\', '|'],
         location = window.location,
-        urlParts,
-        urlPort,
         result,
         extended,
         until,
         fullUrl = lrs.endpoint + url
     ;
-
-    urlParts = fullUrl.toLowerCase().match(/^(.+):\/\/([^:\/]*):?(\d+)?(\/.*)?$/);
 
     // add extended LMS-specified values to the URL
     if (lrs.extended !== undefined) {
@@ -535,29 +588,22 @@ function _TCDriver_XHR_request (lrs, url, method, data, callback, ignore404, ext
         }
     }
 
-    //See if this really is a cross domain
-    xDomainRequest = (location.protocol.toLowerCase() !== urlParts[1] || location.hostname.toLowerCase() !== urlParts[2]);
-    if (! xDomainRequest) {
-        urlPort = (urlParts[3] === null ? ( urlParts[1] === 'http' ? '80' : '443') : urlParts[3]);
-        xDomainRequest = (urlPort === location.port);
-    }
-
-    //If it's not cross domain or we're not using IE, use the usual XmlHttpRequest
-    if (! xDomainRequest || typeof XDomainRequest === 'undefined') {
+    if (lrs._requestMode === "native") {
         _TCDriver_Log("_TCDriver_XHR_request using XMLHttpRequest");
         xhr = new XMLHttpRequest();
-        xhr.open(method, fullUrl, callback != null);
+        xhr.open(method, fullUrl, callback !== undefined);
         for (var headerName in headers) {
             xhr.setRequestHeader(headerName, headers[headerName]);
         }
     }
-    //Otherwise, use IE's XDomainRequest object
-    else {
+    else if (ieXDomain) {
         _TCDriver_Log("_TCDriver_XHR_request using XDomainRequest");
-        ieXDomain = true;
         ieModeRequest = _TCDriver_GetIEModeRequest(method, fullUrl, headers, data);
         xhr = new XDomainRequest ();
         xhr.open(ieModeRequest.method, ieModeRequest.url);
+    }
+    else {
+        _TCDriver_Log("_TCDriver_XHR_request unrecognized _requestMode: " + lrs._requestMode);
     }
 
     //Setup request callback
@@ -582,8 +628,10 @@ function _TCDriver_XHR_request (lrs, url, method, data, callback, ignore404, ext
                 }
             }
             else {
-                alert("There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
-                //throw new Error("debugger");
+                // Alert all errors except cancelled XHR requests
+                if (xhr.status > 0) {
+                    alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                }
                 return xhr;
             }
         }
