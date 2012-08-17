@@ -104,15 +104,6 @@ function TCDriver_ConfigObject() {
         }
     }
 
-    if (result.recordStores.length === 0) {
-        _TCDriver_Log("TCDriver_ConfigObject - resulted in no LRS: DATA CANNOT BE STORED");
-        alert("[error] No LRS: DATA CANNOT BE STORED");
-        throw {
-            code: 1,
-            mesg: "No LRS: DATA CANNOT BE STORED"
-        };
-    }
-
     //_TCDriver_Log("TCDriver_ConfigObject - result: " + JSON.stringify(result, null, 4));
 
     return result;
@@ -232,6 +223,9 @@ function TCDriver_SendStatement (driver, stmt, callback) {
             _TCDriver_XHR_request(lrs, "statements?statementId=" + statementId, "PUT", jsonStatement, callbackWrapper);
         }
     }
+    else {
+        alert("[warning] TCDriver_SendStatement: No LRSs added yet (statement not sent)");
+    }
 }
 
 // Synchronous if callback is not provided (not recommended)
@@ -243,43 +237,48 @@ function TCDriver_SendMultiStatements (driver, stmts, callback) {
         rsCount = driver.recordStores.length
     ;
 
-    if (rsCount > 0 && stmts != null && stmts.length > 0) {
-        for(var i = 0; i < stmts.length; i++){
-            _TCDriver_PrepareStatement(driver, stmts[i]);
-        }
-        statementsJson = JSON.stringify(stmts);
+    if (rsCount > 0) {
+        if (stmts != null && stmts.length > 0) {
+            for(var i = 0; i < stmts.length; i++){
+                _TCDriver_PrepareStatement(driver, stmts[i]);
+            }
+            statementsJson = JSON.stringify(stmts);
 
-        /* when there are multiple LRSes configured and
-           if there is a callback that is a function then we need
-           to wrap that function with a function that becomes
-           the new callback that reduces a closure count of the
-           requests that don't have allowFail set to true and
-           when that number hits zero then the original callback
-           is executed */
-        if (rsCount === 1) {
-            callbackWrapper = callback;
-        }
-        else {
-            if (typeof callback === "function") {
-                callbackWrapper = function () {
-                    _TCDriver_Log("TCDriver_SendMultiStatements - callbackWrapper: " + rsCount);
-                    if (rsCount > 1) {
-                        rsCount -= 1;
-                    }
-                    else if (rsCount === 1) {
-                        callback.apply(this, arguments);
-                    }
-                    else {
-                        _TCDriver_Log("TCDriver_SendMultiStatements - unexpected record store count: " + rsCount);
-                    }
-                };
+            /* when there are multiple LRSes configured and
+               if there is a callback that is a function then we need
+               to wrap that function with a function that becomes
+               the new callback that reduces a closure count of the
+               requests that don't have allowFail set to true and
+               when that number hits zero then the original callback
+               is executed */
+            if (rsCount === 1) {
+                callbackWrapper = callback;
+            }
+            else {
+                if (typeof callback === "function") {
+                    callbackWrapper = function () {
+                        _TCDriver_Log("TCDriver_SendMultiStatements - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                        }
+                        else if (rsCount === 1) {
+                            callback.apply(this, arguments);
+                        }
+                        else {
+                            _TCDriver_Log("TCDriver_SendMultiStatements - unexpected record store count: " + rsCount);
+                        }
+                    };
+                }
+            }
+
+            for (var i = 0; i < rsCount; i += 1) {
+                lrs = driver.recordStores[i];
+                _TCDriver_XHR_request(lrs, "statements", "POST", statementsJson, callbackWrapper);
             }
         }
-
-        for (var i = 0; i < rsCount; i += 1) {
-            lrs = driver.recordStores[i];
-            _TCDriver_XHR_request(lrs, "statements", "POST", statementsJson, callbackWrapper);
-        }
+    }
+    else {
+        alert("[warning] TCDriver_SendMultiStatements: No LRSs added yet (statements not sent)");
     }
 }
 
@@ -316,6 +315,9 @@ function TCDriver_GetState (driver, activityId, stateKey, callback) {
         //_TCDriver_Log("TCDriver_GetState - result: " + JSON.stringify(result, undefined, 4));
         return (typeof result === "undefined" || result.status === 404) ? null : result.responseText;
     }
+    else {
+        alert("[warning] TCDriver_GetState: No LRSs added yet (state not read)");
+    }
 }
 
 // Synchronous if callback is not provided (not recommended)
@@ -345,6 +347,9 @@ function TCDriver_SetState (driver, activityId, stateKey, stateVal, callback) {
         }
 
         _TCDriver_XHR_request(lrs, url, "PUT", stateVal, callback);
+    }
+    else {
+        alert("[warning] TCDriver_SetState: No LRSs added yet (state not set)");
     }
 }
 
@@ -379,6 +384,9 @@ function TCDriver_DeleteState (driver, activityId, stateKey, callback) {
         result = _TCDriver_XHR_request(lrs, url, "DELETE", null, callback, true);
 
         return (typeof result === "undefined" || result.status === 404) ? null : result.responseText;
+    }
+    else {
+        alert("[warning] TCDriver_DeleteState: No LRSs added yet (state not cleared)");
     }
 }
 
@@ -436,6 +444,9 @@ function TCDriver_SendActivityProfile (driver, activityId, profileKey, profileSt
             _TCDriver_XHR_request(lrs, url, "PUT", profileStr, callbackWrapper, false, headers);
         }
     }
+    else {
+        alert("[warning] TCDriver_SendActivityProfile: No LRSs added yet (activity profile not sent)");
+    }
 }
 
 // Synchronous if callback is not provided (not recommended)
@@ -464,6 +475,9 @@ function TCDriver_GetActivityProfile (driver, activityId, profileKey, callback) 
         result = _TCDriver_XHR_request(lrs, url, "GET", null, callback, true);
 
         return (result === undefined || result.status === 404) ? null : result.responseText;
+    }
+    else {
+        alert("[warning] TCDriver_GetActivityProfile: No LRSs added yet (activity profile not read)");
     }
 }
 
@@ -505,6 +519,9 @@ function TCDriver_GetStatements (driver, sendActor, verb, activityId, callback) 
         }
 
         return _TCDriver_XHR_request(lrs, url, "GET", null, callback).responseText;
+    }
+    else {
+        alert("[warning] TCDriver_GetStatements: No LRSs added yet (statements not read)");
     }
 }
 
