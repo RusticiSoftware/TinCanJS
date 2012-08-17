@@ -7,7 +7,7 @@ Usage
 
 If you have `ant` installed and a shell available then change into the src/
 directory and run ./build.sh to get a raw and minified version under build/.
-Load either the build/TCDriver.js or build/TCDriver-min.js file on your page,
+Load either the build/tincan.js or build/tincan-min.js file on your page,
 retrieve a configuration object using TCDriver\_GetConfigObject() and then call
 various functions passing in the configuration object.
 

@@ -15,7 +15,7 @@
 # limitations under the License.
 
 echo "Copying raw version";
-cp TCDriver.js ../build/TCDriver.js;
+cp tincan.js ../build/tincan.js;
 echo "Creating minified version";
-java -jar ../vendor/closure-compiler/compiler.jar --js TCDriver.js --js_output_file ../build/TCDriver-min.js;
+java -jar ../vendor/closure-compiler/compiler.jar --js tincan.js --js_output_file ../build/tincan-min.js;
 echo "Done";
