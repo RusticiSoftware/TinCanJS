@@ -15,7 +15,7 @@
 # limitations under the License.
 
 echo "Copying raw version";
-cp tincan.js ../build/tincan.js;
+cp src/tincan.js build/tincan.js;
 echo "Creating minified version";
-java -jar ../vendor/closure-compiler/compiler.jar --js tincan.js --js_output_file ../build/tincan-min.js;
+java -jar vendor/closure-compiler/compiler.jar --js src/tincan.js --js_output_file build/tincan-min.js;
 echo "Done";
