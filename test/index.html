@@ -28,7 +28,18 @@
     -->
     <!-- Uncomment to test non-build version -->
     <!--
-    <script type="text/javascript" src="../src/tincan.js"></script>
+    <script type="text/javascript" src="../src/TinCan.js"></script>
+    <script type="text/javascript" src="../src/Utils.js"></script>
+    <script type="text/javascript" src="../src/LRS.js"></script>
+    <script type="text/javascript" src="../src/Agent.js"></script>
+    <script type="text/javascript" src="../src/Verb.js"></script>
+    <script type="text/javascript" src="../src/Result.js"></script>
+    <script type="text/javascript" src="../src/Score.js"></script>
+    <script type="text/javascript" src="../src/Context.js"></script>
+    <script type="text/javascript" src="../src/Activity.js"></script>
+    <script type="text/javascript" src="../src/ActivityDefinition.js"></script>
+    <script type="text/javascript" src="../src/Statement.js"></script>
+    <script type="text/javascript" src="../src/State.js"></script>
     -->
 </head>
 <body>
@@ -39,22 +50,67 @@
     <ol id="qunit-tests"></ol>
 
     <script type="text/javascript">
+        var log = function () {};
+        if (console && console.log) {
+            log = function (msg) {
+                console.log("Test: " + msg);
+            }
+        }
+
         var actor = {
-            name: [ "TinCanJS Test 001" ],
-            mbox: [ "mailto:tincandriver-test-001@tincanapi.com" ],
+            name: "TinCanJS (0.95) Test 001",
+            mbox: "mailto:tincanjs-test-001@tincanapi.com",
             objectType: "Person"
         };
         if (! window.location.search.match(/actor=/)) {
             window.location.search = window.location.search + (window.location.search.length > 0 ? "&" : "") + "actor=" + encodeURIComponent((JSON.stringify(actor)));
         }
 
-        var tc_driver;
+        TinCan.enableDebug();
 
         module(
-            "Basic Functions",
+            "Versions",
+            {}
+        );
+        test(
+            "TinCan.versions",
+            function () {
+                var versions = TinCan.versions();
+                deepEqual(versions, ["0.95", "0.90"], "Supported spec versions");
+            }
+        );
+        module(
+            "Environment",
+            {}
+        );
+        test(
+            "TinCan.environment",
+            function () {
+                var env = TinCan.environment();
+                ok(typeof env === "object", "TinCan.environment returns object");
+                ok(env.isBrowser, "TinCan.environment property: isBrowser");
+                ok(env.hasOwnProperty("isIE"), "TinCan.environment has property: isIE");
+            }
+        );
+
+        var tincan;
+
+        module(
+            "TinCan",
             {
                 setup: function() {
-                    tc_driver = TCDriver_ConfigObject();
+                    log("setup");
+                    tincan = new TinCan (
+                        {
+                            url: window.location
+                        }
+                    );
+                    tincan.addRecordStore(
+                        //{
+                            //endpoint: "http://cloud.scorm.com/ScormEngineInterface/TCAPI/3HYPTQLAI9/sandbox/",
+                            //auth: "Basic M0hZUFRRTEFJOTo2Zk9YNHpqckxOTWdPbnZtR3paeHY4eWQ2UWFuNkVMYkZQRFVxRGF3"
+                        //}
+                    );
                 },
                 teardown: function () {
                 }
@@ -62,26 +118,28 @@
         );
 
         test(
-            "TCDriver Object",
+            "tincan Object",
             function () {
-                _TCDriver_Log("test: TCDriver Object");
-                ok(typeof tc_driver === "object", "tc_driver is object");
-                deepEqual(tc_driver.actor, actor, "tc_driver: actor");
-                deepEqual(tc_driver.activityId, null, "tc_driver: activityId");
-                deepEqual(tc_driver.recordStores.length, 1, "tc_driver: recordStores length");
+                log("tincan Object");
+                ok(tincan instanceof TinCan, "tincan is TinCan");
+                ok(tincan.hasOwnProperty("actor"), "tincan has property: actor");
+                ok(tincan.hasOwnProperty("activity"), "tincan has property: activity");
+                ok(tincan.hasOwnProperty("context"), "tincan has property: context");
+                ok(tincan.hasOwnProperty("recordStores"), "tincan has property: recordStores");
             }
         );
 
         test(
-            "TCDriver_SendStatement: sync",
+            "sendStatement: sync",
             function () {
-                _TCDriver_Log("test: TCDriver_SendStatement sync");
-                var result = TCDriver_SendStatement(
-                    tc_driver,
+                log("sendStatement sync");
+                var result = tincan.sendStatement(
                     {
-                        verb: "attempted",
-                        object: {
-                            id: "tincanapi.com/TinCanJS/Test/TCDriver_SendStatement/sync"
+                        verb: {
+                            id: "attempted"
+                        },
+                        target: {
+                            id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
                         }
                     }
                 );
@@ -89,63 +147,204 @@
             }
         );
 
-        asyncTest(
-            "TCDriver_SendStatement: async (one LRS)",
-            2,
+        test(
+            "sendStatements: sync",
             function () {
-                _TCDriver_Log("test: TCDriver_SendStatement async (one LRS)");
-                var result = TCDriver_SendStatement(
-                    tc_driver,
-                    {
-                        verb: "attempted",
-                        object: {
-                            id: "tincanapi.com/TinCanJS/Test/TCDriver_SendStatement/async"
+                log("sendStatements sync");
+                var result = tincan.sendStatements(
+                    [
+                        {
+                            verb: {
+                                id: "attempted"
+                            },
+                            target: {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
+                        },
+                        {
+                            verb: {
+                                id: "completed"
+                            },
+                            target: {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
                         }
-                    },
-                    function () {
-                        _TCDriver_Log("SendStatement callback async (one LRS)");
-                        ok(true, "async callback");
-                        start();
-                    }
+                    ]
                 );
                 equal(result, null, "result");
             }
         );
 
-        <!-- TODO: test multiple LRSes where scheme does not match and split out IE testing -->
-        asyncTest(
-            "TCDriver_SendStatement: async (multiple LRSes)",
-            2,
+        test(
+            "getStatements: sync",
             function () {
-                _TCDriver_Log("test: TCDriver_SendStatement async (multiple LRSes)");
-                var result;
-
-                // tack on an extra LRS
-                TCDriver_AddRecordStore(
-                    tc_driver,
+                log("getStatements sync");
+                var result = tincan.getStatements(
                     {
-                        endpoint: "http://cloud.scorm.com/ScormEngineInterface/TCAPI/public/sandbox/",
-                        auth: "Basic VGVzdFVzZXI6cGFzc3dvcmQ="
-                    }
-                );
-
-                result = TCDriver_SendStatement(
-                    tc_driver,
-                    {
-                        verb: "attempted",
-                        object: {
-                            id: "tincanapi.com/TinCanJS/Test/TCDriver_SendStatement/async2"
+                        sendActivity: true,
+                        sendActor: true
+                    /*
+                        verb: {
+                            id: "attempted"
+                        },
+                        target: {
+                            id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
                         }
-                    },
-                    function () {
-                        _TCDriver_Log("SendStatement callback async (multiple LRSes)");
-                        ok(true, "async callback");
-                        start();
+                    */
                     }
                 );
-                equal(result, null, "result");
+                // TODO: need to test for something?
             }
         );
+
+        test(
+            "getStatement: sync",
+            function () {
+                log("getStatement sync");
+                // TODO: can't hardcode this id, need to do a send setup, capture, and use that ID
+                var result = tincan.getStatement("3e45fce1-7fdd-476f-9c3d-b18fa51c59e3");
+                // TODO: need to test for something?
+            }
+        );
+
+        test(
+            "setState: sync",
+            function () {
+                log("setState sync");
+                var result = tincan.setState(
+                    "test1",
+                    "ok",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "getState: sync",
+            function () {
+                log("getState sync");
+                var result = tincan.getState(
+                    "test1",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "deleteState: single sync",
+            function () {
+                log("dropState single sync");
+                var result = tincan.deleteState(
+                    "test1",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "deleteState: clear sync",
+            function () {
+                log("deleteState clear sync");
+                var result = tincan.deleteState(
+                    null,
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "setActivityProfile: sync",
+            function () {
+                log("setActivityProfile sync");
+                var result = tincan.setActivityProfile(
+                    "test1",
+                    "ok",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "getActivityProfile: sync",
+            function () {
+                log("getActivityProfile sync");
+                var result = tincan.getActivityProfile(
+                    "test1",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "deleteActivityProfile: single sync",
+            function () {
+                log("dropActivityProfile single sync");
+                var result = tincan.deleteActivityProfile(
+                    "test1",
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
+        test(
+            "deleteActivityProfile: clear sync",
+            function () {
+                log("deleteActivityProfile clear sync");
+                var result = tincan.deleteActivityProfile(
+                    null,
+                    {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                            }
+                        )
+                    }
+                );
+            }
+        );
+
     </script>
 </body>
 </html>

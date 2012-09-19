@@ -1,0 +1,2743 @@
+{
+    "project": {
+        "name": "TinCanJS",
+        "description": "Client library for working with TinCan API in JavaScript",
+        "url": "https://github.com/RusticiSoftware/TinCanJS",
+        "logo": "http://cdn4.tincanapi.com/wp-content/themes/tincanapi/images/logo.png",
+        "version": "0.0.1"
+    },
+    "files": {
+        "src/Activity.js": {
+            "name": "src/Activity.js",
+            "modules": {
+                "TinCan.Activity": 1
+            },
+            "classes": {
+                "TinCan.Activity": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ActivityDefinition.js": {
+            "name": "src/ActivityDefinition.js",
+            "modules": {
+                "TinCan.ActivityDefinition": 1
+            },
+            "classes": {
+                "TinCan.ActivityDefinition": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Agent.js": {
+            "name": "src/Agent.js",
+            "modules": {
+                "TinCan.Agent": 1
+            },
+            "classes": {
+                "TinCan.Agent": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Context.js": {
+            "name": "src/Context.js",
+            "modules": {
+                "TinCan.Context": 1
+            },
+            "classes": {
+                "TinCan.Context": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LRS.js": {
+            "name": "src/LRS.js",
+            "modules": {
+                "TinCan.LRS": 1
+            },
+            "classes": {
+                "TinCan.LRS": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Result.js": {
+            "name": "src/Result.js",
+            "modules": {
+                "TinCan.Result": 1
+            },
+            "classes": {
+                "TinCan.Result": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Score.js": {
+            "name": "src/Score.js",
+            "modules": {
+                "TinCan.Score": 1
+            },
+            "classes": {
+                "TinCan.Score": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/State.js": {
+            "name": "src/State.js",
+            "modules": {
+                "TinCan.State": 1
+            },
+            "classes": {
+                "TinCan.State": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Statement.js": {
+            "name": "src/Statement.js",
+            "modules": {
+                "TinCan.Statement": 1
+            },
+            "classes": {
+                "TinCan.Statement": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/TinCan.js": {
+            "name": "src/TinCan.js",
+            "modules": {
+                "TinCan": 1
+            },
+            "classes": {
+                "TinCan": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Utils.js": {
+            "name": "src/Utils.js",
+            "modules": {
+                "TinCan.Utils": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Verb.js": {
+            "name": "src/Verb.js",
+            "modules": {
+                "TinCan.Verb": 1
+            },
+            "classes": {
+                "TinCan.Verb": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "TinCan": {
+            "name": "TinCan",
+            "submodules": {
+                "TinCan.Activity": 1,
+                "TinCan.ActivityDefinition": 1,
+                "TinCan.Agent": 1,
+                "TinCan.Context": 1,
+                "TinCan.LRS": 1,
+                "TinCan.Result": 1,
+                "TinCan.Score": 1,
+                "TinCan.State": 1,
+                "TinCan.Statement": 1,
+                "TinCan.Utils": 1,
+                "TinCan.Verb": 1
+            },
+            "classes": {
+                "TinCan.Activity": 1,
+                "TinCan.ActivityDefinition": 1,
+                "TinCan.Agent": 1,
+                "TinCan.Context": 1,
+                "TinCan.LRS": 1,
+                "TinCan.Result": 1,
+                "TinCan.Score": 1,
+                "TinCan.State": 1,
+                "TinCan.Statement": 1,
+                "TinCan": 1,
+                "TinCan.Verb": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/Verb.js",
+            "line": 26,
+            "description": "TinCan client library\n\nTODO:\n\n* Add statement queueing"
+        },
+        "TinCan.Activity": {
+            "name": "TinCan.Activity",
+            "submodules": {},
+            "classes": {
+                "TinCan.Activity": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Activity.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.ActivityDefinition": {
+            "name": "TinCan.ActivityDefinition",
+            "submodules": {},
+            "classes": {
+                "TinCan.ActivityDefinition": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/ActivityDefinition.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Agent": {
+            "name": "TinCan.Agent",
+            "submodules": {},
+            "classes": {
+                "TinCan.Agent": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Agent.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Context": {
+            "name": "TinCan.Context",
+            "submodules": {},
+            "classes": {
+                "TinCan.Context": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Context.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.LRS": {
+            "name": "TinCan.LRS",
+            "submodules": {},
+            "classes": {
+                "TinCan.LRS": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/LRS.js",
+            "line": 27,
+            "description": "TinCan client library"
+        },
+        "TinCan.Result": {
+            "name": "TinCan.Result",
+            "submodules": {},
+            "classes": {
+                "TinCan.Result": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Result.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Score": {
+            "name": "TinCan.Score",
+            "submodules": {},
+            "classes": {
+                "TinCan.Score": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Score.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.State": {
+            "name": "TinCan.State",
+            "submodules": {},
+            "classes": {
+                "TinCan.State": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/State.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Statement": {
+            "name": "TinCan.Statement",
+            "submodules": {},
+            "classes": {
+                "TinCan.Statement": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Statement.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Utils": {
+            "name": "TinCan.Utils",
+            "submodules": {},
+            "classes": {},
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Utils.js",
+            "line": 17,
+            "description": "TinCan client library"
+        },
+        "TinCan.Verb": {
+            "name": "TinCan.Verb",
+            "submodules": {},
+            "classes": {
+                "TinCan.Verb": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Verb.js",
+            "line": 26,
+            "description": "TinCan client library"
+        }
+    },
+    "classes": {
+        "TinCan.Activity": {
+            "name": "TinCan.Activity",
+            "shortname": "TinCan.Activity",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Activity",
+            "namespace": "",
+            "file": "src/Activity.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.ActivityDefinition": {
+            "name": "TinCan.ActivityDefinition",
+            "shortname": "TinCan.ActivityDefinition",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition",
+            "namespace": "",
+            "file": "src/ActivityDefinition.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.Agent": {
+            "name": "TinCan.Agent",
+            "shortname": "TinCan.Agent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Agent",
+            "namespace": "",
+            "file": "src/Agent.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.Context": {
+            "name": "TinCan.Context",
+            "shortname": "TinCan.Context",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Context",
+            "namespace": "",
+            "file": "src/Context.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.LRS": {
+            "name": "TinCan.LRS",
+            "shortname": "TinCan.LRS",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.LRS",
+            "namespace": "",
+            "file": "src/LRS.js",
+            "line": 27,
+            "is_constructor": 1
+        },
+        "TinCan.Result": {
+            "name": "TinCan.Result",
+            "shortname": "TinCan.Result",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Result",
+            "namespace": "",
+            "file": "src/Result.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.Score": {
+            "name": "TinCan.Score",
+            "shortname": "TinCan.Score",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Score",
+            "namespace": "",
+            "file": "src/Score.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.State": {
+            "name": "TinCan.State",
+            "shortname": "TinCan.State",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.State",
+            "namespace": "",
+            "file": "src/State.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.Statement": {
+            "name": "TinCan.Statement",
+            "shortname": "TinCan.Statement",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Statement",
+            "namespace": "",
+            "file": "src/Statement.js",
+            "line": 26,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize.",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "actor",
+                            "description": "Actor of statement",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "verb",
+                            "description": "Verb of statement",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "object",
+                            "description": "Object of statement",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ]
+        },
+        "TinCan": {
+            "name": "TinCan",
+            "shortname": "TinCan",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/TinCan.js",
+            "line": 32,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize.",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "recordStores",
+                            "description": "list of pre-configured LRSes",
+                            "type": "Array",
+                            "optional": true
+                        },
+                        {
+                            "name": "url",
+                            "description": "URL for determining launch provided\n        configuration options",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ]
+        },
+        "TinCan.Verb": {
+            "name": "TinCan.Verb",
+            "shortname": "TinCan.Verb",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Verb",
+            "namespace": "",
+            "file": "src/Verb.js",
+            "line": 26,
+            "is_constructor": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "src/Activity.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Activity",
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 46,
+            "itemtype": "property",
+            "name": "definition",
+            "type": "Object",
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 55,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 60,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 65,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 87,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 109,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Activity",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "name",
+            "type": "Object",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "description",
+            "type": "Object",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "type",
+            "type": "String",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "interactionType",
+            "type": "Object",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 57,
+            "itemtype": "property",
+            "name": "extensions",
+            "type": "Object",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 66,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 71,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 76,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 86,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 116,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "ActivityDefinition",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Agent",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 46,
+            "itemtype": "property",
+            "name": "mbox",
+            "type": "String",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 52,
+            "itemtype": "property",
+            "name": "mbox_sha1sum",
+            "type": "String",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 58,
+            "itemtype": "property",
+            "name": "openid",
+            "type": "Array",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 64,
+            "itemtype": "property",
+            "name": "account",
+            "type": "Array",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 73,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 78,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 83,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 105,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 143,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Agent",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "registration",
+            "type": "String",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "instructor",
+            "type": "Object",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "team",
+            "type": "Object",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "contextActivities",
+            "type": "Object",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 57,
+            "itemtype": "property",
+            "name": "revision",
+            "type": "Object",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 63,
+            "itemtype": "property",
+            "name": "platform",
+            "type": "Object",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 69,
+            "itemtype": "property",
+            "name": "language",
+            "type": "String",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 75,
+            "itemtype": "property",
+            "name": "statement",
+            "type": "String",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 81,
+            "itemtype": "property",
+            "name": "extensions",
+            "type": "String",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 90,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 95,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 100,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 111,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Context",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 34,
+            "itemtype": "property",
+            "name": "endpoint",
+            "type": "String",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "version",
+            "type": "String",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 46,
+            "itemtype": "property",
+            "name": "auth",
+            "type": "String",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 52,
+            "itemtype": "property",
+            "name": "allowFail",
+            "type": "Boolean",
+            "default": "true",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 59,
+            "itemtype": "property",
+            "name": "extended",
+            "type": "Object",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 65,
+            "itemtype": "property",
+            "name": "_requestMode",
+            "type": "String",
+            "default": "\"native\"",
+            "access": "private",
+            "tagname": "",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 76,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 81,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 86,
+            "itemtype": "method",
+            "name": "init",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 168,
+            "itemtype": "method",
+            "name": "sendRequest",
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "url",
+                            "description": "URL portion to add to endpoint",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "method",
+                            "description": "GET, PUT, POST, etc.",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "params",
+                            "description": "Parameters to set on the querystring",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "data",
+                            "description": "String of body content",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run at completion",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "ignore404",
+                            "description": "Whether 404 status codes should be ignored",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "headers",
+                            "description": "Additional headers to set in the request",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 336,
+            "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
+            "itemtype": "method",
+            "name": "saveStatement",
+            "params": [
+                {
+                    "name": "TinCan.Statement",
+                    "description": "to send",
+                    "type": "Object"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration used when saving",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 372,
+            "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "retrieveStatement",
+            "params": [
+                {
+                    "name": "ID",
+                    "description": "of statement to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "TinCan.Statement retrieved",
+                "type": "Object"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 411,
+            "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
+            "itemtype": "method",
+            "name": "saveStatements",
+            "params": [
+                {
+                    "name": "Array",
+                    "description": "of statements or objects convertable to statements",
+                    "type": "Array"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration used when saving",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 457,
+            "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
+            "itemtype": "method",
+            "name": "queryStatements",
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration used to query",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Array of statements",
+                "type": "Array"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 514,
+            "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "retrieveState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of state to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                },
+                {
+                    "name": "actor",
+                    "description": "TinCan.Actor",
+                    "type": "Object"
+                },
+                {
+                    "name": "registration",
+                    "description": "Registration",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "TinCan.State retrieved",
+                "type": "Object"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 566,
+            "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "saveState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of state to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                },
+                {
+                    "name": "actor",
+                    "description": "TinCan.Actor",
+                    "type": "Object"
+                },
+                {
+                    "name": "registration",
+                    "description": "Registration",
+                    "type": "String"
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 622,
+            "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "dropState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of state to delete, or null for all",
+                    "type": "String|null"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                },
+                {
+                    "name": "actor",
+                    "description": "TinCan.Actor",
+                    "type": "Object"
+                },
+                {
+                    "name": "registration",
+                    "description": "Registration",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 670,
+            "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "retrieveActivityProfile",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of activity profile to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                },
+                {
+                    "name": "actor",
+                    "description": "TinCan.Actor",
+                    "type": "Object"
+                },
+                {
+                    "name": "registration",
+                    "description": "Registration",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "Value retrieved",
+                "type": "Object"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 714,
+            "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "saveActivityProfile",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of activity profile to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 755,
+            "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
+            "itemtype": "method",
+            "name": "dropState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of activity profile to delete, or null for all",
+                    "type": "String|null"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration options",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                },
+                {
+                    "name": "activity",
+                    "description": "TinCan.Activity",
+                    "type": "Object"
+                }
+            ],
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 797,
+            "itemtype": "method",
+            "name": "__delay",
+            "access": "private",
+            "tagname": "",
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "score",
+            "type": "Object",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "success",
+            "type": "Boolean",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "completion",
+            "type": "String",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "duration",
+            "type": "String",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 57,
+            "itemtype": "property",
+            "name": "response",
+            "type": "Object",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 63,
+            "itemtype": "property",
+            "name": "extensions",
+            "type": "Object",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 72,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 77,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 82,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 93,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Result",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "scaled",
+            "type": "String",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "raw",
+            "type": "String",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "min",
+            "type": "String",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "max",
+            "type": "String",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 58,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 63,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 68,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 79,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Score",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/State.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "updated",
+            "type": "String",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "contents",
+            "type": "String",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 54,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 59,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 64,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 75,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "State",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 37,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 43,
+            "itemtype": "property",
+            "name": "actor",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 49,
+            "itemtype": "property",
+            "name": "verb",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 55,
+            "itemtype": "property",
+            "name": "object",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 61,
+            "itemtype": "property",
+            "name": "result",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 67,
+            "itemtype": "property",
+            "name": "context",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 73,
+            "itemtype": "property",
+            "name": "authority",
+            "type": "Object",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 79,
+            "itemtype": "property",
+            "name": "voided",
+            "type": "Boolean",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 85,
+            "itemtype": "property",
+            "name": "inProgress",
+            "type": "Boolean",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 91,
+            "itemtype": "property",
+            "name": "timestamp",
+            "type": "Date",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 97,
+            "itemtype": "property",
+            "name": "stored",
+            "type": "Date",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 107,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 112,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 117,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 141,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 43,
+            "itemtype": "property",
+            "name": "environment",
+            "type": "String",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 49,
+            "itemtype": "property",
+            "name": "recordStores",
+            "type": "Array",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 55,
+            "description": "Default actor used when preparing statements that\ndon't yet have an actor set",
+            "itemtype": "property",
+            "name": "actor",
+            "type": "Object",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 64,
+            "description": "Default activity, may be used as a statement 'target'\nor incorporated into 'context'",
+            "itemtype": "property",
+            "name": "activity",
+            "type": "Object",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 73,
+            "description": "Default registration, included in default context when\nprovided, otherwise used in statement queries",
+            "itemtype": "property",
+            "name": "registration",
+            "type": "String",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 82,
+            "description": "Default context used when preparing statements that\ndon't yet have a context set, or mixed in when one\nhas been provided, properties do NOT override on mixing",
+            "itemtype": "property",
+            "name": "context",
+            "type": "Object",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 98,
+            "description": "Safe version of logging",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to output",
+                    "type": "String"
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 112,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize (see TinCan constructor).",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 128,
+            "itemtype": "method",
+            "name": "_handleQueryString",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 210,
+            "itemtype": "method",
+            "name": "_parseQueryString",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Object of parsed query string values",
+                "type": "Object"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 238,
+            "itemtype": "method",
+            "name": "addRecordStore",
+            "params": [
+                {
+                    "name": "Configuration",
+                    "description": "data\n\n * TODO:\n * check endpoint for trailing '/'\n * check for unique endpoints",
+                    "type": "Object"
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 253,
+            "itemtype": "method",
+            "name": "prepareStatement",
+            "params": [
+                {
+                    "name": "Base",
+                    "description": "statement properties or\n    pre-created TinCan.Statement instance",
+                    "type": "Object|TinCan.Statement"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "TinCan.Statement"
+            },
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 297,
+            "description": "Calls saveStatement on each configured LRS, provide callback to make it asynchronous",
+            "itemtype": "method",
+            "name": "sendStatement",
+            "params": [
+                {
+                    "name": "Send",
+                    "description": "statement to LRS",
+                    "type": "TinCan.Statement"
+                },
+                {
+                    "name": "Callback",
+                    "description": "function to execute on completion",
+                    "type": "Function"
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 363,
+            "description": "Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous",
+            "itemtype": "method",
+            "name": "getStatement",
+            "params": [
+                {
+                    "name": "Statement",
+                    "description": "ID to get",
+                    "type": "String"
+                },
+                {
+                    "name": "Callback",
+                    "description": "function to execute on completion",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "Retrieved statement from LRS\n\nTODO: make TinCan track statements it has seen in a local cache to be returned easily",
+                "type": "TinCan.Statement"
+            },
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 430,
+            "description": "Calls saveStatements with list of statements",
+            "itemtype": "method",
+            "name": "sendStatements",
+            "params": [
+                {
+                    "name": "Array",
+                    "description": "of statements to send",
+                    "type": "Array"
+                },
+                {
+                    "name": "Callback",
+                    "description": "function to execute on completion",
+                    "type": "Function"
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 500,
+            "itemtype": "method",
+            "name": "getStatements",
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "params",
+                            "description": "Parameters used to filter",
+                            "type": "Object",
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "sendActor",
+                                    "description": "Include default actor in query params",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "sendActivity",
+                                    "description": "Include default activity in query params",
+                                    "type": "Boolean",
+                                    "optional": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run at completion\n\nTODO: support multiple LRSs and flag to use single",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 567,
+            "itemtype": "method",
+            "name": "getState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to retrieve from the state",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "actor",
+                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration used in query,\n        defaults to 'registration' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with state",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 625,
+            "itemtype": "method",
+            "name": "setState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to store into the state",
+                    "type": "String"
+                },
+                {
+                    "name": "val",
+                    "description": "Value to store into the state, objects will be stringified to JSON",
+                    "type": "String|Object"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "actor",
+                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration used in query,\n        defaults to 'registration' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with state",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 684,
+            "itemtype": "method",
+            "name": "deleteState",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to remove from the state, or null to clear all",
+                    "type": "String|null"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "actor",
+                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration used in query,\n        defaults to 'registration' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with state",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 742,
+            "itemtype": "method",
+            "name": "getActivityProfile",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to retrieve from the profile",
+                    "type": "String"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with activity profile",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 789,
+            "itemtype": "method",
+            "name": "setActivityProfile",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to store into the activity profile",
+                    "type": "String"
+                },
+                {
+                    "name": "val",
+                    "description": "Value to store into the activity profile, objects will be stringified to JSON",
+                    "type": "String|Object"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with activity profile",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 837,
+            "itemtype": "method",
+            "name": "deleteActivityProfile",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to remove from the activity profile, or null to clear all",
+                    "type": "String|null"
+                },
+                {
+                    "name": "cfg",
+                    "description": "Configuration for request",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "activity",
+                            "description": "Activity used in query,\n        defaults to 'activity' property if empty",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run with activity profile",
+                            "type": "Function",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 885,
+            "itemtype": "property",
+            "name": "DEBUG",
+            "static": 1,
+            "default": "false",
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 892,
+            "description": "Turn on debug logging",
+            "itemtype": "method",
+            "name": "enableDebug",
+            "static": 1,
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 902,
+            "description": "Turn off debug logging",
+            "itemtype": "method",
+            "name": "disableDebug",
+            "static": 1,
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 912,
+            "itemtype": "method",
+            "name": "versions",
+            "return": {
+                "description": "Array of supported version numbers",
+                "type": "Array"
+            },
+            "static": 1,
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/TinCan.js",
+            "line": 925,
+            "itemtype": "method",
+            "name": "environment",
+            "return": {
+                "description": "Object with properties depending on execution environment",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan",
+            "module": "TinCan"
+        },
+        {
+            "file": "src/Utils.js",
+            "line": 27,
+            "itemtype": "method",
+            "name": "getUUID",
+            "return": {
+                "description": "UUID",
+                "type": "String"
+            },
+            "static": "Excerpt from: Math.uuid.js (v1.4)\nhttp://www.broofa.com\nmailto:robert@broofa.com\nCopyright (c) 2010 Robert Kieffer\nDual licensed under the MIT and GPL licenses.",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 42,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 47,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 52,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 75,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 99,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Verb",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        }
+    ]
+}
