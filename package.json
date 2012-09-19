@@ -1,0 +1,24 @@
+{
+    "name": "tincan",
+    "description": "TinCan Library",
+    "version": "0.0.1",
+    "private": false,
+    "main": "build/tincan.js",
+    "dependencies": {
+    },
+    "author": "Rustici Software <support@tincanapi.com>",
+    "contributors": [
+        {
+            "name": "Brian J. Miller",
+            "email": "brian.miller@scorm.com"
+        }
+    ],
+    "keywords": [
+        "tincan",
+        "e-learning"
+    ],
+    "devDependencies": {
+        "gear": "0.8.x",
+        "gear-lib": "0.8.x"
+    }
+}
