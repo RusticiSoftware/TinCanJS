@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src&#x2F;Statement.js - TinCanJS</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.5.1&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="http:&#x2F;&#x2F;cdn4.tincanapi.com&#x2F;wp-content&#x2F;themes&#x2F;tincanapi&#x2F;images&#x2F;logo.png" title="TinCanJS"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/TinCan.html">TinCan</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/TinCan.html">TinCan</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Utils.html">TinCan.Utils</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src&#x2F;Statement.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;*
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*&#x2F;
+
+&#x2F;**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.Statement
+**&#x2F;
+(function () {
+    &quot;use strict&quot;;
+
+    &#x2F;**
+    @class TinCan.Statement
+    @constructor
+    @param {Object} [options] Configuration used to initialize.
+        @param {Object} [options.actor] Actor of statement
+        @param {Object} [options.verb] Verb of statement
+        @param {Object} [options.object] Object of statement
+    **&#x2F;
+    var Statement = TinCan.Statement = function (cfg) {
+        this.log(&quot;constructor&quot;);
+
+        &#x2F;**
+        @property id
+        @type String
+        *&#x2F;
+        this.id = null;
+
+        &#x2F;**
+        @property actor
+        @type Object
+        *&#x2F;
+        this.actor = null;
+
+        &#x2F;**
+        @property verb
+        @type Object
+        *&#x2F;
+        this.verb = null;
+
+        &#x2F;**
+        @property object
+        @type Object
+        *&#x2F;
+        this.object = null;
+
+        &#x2F;**
+        @property result
+        @type Object
+        *&#x2F;
+        this.result = null;
+
+        &#x2F;**
+        @property context
+        @type Object
+        *&#x2F;
+        this.context = null;
+
+        &#x2F;**
+        @property authority
+        @type Object
+        *&#x2F;
+        this.authority = null;
+
+        &#x2F;**
+        @property voided
+        @type Boolean
+        *&#x2F;
+        this.voided = false;
+
+        &#x2F;**
+        @property inProgress
+        @type Boolean
+        *&#x2F;
+        this.inProgress = false;
+
+        &#x2F;**
+        @property timestamp
+        @type Date
+        *&#x2F;
+        this.timestamp = null;
+
+        &#x2F;**
+        @property stored
+        @type Date
+        *&#x2F;
+        this.stored = null;
+
+        this.init(cfg);
+    };
+
+    Statement.prototype = {
+        &#x2F;**
+        @property LOG_SRC
+        *&#x2F;
+        LOG_SRC: &#x27;Statement&#x27;,
+
+        &#x2F;**
+        @method log
+        *&#x2F;
+        log: TinCan.prototype.log,
+
+        &#x2F;**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        *&#x2F;
+        init: function (cfg) {
+            this.log(&quot;init&quot;);
+
+            cfg = cfg || {};
+
+            if (this.id === null) {
+                this.id = TinCan.Utils.getUUID();
+            }
+
+            if (cfg.hasOwnProperty(&quot;actor&quot;)) {
+                this.actor = new TinCan.Agent (cfg.actor);
+            }
+            if (cfg.hasOwnProperty(&quot;verb&quot;)) {
+                this.verb = new TinCan.Verb (cfg.verb);
+            }
+            if (cfg.hasOwnProperty(&quot;target&quot;)) {
+                this.target = new TinCan.Activity (cfg.target);
+            }
+        },
+
+        &#x2F;**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        *&#x2F;
+        asVersion: function (version) {
+            this.log(&quot;asVersion&quot;);
+            var result;
+
+            version = version || TinCan.versions()[0];
+
+            result = {
+                actor: this.actor.asVersion(version),
+                verb: this.verb.asVersion(version),
+                object: this.target.asVersion(version)
+            };
+            if (this.result !== null) {
+                result.result = this.result.asVersion(version);
+            }
+
+            &#x2F;&#x2F; TODO: add timestamp
+
+            return result;
+        }
+    };
+}());
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

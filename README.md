@@ -5,22 +5,40 @@ http://tincanapi.com/
 Usage
 -----
 
-If you have `ant` installed and a shell available then change into the src/
-directory and run ./build.sh to get a raw and minified version under build/.
-Load either the build/tincan.js or build/tincan-min.js file on your page,
-retrieve a configuration object using TCDriver\_GetConfigObject() and then call
-various functions passing in the configuration object.
+Build instructions
+==================
 
-At the moment the raw version is a straight copy of the src/ version so if you
-don't have `ant` available or a Unix shell then either load the src/ version
-directly in your page or copy it to build/ and load from there like normal.
+For first time builds install Node.js with npm and then run `npm install gear gear-lib`.
 
-Constants
----------
+With Node.js installed and the requisite modules present, issue:
 
-The configuration object detects the following constants:
+    ./build.js
 
-* TC\_COURSE\_ID
-* TC\_COURSE\_NAME
-* TC\_COURSE\_DESC
-* TC\_RECORD\_STORES
+This will generate build/tincan.js and build/tincan-min.js files (you only need to load one). Which can be included as follows:
+
+<script type="text/javascript" src="build/tincan-min.js"></script>
+
+Source instructions
+===================
+
+Alternatively you can just link to the individual files themselves like so:
+
+<script type="text/javascript" src="src/TinCan.js"></script>
+<script type="text/javascript" src="src/Utils.js"></script>
+<script type="text/javascript" src="src/LRS.js"></script>
+<script type="text/javascript" src="src/Agent.js"></script>
+<script type="text/javascript" src="src/Verb.js"></script>
+<script type="text/javascript" src="src/Result.js"></script>
+<script type="text/javascript" src="src/Score.js"></script>
+<script type="text/javascript" src="src/Context.js"></script>
+<script type="text/javascript" src="src/Activity.js"></script>
+<script type="text/javascript" src="src/ActivityDefinition.js"></script>
+<script type="text/javascript" src="src/Statement.js"></script>
+<script type="text/javascript" src="src/State.js"></script>
+
+API Documentation Generation
+============================
+
+Install yuidoc via `npm install -g yuidoc` and then from the base directory issue:
+
+    yuidoc src/
