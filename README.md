@@ -34,6 +34,7 @@ Alternatively you can just link to the individual files themselves like so:
     <script type="text/javascript" src="src/Activity.js"></script>
     <script type="text/javascript" src="src/ActivityDefinition.js"></script>
     <script type="text/javascript" src="src/Statement.js"></script>
+    <script type="text/javascript" src="src/StatementsResult.js"></script>
     <script type="text/javascript" src="src/State.js"></script>
 
 API Documentation Generation

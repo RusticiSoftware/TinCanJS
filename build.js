@@ -25,6 +25,7 @@ new gear.Queue(
         ,'src/Activity.js'
         ,'src/ActivityDefinition.js'
         ,'src/Statement.js'
+        ,'src/StatementsResult.js'
         ,'src/State.js'
     ]
 )

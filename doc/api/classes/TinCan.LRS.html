@@ -61,6 +61,8 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Statement.html">TinCan.Statement</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
             
             </ul>
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.State.html">TinCan.State</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Utils.html">TinCan.Utils</a></li>
             
@@ -442,7 +446,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l797"><code>src&#x2F;LRS.js:797</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l822"><code>src&#x2F;LRS.js:822</code></a>
         
         </p>
 
@@ -518,7 +522,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l755"><code>src&#x2F;LRS.js:755</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l780"><code>src&#x2F;LRS.js:780</code></a>
         
         </p>
 
@@ -677,7 +681,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l622"><code>src&#x2F;LRS.js:622</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l647"><code>src&#x2F;LRS.js:647</code></a>
         
         </p>
 
@@ -922,13 +926,19 @@
                     
                 </li>
             
+                <li class="arg">
+                    
+                        <code>Receives</code>
+                    
+                </li>
+            
             </ul><span class="paren">)</span>
         </div>
     
 
     
         <span class="returns-inline">
-            <span class="type">Array</span>
+            <span class="type"><a href="../classes/TinCan.StatementsResult.html" class="crosslink">TinCan.StatementsResult</a></span>
         </span>
     
 
@@ -994,6 +1004,108 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                             
                             <li class="param">
                                 
+                                    <code class="param-name optional">[params]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>Query parameters</p>
+                                </div>
+
+                                
+                                    <ul class="params-list">
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[actor]</code>
+                                                <span class="type">TinCan.Actor</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Actor to query on
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[verb]</code>
+                                                <span class="type"><a href="../classes/TinCan.Verb.html" class="crosslink">TinCan.Verb</a></span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Verb to query on
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[activity]</code>
+                                                <span class="type"><a href="../classes/TinCan.Activity.html" class="crosslink">TinCan.Activity</a></span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Activity to query on
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[registration]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Registration to query on
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[authoritative]</code>
+                                                <span class="type">Boolean</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Get authoritative results
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[sparse]</code>
+                                                <span class="type">Boolean</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Get sparse results
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[limit]</code>
+                                                <span class="type">Integer</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Number of results to retrieve
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
                                     <code class="param-name optional">[callback]</code>
                                     <span class="type">Function</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -1010,6 +1122,21 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                     
                 </li>
             
+                <li class="param">
+                    
+                        <code class="param-name">Receives</code>
+                        <span class="type"><a href="../classes/TinCan.StatementsResult.html" class="crosslink">TinCan.StatementsResult</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>a StatementsResult argument</p>
+                    </div>
+
+                    
+                </li>
+            
             </ul>
         </div>
     
@@ -1021,9 +1148,9 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             <div class="returns-description">
                 
                     
-                        <span class="type">Array</span>:
+                        <span class="type"><a href="../classes/TinCan.StatementsResult.html" class="crosslink">TinCan.StatementsResult</a></span>:
                     
-                    Array of statements
+                    StatementsResult object if no callback configured
                 
             </div>
         </div>
@@ -1103,7 +1230,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l670"><code>src&#x2F;LRS.js:670</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l695"><code>src&#x2F;LRS.js:695</code></a>
         
         </p>
 
@@ -1310,7 +1437,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l514"><code>src&#x2F;LRS.js:514</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l539"><code>src&#x2F;LRS.js:539</code></a>
         
         </p>
 
@@ -1645,7 +1772,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l714"><code>src&#x2F;LRS.js:714</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l739"><code>src&#x2F;LRS.js:739</code></a>
         
         </p>
 
@@ -1804,7 +1931,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l566"><code>src&#x2F;LRS.js:566</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l591"><code>src&#x2F;LRS.js:591</code></a>
         
         </p>
 

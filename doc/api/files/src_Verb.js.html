@@ -61,6 +61,8 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Statement.html">TinCan.Statement</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
             
             </ul>
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.State.html">TinCan.State</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Utils.html">TinCan.Utils</a></li>
             
@@ -193,11 +197,16 @@ TinCan client library
                 ]
             ;
 
-            cfg = cfg || {};
+            if (typeof cfg === &quot;string&quot;) {
+                this.id = cfg;
+            }
+            else {
+                cfg = cfg || {};
 
-            for (i = 0; i &lt; directProps.length; i += 1) {
-                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
+                for (i = 0; i &lt; directProps.length; i += 1) {
+                    if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
+                        this[directProps[i]] = cfg[directProps[i]];
+                    }
                 }
             }
 

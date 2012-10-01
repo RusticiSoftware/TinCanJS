@@ -61,6 +61,8 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Statement.html">TinCan.Statement</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
             
             </ul>
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.State.html">TinCan.State</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Utils.html">TinCan.Utils</a></li>
             
@@ -592,16 +596,27 @@ TinCan client library
 
         @method queryStatements
         @param {Object} [cfg] Configuration used to query
+            @param {Object} [cfg.params] Query parameters
+                @param {TinCan.Actor} [cfg.params.actor] Actor to query on
+                @param {TinCan.Verb} [cfg.params.verb] Verb to query on
+                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
+                @param {String} [cfg.params.registration] Registration to query on
+                @param {Boolean} [cfg.params.authoritative] Get authoritative results
+                @param {Boolean} [cfg.params.sparse] Get sparse results
+                @param {Integer} [cfg.params.limit] Number of results to retrieve
             @param {Function} [cfg.callback] Callback to execute on completion
-        @return {Array} Array of statements
+                @param {TinCan.StatementsResult} Receives a StatementsResult argument
+        @return {TinCan.StatementsResult} StatementsResult object if no callback configured
         *&#x2F;
         queryStatements: function (cfg) {
             this.log(&quot;queryStatements&quot;);
-            var objectProps = [&quot;actor&quot;, &quot;verb&quot;, &quot;activity&quot;],
-                stringProps = [&quot;registration&quot;, &quot;sparse&quot;],
+            var jsonProps = [&quot;actor&quot;],
+                idProps = [&quot;verb&quot;, &quot;activity&quot;],
+                stringProps = [&quot;registration&quot;, &quot;authoritative&quot;, &quot;sparse&quot;, &quot;limit&quot;],
                 requestParams = {},
                 requestCfg = {},
                 requestResult,
+                callbackWrapper,
                 i
             ;
 
@@ -616,9 +631,15 @@ TinCan client library
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
-            for (i = 0; i &lt; objectProps.length; i += 1) {
-                if (typeof cfg.params[objectProps[i]] !== &quot;undefined&quot;) {
-                    requestParams[objectProps[i]] = JSON.stringify(cfg.params[objectProps[i]].asVersion(this.version));
+            for (i = 0; i &lt; jsonProps.length; i += 1) {
+                if (typeof cfg.params[jsonProps[i]] !== &quot;undefined&quot;) {
+                    requestParams[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
+                }
+            }
+
+            for (i = 0; i &lt; idProps.length; i += 1) {
+                if (typeof cfg.params[idProps[i]] !== &quot;undefined&quot;) {
+                    requestParams[idProps[i]] = cfg.params[idProps[i]].id;
                 }
             }
 
@@ -634,13 +655,21 @@ TinCan client library
                 params: requestParams
             };
             if (typeof cfg.callback !== &quot;undefined&quot;) {
+                callbackWrapper = function (xhr) {
+                    this.log(&quot;queryStatements - callbackWrapper&quot;);
+                    var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
+
+                    cfg.callback(stResult);
+                };
                 requestCfg.callback = cfg.callback;
             }
 
             requestResult = this.sendRequest(requestCfg);
 
             &#x2F;&#x2F; TODO: this seems like a bad interface decision
-            return requestResult.responseText;
+            if (typeof requestCfg.callback === &quot;undefined&quot;) {
+                return TinCan.StatementsResult.fromJSON(requestResult.responseText);
+            }
         },
 
         &#x2F;**

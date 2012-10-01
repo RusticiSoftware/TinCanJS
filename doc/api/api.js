@@ -11,6 +11,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan.Score",
         "TinCan.State",
         "TinCan.Statement",
+        "TinCan.StatementsResult",
         "TinCan.Verb"
     ],
     "modules": [
@@ -24,6 +25,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan.Score",
         "TinCan.State",
         "TinCan.Statement",
+        "TinCan.StatementsResult",
         "TinCan.Utils",
         "TinCan.Verb"
     ],
@@ -76,6 +78,11 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "TinCan.Statement",
             "name": "TinCan.Statement",
+            "description": "TinCan client library"
+        },
+        {
+            "displayName": "TinCan.StatementsResult",
+            "name": "TinCan.StatementsResult",
             "description": "TinCan client library"
         },
         {

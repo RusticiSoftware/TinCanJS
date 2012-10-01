@@ -106,6 +106,17 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/StatementsResult.js": {
+            "name": "src/StatementsResult.js",
+            "modules": {
+                "TinCan.StatementsResult": 1
+            },
+            "classes": {
+                "TinCan.StatementsResult": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/TinCan.js": {
             "name": "src/TinCan.js",
             "modules": {
@@ -151,6 +162,7 @@
                 "TinCan.Score": 1,
                 "TinCan.State": 1,
                 "TinCan.Statement": 1,
+                "TinCan.StatementsResult": 1,
                 "TinCan.Utils": 1,
                 "TinCan.Verb": 1
             },
@@ -164,6 +176,7 @@
                 "TinCan.Score": 1,
                 "TinCan.State": 1,
                 "TinCan.Statement": 1,
+                "TinCan.StatementsResult": 1,
                 "TinCan": 1,
                 "TinCan.Verb": 1
             },
@@ -306,6 +319,21 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/Statement.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.StatementsResult": {
+            "name": "TinCan.StatementsResult",
+            "submodules": {},
+            "classes": {
+                "TinCan.StatementsResult": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/StatementsResult.js",
             "line": 26,
             "description": "TinCan client library"
         },
@@ -497,6 +525,40 @@
                             "description": "Object of statement",
                             "type": "Object",
                             "optional": true
+                        }
+                    ]
+                }
+            ]
+        },
+        "TinCan.StatementsResult": {
+            "name": "TinCan.StatementsResult",
+            "shortname": "TinCan.StatementsResult",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult",
+            "namespace": "",
+            "file": "src/StatementsResult.js",
+            "line": 26,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize.",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "statements",
+                            "description": "Actor of statement",
+                            "type": "Array"
+                        },
+                        {
+                            "name": "more",
+                            "description": "URL to fetch more data",
+                            "type": "String"
                         }
                     ]
                 }
@@ -882,7 +944,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 105,
+            "line": 106,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -907,7 +969,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 143,
+            "line": 144,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1321,17 +1383,72 @@
                     "optional": true,
                     "props": [
                         {
+                            "name": "params",
+                            "description": "Query parameters",
+                            "type": "Object",
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "actor",
+                                    "description": "Actor to query on",
+                                    "type": "TinCan.Actor",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "verb",
+                                    "description": "Verb to query on",
+                                    "type": "TinCan.Verb",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "activity",
+                                    "description": "Activity to query on",
+                                    "type": "TinCan.Activity",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "registration",
+                                    "description": "Registration to query on",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "authoritative",
+                                    "description": "Get authoritative results",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "sparse",
+                                    "description": "Get sparse results",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "limit",
+                                    "description": "Number of results to retrieve",
+                                    "type": "Integer",
+                                    "optional": true
+                                }
+                            ]
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
+                },
+                {
+                    "name": "Receives",
+                    "description": "a StatementsResult argument",
+                    "type": "TinCan.StatementsResult"
                 }
             ],
             "return": {
-                "description": "Array of statements",
-                "type": "Array"
+                "description": "StatementsResult object if no callback configured",
+                "type": "TinCan.StatementsResult"
             },
             "class": "TinCan.LRS",
             "module": "TinCan",
@@ -1339,7 +1456,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 514,
+            "line": 539,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -1389,7 +1506,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 566,
+            "line": 591,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -1434,7 +1551,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 622,
+            "line": 647,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -1480,7 +1597,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 670,
+            "line": 695,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -1530,7 +1647,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 714,
+            "line": 739,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -1565,7 +1682,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 755,
+            "line": 780,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -1600,7 +1717,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 797,
+            "line": 822,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -2055,6 +2172,75 @@
             "class": "TinCan.Statement",
             "module": "TinCan",
             "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 36,
+            "itemtype": "property",
+            "name": "statements",
+            "type": "Array",
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 42,
+            "itemtype": "property",
+            "name": "more",
+            "type": "String",
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 52,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 57,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 62,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/StatementsResult.js",
+            "line": 80,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Agent",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.StatementsResult",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementsResult"
         },
         {
             "file": "src/TinCan.js",
@@ -2702,7 +2888,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 75,
+            "line": 80,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -2727,7 +2913,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 99,
+            "line": 104,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {

@@ -460,16 +460,27 @@ TinCan client library
 
         @method queryStatements
         @param {Object} [cfg] Configuration used to query
+            @param {Object} [cfg.params] Query parameters
+                @param {TinCan.Actor} [cfg.params.actor] Actor to query on
+                @param {TinCan.Verb} [cfg.params.verb] Verb to query on
+                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
+                @param {String} [cfg.params.registration] Registration to query on
+                @param {Boolean} [cfg.params.authoritative] Get authoritative results
+                @param {Boolean} [cfg.params.sparse] Get sparse results
+                @param {Integer} [cfg.params.limit] Number of results to retrieve
             @param {Function} [cfg.callback] Callback to execute on completion
-        @return {Array} Array of statements
+                @param {TinCan.StatementsResult} Receives a StatementsResult argument
+        @return {TinCan.StatementsResult} StatementsResult object if no callback configured
         */
         queryStatements: function (cfg) {
             this.log("queryStatements");
-            var objectProps = ["actor", "verb", "activity"],
-                stringProps = ["registration", "sparse"],
+            var jsonProps = ["actor"],
+                idProps = ["verb", "activity"],
+                stringProps = ["registration", "authoritative", "sparse", "limit"],
                 requestParams = {},
                 requestCfg = {},
                 requestResult,
+                callbackWrapper,
                 i
             ;
 
@@ -484,9 +495,15 @@ TinCan client library
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
-            for (i = 0; i < objectProps.length; i += 1) {
-                if (typeof cfg.params[objectProps[i]] !== "undefined") {
-                    requestParams[objectProps[i]] = JSON.stringify(cfg.params[objectProps[i]].asVersion(this.version));
+            for (i = 0; i < jsonProps.length; i += 1) {
+                if (typeof cfg.params[jsonProps[i]] !== "undefined") {
+                    requestParams[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
+                }
+            }
+
+            for (i = 0; i < idProps.length; i += 1) {
+                if (typeof cfg.params[idProps[i]] !== "undefined") {
+                    requestParams[idProps[i]] = cfg.params[idProps[i]].id;
                 }
             }
 
@@ -502,13 +519,20 @@ TinCan client library
                 params: requestParams
             };
             if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (xhr) {
+                    this.log("queryStatements - callbackWrapper");
+                    var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
+
+                    cfg.callback(stResult);
+                };
                 requestCfg.callback = cfg.callback;
             }
 
             requestResult = this.sendRequest(requestCfg);
 
-            // TODO: this seems like a bad interface decision
-            return requestResult.responseText;
+            if (typeof requestCfg.callback === "undefined") {
+                return TinCan.StatementsResult.fromJSON(requestResult.responseText);
+            }
         },
 
         /**

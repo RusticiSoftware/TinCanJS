@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TinCan.Verb - TinCanJS</title>
+    <title>src&#x2F;StatementsResult.js - TinCanJS</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -130,49 +130,103 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TinCan.Verb Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: src&#x2F;StatementsResult.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;*
+    Copyright 2012 Rustici Software
 
-    
-        <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;src_Verb.js.html#l26"><code>src&#x2F;Verb.js:26</code></a>
-        </div>
-    
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    
-</div>
+    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0
 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*&#x2F;
 
+&#x2F;**
+TinCan client library
 
-<div class="box intro">
-    <p>TinCan client library</p>
-</div>
+@module TinCan
+@submodule TinCan.StatementsResult
+**&#x2F;
+(function () {
+    &quot;use strict&quot;;
 
+    &#x2F;**
+    @class TinCan.StatementsResult
+    @constructor
+    @param {Object} options Configuration used to initialize.
+        @param {Array} options.statements Actor of statement
+        @param {String} options.more URL to fetch more data
+    **&#x2F;
+    var StatementsResult = TinCan.StatementsResult = function (cfg) {
+        this.log(&quot;constructor&quot;);
 
+        &#x2F;**
+        @property statements
+        @type Array
+        *&#x2F;
+        this.statements = null;
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-            <p>This module provides the following classes:</p>
+        &#x2F;**
+        @property more
+        @type String
+        *&#x2F;
+        this.more = null;
 
-            <ul class="module-classes">
-            
-                <li class="module-class">
-                    <a href="..&#x2F;classes/TinCan.Verb.html">
-                        TinCan.Verb
-                    </a>
-                </li>
-            
-            </ul>
-        
-    </div>
+        this.init(cfg);
+    };
 
-    <div class="yui3-u-1-2">
-        
-    </div>
+    Statement.prototype = {
+        &#x2F;**
+        @property LOG_SRC
+        *&#x2F;
+        LOG_SRC: &#x27;StatementsResult&#x27;,
+
+        &#x2F;**
+        @method log
+        *&#x2F;
+        log: TinCan.prototype.log,
+
+        &#x2F;**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        *&#x2F;
+        init: function (cfg) {
+            this.log(&quot;init&quot;);
+
+            cfg = cfg || {};
+
+            if (cfg.hasOwnProperty(&quot;statements&quot;)) {
+                this.statements = cfg.statements;
+            }
+            if (cfg.hasOwnProperty(&quot;more&quot;)) {
+                this.more = cfg.more;
+            }
+        }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} Agent
+    @static
+    *&#x2F;
+    StatementsResult.fromJSON = function (resultJSON) {
+        StatementsResult.prototype.log(&quot;fromJSON&quot;);
+        var _result = JSON.parse(resultJSON);
+
+        return new StatementsResult(_result);
+    };
+}());
+
+    </pre>
 </div>
 
                     </div>

@@ -89,7 +89,8 @@ TinCan client library
             var i,
                 directProps = [
                     "mbox",
-                    "name"
+                    "name",
+                    "account"
                 ]
             ;
 
