@@ -91,14 +91,19 @@ TinCan client library
                     "mbox",
                     "name",
                     "account"
-                ]
+                ],
+                val
             ;
 
             cfg = cfg || {};
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
+                    val = cfg[directProps[i]];
+                    if (directProps[i] === "mbox" && val.indexOf("mailto:") === -1) {
+                        val = "mailto:" + val;
+                    }
+                    this[directProps[i]] = val;
                 }
             }
         },
