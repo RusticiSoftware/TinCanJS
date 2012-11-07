@@ -1213,7 +1213,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 168,
+            "line": 169,
             "itemtype": "method",
             "name": "sendRequest",
             "params": [
@@ -1274,7 +1274,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 336,
+            "line": 337,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -1305,7 +1305,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 372,
+            "line": 373,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -1340,7 +1340,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 411,
+            "line": 412,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -1371,7 +1371,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 457,
+            "line": 458,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -1685,7 +1685,7 @@
             "line": 780,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
-            "name": "dropState",
+            "name": "dropActivityProfile",
             "params": [
                 {
                     "name": "key",

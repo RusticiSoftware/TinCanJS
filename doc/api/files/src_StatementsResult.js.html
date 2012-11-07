@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>src&#x2F;StatementsResult.js - TinCanJS</title>
-    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
-    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.5.1&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
 
@@ -184,7 +184,7 @@ TinCan client library
         this.init(cfg);
     };
 
-    Statement.prototype = {
+    StatementsResult.prototype = {
         &#x2F;**
         @property LOG_SRC
         *&#x2F;
@@ -220,9 +220,16 @@ TinCan client library
     *&#x2F;
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log(&quot;fromJSON&quot;);
-        var _result = JSON.parse(resultJSON);
+        var _result = JSON.parse(resultJSON),
+            stmts = [],
+            i
+        ;
+        for (i = 0; i &lt; _result.statements.length; i += 1) {
+            stmts.push( new TinCan.Statement (_result.statements[i]) );
+        }
+        _result.statements = stmts;
 
-        return new StatementsResult(_result);
+        return new StatementsResult (_result);
     };
 }());
 
