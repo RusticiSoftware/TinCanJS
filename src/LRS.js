@@ -161,6 +161,7 @@ TinCan client library
             }
 
             if (typeof cfg.version !== "undefined") {
+                this.log("version: " + cfg.version);
                 this.version = cfg.version;
             }
         },
@@ -779,7 +780,7 @@ TinCan client library
         /**
         Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.
 
-        @method dropState
+        @method dropActivityProfile
         @param {String|null} key Key of activity profile to delete, or null for all
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
