@@ -26,12 +26,20 @@ TinCan client library
     /**
     @class TinCan.Statement
     @constructor
-    @param {Object} [options] Configuration used to initialize.
-        @param {Object} [options.actor] Actor of statement
-        @param {Object} [options.verb] Verb of statement
-        @param {Object} [options.object] Object of statement
+    @param {Object} [cfg] Configuration used to initialize.
+        @param {Object} [cfg.id] Statement ID
+        @param {TinCan.Agent} [cfg.actor] Actor of statement
+        @param {TinCan.Verb} [cfg.verb] Verb of statement
+        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Object of statement
+        @param {TinCan.Result} [cfg.result] Statement Result
+        @param {TinCan.Context} [cfg.context] Statement Context
+        @param {Object} [cfg.authority] Statement Authority
+        @param {Boolean} [cfg.voided] Whether the statement has been voided
+        @param {Boolean} [cfg.inProgress] Whether the statement is in progress
+    @param {Integer} [storeOriginal] Whether to store a JSON stringified version
+        of the original options object, pass number of spaces used for indent
     **/
-    var Statement = TinCan.Statement = function (cfg) {
+    var Statement = TinCan.Statement = function (cfg, storeOriginal) {
         this.log("constructor");
 
         /**
@@ -79,12 +87,14 @@ TinCan client library
         /**
         @property voided
         @type Boolean
+        @default false
         */
         this.voided = false;
 
         /**
         @property inProgress
         @type Boolean
+        @default false
         */
         this.inProgress = false;
 
@@ -99,6 +109,16 @@ TinCan client library
         @type Date
         */
         this.stored = null;
+
+        /**
+        @property _originalJSON
+        @type String
+        */
+        this._originalJSON = null;
+
+        if (storeOriginal) {
+            this._originalJSON = JSON.stringify(cfg, null, storeOriginal);
+        }
 
         this.init(cfg);
     };
@@ -116,10 +136,19 @@ TinCan client library
 
         /**
         @method init
-        @param {Object} [options] Configuration used to initialize
+        @param {Object} [options] Configuration used to initialize (see constructor)
         */
         init: function (cfg) {
             this.log("init");
+            var i,
+                directProps = [
+                    "stored",
+                    "timestamp",
+                    "inProgress",
+                    "voided"
+                ],
+                val
+            ;
 
             cfg = cfg || {};
 
@@ -135,6 +164,12 @@ TinCan client library
             }
             if (cfg.hasOwnProperty("target")) {
                 this.target = new TinCan.Activity (cfg.target);
+            }
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
             }
         },
 
