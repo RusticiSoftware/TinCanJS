@@ -227,14 +227,19 @@ TinCan client library
                     &quot;mbox&quot;,
                     &quot;name&quot;,
                     &quot;account&quot;
-                ]
+                ],
+                val
             ;
 
             cfg = cfg || {};
 
             for (i = 0; i &lt; directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
+                    val = cfg[directProps[i]];
+                    if (directProps[i] === &quot;mbox&quot; &amp;&amp; val.indexOf(&quot;mailto:&quot;) === -1) {
+                        val = &quot;mailto:&quot; + val;
+                    }
+                    this[directProps[i]] = val;
                 }
             }
         },

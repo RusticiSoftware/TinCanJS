@@ -503,30 +503,72 @@
             "is_constructor": 1,
             "params": [
                 {
-                    "name": "options",
+                    "name": "cfg",
                     "description": "Configuration used to initialize.",
                     "type": "Object",
                     "optional": true,
                     "props": [
                         {
+                            "name": "id",
+                            "description": "Statement ID",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
                             "name": "actor",
                             "description": "Actor of statement",
-                            "type": "Object",
+                            "type": "TinCan.Agent",
                             "optional": true
                         },
                         {
                             "name": "verb",
                             "description": "Verb of statement",
-                            "type": "Object",
+                            "type": "TinCan.Verb",
                             "optional": true
                         },
                         {
                             "name": "object",
                             "description": "Object of statement",
+                            "type": "TinCan.Activity|TinCan.Agent",
+                            "optional": true
+                        },
+                        {
+                            "name": "result",
+                            "description": "Statement Result",
+                            "type": "TinCan.Result",
+                            "optional": true
+                        },
+                        {
+                            "name": "context",
+                            "description": "Statement Context",
+                            "type": "TinCan.Context",
+                            "optional": true
+                        },
+                        {
+                            "name": "authority",
+                            "description": "Statement Authority",
                             "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "voided",
+                            "description": "Whether the statement has been voided",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "inProgress",
+                            "description": "Whether the statement is in progress",
+                            "type": "Boolean",
                             "optional": true
                         }
                     ]
+                },
+                {
+                    "name": "storeOriginal",
+                    "description": "Whether to store a JSON stringified version\n    of the original options object, pass number of spaces used for indent",
+                    "type": "Integer",
+                    "optional": true
                 }
             ]
         },
@@ -944,7 +986,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 106,
+            "line": 111,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -969,7 +1011,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 144,
+            "line": 149,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1436,14 +1478,16 @@
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
-                            "optional": true
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "response",
+                                    "description": "Receives a StatementsResult argument",
+                                    "type": "TinCan.StatementsResult"
+                                }
+                            ]
                         }
                     ]
-                },
-                {
-                    "name": "Receives",
-                    "description": "a StatementsResult argument",
-                    "type": "TinCan.StatementsResult"
                 }
             ],
             "return": {
@@ -1456,7 +1500,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 539,
+            "line": 538,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -1506,7 +1550,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 591,
+            "line": 590,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -1551,7 +1595,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 647,
+            "line": 646,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -1597,7 +1641,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 695,
+            "line": 694,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -1647,7 +1691,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 739,
+            "line": 738,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -1682,7 +1726,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 780,
+            "line": 779,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -1717,7 +1761,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 822,
+            "line": 821,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -2005,7 +2049,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 37,
+            "line": 45,
             "itemtype": "property",
             "name": "id",
             "type": "String",
@@ -2015,7 +2059,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 43,
+            "line": 51,
             "itemtype": "property",
             "name": "actor",
             "type": "Object",
@@ -2025,7 +2069,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 49,
+            "line": 57,
             "itemtype": "property",
             "name": "verb",
             "type": "Object",
@@ -2035,7 +2079,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 55,
+            "line": 63,
             "itemtype": "property",
             "name": "object",
             "type": "Object",
@@ -2045,7 +2089,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 61,
+            "line": 69,
             "itemtype": "property",
             "name": "result",
             "type": "Object",
@@ -2055,7 +2099,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 67,
+            "line": 75,
             "itemtype": "property",
             "name": "context",
             "type": "Object",
@@ -2065,7 +2109,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 73,
+            "line": 81,
             "itemtype": "property",
             "name": "authority",
             "type": "Object",
@@ -2075,27 +2119,29 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 79,
+            "line": 87,
             "itemtype": "property",
             "name": "voided",
             "type": "Boolean",
+            "default": "false",
             "class": "TinCan.Statement",
             "module": "TinCan",
             "submodule": "TinCan.Statement"
         },
         {
             "file": "src/Statement.js",
-            "line": 85,
+            "line": 94,
             "itemtype": "property",
             "name": "inProgress",
             "type": "Boolean",
+            "default": "false",
             "class": "TinCan.Statement",
             "module": "TinCan",
             "submodule": "TinCan.Statement"
         },
         {
             "file": "src/Statement.js",
-            "line": 91,
+            "line": 101,
             "itemtype": "property",
             "name": "timestamp",
             "type": "Date",
@@ -2105,7 +2151,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 97,
+            "line": 107,
             "itemtype": "property",
             "name": "stored",
             "type": "Date",
@@ -2115,7 +2161,17 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 107,
+            "line": 113,
+            "itemtype": "property",
+            "name": "_originalJSON",
+            "type": "String",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 127,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Statement",
@@ -2124,7 +2180,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 112,
+            "line": 132,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Statement",
@@ -2133,13 +2189,13 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 117,
+            "line": 137,
             "itemtype": "method",
             "name": "init",
             "params": [
                 {
                     "name": "options",
-                    "description": "Configuration used to initialize",
+                    "description": "Configuration used to initialize (see constructor)",
                     "type": "Object",
                     "optional": true
                 }
@@ -2150,7 +2206,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 141,
+            "line": 176,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -2842,6 +2898,32 @@
             "submodule": "TinCan.Utils"
         },
         {
+            "file": "src/Utils.js",
+            "line": 49,
+            "itemtype": "method",
+            "name": "getLangDictionaryValue",
+            "params": [
+                {
+                    "name": "prop",
+                    "description": "Property name storing the dictionary",
+                    "type": "String"
+                },
+                {
+                    "name": "lang",
+                    "description": "Language to return",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "\n\nIntended to be inherited by objects with properties that store\ndisplay values in a language based \"dictionary\"",
+                "type": "String"
+            },
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
             "file": "src/Verb.js",
             "line": 33,
             "itemtype": "property",
@@ -2853,7 +2935,17 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 42,
+            "line": 39,
+            "itemtype": "property",
+            "name": "display",
+            "type": "Object",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 48,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Verb",
@@ -2862,7 +2954,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 47,
+            "line": 53,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Verb",
@@ -2871,7 +2963,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 52,
+            "line": 58,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -2888,7 +2980,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 80,
+            "line": 95,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -2913,9 +3005,16 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 104,
+            "line": 121,
             "itemtype": "method",
             "name": "fromJSON",
+            "params": [
+                {
+                    "name": "verbJSON",
+                    "description": "String of JSON representing the verb",
+                    "type": "String"
+                }
+            ],
             "return": {
                 "description": "Verb",
                 "type": "Object"

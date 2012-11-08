@@ -225,7 +225,7 @@ TinCan client library
             i
         ;
         for (i = 0; i &lt; _result.statements.length; i += 1) {
-            stmts.push( new TinCan.Statement (_result.statements[i]) );
+            stmts.push( new TinCan.Statement (_result.statements[i], 4) );
         }
         _result.statements = stmts;
 

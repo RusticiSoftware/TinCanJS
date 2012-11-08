@@ -180,6 +180,35 @@ TinCan client library
                     return v.toString(16);
                 }
             );
+        },
+
+        &#x2F;**
+        @method getLangDictionaryValue
+        @param {String} prop Property name storing the dictionary
+        @param {String} [lang] Language to return
+        @return {String}
+
+        Intended to be inherited by objects with properties that store
+        display values in a language based &quot;dictionary&quot;
+        *&#x2F;
+        getLangDictionaryValue: function (prop, lang) {
+            var langDict = this[prop],
+                key;
+
+            if (typeof lang !== &quot;undefined&quot; &amp;&amp; typeof langDict[lang] !== &quot;undefined&quot;) {
+                return langDict[lang];
+            }
+            if (typeof langDict.und !== &quot;undefined&quot;) {
+                return langDict.und;
+            }
+            if (typeof langDict[&quot;en-US&quot;] !== &quot;undefined&quot;) {
+                return langDict[&quot;en-US&quot;];
+            }
+            for (key in langDict) {
+                return langDict[key];
+            }
+
+            return &quot;&quot;;
         }
     };
 }());
