@@ -470,7 +470,7 @@ TinCan client library
                 @param {Boolean} [cfg.params.sparse] Get sparse results
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
             @param {Function} [cfg.callback] Callback to execute on completion
-                @param {TinCan.StatementsResult} Receives a StatementsResult argument
+                @param {TinCan.StatementsResult} cfg.callback.response Receives a StatementsResult argument
         @return {TinCan.StatementsResult} StatementsResult object if no callback configured
         */
         queryStatements: function (cfg) {
@@ -521,12 +521,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (xhr) {
-                    this.log("queryStatements - callbackWrapper");
                     var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
 
                     cfg.callback(stResult);
                 };
-                requestCfg.callback = cfg.callback;
+                requestCfg.callback = callbackWrapper;
             }
 
             requestResult = this.sendRequest(requestCfg);
