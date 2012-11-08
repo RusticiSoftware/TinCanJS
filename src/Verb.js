@@ -36,13 +36,19 @@ TinCan client library
         */
         this.id = null;
 
+        /**
+        @property display
+        @type Object
+        */
+        this.display = null;
+
         this.init(cfg);
     };
     Verb.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Verb',
+        LOG_SRC: "Verb",
 
         /**
         @method log
@@ -57,12 +63,16 @@ TinCan client library
             this.log("init");
             var i,
                 directProps = [
-                    "id"
+                    "id",
+                    "display"
                 ]
             ;
 
             if (typeof cfg === "string") {
                 this.id = cfg;
+                this.display = {
+                    und: this.id
+                };
             }
             else {
                 cfg = cfg || {};
@@ -75,6 +85,11 @@ TinCan client library
             }
 
             // TODO: check for acceptable verb list in 0.90
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+            return this.getLangDictionaryValue("display", lang);
         },
 
         /**
@@ -98,11 +113,14 @@ TinCan client library
             }
 
             return result;
-        }
+        },
+
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
 
     /**
     @method fromJSON
+    @param {String} verbJSON String of JSON representing the verb
     @return {Object} Verb
     @static
     */
