@@ -31,13 +31,6 @@ TinCan client library
         this.log("constructor");
 
         /**
-        @property objectType
-        @type String
-        @default Agent
-        */
-        this.objectType = "Agent";
-
-        /**
         @property name
         @type String
         */
@@ -63,13 +56,27 @@ TinCan client library
 
         /**
         @property account
-        @type Array
+        @type TinCan.AgentAccount
         */
         this.account = null;
+
+        /**
+        @property degraded
+        @type Boolean
+        @default false
+        */
+        this.degraded = false;
 
         this.init(cfg);
     };
     Agent.prototype = {
+        /**
+        @property objectType
+        @type String
+        @default Agent
+        */
+        objectType: "Agent",
+
         /**
         @property LOG_SRC
         */
@@ -88,14 +95,79 @@ TinCan client library
             this.log("init");
             var i,
                 directProps = [
-                    "mbox",
                     "name",
-                    "account"
+                    "mbox",
+                    "mbox_sha1sum",
+                    "openid"
                 ],
                 val
             ;
 
             cfg = cfg || {};
+
+            // handle .9 split names and array properties into single interface
+            if (typeof cfg.lastName !== "undefined" || typeof cfg.firstName !== "undefined") {
+                if (cfg.lastName.length > 1 || cfg.firstName.length > 1) {
+                    this.degraded = true;
+                }
+
+                cfg.name = cfg.firstName[0];
+                if (cfg.name !== "") {
+                    cfg.name += " ";
+                }
+                cfg.name += cfg.lastName[0];
+            } else if (typeof cfg.familyName !== "undefined" || typeof cfg.givenName !== "undefined") {
+                if (cfg.familyName.length > 1 || cfg.givenName.length > 1) {
+                    this.degraded = true;
+                }
+
+                cfg.name = cfg.givenName[0];
+                if (cfg.name !== "") {
+                    cfg.name += " ";
+                }
+                cfg.name += cfg.familyName[0];
+            }
+
+            if (typeof cfg.name === "object") {
+                if (cfg.name.length > 1) {
+                    this.degraded = true;
+                }
+                cfg.name = cfg.name[0];
+            }
+            if (typeof cfg.mbox === "object") {
+                if (cfg.mbox.length > 1) {
+                    this.degraded = true;
+                }
+                cfg.mbox = cfg.mbox[0];
+            }
+            if (typeof cfg.mbox_sha1sum === "object") {
+                if (cfg.mbox_sha1sum.length > 1) {
+                    this.degraded = true;
+                }
+                cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
+            }
+            if (typeof cfg.openid === "object") {
+                if (cfg.openid.length > 1) {
+                    this.degraded = true;
+                }
+                cfg.openid = cfg.openid[0];
+            }
+            if (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
+                if (cfg.account.length === 0) {
+                    delete cfg.account;
+                }
+                else {
+                    if (cfg.account.length > 1) {
+                        this.degraded = true;
+                    }
+                    cfg.account = cfg.account[0];
+                }
+            }
+
+            if (cfg.hasOwnProperty("account")) {
+                // TODO: check to see if already this type
+                this.account = new TinCan.AgentAccount (cfg.account);
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -106,6 +178,24 @@ TinCan client library
                     this[directProps[i]] = val;
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+
+            if (this.name !== null) {
+                return this.name;
+            }
+            this.log("toString after name");
+            if (this.mbox !== null) {
+                return this.mbox.replace('mailto:','');
+            }
+            this.log("toString after mbox");
+            if (this.account !== null) {
+                return this.account.name;
+            }
+
+            return "";
         },
 
         /**

@@ -18,47 +18,37 @@
 TinCan client library
 
 @module TinCan
-@submodule TinCan.Score
+@submodule TinCan.InteractionComponent
 **/
 (function () {
     "use strict";
 
     /**
-    @class TinCan.Score
+    @class TinCan.InteractionComponent
     @constructor
     */
-    var Score = TinCan.Score = function (cfg) {
+    var InteractionComponent = TinCan.InteractionComponent = function (cfg) {
         this.log("constructor");
 
         /**
-        @property scaled
+        @property id
         @type String
         */
-        this.scaled = null;
+        this.id = null;
 
         /**
-        @property raw
-        @type String
+        @property description
+        @type Object
         */
-        this.raw = null;
+        this.description = null;
 
-        /**
-        @property min
-        @type String
-        */
-        this.min = null;
-
-        /**
-        @property max
-        @type String
-        */
-        this.max = null;
+        this.init(cfg);
     };
-    Score.prototype = {
+    InteractionComponent.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Score',
+        LOG_SRC: 'InteractionComponent',
 
         /**
         @method log
@@ -71,13 +61,10 @@ TinCan client library
         */
         init: function (cfg) {
             this.log("init");
-
             var i,
                 directProps = [
-                    "scaled",
-                    "raw",
-                    "min",
-                    "max"
+                    "id",
+                    "description"
                 ]
             ;
 
@@ -88,18 +75,8 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
-        }
-    };
+        },
 
-    /**
-    @method fromJSON
-    @return {Object} Score
-    @static
-    */
-    Score.fromJSON = function (scoreJSON) {
-        Score.prototype.log("fromJSON");
-        var _score = JSON.parse(scoreJSON);
-
-        return new Score(_score);
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
 }());

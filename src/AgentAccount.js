@@ -18,47 +18,37 @@
 TinCan client library
 
 @module TinCan
-@submodule TinCan.Score
+@submodule TinCan.AgentAccount
 **/
 (function () {
     "use strict";
 
     /**
-    @class TinCan.Score
+    @class TinCan.AgentAccount
     @constructor
     */
-    var Score = TinCan.Score = function (cfg) {
+    var AgentAccount = TinCan.AgentAccount = function (cfg) {
         this.log("constructor");
 
         /**
-        @property scaled
+        @property homePage
         @type String
         */
-        this.scaled = null;
+        this.homePage = null;
 
         /**
-        @property raw
+        @property name
         @type String
         */
-        this.raw = null;
+        this.name = null;
 
-        /**
-        @property min
-        @type String
-        */
-        this.min = null;
-
-        /**
-        @property max
-        @type String
-        */
-        this.max = null;
+        this.init(cfg);
     };
-    Score.prototype = {
+    AgentAccount.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Score',
+        LOG_SRC: 'AgentAccount',
 
         /**
         @method log
@@ -71,17 +61,23 @@ TinCan client library
         */
         init: function (cfg) {
             this.log("init");
-
             var i,
                 directProps = [
-                    "scaled",
-                    "raw",
-                    "min",
-                    "max"
-                ]
+                    "name",
+                    "homePage"
+                ],
+                val
             ;
 
             cfg = cfg || {};
+
+            // handle .9 name changes
+            if (typeof cfg.accountServiceHomePage !== "undefined") {
+                cfg.homePage = cfg.accountServiceHomePage;
+            }
+            if (typeof cfg.accountName !== "undefined") {
+                cfg.name = cfg.accountName;
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -89,17 +85,5 @@ TinCan client library
                 }
             }
         }
-    };
-
-    /**
-    @method fromJSON
-    @return {Object} Score
-    @static
-    */
-    Score.fromJSON = function (scoreJSON) {
-        Score.prototype.log("fromJSON");
-        var _score = JSON.parse(scoreJSON);
-
-        return new Score(_score);
     };
 }());

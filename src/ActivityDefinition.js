@@ -49,16 +49,52 @@ TinCan client library
         this.type = null;
 
         /**
+        @property extensions
+        @type Object
+        */
+        this.extensions = null;
+
+        /**
         @property interactionType
         @type Object
         */
         this.interactionType = null;
 
         /**
-        @property extensions
-        @type Object
+        @property correctResponsesPattern
+        @type Array
         */
-        this.extensions = null;
+        this.correctResponsesPattern = null;
+
+        /**
+        @property choices
+        @type Array
+        */
+        this.choices = null;
+
+        /**
+        @property scale
+        @type Array
+        */
+        this.scale = null;
+
+        /**
+        @property source
+        @type Array
+        */
+        this.source = null;
+
+        /**
+        @property target
+        @type Array
+        */
+        this.target = null;
+
+        /**
+        @property steps
+        @type Array
+        */
+        this.steps = null;
 
         this.init(cfg);
     };
@@ -80,7 +116,50 @@ TinCan client library
         init: function (cfg) {
             this.log("init");
 
+            var i,
+                directProps = [
+                    "name",
+                    "description",
+                    "type",
+                    "interactionType",
+                    "extensions"
+                ]
+            ;
+
             cfg = cfg || {};
+
+            // TODO: verify type is URI?
+            // TODO: verify interaction types and formats
+            // TODO: handle creation of interaction components
+
+            if (cfg.hasOwnProperty("definition")) {
+                // TODO: check to see if already this type
+                this.definition = new TinCan.ActivityDefinition (cfg.definition);
+            }
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+        },
+
+        /**
+        @method toString
+        @return {String} String representation of the definition
+        */
+        toString: function (lang) {
+            this.log("toString");
+
+            if (this.name !== null) {
+                return this.getLangDictionaryValue("name", lang);
+            }
+
+            if (this.description !== null) {
+                return this.getLangDictionaryValue("description", lang);
+            }
+
+            return "";
         },
 
         /**
@@ -110,7 +189,9 @@ TinCan client library
             }
 
             return result;
-        }
+        },
+
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
 
     /**

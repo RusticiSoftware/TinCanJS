@@ -86,7 +86,28 @@ TinCan client library
         init: function (cfg) {
             this.log("init");
 
+            var i,
+                directProps = [
+                    "completion",
+                    "duration",
+                    "extensions",
+                    "response",
+                    "success"
+                ]
+            ;
+
             cfg = cfg || {};
+
+            if (cfg.hasOwnProperty("score")) {
+                // TODO: check to see if already this type
+                this.score = new TinCan.Score (cfg.score);
+            }
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
         }
     };
 

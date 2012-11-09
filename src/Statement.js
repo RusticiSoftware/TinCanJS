@@ -30,7 +30,8 @@ TinCan client library
         @param {Object} [cfg.id] Statement ID
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Object of statement
+        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Alias for 'target'
+        @param {TinCan.Activity|TinCan.Agent} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {Object} [cfg.authority] Statement Authority
@@ -61,10 +62,10 @@ TinCan client library
         this.verb = null;
 
         /**
-        @property object
+        @property target
         @type Object
         */
-        this.object = null;
+        this.target = null;
 
         /**
         @property result
@@ -77,6 +78,18 @@ TinCan client library
         @type Object
         */
         this.context = null;
+
+        /**
+        @property timestamp
+        @type Date
+        */
+        this.timestamp = null;
+
+        /**
+        @property stored
+        @type Date
+        */
+        this.stored = null;
 
         /**
         @property authority
@@ -92,32 +105,28 @@ TinCan client library
         this.voided = false;
 
         /**
+        @property degraded
+        @type Boolean
+        @default false
+        */
+        this.degraded = false;
+
+        /**
         @property inProgress
         @type Boolean
         @default false
+        @deprecated
         */
         this.inProgress = false;
 
         /**
-        @property timestamp
-        @type Date
-        */
-        this.timestamp = null;
-
-        /**
-        @property stored
-        @type Date
-        */
-        this.stored = null;
-
-        /**
-        @property _originalJSON
+        @property originalJSON
         @type String
         */
-        this._originalJSON = null;
+        this.originalJSON = null;
 
         if (storeOriginal) {
-            this._originalJSON = JSON.stringify(cfg, null, storeOriginal);
+            this.originalJSON = JSON.stringify(cfg, null, storeOriginal);
         }
 
         this.init(cfg);
@@ -156,14 +165,27 @@ TinCan client library
                 this.id = TinCan.Utils.getUUID();
             }
 
+            if (cfg.hasOwnProperty("object")) {
+                cfg.target = cfg.object;
+            }
+
             if (cfg.hasOwnProperty("actor")) {
+                // TODO: check to see if already this type
                 this.actor = new TinCan.Agent (cfg.actor);
             }
             if (cfg.hasOwnProperty("verb")) {
+                // TODO: check to see if already this type
                 this.verb = new TinCan.Verb (cfg.verb);
             }
             if (cfg.hasOwnProperty("target")) {
+                // TODO: check to see if already this type,
+                //       need to look at object type rather
+                //       than assuming Activity
                 this.target = new TinCan.Activity (cfg.target);
+            }
+            if (cfg.hasOwnProperty("result")) {
+                // TODO: check to see if already this type
+                this.result = new TinCan.Result (cfg.result);
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -171,6 +193,15 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        /**
+        @method toString
+        @return {String} String representation of the statement
+        */
+        toString: function (lang) {
+            this.log("toString");
+            return this.actor.toString() + " " + this.verb.toString() + " " + this.target.toString();
         },
 
         /**

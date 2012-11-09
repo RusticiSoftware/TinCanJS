@@ -87,6 +87,10 @@ TinCan client library
             // TODO: check for acceptable verb list in 0.90
         },
 
+        /**
+        @method toString
+        @return {String} String representation of the verb
+        */
         toString: function (lang) {
             this.log("toString");
             return this.getLangDictionaryValue("display", lang);

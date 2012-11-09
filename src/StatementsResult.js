@@ -84,6 +84,7 @@ TinCan client library
     */
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log("fromJSON");
+        // TODO: protect JSON call from bad JSON
         var _result = JSON.parse(resultJSON),
             stmts = [],
             i

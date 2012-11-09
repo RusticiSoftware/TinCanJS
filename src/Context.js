@@ -52,7 +52,11 @@ TinCan client library
         @property contextActivities
         @type Object
         */
-        this.contextActivities = null;
+        this.contextActivities = {
+            parent: null,
+            grouping: null,
+            other: null
+        };
 
         /**
         @property revision
@@ -104,7 +108,29 @@ TinCan client library
         init: function (cfg) {
             this.log("init");
 
+            var i,
+                directProps = [
+                    "registration",
+                    "instructor",
+                    "team",
+                    "revision",
+                    "platform",
+                    "language",
+                    "statement",
+                    "extensions"
+                ],
+                val
+            ;
+
             cfg = cfg || {};
+
+            // TODO: handle contextActivities
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
         }
     };
 

@@ -77,11 +77,38 @@ TinCan client library
 
             cfg = cfg || {};
 
+            if (cfg.hasOwnProperty("definition")) {
+                // TODO: check to see if already this type
+                this.definition = new TinCan.ActivityDefinition (cfg.definition);
+            }
+
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        /**
+        @method toString
+        @return {String} String representation of the activity
+        */
+        toString: function (lang) {
+            this.log("toString");
+            var defString = "";
+
+            if (this.definition !== null) {
+                defString = this.definition.toString();
+                if (defString !== "") {
+                    return defString;
+                }
+            }
+
+            if (this.id !== null) {
+                return this.id;
+            }
+
+            return "";
         },
 
         /**
