@@ -5,7 +5,10 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan.Activity",
         "TinCan.ActivityDefinition",
         "TinCan.Agent",
+        "TinCan.AgentAccount",
         "TinCan.Context",
+        "TinCan.Group",
+        "TinCan.InteractionComponent",
         "TinCan.LRS",
         "TinCan.Result",
         "TinCan.Score",
@@ -19,7 +22,10 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan.Activity",
         "TinCan.ActivityDefinition",
         "TinCan.Agent",
+        "TinCan.AgentAccount",
         "TinCan.Context",
+        "TinCan.Group",
+        "TinCan.InteractionComponent",
         "TinCan.LRS",
         "TinCan.Result",
         "TinCan.Score",
@@ -51,8 +57,23 @@ YUI.add("yuidoc-meta", function(Y) {
             "description": "TinCan client library"
         },
         {
+            "displayName": "TinCan.AgentAccount",
+            "name": "TinCan.AgentAccount",
+            "description": "TinCan client library"
+        },
+        {
             "displayName": "TinCan.Context",
             "name": "TinCan.Context",
+            "description": "TinCan client library"
+        },
+        {
+            "displayName": "TinCan.Group",
+            "name": "TinCan.Group",
+            "description": "TinCan client library"
+        },
+        {
+            "displayName": "TinCan.InteractionComponent",
+            "name": "TinCan.InteractionComponent",
             "description": "TinCan client library"
         },
         {

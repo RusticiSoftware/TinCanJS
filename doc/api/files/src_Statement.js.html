@@ -49,7 +49,13 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -77,7 +83,13 @@
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -166,7 +178,8 @@ TinCan client library
         @param {Object} [cfg.id] Statement ID
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Object of statement
+        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Alias for &#x27;target&#x27;
+        @param {TinCan.Activity|TinCan.Agent} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {Object} [cfg.authority] Statement Authority
@@ -197,10 +210,10 @@ TinCan client library
         this.verb = null;
 
         &#x2F;**
-        @property object
+        @property target
         @type Object
         *&#x2F;
-        this.object = null;
+        this.target = null;
 
         &#x2F;**
         @property result
@@ -213,6 +226,18 @@ TinCan client library
         @type Object
         *&#x2F;
         this.context = null;
+
+        &#x2F;**
+        @property timestamp
+        @type Date
+        *&#x2F;
+        this.timestamp = null;
+
+        &#x2F;**
+        @property stored
+        @type Date
+        *&#x2F;
+        this.stored = null;
 
         &#x2F;**
         @property authority
@@ -228,32 +253,28 @@ TinCan client library
         this.voided = false;
 
         &#x2F;**
+        @property degraded
+        @type Boolean
+        @default false
+        *&#x2F;
+        this.degraded = false;
+
+        &#x2F;**
         @property inProgress
         @type Boolean
         @default false
+        @deprecated
         *&#x2F;
         this.inProgress = false;
 
         &#x2F;**
-        @property timestamp
-        @type Date
-        *&#x2F;
-        this.timestamp = null;
-
-        &#x2F;**
-        @property stored
-        @type Date
-        *&#x2F;
-        this.stored = null;
-
-        &#x2F;**
-        @property _originalJSON
+        @property originalJSON
         @type String
         *&#x2F;
-        this._originalJSON = null;
+        this.originalJSON = null;
 
         if (storeOriginal) {
-            this._originalJSON = JSON.stringify(cfg, null, storeOriginal);
+            this.originalJSON = JSON.stringify(cfg, null, storeOriginal);
         }
 
         this.init(cfg);
@@ -292,14 +313,27 @@ TinCan client library
                 this.id = TinCan.Utils.getUUID();
             }
 
+            if (cfg.hasOwnProperty(&quot;object&quot;)) {
+                cfg.target = cfg.object;
+            }
+
             if (cfg.hasOwnProperty(&quot;actor&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
                 this.actor = new TinCan.Agent (cfg.actor);
             }
             if (cfg.hasOwnProperty(&quot;verb&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
                 this.verb = new TinCan.Verb (cfg.verb);
             }
             if (cfg.hasOwnProperty(&quot;target&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type,
+                &#x2F;&#x2F;       need to look at object type rather
+                &#x2F;&#x2F;       than assuming Activity
                 this.target = new TinCan.Activity (cfg.target);
+            }
+            if (cfg.hasOwnProperty(&quot;result&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
+                this.result = new TinCan.Result (cfg.result);
             }
 
             for (i = 0; i &lt; directProps.length; i += 1) {
@@ -307,6 +341,15 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        &#x2F;**
+        @method toString
+        @return {String} String representation of the statement
+        *&#x2F;
+        toString: function (lang) {
+            this.log(&quot;toString&quot;);
+            return this.actor.toString() + &quot; &quot; + this.verb.toString() + &quot; &quot; + this.target.toString();
         },
 
         &#x2F;**

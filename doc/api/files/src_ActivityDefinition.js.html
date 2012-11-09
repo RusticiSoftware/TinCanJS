@@ -49,7 +49,13 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -77,7 +83,13 @@
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -185,16 +197,52 @@ TinCan client library
         this.type = null;
 
         &#x2F;**
+        @property extensions
+        @type Object
+        *&#x2F;
+        this.extensions = null;
+
+        &#x2F;**
         @property interactionType
         @type Object
         *&#x2F;
         this.interactionType = null;
 
         &#x2F;**
-        @property extensions
-        @type Object
+        @property correctResponsesPattern
+        @type Array
         *&#x2F;
-        this.extensions = null;
+        this.correctResponsesPattern = null;
+
+        &#x2F;**
+        @property choices
+        @type Array
+        *&#x2F;
+        this.choices = null;
+
+        &#x2F;**
+        @property scale
+        @type Array
+        *&#x2F;
+        this.scale = null;
+
+        &#x2F;**
+        @property source
+        @type Array
+        *&#x2F;
+        this.source = null;
+
+        &#x2F;**
+        @property target
+        @type Array
+        *&#x2F;
+        this.target = null;
+
+        &#x2F;**
+        @property steps
+        @type Array
+        *&#x2F;
+        this.steps = null;
 
         this.init(cfg);
     };
@@ -216,7 +264,50 @@ TinCan client library
         init: function (cfg) {
             this.log(&quot;init&quot;);
 
+            var i,
+                directProps = [
+                    &quot;name&quot;,
+                    &quot;description&quot;,
+                    &quot;type&quot;,
+                    &quot;interactionType&quot;,
+                    &quot;extensions&quot;
+                ]
+            ;
+
             cfg = cfg || {};
+
+            &#x2F;&#x2F; TODO: verify type is URI?
+            &#x2F;&#x2F; TODO: verify interaction types and formats
+            &#x2F;&#x2F; TODO: handle creation of interaction components
+
+            if (cfg.hasOwnProperty(&quot;definition&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
+                this.definition = new TinCan.ActivityDefinition (cfg.definition);
+            }
+
+            for (i = 0; i &lt; directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+        },
+
+        &#x2F;**
+        @method toString
+        @return {String} String representation of the definition
+        *&#x2F;
+        toString: function (lang) {
+            this.log(&quot;toString&quot;);
+
+            if (this.name !== null) {
+                return this.getLangDictionaryValue(&quot;name&quot;, lang);
+            }
+
+            if (this.description !== null) {
+                return this.getLangDictionaryValue(&quot;description&quot;, lang);
+            }
+
+            return &quot;&quot;;
         },
 
         &#x2F;**
@@ -246,7 +337,9 @@ TinCan client library
             }
 
             return result;
-        }
+        },
+
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
 
     &#x2F;**

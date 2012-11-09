@@ -49,7 +49,13 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -77,7 +83,13 @@
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -167,13 +179,6 @@ TinCan client library
         this.log(&quot;constructor&quot;);
 
         &#x2F;**
-        @property objectType
-        @type String
-        @default Agent
-        *&#x2F;
-        this.objectType = &quot;Agent&quot;;
-
-        &#x2F;**
         @property name
         @type String
         *&#x2F;
@@ -199,13 +204,27 @@ TinCan client library
 
         &#x2F;**
         @property account
-        @type Array
+        @type TinCan.AgentAccount
         *&#x2F;
         this.account = null;
+
+        &#x2F;**
+        @property degraded
+        @type Boolean
+        @default false
+        *&#x2F;
+        this.degraded = false;
 
         this.init(cfg);
     };
     Agent.prototype = {
+        &#x2F;**
+        @property objectType
+        @type String
+        @default Agent
+        *&#x2F;
+        objectType: &quot;Agent&quot;,
+
         &#x2F;**
         @property LOG_SRC
         *&#x2F;
@@ -224,14 +243,79 @@ TinCan client library
             this.log(&quot;init&quot;);
             var i,
                 directProps = [
-                    &quot;mbox&quot;,
                     &quot;name&quot;,
-                    &quot;account&quot;
+                    &quot;mbox&quot;,
+                    &quot;mbox_sha1sum&quot;,
+                    &quot;openid&quot;
                 ],
                 val
             ;
 
             cfg = cfg || {};
+
+            &#x2F;&#x2F; handle .9 split names and array properties into single interface
+            if (typeof cfg.lastName !== &quot;undefined&quot; || typeof cfg.firstName !== &quot;undefined&quot;) {
+                if (cfg.lastName.length &gt; 1 || cfg.firstName.length &gt; 1) {
+                    this.degraded = true;
+                }
+
+                cfg.name = cfg.firstName[0];
+                if (cfg.name !== &quot;&quot;) {
+                    cfg.name += &quot; &quot;;
+                }
+                cfg.name += cfg.lastName[0];
+            } else if (typeof cfg.familyName !== &quot;undefined&quot; || typeof cfg.givenName !== &quot;undefined&quot;) {
+                if (cfg.familyName.length &gt; 1 || cfg.givenName.length &gt; 1) {
+                    this.degraded = true;
+                }
+
+                cfg.name = cfg.givenName[0];
+                if (cfg.name !== &quot;&quot;) {
+                    cfg.name += &quot; &quot;;
+                }
+                cfg.name += cfg.familyName[0];
+            }
+
+            if (typeof cfg.name === &quot;object&quot;) {
+                if (cfg.name.length &gt; 1) {
+                    this.degraded = true;
+                }
+                cfg.name = cfg.name[0];
+            }
+            if (typeof cfg.mbox === &quot;object&quot;) {
+                if (cfg.mbox.length &gt; 1) {
+                    this.degraded = true;
+                }
+                cfg.mbox = cfg.mbox[0];
+            }
+            if (typeof cfg.mbox_sha1sum === &quot;object&quot;) {
+                if (cfg.mbox_sha1sum.length &gt; 1) {
+                    this.degraded = true;
+                }
+                cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
+            }
+            if (typeof cfg.openid === &quot;object&quot;) {
+                if (cfg.openid.length &gt; 1) {
+                    this.degraded = true;
+                }
+                cfg.openid = cfg.openid[0];
+            }
+            if (typeof cfg.account === &quot;object&quot; &amp;&amp; typeof cfg.account.homePage === &quot;undefined&quot;) {
+                if (cfg.account.length === 0) {
+                    delete cfg.account;
+                }
+                else {
+                    if (cfg.account.length &gt; 1) {
+                        this.degraded = true;
+                    }
+                    cfg.account = cfg.account[0];
+                }
+            }
+
+            if (cfg.hasOwnProperty(&quot;account&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
+                this.account = new TinCan.AgentAccount (cfg.account);
+            }
 
             for (i = 0; i &lt; directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
@@ -242,6 +326,24 @@ TinCan client library
                     this[directProps[i]] = val;
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log(&quot;toString&quot;);
+
+            if (this.name !== null) {
+                return this.name;
+            }
+            this.log(&quot;toString after name&quot;);
+            if (this.mbox !== null) {
+                return this.mbox.replace(&#x27;mailto:&#x27;,&#x27;&#x27;);
+            }
+            this.log(&quot;toString after mbox&quot;);
+            if (this.account !== null) {
+                return this.account.name;
+            }
+
+            return &quot;&quot;;
         },
 
         &#x2F;**

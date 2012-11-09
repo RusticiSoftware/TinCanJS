@@ -49,7 +49,13 @@
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -77,7 +83,13 @@
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
+                <li><a href="..&#x2F;modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
                 <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
             
@@ -295,6 +307,20 @@
                                 
 
                                 <div class="param-description">
+                                    <p>Alias for 'target'</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[target]</code>
+                                    <span class="type"><a href="../classes/TinCan.Activity.html" class="crosslink">TinCan.Activity</a> | <a href="../classes/TinCan.Agent.html" class="crosslink">TinCan.Agent</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
                                     <p>Object of statement</p>
                                 </div>
 
@@ -449,6 +475,13 @@
                                 
                             </li>
                         
+                            <li class="index-item method">
+                                <a href="#method_toString">toString</a>
+
+                                
+                                
+                            </li>
+                        
                     </ul>
                 </div>
             
@@ -458,13 +491,6 @@
                     <h3>Properties</h3>
 
                     <ul class="index-list properties">
-                        
-                            <li class="index-item property">
-                                <a href="#property__originalJSON">_originalJSON</a>
-
-                                
-                                
-                            </li>
                         
                             <li class="index-item property">
                                 <a href="#property_actor">actor</a>
@@ -488,16 +514,25 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_id">id</a>
+                                <a href="#property_degraded">degraded</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property">
+                                <a href="#property_id">id</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property deprecated">
                                 <a href="#property_inProgress">inProgress</a>
 
                                 
+                                
+                                    <span class="flag deprecated">deprecated</span>
                                 
                             </li>
                         
@@ -509,7 +544,7 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_object">object</a>
+                                <a href="#property_originalJSON">originalJSON</a>
 
                                 
                                 
@@ -524,6 +559,13 @@
                         
                             <li class="index-item property">
                                 <a href="#property_stored">stored</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_target">target</a>
 
                                 
                                 
@@ -606,7 +648,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l176"><code>src&#x2F;Statement.js:176</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l207"><code>src&#x2F;Statement.js:207</code></a>
         
         </p>
 
@@ -712,7 +754,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l137"><code>src&#x2F;Statement.js:137</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l146"><code>src&#x2F;Statement.js:146</code></a>
         
         </p>
 
@@ -790,7 +832,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l132"><code>src&#x2F;Statement.js:132</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l141"><code>src&#x2F;Statement.js:141</code></a>
         
         </p>
 
@@ -812,17 +854,22 @@
 </div>
 
                 
-            </div>
-        
+                    <div id="method_toString" class="method item">
+    <h3 class="name"><code>toString</code></h3>
 
-        
-            <div id="properties" class="api-class-tabpanel">
-                <h2 class="off-left">Properties</h2>
+    
+        <span class="paren">()</span>
+    
 
-                
-                    <div id="property__originalJSON" class="property item">
-    <h3 class="name"><code>_originalJSON</code></h3>
-    <span class="type">String</span>
+    
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
+    
+
+    
+
+    
 
     
 
@@ -843,9 +890,10 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l113"><code>src&#x2F;Statement.js:113</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l198"><code>src&#x2F;Statement.js:198</code></a>
         
         </p>
+
 
         
 
@@ -859,9 +907,30 @@
     
 
     
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    String representation of the statement
+                
+            </div>
+        </div>
+    
 
     
 </div>
+
+                
+            </div>
+        
+
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
 
                 
                     <div id="property_actor" class="property item">
@@ -887,7 +956,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l51"><code>src&#x2F;Statement.js:51</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l52"><code>src&#x2F;Statement.js:52</code></a>
         
         </p>
 
@@ -931,7 +1000,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l81"><code>src&#x2F;Statement.js:81</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l94"><code>src&#x2F;Statement.js:94</code></a>
         
         </p>
 
@@ -975,7 +1044,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l75"><code>src&#x2F;Statement.js:75</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l76"><code>src&#x2F;Statement.js:76</code></a>
         
         </p>
 
@@ -988,6 +1057,52 @@
         
     </div>
 
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_degraded" class="property item">
+    <h3 class="name"><code>degraded</code></h3>
+    <span class="type">Boolean</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l107"><code>src&#x2F;Statement.js:107</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+        <p><strong>Default:</strong> false</p>
     
 
     
@@ -1019,7 +1134,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l45"><code>src&#x2F;Statement.js:45</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l46"><code>src&#x2F;Statement.js:46</code></a>
         
         </p>
 
@@ -1040,10 +1155,12 @@
 </div>
 
                 
-                    <div id="property_inProgress" class="property item">
+                    <div id="property_inProgress" class="property item deprecated">
     <h3 class="name"><code>inProgress</code></h3>
     <span class="type">Boolean</span>
 
+    
+        <span class="flag deprecated">deprecated</span>
     
 
     
@@ -1063,7 +1180,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l94"><code>src&#x2F;Statement.js:94</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l114"><code>src&#x2F;Statement.js:114</code></a>
         
         </p>
 
@@ -1109,7 +1226,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l127"><code>src&#x2F;Statement.js:127</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l136"><code>src&#x2F;Statement.js:136</code></a>
         
         </p>
 
@@ -1130,9 +1247,9 @@
 </div>
 
                 
-                    <div id="property_object" class="property item">
-    <h3 class="name"><code>object</code></h3>
-    <span class="type">Object</span>
+                    <div id="property_originalJSON" class="property item">
+    <h3 class="name"><code>originalJSON</code></h3>
+    <span class="type">String</span>
 
     
 
@@ -1153,7 +1270,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l63"><code>src&#x2F;Statement.js:63</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l122"><code>src&#x2F;Statement.js:122</code></a>
         
         </p>
 
@@ -1197,7 +1314,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l69"><code>src&#x2F;Statement.js:69</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l70"><code>src&#x2F;Statement.js:70</code></a>
         
         </p>
 
@@ -1241,7 +1358,51 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l107"><code>src&#x2F;Statement.js:107</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l88"><code>src&#x2F;Statement.js:88</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_target" class="property item">
+    <h3 class="name"><code>target</code></h3>
+    <span class="type">Object</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l64"><code>src&#x2F;Statement.js:64</code></a>
         
         </p>
 
@@ -1285,7 +1446,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l101"><code>src&#x2F;Statement.js:101</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l82"><code>src&#x2F;Statement.js:82</code></a>
         
         </p>
 
@@ -1329,7 +1490,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l57"><code>src&#x2F;Statement.js:57</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l58"><code>src&#x2F;Statement.js:58</code></a>
         
         </p>
 
@@ -1373,7 +1534,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l87"><code>src&#x2F;Statement.js:87</code></a>
+        <a href="..&#x2F;files&#x2F;src_Statement.js.html#l100"><code>src&#x2F;Statement.js:100</code></a>
         
         </p>
 

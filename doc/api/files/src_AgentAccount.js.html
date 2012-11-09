@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TinCan.Agent - TinCanJS</title>
+    <title>src&#x2F;AgentAccount.js - TinCanJS</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -142,49 +142,101 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TinCan.Agent Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: src&#x2F;AgentAccount.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;*
+    Copyright 2012 Rustici Software
 
-    
-        <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;src_Agent.js.html#l26"><code>src&#x2F;Agent.js:26</code></a>
-        </div>
-    
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    
-</div>
+    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0
 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*&#x2F;
 
+&#x2F;**
+TinCan client library
 
-<div class="box intro">
-    <p>TinCan client library</p>
-</div>
+@module TinCan
+@submodule TinCan.AgentAccount
+**&#x2F;
+(function () {
+    &quot;use strict&quot;;
 
+    &#x2F;**
+    @class TinCan.AgentAccount
+    @constructor
+    *&#x2F;
+    var AgentAccount = TinCan.AgentAccount = function (cfg) {
+        this.log(&quot;constructor&quot;);
 
+        &#x2F;**
+        @property homePage
+        @type String
+        *&#x2F;
+        this.homePage = null;
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-            <p>This module provides the following classes:</p>
+        &#x2F;**
+        @property name
+        @type String
+        *&#x2F;
+        this.name = null;
 
-            <ul class="module-classes">
-            
-                <li class="module-class">
-                    <a href="..&#x2F;classes/TinCan.Agent.html">
-                        TinCan.Agent
-                    </a>
-                </li>
-            
-            </ul>
-        
-    </div>
+        this.init(cfg);
+    };
+    AgentAccount.prototype = {
+        &#x2F;**
+        @property LOG_SRC
+        *&#x2F;
+        LOG_SRC: &#x27;AgentAccount&#x27;,
 
-    <div class="yui3-u-1-2">
-        
-    </div>
+        &#x2F;**
+        @method log
+        *&#x2F;
+        log: TinCan.prototype.log,
+
+        &#x2F;**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        *&#x2F;
+        init: function (cfg) {
+            this.log(&quot;init&quot;);
+            var i,
+                directProps = [
+                    &quot;name&quot;,
+                    &quot;homePage&quot;
+                ],
+                val
+            ;
+
+            cfg = cfg || {};
+
+            &#x2F;&#x2F; handle .9 name changes
+            if (typeof cfg.accountServiceHomePage !== &quot;undefined&quot;) {
+                cfg.homePage = cfg.accountServiceHomePage;
+            }
+            if (typeof cfg.accountName !== &quot;undefined&quot;) {
+                cfg.name = cfg.accountName;
+            }
+
+            for (i = 0; i &lt; directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+        }
+    };
+}());
+
+    </pre>
 </div>
 
                     </div>

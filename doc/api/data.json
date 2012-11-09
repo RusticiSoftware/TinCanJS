@@ -40,6 +40,17 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/AgentAccount.js": {
+            "name": "src/AgentAccount.js",
+            "modules": {
+                "TinCan.AgentAccount": 1
+            },
+            "classes": {
+                "TinCan.AgentAccount": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/Context.js": {
             "name": "src/Context.js",
             "modules": {
@@ -47,6 +58,28 @@
             },
             "classes": {
                 "TinCan.Context": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Group.js": {
+            "name": "src/Group.js",
+            "modules": {
+                "TinCan.Group": 1
+            },
+            "classes": {
+                "TinCan.Group": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/InteractionComponent.js": {
+            "name": "src/InteractionComponent.js",
+            "modules": {
+                "TinCan.InteractionComponent": 1
+            },
+            "classes": {
+                "TinCan.InteractionComponent": 1
             },
             "fors": {},
             "namespaces": {}
@@ -156,7 +189,10 @@
                 "TinCan.Activity": 1,
                 "TinCan.ActivityDefinition": 1,
                 "TinCan.Agent": 1,
+                "TinCan.AgentAccount": 1,
                 "TinCan.Context": 1,
+                "TinCan.Group": 1,
+                "TinCan.InteractionComponent": 1,
                 "TinCan.LRS": 1,
                 "TinCan.Result": 1,
                 "TinCan.Score": 1,
@@ -170,7 +206,10 @@
                 "TinCan.Activity": 1,
                 "TinCan.ActivityDefinition": 1,
                 "TinCan.Agent": 1,
+                "TinCan.AgentAccount": 1,
                 "TinCan.Context": 1,
+                "TinCan.Group": 1,
+                "TinCan.InteractionComponent": 1,
                 "TinCan.LRS": 1,
                 "TinCan.Result": 1,
                 "TinCan.Score": 1,
@@ -232,6 +271,21 @@
             "line": 26,
             "description": "TinCan client library"
         },
+        "TinCan.AgentAccount": {
+            "name": "TinCan.AgentAccount",
+            "submodules": {},
+            "classes": {
+                "TinCan.AgentAccount": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/AgentAccount.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
         "TinCan.Context": {
             "name": "TinCan.Context",
             "submodules": {},
@@ -244,6 +298,36 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/Context.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.Group": {
+            "name": "TinCan.Group",
+            "submodules": {},
+            "classes": {
+                "TinCan.Group": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Group.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.InteractionComponent": {
+            "name": "TinCan.InteractionComponent",
+            "submodules": {},
+            "classes": {
+                "TinCan.InteractionComponent": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/InteractionComponent.js",
             "line": 26,
             "description": "TinCan client library"
         },
@@ -412,6 +496,21 @@
             "line": 26,
             "is_constructor": 1
         },
+        "TinCan.AgentAccount": {
+            "name": "TinCan.AgentAccount",
+            "shortname": "TinCan.AgentAccount",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount",
+            "namespace": "",
+            "file": "src/AgentAccount.js",
+            "line": 26,
+            "is_constructor": 1
+        },
         "TinCan.Context": {
             "name": "TinCan.Context",
             "shortname": "TinCan.Context",
@@ -424,6 +523,36 @@
             "submodule": "TinCan.Context",
             "namespace": "",
             "file": "src/Context.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.Group": {
+            "name": "TinCan.Group",
+            "shortname": "TinCan.Group",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Group",
+            "namespace": "",
+            "file": "src/Group.js",
+            "line": 26,
+            "is_constructor": 1
+        },
+        "TinCan.InteractionComponent": {
+            "name": "TinCan.InteractionComponent",
+            "shortname": "TinCan.InteractionComponent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent",
+            "namespace": "",
+            "file": "src/InteractionComponent.js",
             "line": 26,
             "is_constructor": 1
         },
@@ -528,6 +657,12 @@
                         },
                         {
                             "name": "object",
+                            "description": "Alias for 'target'",
+                            "type": "TinCan.Activity|TinCan.Agent",
+                            "optional": true
+                        },
+                        {
+                            "name": "target",
                             "description": "Object of statement",
                             "type": "TinCan.Activity|TinCan.Agent",
                             "optional": true
@@ -727,7 +862,20 @@
         },
         {
             "file": "src/Activity.js",
-            "line": 87,
+            "line": 92,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the activity",
+                "type": "String"
+            },
+            "class": "TinCan.Activity",
+            "module": "TinCan",
+            "submodule": "TinCan.Activity"
+        },
+        {
+            "file": "src/Activity.js",
+            "line": 114,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -752,7 +900,7 @@
         },
         {
             "file": "src/Activity.js",
-            "line": 109,
+            "line": 136,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -798,7 +946,7 @@
             "file": "src/ActivityDefinition.js",
             "line": 51,
             "itemtype": "property",
-            "name": "interactionType",
+            "name": "extensions",
             "type": "Object",
             "class": "TinCan.ActivityDefinition",
             "module": "TinCan",
@@ -808,7 +956,7 @@
             "file": "src/ActivityDefinition.js",
             "line": 57,
             "itemtype": "property",
-            "name": "extensions",
+            "name": "interactionType",
             "type": "Object",
             "class": "TinCan.ActivityDefinition",
             "module": "TinCan",
@@ -816,7 +964,67 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 66,
+            "line": 63,
+            "itemtype": "property",
+            "name": "correctResponsesPattern",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 69,
+            "itemtype": "property",
+            "name": "choices",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 75,
+            "itemtype": "property",
+            "name": "scale",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 81,
+            "itemtype": "property",
+            "name": "source",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 87,
+            "itemtype": "property",
+            "name": "target",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 93,
+            "itemtype": "property",
+            "name": "steps",
+            "type": "Array",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 102,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.ActivityDefinition",
@@ -825,7 +1033,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 71,
+            "line": 107,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.ActivityDefinition",
@@ -834,7 +1042,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 76,
+            "line": 112,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -851,7 +1059,20 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 86,
+            "line": 147,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the definition",
+                "type": "String"
+            },
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 165,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -876,7 +1097,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 116,
+            "line": 197,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -892,17 +1113,6 @@
             "file": "src/Agent.js",
             "line": 33,
             "itemtype": "property",
-            "name": "objectType",
-            "type": "String",
-            "default": "Agent",
-            "class": "TinCan.Agent",
-            "module": "TinCan",
-            "submodule": "TinCan.Agent"
-        },
-        {
-            "file": "src/Agent.js",
-            "line": 40,
-            "itemtype": "property",
             "name": "name",
             "type": "String",
             "class": "TinCan.Agent",
@@ -911,7 +1121,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 46,
+            "line": 39,
             "itemtype": "property",
             "name": "mbox",
             "type": "String",
@@ -921,7 +1131,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 52,
+            "line": 45,
             "itemtype": "property",
             "name": "mbox_sha1sum",
             "type": "String",
@@ -931,7 +1141,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 58,
+            "line": 51,
             "itemtype": "property",
             "name": "openid",
             "type": "Array",
@@ -941,10 +1151,21 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 64,
+            "line": 57,
             "itemtype": "property",
             "name": "account",
-            "type": "Array",
+            "type": "TinCan.AgentAccount",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 63,
+            "itemtype": "property",
+            "name": "degraded",
+            "type": "Boolean",
+            "default": "false",
             "class": "TinCan.Agent",
             "module": "TinCan",
             "submodule": "TinCan.Agent"
@@ -953,6 +1174,17 @@
             "file": "src/Agent.js",
             "line": 73,
             "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Agent",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 80,
+            "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Agent",
             "module": "TinCan",
@@ -960,7 +1192,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 78,
+            "line": 85,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Agent",
@@ -969,7 +1201,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 83,
+            "line": 90,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -986,7 +1218,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 111,
+            "line": 201,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1011,7 +1243,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 149,
+            "line": 239,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1022,6 +1254,61 @@
             "class": "TinCan.Agent",
             "module": "TinCan",
             "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "homePage",
+            "type": "String",
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 48,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 53,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 58,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
         },
         {
             "file": "src/Context.js",
@@ -1065,7 +1352,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 57,
+            "line": 61,
             "itemtype": "property",
             "name": "revision",
             "type": "Object",
@@ -1075,7 +1362,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 63,
+            "line": 67,
             "itemtype": "property",
             "name": "platform",
             "type": "Object",
@@ -1085,7 +1372,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 69,
+            "line": 73,
             "itemtype": "property",
             "name": "language",
             "type": "String",
@@ -1095,7 +1382,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 75,
+            "line": 79,
             "itemtype": "property",
             "name": "statement",
             "type": "String",
@@ -1105,7 +1392,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 81,
+            "line": 85,
             "itemtype": "property",
             "name": "extensions",
             "type": "String",
@@ -1115,7 +1402,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 90,
+            "line": 94,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Context",
@@ -1124,7 +1411,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 95,
+            "line": 99,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Context",
@@ -1133,7 +1420,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 100,
+            "line": 104,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1150,7 +1437,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 111,
+            "line": 137,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1161,6 +1448,118 @@
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "member",
+            "type": "Array",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 42,
+            "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "\"Group\"",
+            "static": 1,
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 50,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 55,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 60,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "description",
+            "type": "Object",
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 48,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 53,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 58,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
         },
         {
             "file": "src/LRS.js",
@@ -1867,7 +2266,7 @@
         },
         {
             "file": "src/Result.js",
-            "line": 93,
+            "line": 114,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1956,7 +2355,7 @@
         },
         {
             "file": "src/Score.js",
-            "line": 79,
+            "line": 94,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2049,7 +2448,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 45,
+            "line": 46,
             "itemtype": "property",
             "name": "id",
             "type": "String",
@@ -2059,7 +2458,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 51,
+            "line": 52,
             "itemtype": "property",
             "name": "actor",
             "type": "Object",
@@ -2069,7 +2468,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 57,
+            "line": 58,
             "itemtype": "property",
             "name": "verb",
             "type": "Object",
@@ -2079,9 +2478,9 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 63,
+            "line": 64,
             "itemtype": "property",
-            "name": "object",
+            "name": "target",
             "type": "Object",
             "class": "TinCan.Statement",
             "module": "TinCan",
@@ -2089,7 +2488,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 69,
+            "line": 70,
             "itemtype": "property",
             "name": "result",
             "type": "Object",
@@ -2099,7 +2498,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 75,
+            "line": 76,
             "itemtype": "property",
             "name": "context",
             "type": "Object",
@@ -2109,7 +2508,27 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 81,
+            "line": 82,
+            "itemtype": "property",
+            "name": "timestamp",
+            "type": "Date",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 88,
+            "itemtype": "property",
+            "name": "stored",
+            "type": "Date",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 94,
             "itemtype": "property",
             "name": "authority",
             "type": "Object",
@@ -2119,7 +2538,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 87,
+            "line": 100,
             "itemtype": "property",
             "name": "voided",
             "type": "Boolean",
@@ -2130,9 +2549,9 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 94,
+            "line": 107,
             "itemtype": "property",
-            "name": "inProgress",
+            "name": "degraded",
             "type": "Boolean",
             "default": "false",
             "class": "TinCan.Statement",
@@ -2141,29 +2560,21 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 101,
+            "line": 114,
             "itemtype": "property",
-            "name": "timestamp",
-            "type": "Date",
+            "name": "inProgress",
+            "type": "Boolean",
+            "default": "false",
+            "deprecated": true,
             "class": "TinCan.Statement",
             "module": "TinCan",
             "submodule": "TinCan.Statement"
         },
         {
             "file": "src/Statement.js",
-            "line": 107,
+            "line": 122,
             "itemtype": "property",
-            "name": "stored",
-            "type": "Date",
-            "class": "TinCan.Statement",
-            "module": "TinCan",
-            "submodule": "TinCan.Statement"
-        },
-        {
-            "file": "src/Statement.js",
-            "line": 113,
-            "itemtype": "property",
-            "name": "_originalJSON",
+            "name": "originalJSON",
             "type": "String",
             "class": "TinCan.Statement",
             "module": "TinCan",
@@ -2171,7 +2582,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 127,
+            "line": 136,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Statement",
@@ -2180,7 +2591,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 132,
+            "line": 141,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Statement",
@@ -2189,7 +2600,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 137,
+            "line": 146,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -2206,7 +2617,20 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 176,
+            "line": 198,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the statement",
+                "type": "String"
+            },
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
+            "file": "src/Statement.js",
+            "line": 207,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -2980,7 +3404,20 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 95,
+            "line": 90,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the verb",
+                "type": "String"
+            },
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 99,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -3005,7 +3442,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 121,
+            "line": 125,
             "itemtype": "method",
             "name": "fromJSON",
             "params": [
