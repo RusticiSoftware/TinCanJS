@@ -1366,7 +1366,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 201,
+            "line": 199,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1391,7 +1391,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 239,
+            "line": 237,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2078,6 +2078,49 @@
         {
             "file": "src/LRS.js",
             "line": 543,
+            "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
+            "itemtype": "method",
+            "name": "moreStatements",
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration used to query",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "url",
+                            "description": "More URL",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Callback to execute on completion",
+                            "type": "Function",
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "response",
+                                    "description": "Receives a StatementsResult argument",
+                                    "type": "TinCan.StatementsResult"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "StatementsResult object if no callback configured",
+                "type": "TinCan.StatementsResult"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 596,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2127,7 +2170,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 595,
+            "line": 648,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2172,7 +2215,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 651,
+            "line": 704,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2218,7 +2261,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 699,
+            "line": 752,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2268,7 +2311,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 743,
+            "line": 796,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2303,7 +2346,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 784,
+            "line": 837,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2338,7 +2381,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 826,
+            "line": 879,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -3249,27 +3292,6 @@
             "file": "src/TinCan.js",
             "line": 210,
             "itemtype": "method",
-            "name": "_parseQueryString",
-            "params": [
-                {
-                    "name": "url",
-                    "description": "",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Object of parsed query string values",
-                "type": "Object"
-            },
-            "access": "private",
-            "tagname": "",
-            "class": "TinCan",
-            "module": "TinCan"
-        },
-        {
-            "file": "src/TinCan.js",
-            "line": 238,
-            "itemtype": "method",
             "name": "addRecordStore",
             "params": [
                 {
@@ -3283,7 +3305,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 253,
+            "line": 225,
             "itemtype": "method",
             "name": "prepareStatement",
             "params": [
@@ -3302,7 +3324,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 297,
+            "line": 269,
             "description": "Calls saveStatement on each configured LRS, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "sendStatement",
@@ -3323,7 +3345,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 363,
+            "line": 335,
             "description": "Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "getStatement",
@@ -3348,7 +3370,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 430,
+            "line": 402,
             "description": "Calls saveStatements with list of statements",
             "itemtype": "method",
             "name": "sendStatements",
@@ -3369,7 +3391,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 500,
+            "line": 472,
             "itemtype": "method",
             "name": "getStatements",
             "params": [
@@ -3413,7 +3435,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 567,
+            "line": 539,
             "itemtype": "method",
             "name": "getState",
             "params": [
@@ -3460,7 +3482,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 625,
+            "line": 597,
             "itemtype": "method",
             "name": "setState",
             "params": [
@@ -3512,7 +3534,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 684,
+            "line": 656,
             "itemtype": "method",
             "name": "deleteState",
             "params": [
@@ -3559,7 +3581,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 742,
+            "line": 714,
             "itemtype": "method",
             "name": "getActivityProfile",
             "params": [
@@ -3594,7 +3616,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 789,
+            "line": 761,
             "itemtype": "method",
             "name": "setActivityProfile",
             "params": [
@@ -3634,7 +3656,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 837,
+            "line": 809,
             "itemtype": "method",
             "name": "deleteActivityProfile",
             "params": [
@@ -3669,7 +3691,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 885,
+            "line": 857,
             "itemtype": "property",
             "name": "DEBUG",
             "static": 1,
@@ -3679,7 +3701,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 892,
+            "line": 864,
             "description": "Turn on debug logging",
             "itemtype": "method",
             "name": "enableDebug",
@@ -3689,7 +3711,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 902,
+            "line": 874,
             "description": "Turn off debug logging",
             "itemtype": "method",
             "name": "disableDebug",
@@ -3699,7 +3721,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 912,
+            "line": 884,
             "itemtype": "method",
             "name": "versions",
             "return": {
@@ -3712,7 +3734,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 925,
+            "line": 897,
             "itemtype": "method",
             "name": "environment",
             "return": {
@@ -3759,6 +3781,28 @@
                 "description": "\n\nIntended to be inherited by objects with properties that store\ndisplay values in a language based \"dictionary\"",
                 "type": "String"
             },
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
+            "file": "src/Utils.js",
+            "line": 78,
+            "itemtype": "method",
+            "name": "parseURL",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Object of values",
+                "type": "Object"
+            },
+            "access": "private",
+            "tagname": "",
             "class": "TinCan.Verb",
             "module": "TinCan",
             "submodule": "TinCan.Utils"

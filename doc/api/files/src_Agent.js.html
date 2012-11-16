@@ -342,11 +342,9 @@ TinCan client library
             if (this.name !== null) {
                 return this.name;
             }
-            this.log(&quot;toString after name&quot;);
             if (this.mbox !== null) {
                 return this.mbox.replace(&quot;mailto:&quot;, &quot;&quot;);
             }
-            this.log(&quot;toString after mbox&quot;);
             if (this.account !== null) {
                 return this.account.name;
             }

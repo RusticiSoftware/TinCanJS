@@ -291,7 +291,7 @@ var TinCan;
 
             var i,
                 prop,
-                qsParams = this._parseQueryString(url),
+                qsParams = TinCan.Utils.parseURL(url).params,
                 lrsProps = [&quot;endpoint&quot;, &quot;auth&quot;],
                 lrsCfg,
                 activityCfg,
@@ -361,34 +361,6 @@ var TinCan;
 
                 this.addRecordStore(lrsCfg);
             }
-        },
-
-        &#x2F;**
-        @method _parseQueryString
-        @param {String} url
-        @return {Object} Object of parsed query string values
-        @private
-        *&#x2F;
-        _parseQueryString: function (url) {
-            this.log(&quot;_parseQueryString&quot;);
-
-            var parts = String(url).split(&#x27;?&#x27;),
-                pairs,
-                pair,
-                i,
-                parsed = {}
-            ;
-            if (parts.length === 2) {
-                pairs = parts[1].split(&#x27;&amp;&#x27;);
-                for (i = 0; i &lt; pairs.length; i += 1) {
-                    pair = pairs[i].split(&#x27;=&#x27;);
-                    if (pair.length === 2 &amp;&amp; pair[0]) {
-                        parsed[pair[0]] = decodeURIComponent(pair[1]);
-                    }
-                }
-            }
-
-            return parsed;
         },
 
         &#x2F;**

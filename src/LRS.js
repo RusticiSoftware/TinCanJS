@@ -541,6 +541,59 @@ TinCan client library
         },
 
         /**
+        Fetch more statements from a previous query, when used from a browser sends to the endpoint using the
+        RESTful interface.  Use a callback to make the call asynchronous.
+
+        @method moreStatements
+        @param {Object} [cfg] Configuration used to query
+            @param {String} [cfg.url] More URL
+            @param {Function} [cfg.callback] Callback to execute on completion
+                @param {TinCan.StatementsResult} cfg.callback.response Receives a StatementsResult argument
+        @return {TinCan.StatementsResult} StatementsResult object if no callback configured
+        */
+        moreStatements: function (cfg) {
+            this.log("moreStatements: " + cfg.url);
+            var requestCfg,
+                requestResult,
+                callbackWrapper,
+                parsedURL;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            cfg = cfg || {};
+
+            // to support our interface (to support IE) we need to break apart
+            // the more URL query params so that the request can be made properly later
+            parsedURL = TinCan.Utils.parseURL(cfg.url);
+
+            requestCfg = {
+                method: "GET",
+                url: parsedURL.path,
+                params: parsedURL.params
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (xhr) {
+                    var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
+
+                    cfg.callback(stResult);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+
+            if (typeof requestCfg.callback === "undefined") {
+                return TinCan.StatementsResult.fromJSON(requestResult.responseText);
+            }
+        },
+
+        /**
         Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method retrieveState

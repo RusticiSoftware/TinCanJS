@@ -73,6 +73,35 @@ TinCan client library
             }
 
             return "";
+        },
+
+        /**
+        @method parseURL
+        @param {String} url
+        @return {Object} Object of values
+        @private
+        */
+        parseURL: function (url) {
+            var parts = String(url).split('?'),
+                pairs,
+                pair,
+                i,
+                params = {}
+            ;
+            if (parts.length === 2) {
+                pairs = parts[1].split('&');
+                for (i = 0; i < pairs.length; i += 1) {
+                    pair = pairs[i].split('=');
+                    if (pair.length === 2 && pair[0]) {
+                        params[pair[0]] = decodeURIComponent(pair[1]);
+                    }
+                }
+            }
+
+            return {
+                path: parts[0],
+                params: params
+            };
         }
     };
 }());

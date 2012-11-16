@@ -186,11 +186,9 @@ TinCan client library
             if (this.name !== null) {
                 return this.name;
             }
-            this.log("toString after name");
             if (this.mbox !== null) {
                 return this.mbox.replace("mailto:", "");
             }
-            this.log("toString after mbox");
             if (this.account !== null) {
                 return this.account.name;
             }
