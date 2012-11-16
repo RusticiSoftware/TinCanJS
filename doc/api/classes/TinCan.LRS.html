@@ -458,7 +458,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l821"><code>src&#x2F;LRS.js:821</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l826"><code>src&#x2F;LRS.js:826</code></a>
         
         </p>
 
@@ -534,7 +534,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l779"><code>src&#x2F;LRS.js:779</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l784"><code>src&#x2F;LRS.js:784</code></a>
         
         </p>
 
@@ -693,7 +693,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l646"><code>src&#x2F;LRS.js:646</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l651"><code>src&#x2F;LRS.js:651</code></a>
         
         </p>
 
@@ -1025,12 +1025,12 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                                         <li class="param">
                                             
                                                 <code class="param-name optional">[actor]</code>
-                                                <span class="type">TinCan.Actor</span>
+                                                <span class="type"><a href="../classes/TinCan.Agent.html" class="crosslink">TinCan.Agent</a></span>
                                                 <span class="flag optional" title="This parameter is optional.">optional</span>
                                             
 
                                             <div class="param-description">
-                                                Actor to query on
+                                                Agent matches 'actor'
                                             </div>
                                         </li>
                                         
@@ -1048,13 +1048,25 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                                         
                                         <li class="param">
                                             
-                                                <code class="param-name optional">[activity]</code>
-                                                <span class="type"><a href="../classes/TinCan.Activity.html" class="crosslink">TinCan.Activity</a></span>
+                                                <code class="param-name optional">[target]</code>
+                                                <span class="type"><a href="../classes/TinCan.Activity.html" class="crosslink">TinCan.Activity</a> | <a href="../classes/TinCan.Agent.html" class="crosslink">TinCan.Agent</a></span>
                                                 <span class="flag optional" title="This parameter is optional.">optional</span>
                                             
 
                                             <div class="param-description">
-                                                Activity to query on
+                                                Activity, Agent, or Statement matches 'object'
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[instructor]</code>
+                                                <span class="type"><a href="../classes/TinCan.Agent.html" class="crosslink">TinCan.Agent</a></span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Agent matches 'context:instructor'
                                             </div>
                                         </li>
                                         
@@ -1066,7 +1078,55 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                                             
 
                                             <div class="param-description">
-                                                Registration to query on
+                                                Registration UUID
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[context]</code>
+                                                <span class="type">Boolean</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                When filtering on target, include statements with matching context
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[since]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Match statements stored since specified timestamp
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[until]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Match statements stored at or before specified timestamp
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[limit]</code>
+                                                <span class="type">Integer</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                Number of results to retrieve
                                             </div>
                                         </li>
                                         
@@ -1096,13 +1156,13 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
                                         
                                         <li class="param">
                                             
-                                                <code class="param-name optional">[limit]</code>
-                                                <span class="type">Integer</span>
+                                                <code class="param-name optional">[ascending]</code>
+                                                <span class="type">Boolean</span>
                                                 <span class="flag optional" title="This parameter is optional.">optional</span>
                                             
 
                                             <div class="param-description">
-                                                Number of results to retrieve
+                                                Return results in ascending order of stored time
                                             </div>
                                         </li>
                                         
@@ -1236,7 +1296,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l694"><code>src&#x2F;LRS.js:694</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l699"><code>src&#x2F;LRS.js:699</code></a>
         
         </p>
 
@@ -1443,7 +1503,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l538"><code>src&#x2F;LRS.js:538</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l543"><code>src&#x2F;LRS.js:543</code></a>
         
         </p>
 
@@ -1778,7 +1838,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l738"><code>src&#x2F;LRS.js:738</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l743"><code>src&#x2F;LRS.js:743</code></a>
         
         </p>
 
@@ -1937,7 +1997,7 @@ RESTful interface.  Use a callback to make the call asynchronous.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l590"><code>src&#x2F;LRS.js:590</code></a>
+        <a href="..&#x2F;files&#x2F;src_LRS.js.html#l595"><code>src&#x2F;LRS.js:595</code></a>
         
         </p>
 

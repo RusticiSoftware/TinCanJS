@@ -1831,8 +1831,8 @@
                             "props": [
                                 {
                                     "name": "actor",
-                                    "description": "Actor to query on",
-                                    "type": "TinCan.Actor",
+                                    "description": "Agent matches 'actor'",
+                                    "type": "TinCan.Agent",
                                     "optional": true
                                 },
                                 {
@@ -1842,15 +1842,45 @@
                                     "optional": true
                                 },
                                 {
-                                    "name": "activity",
-                                    "description": "Activity to query on",
-                                    "type": "TinCan.Activity",
+                                    "name": "target",
+                                    "description": "Activity, Agent, or Statement matches 'object'",
+                                    "type": "TinCan.Activity|TinCan.Agent",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "instructor",
+                                    "description": "Agent matches 'context:instructor'",
+                                    "type": "TinCan.Agent",
                                     "optional": true
                                 },
                                 {
                                     "name": "registration",
-                                    "description": "Registration to query on",
+                                    "description": "Registration UUID",
                                     "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "context",
+                                    "description": "When filtering on target, include statements with matching context",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "since",
+                                    "description": "Match statements stored since specified timestamp",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "until",
+                                    "description": "Match statements stored at or before specified timestamp",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "limit",
+                                    "description": "Number of results to retrieve",
+                                    "type": "Integer",
                                     "optional": true
                                 },
                                 {
@@ -1866,9 +1896,9 @@
                                     "optional": true
                                 },
                                 {
-                                    "name": "limit",
-                                    "description": "Number of results to retrieve",
-                                    "type": "Integer",
+                                    "name": "ascending",
+                                    "description": "Return results in ascending order of stored time",
+                                    "type": "Boolean",
                                     "optional": true
                                 }
                             ]
@@ -1899,7 +1929,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 538,
+            "line": 543,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -1949,7 +1979,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 590,
+            "line": 595,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -1994,7 +2024,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 646,
+            "line": 651,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2040,7 +2070,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 694,
+            "line": 699,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2090,7 +2120,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 738,
+            "line": 743,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2125,7 +2155,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 779,
+            "line": 784,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2160,7 +2190,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 821,
+            "line": 826,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
