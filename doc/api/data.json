@@ -133,6 +133,15 @@
             "modules": {
                 "TinCan.Statement": 1
             },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/StatementRef.js": {
+            "name": "src/StatementRef.js",
+            "modules": {
+                "TinCan.StatementRef": 1
+            },
             "classes": {
                 "TinCan.Statement": 1
             },
@@ -146,6 +155,17 @@
             },
             "classes": {
                 "TinCan.StatementsResult": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/SubStatement.js": {
+            "name": "src/SubStatement.js",
+            "modules": {
+                "TinCan.SubStatement": 1
+            },
+            "classes": {
+                "TinCan.SubStatement": 1
             },
             "fors": {},
             "namespaces": {}
@@ -198,7 +218,9 @@
                 "TinCan.Score": 1,
                 "TinCan.State": 1,
                 "TinCan.Statement": 1,
+                "TinCan.StatementRef": 1,
                 "TinCan.StatementsResult": 1,
+                "TinCan.SubStatement": 1,
                 "TinCan.Utils": 1,
                 "TinCan.Verb": 1
             },
@@ -216,6 +238,7 @@
                 "TinCan.State": 1,
                 "TinCan.Statement": 1,
                 "TinCan.StatementsResult": 1,
+                "TinCan.SubStatement": 1,
                 "TinCan": 1,
                 "TinCan.Verb": 1
             },
@@ -394,6 +417,19 @@
         "TinCan.Statement": {
             "name": "TinCan.Statement",
             "submodules": {},
+            "classes": {},
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/Statement.js",
+            "line": 17,
+            "description": "TinCan client library"
+        },
+        "TinCan.StatementRef": {
+            "name": "TinCan.StatementRef",
+            "submodules": {},
             "classes": {
                 "TinCan.Statement": 1
             },
@@ -402,7 +438,7 @@
             "namespaces": {},
             "module": "TinCan",
             "namespace": "",
-            "file": "src/Statement.js",
+            "file": "src/StatementRef.js",
             "line": 26,
             "description": "TinCan client library"
         },
@@ -418,6 +454,21 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/StatementsResult.js",
+            "line": 26,
+            "description": "TinCan client library"
+        },
+        "TinCan.SubStatement": {
+            "name": "TinCan.SubStatement",
+            "submodules": {},
+            "classes": {
+                "TinCan.SubStatement": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/SubStatement.js",
             "line": 26,
             "description": "TinCan client library"
         },
@@ -625,9 +676,9 @@
             "plugin_for": [],
             "extension_for": [],
             "module": "TinCan",
-            "submodule": "TinCan.Statement",
+            "submodule": "TinCan.StatementRef",
             "namespace": "",
-            "file": "src/Statement.js",
+            "file": "src/StatementRef.js",
             "line": 26,
             "is_constructor": 1,
             "params": [
@@ -736,6 +787,67 @@
                             "name": "more",
                             "description": "URL to fetch more data",
                             "type": "String"
+                        }
+                    ]
+                }
+            ]
+        },
+        "TinCan.SubStatement": {
+            "name": "TinCan.SubStatement",
+            "shortname": "TinCan.SubStatement",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement",
+            "namespace": "",
+            "file": "src/SubStatement.js",
+            "line": 26,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration used to initialize.",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "actor",
+                            "description": "Actor of statement",
+                            "type": "TinCan.Agent",
+                            "optional": true
+                        },
+                        {
+                            "name": "verb",
+                            "description": "Verb of statement",
+                            "type": "TinCan.Verb",
+                            "optional": true
+                        },
+                        {
+                            "name": "object",
+                            "description": "Alias for 'target'",
+                            "type": "TinCan.Activity|TinCan.Agent",
+                            "optional": true
+                        },
+                        {
+                            "name": "target",
+                            "description": "Object of statement",
+                            "type": "TinCan.Activity|TinCan.Agent",
+                            "optional": true
+                        },
+                        {
+                            "name": "result",
+                            "description": "Statement Result",
+                            "type": "TinCan.Result",
+                            "optional": true
+                        },
+                        {
+                            "name": "context",
+                            "description": "Statement Context",
+                            "type": "TinCan.Context",
+                            "optional": true
                         }
                     ]
                 }
@@ -1844,7 +1956,7 @@
                                 {
                                     "name": "target",
                                     "description": "Activity, Agent, or Statement matches 'object'",
-                                    "type": "TinCan.Activity|TinCan.Agent",
+                                    "type": "TinCan.Activity|TinCan.Agent|TinCan.Statement",
                                     "optional": true
                                 },
                                 {
@@ -2684,6 +2796,100 @@
             "submodule": "TinCan.Statement"
         },
         {
+            "file": "src/StatementRef.js",
+            "line": 35,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Agent",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 52,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 57,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 62,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize (see constructor)",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 84,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the statement",
+                "type": "String"
+            },
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
+            "file": "src/StatementRef.js",
+            "line": 93,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
             "file": "src/StatementsResult.js",
             "line": 36,
             "itemtype": "property",
@@ -2751,6 +2957,150 @@
             "class": "TinCan.StatementsResult",
             "module": "TinCan",
             "submodule": "TinCan.StatementsResult"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "actor",
+            "type": "Object",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 46,
+            "itemtype": "property",
+            "name": "verb",
+            "type": "Object",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 52,
+            "itemtype": "property",
+            "name": "target",
+            "type": "Object",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 58,
+            "itemtype": "property",
+            "name": "result",
+            "type": "Object",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 64,
+            "itemtype": "property",
+            "name": "context",
+            "type": "Object",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 70,
+            "itemtype": "property",
+            "name": "timestamp",
+            "type": "Date",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 80,
+            "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Agent",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 87,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 92,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 97,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize (see constructor)",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 142,
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "String representation of the statement",
+                "type": "String"
+            },
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
+            "file": "src/SubStatement.js",
+            "line": 151,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
         },
         {
             "file": "src/TinCan.js",
