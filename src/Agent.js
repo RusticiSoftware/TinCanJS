@@ -80,7 +80,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Agent',
+        LOG_SRC: "Agent",
 
         /**
         @method log
@@ -188,7 +188,7 @@ TinCan client library
             }
             this.log("toString after name");
             if (this.mbox !== null) {
-                return this.mbox.replace('mailto:','');
+                return this.mbox.replace("mailto:", "");
             }
             this.log("toString after mbox");
             if (this.account !== null) {
