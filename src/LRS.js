@@ -464,7 +464,7 @@ TinCan client library
             @param {Object} [cfg.params] Query parameters
                 @param {TinCan.Agent} [cfg.params.actor] Agent matches 'actor'
                 @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity|TinCan.Agent} [cfg.params.target] Activity, Agent, or Statement matches 'object'
+                @param {TinCan.Activity|TinCan.Agent|TinCan.Statement} [cfg.params.target] Activity, Agent, or Statement matches 'object'
                 @param {TinCan.Agent} [cfg.params.instructor] Agent matches 'context:instructor'
                 @param {String} [cfg.params.registration] Registration UUID
                 @param {Boolean} [cfg.params.context] When filtering on target, include statements with matching context
