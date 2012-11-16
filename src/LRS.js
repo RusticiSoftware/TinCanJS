@@ -462,22 +462,27 @@ TinCan client library
         @method queryStatements
         @param {Object} [cfg] Configuration used to query
             @param {Object} [cfg.params] Query parameters
-                @param {TinCan.Actor} [cfg.params.actor] Actor to query on
+                @param {TinCan.Agent} [cfg.params.actor] Agent matches 'actor'
                 @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
-                @param {String} [cfg.params.registration] Registration to query on
+                @param {TinCan.Activity|TinCan.Agent} [cfg.params.target] Activity, Agent, or Statement matches 'object'
+                @param {TinCan.Agent} [cfg.params.instructor] Agent matches 'context:instructor'
+                @param {String} [cfg.params.registration] Registration UUID
+                @param {Boolean} [cfg.params.context] When filtering on target, include statements with matching context
+                @param {String} [cfg.params.since] Match statements stored since specified timestamp
+                @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
+                @param {Integer} [cfg.params.limit] Number of results to retrieve
                 @param {Boolean} [cfg.params.authoritative] Get authoritative results
                 @param {Boolean} [cfg.params.sparse] Get sparse results
-                @param {Integer} [cfg.params.limit] Number of results to retrieve
+                @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
             @param {Function} [cfg.callback] Callback to execute on completion
                 @param {TinCan.StatementsResult} cfg.callback.response Receives a StatementsResult argument
         @return {TinCan.StatementsResult} StatementsResult object if no callback configured
         */
         queryStatements: function (cfg) {
             this.log("queryStatements");
-            var jsonProps = ["actor"],
-                idProps = ["verb", "activity"],
-                stringProps = ["registration", "authoritative", "sparse", "limit"],
+            var jsonProps = ["actor", "target", "instructor"],
+                idProps = ["verb"],
+                valProps = ["registration", "context", "since", "until", "limit", "authoritative", "sparse", "ascending"],
                 requestParams = {},
                 requestCfg = {},
                 requestResult,
@@ -508,9 +513,9 @@ TinCan client library
                 }
             }
 
-            for (i = 0; i < stringProps.length; i += 1) {
-                if (typeof cfg.params[stringProps[i]] !== "undefined") {
-                    requestParams[stringProps[i]] = cfg.params[stringProps[i]];
+            for (i = 0; i < valProps.length; i += 1) {
+                if (typeof cfg.params[valProps[i]] !== "undefined") {
+                    requestParams[valProps[i]] = cfg.params[valProps[i]];
                 }
             }
 
