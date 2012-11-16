@@ -14,6 +14,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan.Score",
         "TinCan.State",
         "TinCan.Statement",
+        "TinCan.StatementRef",
         "TinCan.StatementsResult",
         "TinCan.SubStatement",
         "TinCan.Verb"

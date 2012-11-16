@@ -24,7 +24,7 @@ TinCan client library
     "use strict";
 
     /**
-    @class TinCan.Statement
+    @class TinCan.StatementRef
     @constructor
     @param {Object} [cfg] Configuration used to initialize.
         @param {Object} [cfg.id] ID of statement to reference

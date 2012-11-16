@@ -133,7 +133,9 @@
             "modules": {
                 "TinCan.Statement": 1
             },
-            "classes": {},
+            "classes": {
+                "TinCan.Statement": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -143,7 +145,7 @@
                 "TinCan.StatementRef": 1
             },
             "classes": {
-                "TinCan.Statement": 1
+                "TinCan.StatementRef": 1
             },
             "fors": {},
             "namespaces": {}
@@ -237,6 +239,7 @@
                 "TinCan.Score": 1,
                 "TinCan.State": 1,
                 "TinCan.Statement": 1,
+                "TinCan.StatementRef": 1,
                 "TinCan.StatementsResult": 1,
                 "TinCan.SubStatement": 1,
                 "TinCan": 1,
@@ -417,21 +420,23 @@
         "TinCan.Statement": {
             "name": "TinCan.Statement",
             "submodules": {},
-            "classes": {},
+            "classes": {
+                "TinCan.Statement": 1
+            },
             "fors": {},
             "is_submodule": 1,
             "namespaces": {},
             "module": "TinCan",
             "namespace": "",
             "file": "src/Statement.js",
-            "line": 17,
+            "line": 26,
             "description": "TinCan client library"
         },
         "TinCan.StatementRef": {
             "name": "TinCan.StatementRef",
             "submodules": {},
             "classes": {
-                "TinCan.Statement": 1
+                "TinCan.StatementRef": 1
             },
             "fors": {},
             "is_submodule": 1,
@@ -676,9 +681,9 @@
             "plugin_for": [],
             "extension_for": [],
             "module": "TinCan",
-            "submodule": "TinCan.StatementRef",
+            "submodule": "TinCan.Statement",
             "namespace": "",
-            "file": "src/StatementRef.js",
+            "file": "src/Statement.js",
             "line": 26,
             "is_constructor": 1,
             "params": [
@@ -755,6 +760,37 @@
                     "description": "Whether to store a JSON stringified version\n    of the original options object, pass number of spaces used for indent",
                     "type": "Integer",
                     "optional": true
+                }
+            ]
+        },
+        "TinCan.StatementRef": {
+            "name": "TinCan.StatementRef",
+            "shortname": "TinCan.StatementRef",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef",
+            "namespace": "",
+            "file": "src/StatementRef.js",
+            "line": 26,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "Configuration used to initialize.",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "id",
+                            "description": "ID of statement to reference",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
                 }
             ]
         },
@@ -2801,7 +2837,7 @@
             "itemtype": "property",
             "name": "id",
             "type": "String",
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2812,7 +2848,7 @@
             "name": "objectType",
             "type": "String",
             "default": "Agent",
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2821,7 +2857,7 @@
             "line": 52,
             "itemtype": "property",
             "name": "LOG_SRC",
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2830,7 +2866,7 @@
             "line": 57,
             "itemtype": "method",
             "name": "log",
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2847,7 +2883,7 @@
                     "optional": true
                 }
             ],
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2860,7 +2896,7 @@
                 "description": "String representation of the statement",
                 "type": "String"
             },
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
@@ -2885,7 +2921,7 @@
                     ]
                 }
             ],
-            "class": "TinCan.Statement",
+            "class": "TinCan.StatementRef",
             "module": "TinCan",
             "submodule": "TinCan.StatementRef"
         },
