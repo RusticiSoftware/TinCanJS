@@ -30,8 +30,8 @@ TinCan client library
         @param {Object} [cfg.id] Statement ID
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent} [cfg.object] Alias for 'target'
-        @param {TinCan.Activity|TinCan.Agent} [cfg.target] Object of statement
+        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
+        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {Object} [cfg.authority] Statement Authority

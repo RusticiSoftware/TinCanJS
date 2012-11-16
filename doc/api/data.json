@@ -714,13 +714,13 @@
                         {
                             "name": "object",
                             "description": "Alias for 'target'",
-                            "type": "TinCan.Activity|TinCan.Agent",
+                            "type": "TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement",
                             "optional": true
                         },
                         {
                             "name": "target",
                             "description": "Object of statement",
-                            "type": "TinCan.Activity|TinCan.Agent",
+                            "type": "TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement",
                             "optional": true
                         },
                         {
