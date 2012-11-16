@@ -28,6 +28,7 @@ Alternatively you can just link to the individual files themselves like so:
     <script type="text/javascript" src="src/LRS.js"></script>
     <script type="text/javascript" src="src/AgentAccount.js"></script>
     <script type="text/javascript" src="src/Agent.js"></script>
+    <script type="text/javascript" src="src/Group.js"></script>
     <script type="text/javascript" src="src/Verb.js"></script>
     <script type="text/javascript" src="src/Result.js"></script>
     <script type="text/javascript" src="src/Score.js"></script>
@@ -35,6 +36,8 @@ Alternatively you can just link to the individual files themselves like so:
     <script type="text/javascript" src="src/Activity.js"></script>
     <script type="text/javascript" src="src/InteractionComponent.js"></script>
     <script type="text/javascript" src="src/ActivityDefinition.js"></script>
+    <script type="text/javascript" src="src/StatementRef.js"></script>
+    <script type="text/javascript" src="src/SubStatement.js"></script>
     <script type="text/javascript" src="src/Statement.js"></script>
     <script type="text/javascript" src="src/StatementsResult.js"></script>
     <script type="text/javascript" src="src/State.js"></script>
