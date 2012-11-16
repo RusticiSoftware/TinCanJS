@@ -636,7 +636,7 @@ TinCan client library
         *&#x2F;
         queryStatements: function (cfg) {
             this.log(&quot;queryStatements&quot;);
-            var jsonProps = [&quot;actor&quot;, &quot;target&quot;, &quot;instructor&quot;],
+            var jsonProps = [&quot;actor&quot;, &quot;object&quot;, &quot;instructor&quot;],
                 idProps = [&quot;verb&quot;],
                 valProps = [&quot;registration&quot;, &quot;context&quot;, &quot;since&quot;, &quot;until&quot;, &quot;limit&quot;, &quot;authoritative&quot;, &quot;sparse&quot;, &quot;ascending&quot;],
                 requestParams = {},
@@ -656,6 +656,10 @@ TinCan client library
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
+
+            if (cfg.params.hasOwnProperty(&quot;target&quot;)) {
+                cfg.params.object = cfg.params.target;
+            }
 
             for (i = 0; i &lt; jsonProps.length; i += 1) {
                 if (typeof cfg.params[jsonProps[i]] !== &quot;undefined&quot;) {

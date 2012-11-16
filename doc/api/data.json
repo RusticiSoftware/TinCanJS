@@ -2077,7 +2077,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 543,
+            "line": 547,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2120,7 +2120,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 596,
+            "line": 600,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2170,7 +2170,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 648,
+            "line": 652,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2215,7 +2215,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 704,
+            "line": 708,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2261,7 +2261,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 752,
+            "line": 756,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2311,7 +2311,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 796,
+            "line": 800,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2346,7 +2346,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 837,
+            "line": 841,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2381,7 +2381,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 879,
+            "line": 883,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
