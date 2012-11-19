@@ -1391,7 +1391,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 237,
+            "line": 236,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2077,7 +2077,31 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 547,
+            "line": 522,
+            "description": "Build a request config object that can be passed to sendRequest() to make a query request",
+            "itemtype": "method",
+            "name": "_queryStatementsRequestCfg",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "cfg",
+                    "description": "See configuration for queryStatements()",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "Request configuration object",
+                "type": "Object"
+            },
+            "class": "TinCan.LRS",
+            "module": "TinCan",
+            "submodule": "TinCan.LRS"
+        },
+        {
+            "file": "src/LRS.js",
+            "line": 577,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2120,7 +2144,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 600,
+            "line": 630,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2170,7 +2194,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 652,
+            "line": 682,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2215,7 +2239,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 708,
+            "line": 738,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2261,7 +2285,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 756,
+            "line": 786,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2311,7 +2335,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 800,
+            "line": 830,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2346,7 +2370,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 841,
+            "line": 871,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2381,7 +2405,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 883,
+            "line": 913,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -3921,5 +3945,6 @@
             "module": "TinCan",
             "submodule": "TinCan.Verb"
         }
-    ]
+    ],
+    "warnings": []
 }

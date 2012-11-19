@@ -636,15 +636,9 @@ TinCan client library
         *&#x2F;
         queryStatements: function (cfg) {
             this.log(&quot;queryStatements&quot;);
-            var jsonProps = [&quot;actor&quot;, &quot;object&quot;, &quot;instructor&quot;],
-                idProps = [&quot;verb&quot;],
-                valProps = [&quot;registration&quot;, &quot;context&quot;, &quot;since&quot;, &quot;until&quot;, &quot;limit&quot;, &quot;authoritative&quot;, &quot;sparse&quot;, &quot;ascending&quot;],
-                requestParams = {},
-                requestCfg = {},
+            var requestCfg,
                 requestResult,
-                callbackWrapper,
-                i
-            ;
+                callbackWrapper;
 
             &#x2F;&#x2F; TODO: it would be better to make a subclass that knows
             &#x2F;&#x2F;       its own environment and just implements the protocol
@@ -661,29 +655,8 @@ TinCan client library
                 cfg.params.object = cfg.params.target;
             }
 
-            for (i = 0; i &lt; jsonProps.length; i += 1) {
-                if (typeof cfg.params[jsonProps[i]] !== &quot;undefined&quot;) {
-                    requestParams[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
-                }
-            }
+            requestCfg = this._queryStatementsRequestCfg(cfg);
 
-            for (i = 0; i &lt; idProps.length; i += 1) {
-                if (typeof cfg.params[idProps[i]] !== &quot;undefined&quot;) {
-                    requestParams[idProps[i]] = cfg.params[idProps[i]].id;
-                }
-            }
-
-            for (i = 0; i &lt; valProps.length; i += 1) {
-                if (typeof cfg.params[valProps[i]] !== &quot;undefined&quot;) {
-                    requestParams[valProps[i]] = cfg.params[valProps[i]];
-                }
-            }
-
-            requestCfg = {
-                url: &quot;statements&quot;,
-                method: &quot;GET&quot;,
-                params: requestParams
-            };
             if (typeof cfg.callback !== &quot;undefined&quot;) {
                 callbackWrapper = function (xhr) {
                     var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
@@ -698,6 +671,63 @@ TinCan client library
             if (typeof requestCfg.callback === &quot;undefined&quot;) {
                 return TinCan.StatementsResult.fromJSON(requestResult.responseText);
             }
+
+            return requestCfg;
+        },
+
+        &#x2F;**
+        Build a request config object that can be passed to sendRequest() to make a query request
+
+        @method _queryStatementsRequestCfg
+        @private
+        @param {Object} [cfg] See configuration for queryStatements()
+        @return {Object} Request configuration object
+        *&#x2F;
+        _queryStatementsRequestCfg: function (cfg) {
+            this.log(&quot;_queryStatementsRequestCfg&quot;);
+            var params = {},
+                returnCfg = {
+                    url: &quot;statements&quot;,
+                    method: &quot;GET&quot;,
+                    params: params
+                },
+                jsonProps = [
+                    &quot;actor&quot;,
+                    &quot;object&quot;,
+                    &quot;instructor&quot;
+                ],
+                idProps = [&quot;verb&quot;],
+                valProps = [
+                    &quot;registration&quot;,
+                    &quot;context&quot;,
+                    &quot;since&quot;,
+                    &quot;until&quot;,
+                    &quot;limit&quot;,
+                    &quot;authoritative&quot;,
+                    &quot;sparse&quot;,
+                    &quot;ascending&quot;
+                ],
+                i;
+
+            for (i = 0; i &lt; jsonProps.length; i += 1) {
+                if (typeof cfg.params[jsonProps[i]] !== &quot;undefined&quot;) {
+                    params[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
+                }
+            }
+
+            for (i = 0; i &lt; idProps.length; i += 1) {
+                if (typeof cfg.params[idProps[i]] !== &quot;undefined&quot;) {
+                    params[idProps[i]] = cfg.params[idProps[i]].id;
+                }
+            }
+
+            for (i = 0; i &lt; valProps.length; i += 1) {
+                if (typeof cfg.params[valProps[i]] !== &quot;undefined&quot;) {
+                    params[valProps[i]] = cfg.params[valProps[i]];
+                }
+            }
+
+            return returnCfg;
         },
 
         &#x2F;**
