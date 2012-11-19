@@ -53,6 +53,8 @@ TinCan client library
         @type String
         */
         this.max = null;
+
+        this.init(cfg);
     };
     Score.prototype = {
         /**
