@@ -107,13 +107,13 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.95") {
+            if (version === "0.90") {
+                result = this.id;
+            }
+            else {
                 result = {
                     id: this.id
                 };
-            }
-            else if (version === "0.90") {
-                result = this.id;
             }
 
             return result;

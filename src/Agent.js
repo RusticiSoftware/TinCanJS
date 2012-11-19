@@ -209,15 +209,7 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.95") {
-                if (this.mbox !== null) {
-                    result.mbox = this.mbox;
-                }
-                if (this.name !== null) {
-                    result.name = this.name;
-                }
-            }
-            else if (version === "0.90") {
+            if (version === "0.90") {
                 if (this.mbox !== null) {
                     result.mbox = [
                         this.mbox
@@ -227,6 +219,13 @@ TinCan client library
                     result.name = [
                         this.name
                     ];
+                }
+            } else {
+                if (this.mbox !== null) {
+                    result.mbox = this.mbox;
+                }
+                if (this.name !== null) {
+                    result.name = this.name;
                 }
             }
 
