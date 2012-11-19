@@ -151,6 +151,7 @@ TinCan client library
             this.log("init");
             var i,
                 directProps = [
+                    "id",
                     "stored",
                     "timestamp",
                     "inProgress",
@@ -161,8 +162,8 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (this.id === null) {
-                this.id = TinCan.Utils.getUUID();
+            if (cfg.id === null) {
+                cfg.id = TinCan.Utils.getUUID();
             }
 
             if (cfg.hasOwnProperty("object")) {
