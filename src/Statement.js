@@ -171,22 +171,46 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("actor")) {
+                if (typeof cfg.actor.objectType === "undefined" || cfg.actor.objectType === "Person") {
+                    cfg.actor.objectType = "Agent";
+                }
+
                 // TODO: check to see if already this type
-                this.actor = new TinCan.Agent (cfg.actor);
+                if (cfg.actor.objectType === "Agent") {
+                    this.actor = new TinCan.Agent (cfg.actor);
+                } else if (cfg.actor.objectType === "Group") {
+                    this.actor = new TinCan.Group (cfg.actor);
+                }
             }
             if (cfg.hasOwnProperty("verb")) {
                 // TODO: check to see if already this type
                 this.verb = new TinCan.Verb (cfg.verb);
             }
             if (cfg.hasOwnProperty("target")) {
-                // TODO: check to see if already this type,
-                //       need to look at object type rather
-                //       than assuming Activity
-                this.target = new TinCan.Activity (cfg.target);
+                // TODO: check to see if already this type
+                if (typeof cfg.target.objectType === "undefined") {
+                    cfg.target.objectType = "Activity";
+                }
+
+                if (cfg.target.objectType === "Activity") {
+                    this.target = new TinCan.Activity (cfg.target);
+                } else if (obj.objectType === "Agent") {
+                    this.target = new TinCan.Agent (cfg.target);
+                } else if (obj.objectType === "SubStatement") {
+                    this.target = new TinCan.SubStatement (cfg.target);
+                } else if (obj.objectType === "StatementRef") {
+                    this.target = new TinCan.StatementRef (cfg.target);
+                } else {
+                    this.log("Unrecognized target type: " + cfg.target.objectType);
+                }
             }
             if (cfg.hasOwnProperty("result")) {
                 // TODO: check to see if already this type
                 this.result = new TinCan.Result (cfg.result);
+            }
+            if (cfg.hasOwnProperty("context")) {
+                // TODO: check to see if already this type
+                this.context = new TinCan.Context (cfg.context);
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -225,6 +249,7 @@ TinCan client library
                 result.result = this.result.asVersion(version);
             }
 
+            // TODO: rest of fields
             // TODO: add timestamp
 
             return result;
