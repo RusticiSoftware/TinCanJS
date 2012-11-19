@@ -307,6 +307,7 @@ TinCan client library
             this.log(&quot;init&quot;);
             var i,
                 directProps = [
+                    &quot;id&quot;,
                     &quot;stored&quot;,
                     &quot;timestamp&quot;,
                     &quot;inProgress&quot;,
@@ -317,8 +318,8 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (this.id === null) {
-                this.id = TinCan.Utils.getUUID();
+            if (cfg.id === null) {
+                cfg.id = TinCan.Utils.getUUID();
             }
 
             if (cfg.hasOwnProperty(&quot;object&quot;)) {
@@ -326,22 +327,46 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty(&quot;actor&quot;)) {
+                if (typeof cfg.actor.objectType === &quot;undefined&quot; || cfg.actor.objectType === &quot;Person&quot;) {
+                    cfg.actor.objectType = &quot;Agent&quot;;
+                }
+
                 &#x2F;&#x2F; TODO: check to see if already this type
-                this.actor = new TinCan.Agent (cfg.actor);
+                if (cfg.actor.objectType === &quot;Agent&quot;) {
+                    this.actor = new TinCan.Agent (cfg.actor);
+                } else if (cfg.actor.objectType === &quot;Group&quot;) {
+                    this.actor = new TinCan.Group (cfg.actor);
+                }
             }
             if (cfg.hasOwnProperty(&quot;verb&quot;)) {
                 &#x2F;&#x2F; TODO: check to see if already this type
                 this.verb = new TinCan.Verb (cfg.verb);
             }
             if (cfg.hasOwnProperty(&quot;target&quot;)) {
-                &#x2F;&#x2F; TODO: check to see if already this type,
-                &#x2F;&#x2F;       need to look at object type rather
-                &#x2F;&#x2F;       than assuming Activity
-                this.target = new TinCan.Activity (cfg.target);
+                &#x2F;&#x2F; TODO: check to see if already this type
+                if (typeof cfg.target.objectType === &quot;undefined&quot;) {
+                    cfg.target.objectType = &quot;Activity&quot;;
+                }
+
+                if (cfg.target.objectType === &quot;Activity&quot;) {
+                    this.target = new TinCan.Activity (cfg.target);
+                } else if (obj.objectType === &quot;Agent&quot;) {
+                    this.target = new TinCan.Agent (cfg.target);
+                } else if (obj.objectType === &quot;SubStatement&quot;) {
+                    this.target = new TinCan.SubStatement (cfg.target);
+                } else if (obj.objectType === &quot;StatementRef&quot;) {
+                    this.target = new TinCan.StatementRef (cfg.target);
+                } else {
+                    this.log(&quot;Unrecognized target type: &quot; + cfg.target.objectType);
+                }
             }
             if (cfg.hasOwnProperty(&quot;result&quot;)) {
                 &#x2F;&#x2F; TODO: check to see if already this type
                 this.result = new TinCan.Result (cfg.result);
+            }
+            if (cfg.hasOwnProperty(&quot;context&quot;)) {
+                &#x2F;&#x2F; TODO: check to see if already this type
+                this.context = new TinCan.Context (cfg.context);
             }
 
             for (i = 0; i &lt; directProps.length; i += 1) {
@@ -380,6 +405,7 @@ TinCan client library
                 result.result = this.result.asVersion(version);
             }
 
+            &#x2F;&#x2F; TODO: rest of fields
             &#x2F;&#x2F; TODO: add timestamp
 
             return result;

@@ -2565,7 +2565,7 @@
         },
         {
             "file": "src/Score.js",
-            "line": 58,
+            "line": 60,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Score",
@@ -2574,7 +2574,7 @@
         },
         {
             "file": "src/Score.js",
-            "line": 63,
+            "line": 65,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Score",
@@ -2583,7 +2583,7 @@
         },
         {
             "file": "src/Score.js",
-            "line": 68,
+            "line": 70,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -2600,7 +2600,7 @@
         },
         {
             "file": "src/Score.js",
-            "line": 94,
+            "line": 96,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2862,7 +2862,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 198,
+            "line": 223,
             "itemtype": "method",
             "name": "toString",
             "return": {
@@ -2875,7 +2875,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 207,
+            "line": 232,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
