@@ -480,15 +480,9 @@ TinCan client library
         */
         queryStatements: function (cfg) {
             this.log("queryStatements");
-            var jsonProps = ["actor", "object", "instructor"],
-                idProps = ["verb"],
-                valProps = ["registration", "context", "since", "until", "limit", "authoritative", "sparse", "ascending"],
-                requestParams = {},
-                requestCfg = {},
+            var requestCfg,
                 requestResult,
-                callbackWrapper,
-                i
-            ;
+                callbackWrapper;
 
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
@@ -505,29 +499,8 @@ TinCan client library
                 cfg.params.object = cfg.params.target;
             }
 
-            for (i = 0; i < jsonProps.length; i += 1) {
-                if (typeof cfg.params[jsonProps[i]] !== "undefined") {
-                    requestParams[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
-                }
-            }
+            requestCfg = this._queryStatementsRequestCfg(cfg);
 
-            for (i = 0; i < idProps.length; i += 1) {
-                if (typeof cfg.params[idProps[i]] !== "undefined") {
-                    requestParams[idProps[i]] = cfg.params[idProps[i]].id;
-                }
-            }
-
-            for (i = 0; i < valProps.length; i += 1) {
-                if (typeof cfg.params[valProps[i]] !== "undefined") {
-                    requestParams[valProps[i]] = cfg.params[valProps[i]];
-                }
-            }
-
-            requestCfg = {
-                url: "statements",
-                method: "GET",
-                params: requestParams
-            };
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (xhr) {
                     var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
@@ -542,6 +515,63 @@ TinCan client library
             if (typeof requestCfg.callback === "undefined") {
                 return TinCan.StatementsResult.fromJSON(requestResult.responseText);
             }
+
+            return requestCfg;
+        },
+
+        /**
+        Build a request config object that can be passed to sendRequest() to make a query request
+
+        @method _queryStatementsRequestCfg
+        @private
+        @param {Object} [cfg] See configuration for queryStatements()
+        @return {Object} Request configuration object
+        */
+        _queryStatementsRequestCfg: function (cfg) {
+            this.log("_queryStatementsRequestCfg");
+            var params = {},
+                returnCfg = {
+                    url: "statements",
+                    method: "GET",
+                    params: params
+                },
+                jsonProps = [
+                    "actor",
+                    "object",
+                    "instructor"
+                ],
+                idProps = ["verb"],
+                valProps = [
+                    "registration",
+                    "context",
+                    "since",
+                    "until",
+                    "limit",
+                    "authoritative",
+                    "sparse",
+                    "ascending"
+                ],
+                i;
+
+            for (i = 0; i < jsonProps.length; i += 1) {
+                if (typeof cfg.params[jsonProps[i]] !== "undefined") {
+                    params[jsonProps[i]] = JSON.stringify(cfg.params[jsonProps[i]].asVersion(this.version));
+                }
+            }
+
+            for (i = 0; i < idProps.length; i += 1) {
+                if (typeof cfg.params[idProps[i]] !== "undefined") {
+                    params[idProps[i]] = cfg.params[idProps[i]].id;
+                }
+            }
+
+            for (i = 0; i < valProps.length; i += 1) {
+                if (typeof cfg.params[valProps[i]] !== "undefined") {
+                    params[valProps[i]] = cfg.params[valProps[i]];
+                }
+            }
+
+            return returnCfg;
         },
 
         /**
