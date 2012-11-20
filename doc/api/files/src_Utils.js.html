@@ -225,7 +225,9 @@ TinCan client library
                 return langDict[&quot;en-US&quot;];
             }
             for (key in langDict) {
-                return langDict[key];
+                if (langDict.hasOwnProperty(key)) {
+                    return langDict[key];
+                }
             }
 
             return &quot;&quot;;

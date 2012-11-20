@@ -2875,7 +2875,7 @@
         },
         {
             "file": "src/Statement.js",
-            "line": 232,
+            "line": 236,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -3182,7 +3182,7 @@
         },
         {
             "file": "src/SubStatement.js",
-            "line": 151,
+            "line": 155,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -3813,7 +3813,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 78,
+            "line": 80,
             "itemtype": "method",
             "name": "parseURL",
             "params": [

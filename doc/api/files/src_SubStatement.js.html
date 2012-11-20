@@ -301,7 +301,11 @@ TinCan client library
         *&#x2F;
         toString: function (lang) {
             this.log(&quot;toString&quot;);
-            return this.actor.toString() + &quot; &quot; + this.verb.toString() + &quot; &quot; + this.target.toString();
+            return (this.actor !== null ? this.actor.toString(lang) : &quot;&quot;) +
+                    &quot; &quot; +
+                    (this.verb !== null ? this.verb.toString(lang) : &quot;&quot;) +
+                    &quot; &quot; +
+                    (this.target !== null ? this.target.toString(lang) : &quot;&quot;);
         },
 
         &#x2F;**
