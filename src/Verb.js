@@ -93,7 +93,12 @@ TinCan client library
         */
         toString: function (lang) {
             this.log("toString");
-            return this.getLangDictionaryValue("display", lang);
+
+            if (this.display !== null) {
+                return this.getLangDictionaryValue("display", lang);
+            }
+
+            return this.id;
         },
 
         /**
