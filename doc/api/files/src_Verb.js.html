@@ -249,7 +249,12 @@ TinCan client library
         *&#x2F;
         toString: function (lang) {
             this.log(&quot;toString&quot;);
-            return this.getLangDictionaryValue(&quot;display&quot;, lang);
+
+            if (this.display !== null) {
+                return this.getLangDictionaryValue(&quot;display&quot;, lang);
+            }
+
+            return this.id;
         },
 
         &#x2F;**

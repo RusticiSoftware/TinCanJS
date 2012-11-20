@@ -263,25 +263,43 @@ TinCan client library
 
             &#x2F;&#x2F; handle .9 split names and array properties into single interface
             if (typeof cfg.lastName !== &quot;undefined&quot; || typeof cfg.firstName !== &quot;undefined&quot;) {
-                if (cfg.lastName.length &gt; 1 || cfg.firstName.length &gt; 1) {
-                    this.degraded = true;
+                cfg.name = &quot;&quot;;
+                if (typeof cfg.firstName !== &quot;undefined&quot; &amp;&amp; cfg.firstName.length &gt; 0) {
+                    cfg.name = cfg.firstName[0];
+                    if (cfg.firstName.length &gt; 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.firstName[0];
                 if (cfg.name !== &quot;&quot;) {
                     cfg.name += &quot; &quot;;
                 }
-                cfg.name += cfg.lastName[0];
+
+                if (typeof cfg.lastName !== &quot;undefined&quot; &amp;&amp; cfg.lastName.length &gt; 0) {
+                    cfg.name += cfg.lastName[0];
+                    if (cfg.lastName.length &gt; 1) {
+                        this.degraded = true;
+                    }
+                }
             } else if (typeof cfg.familyName !== &quot;undefined&quot; || typeof cfg.givenName !== &quot;undefined&quot;) {
-                if (cfg.familyName.length &gt; 1 || cfg.givenName.length &gt; 1) {
-                    this.degraded = true;
+                cfg.name = &quot;&quot;;
+                if (typeof cfg.givenName !== &quot;undefined&quot; &amp;&amp; cfg.givenName.length &gt; 0) {
+                    cfg.name = cfg.givenName[0];
+                    if (cfg.givenName.length &gt; 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.givenName[0];
                 if (cfg.name !== &quot;&quot;) {
                     cfg.name += &quot; &quot;;
                 }
-                cfg.name += cfg.familyName[0];
+
+                if (typeof cfg.familyName !== &quot;undefined&quot; &amp;&amp; cfg.familyName.length &gt; 0) {
+                    cfg.name += cfg.familyName[0];
+                    if (cfg.familyName.length &gt; 1) {
+                        this.degraded = true;
+                    }
+                }
             }
 
             if (typeof cfg.name === &quot;object&quot;) {

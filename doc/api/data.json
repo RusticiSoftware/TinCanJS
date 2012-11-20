@@ -1366,7 +1366,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 199,
+            "line": 217,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1391,7 +1391,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 236,
+            "line": 254,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -3903,7 +3903,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 99,
+            "line": 104,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -3928,7 +3928,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 125,
+            "line": 130,
             "itemtype": "method",
             "name": "fromJSON",
             "params": [
