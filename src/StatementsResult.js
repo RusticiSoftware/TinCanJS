@@ -87,10 +87,24 @@ TinCan client library
         // TODO: protect JSON call from bad JSON
         var _result = JSON.parse(resultJSON),
             stmts = [],
+            stmt,
             i
         ;
         for (i = 0; i < _result.statements.length; i += 1) {
-            stmts.push( new TinCan.Statement (_result.statements[i], 4) );
+            try {
+                stmt = new TinCan.Statement (_result.statements[i], 4);
+            } catch (error) {
+                StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
+
+                stmt = new TinCan.Statement (
+                    {
+                        id: _result.statements[i].id
+                    },
+                    4
+                );
+            }
+
+            stmts.push(stmt);
         }
         _result.statements = stmts;
 
