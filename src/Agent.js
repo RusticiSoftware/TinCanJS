@@ -107,25 +107,43 @@ TinCan client library
 
             // handle .9 split names and array properties into single interface
             if (typeof cfg.lastName !== "undefined" || typeof cfg.firstName !== "undefined") {
-                if (cfg.lastName.length > 1 || cfg.firstName.length > 1) {
-                    this.degraded = true;
+                cfg.name = "";
+                if (typeof cfg.firstName !== "undefined" && cfg.firstName.length > 0) {
+                    cfg.name = cfg.firstName[0];
+                    if (cfg.firstName.length > 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.firstName[0];
                 if (cfg.name !== "") {
                     cfg.name += " ";
                 }
-                cfg.name += cfg.lastName[0];
+
+                if (typeof cfg.lastName !== "undefined" && cfg.lastName.length > 0) {
+                    cfg.name += cfg.lastName[0];
+                    if (cfg.lastName.length > 1) {
+                        this.degraded = true;
+                    }
+                }
             } else if (typeof cfg.familyName !== "undefined" || typeof cfg.givenName !== "undefined") {
-                if (cfg.familyName.length > 1 || cfg.givenName.length > 1) {
-                    this.degraded = true;
+                cfg.name = "";
+                if (typeof cfg.givenName !== "undefined" && cfg.givenName.length > 0) {
+                    cfg.name = cfg.givenName[0];
+                    if (cfg.givenName.length > 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.givenName[0];
                 if (cfg.name !== "") {
                     cfg.name += " ";
                 }
-                cfg.name += cfg.familyName[0];
+
+                if (typeof cfg.familyName !== "undefined" && cfg.familyName.length > 0) {
+                    cfg.name += cfg.familyName[0];
+                    if (cfg.familyName.length > 1) {
+                        this.degraded = true;
+                    }
+                }
             }
 
             if (typeof cfg.name === "object") {
