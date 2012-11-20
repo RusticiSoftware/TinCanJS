@@ -145,7 +145,11 @@ TinCan client library
         */
         toString: function (lang) {
             this.log("toString");
-            return this.actor.toString() + " " + this.verb.toString() + " " + this.target.toString();
+            return (this.actor !== null ? this.actor.toString(lang) : "") +
+                    " " +
+                    (this.verb !== null ? this.verb.toString(lang) : "") +
+                    " " +
+                    (this.target !== null ? this.target.toString(lang) : "");
         },
 
         /**
