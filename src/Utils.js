@@ -69,7 +69,9 @@ TinCan client library
                 return langDict["en-US"];
             }
             for (key in langDict) {
-                return langDict[key];
+                if (langDict.hasOwnProperty(key)) {
+                    return langDict[key];
+                }
             }
 
             return "";
