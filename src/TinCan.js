@@ -270,8 +270,8 @@ var TinCan;
         Calls saveStatement on each configured LRS, provide callback to make it asynchronous
 
         @method sendStatement
-        @param {TinCan.Statement} Send statement to LRS
-        @param {Function} Callback function to execute on completion
+        @param {TinCan.Statement} statement Send statement to LRS
+        @param {Function} [callback] Callback function to execute on completion
         */
         sendStatement: function (stmt, callback) {
             this.log("sendStatement");
@@ -336,8 +336,8 @@ var TinCan;
         Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous
 
         @method getStatement
-        @param {String} Statement ID to get
-        @param {Function} Callback function to execute on completion
+        @param {String} statement Statement ID to get
+        @param {Function} [callback] Callback function to execute on completion
         @return {TinCan.Statement} Retrieved statement from LRS
 
         TODO: make TinCan track statements it has seen in a local cache to be returned easily

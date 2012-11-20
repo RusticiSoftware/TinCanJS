@@ -3354,14 +3354,15 @@
             "name": "sendStatement",
             "params": [
                 {
-                    "name": "Send",
-                    "description": "statement to LRS",
+                    "name": "statement",
+                    "description": "Send statement to LRS",
                     "type": "TinCan.Statement"
                 },
                 {
-                    "name": "Callback",
-                    "description": "function to execute on completion",
-                    "type": "Function"
+                    "name": "callback",
+                    "description": "Callback function to execute on completion",
+                    "type": "Function",
+                    "optional": true
                 }
             ],
             "class": "TinCan",
@@ -3375,14 +3376,15 @@
             "name": "getStatement",
             "params": [
                 {
-                    "name": "Statement",
-                    "description": "ID to get",
+                    "name": "statement",
+                    "description": "Statement ID to get",
                     "type": "String"
                 },
                 {
-                    "name": "Callback",
-                    "description": "function to execute on completion",
-                    "type": "Function"
+                    "name": "callback",
+                    "description": "Callback function to execute on completion",
+                    "type": "Function",
+                    "optional": true
                 }
             ],
             "return": {

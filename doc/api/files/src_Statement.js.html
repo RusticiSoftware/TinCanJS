@@ -350,11 +350,11 @@ TinCan client library
 
                 if (cfg.target.objectType === &quot;Activity&quot;) {
                     this.target = new TinCan.Activity (cfg.target);
-                } else if (obj.objectType === &quot;Agent&quot;) {
+                } else if (cfg.target.objectType === &quot;Agent&quot;) {
                     this.target = new TinCan.Agent (cfg.target);
-                } else if (obj.objectType === &quot;SubStatement&quot;) {
+                } else if (cfg.target.objectType === &quot;SubStatement&quot;) {
                     this.target = new TinCan.SubStatement (cfg.target);
-                } else if (obj.objectType === &quot;StatementRef&quot;) {
+                } else if (cfg.target.objectType === &quot;StatementRef&quot;) {
                     this.target = new TinCan.StatementRef (cfg.target);
                 } else {
                     this.log(&quot;Unrecognized target type: &quot; + cfg.target.objectType);
