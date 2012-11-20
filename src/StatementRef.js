@@ -87,7 +87,7 @@ TinCan client library
         */
         toString: function (lang) {
             this.log("toString");
-            return this.prototype.objectType + ": " + this.id;
+            return this.id;
         },
 
         /**
