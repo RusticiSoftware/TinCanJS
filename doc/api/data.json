@@ -1245,7 +1245,17 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 197,
+            "line": 194,
+            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "itemtype": "method",
+            "name": "getLangDictionaryValue",
+            "class": "TinCan.ActivityDefinition",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityDefinition"
+        },
+        {
+            "file": "src/ActivityDefinition.js",
+            "line": 202,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1705,6 +1715,16 @@
                     "optional": true
                 }
             ],
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 80,
+            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "itemtype": "method",
+            "name": "getLangDictionaryValue",
             "class": "TinCan.InteractionComponent",
             "module": "TinCan",
             "submodule": "TinCan.InteractionComponent"
@@ -3928,7 +3948,17 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 133,
+            "line": 130,
+            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "itemtype": "method",
+            "name": "getLangDictionaryValue",
+            "class": "TinCan.Verb",
+            "module": "TinCan",
+            "submodule": "TinCan.Verb"
+        },
+        {
+            "file": "src/Verb.js",
+            "line": 138,
             "itemtype": "method",
             "name": "fromJSON",
             "params": [

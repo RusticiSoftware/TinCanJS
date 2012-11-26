@@ -127,6 +127,11 @@ TinCan client library
             return result;
         },
 
+        /**
+        See TinCan.Utils.getLangDictionaryValue
+
+        @method getLangDictionaryValue
+        */
         getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
 
