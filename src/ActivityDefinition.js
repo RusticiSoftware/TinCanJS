@@ -192,7 +192,7 @@ TinCan client library
         },
 
         /**
-        See TinCan.Utils.getLangDictionaryValue
+        See {{#crossLink "TinCan.Utils/getLangDictionaryValue"}}{{/crossLink}}
 
         @method getLangDictionaryValue
         */

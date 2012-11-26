@@ -188,7 +188,9 @@
             "modules": {
                 "TinCan.Utils": 1
             },
-            "classes": {},
+            "classes": {
+                "TinCan.Utils": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -243,6 +245,7 @@
                 "TinCan.StatementsResult": 1,
                 "TinCan.SubStatement": 1,
                 "TinCan": 1,
+                "TinCan.Utils": 1,
                 "TinCan.Verb": 1
             },
             "fors": {},
@@ -480,14 +483,16 @@
         "TinCan.Utils": {
             "name": "TinCan.Utils",
             "submodules": {},
-            "classes": {},
+            "classes": {
+                "TinCan.Utils": 1
+            },
             "fors": {},
             "is_submodule": 1,
             "namespaces": {},
             "module": "TinCan",
             "namespace": "",
             "file": "src/Utils.js",
-            "line": 17,
+            "line": 26,
             "description": "TinCan client library"
         },
         "TinCan.Verb": {
@@ -925,6 +930,20 @@
                 }
             ]
         },
+        "TinCan.Utils": {
+            "name": "TinCan.Utils",
+            "shortname": "TinCan.Utils",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.Utils",
+            "namespace": "",
+            "file": "src/Utils.js",
+            "line": 26
+        },
         "TinCan.Verb": {
             "name": "TinCan.Verb",
             "shortname": "TinCan.Verb",
@@ -1246,7 +1265,7 @@
         {
             "file": "src/ActivityDefinition.js",
             "line": 194,
-            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "class": "TinCan.ActivityDefinition",
@@ -1722,7 +1741,7 @@
         {
             "file": "src/InteractionComponent.js",
             "line": 80,
-            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "class": "TinCan.InteractionComponent",
@@ -1823,6 +1842,7 @@
         {
             "file": "src/LRS.js",
             "line": 169,
+            "description": "Method used to send a request via browser objects to the LRS",
             "itemtype": "method",
             "name": "sendRequest",
             "params": [
@@ -1883,7 +1903,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 337,
+            "line": 339,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -1914,7 +1934,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 373,
+            "line": 375,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -1949,7 +1969,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 412,
+            "line": 414,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -1980,7 +2000,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 458,
+            "line": 460,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2097,7 +2117,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 522,
+            "line": 524,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2106,7 +2126,7 @@
             "params": [
                 {
                     "name": "cfg",
-                    "description": "See configuration for queryStatements()",
+                    "description": "See configuration for {{#crossLink \"TinCan.LRS/queryStatements\"}}{{/crossLink}}",
                     "type": "Object",
                     "optional": true
                 }
@@ -2121,7 +2141,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 577,
+            "line": 579,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2164,7 +2184,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 630,
+            "line": 632,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2214,7 +2234,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 687,
+            "line": 689,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2265,7 +2285,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 749,
+            "line": 751,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2313,7 +2333,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 802,
+            "line": 804,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2352,7 +2372,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 844,
+            "line": 846,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2387,7 +2407,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 885,
+            "line": 887,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2422,7 +2442,8 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 927,
+            "line": 929,
+            "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -3790,7 +3811,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 27,
+            "line": 30,
             "itemtype": "method",
             "name": "getUUID",
             "return": {
@@ -3798,13 +3819,13 @@
                 "type": "String"
             },
             "static": "Excerpt from: Math.uuid.js (v1.4)\nhttp://www.broofa.com\nmailto:robert@broofa.com\nCopyright (c) 2010 Robert Kieffer\nDual licensed under the MIT and GPL licenses.",
-            "class": "TinCan.Verb",
+            "class": "TinCan.Utils",
             "module": "TinCan",
             "submodule": "TinCan.Utils"
         },
         {
             "file": "src/Utils.js",
-            "line": 49,
+            "line": 52,
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "params": [
@@ -3824,13 +3845,13 @@
                 "description": "\n\nIntended to be inherited by objects with properties that store\ndisplay values in a language based \"dictionary\"",
                 "type": "String"
             },
-            "class": "TinCan.Verb",
+            "class": "TinCan.Utils",
             "module": "TinCan",
             "submodule": "TinCan.Utils"
         },
         {
             "file": "src/Utils.js",
-            "line": 80,
+            "line": 83,
             "itemtype": "method",
             "name": "parseURL",
             "params": [
@@ -3846,7 +3867,7 @@
             },
             "access": "private",
             "tagname": "",
-            "class": "TinCan.Verb",
+            "class": "TinCan.Utils",
             "module": "TinCan",
             "submodule": "TinCan.Utils"
         },
@@ -3946,7 +3967,7 @@
         {
             "file": "src/Verb.js",
             "line": 130,
-            "description": "See TinCan.Utils.getLangDictionaryValue",
+            "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "class": "TinCan.Verb",

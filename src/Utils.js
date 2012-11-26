@@ -23,6 +23,9 @@ TinCan client library
 (function () {
     "use strict";
 
+    /**
+    @class TinCan.Utils
+    */
     TinCan.Utils = {
         /**
         @method getUUID

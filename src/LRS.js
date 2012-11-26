@@ -167,6 +167,8 @@ TinCan client library
         },
 
         /**
+        Method used to send a request via browser objects to the LRS
+
         @method sendRequest
         @param {Object} [cfg] Configuration for request
             @param {String} [cfg.url] URL portion to add to endpoint
@@ -524,7 +526,7 @@ TinCan client library
 
         @method _queryStatementsRequestCfg
         @private
-        @param {Object} [cfg] See configuration for queryStatements()
+        @param {Object} [cfg] See configuration for {{#crossLink "TinCan.LRS/queryStatements"}}{{/crossLink}}
         @return {Object} Request configuration object
         */
         _queryStatementsRequestCfg: function (cfg) {
@@ -925,6 +927,9 @@ TinCan client library
         },
 
         /**
+        Non-environment safe method used to create a delay to give impression
+        of synchronous response
+
         @method __delay
         @private
         */

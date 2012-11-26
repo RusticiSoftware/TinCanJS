@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TinCan.Group - TinCanJS</title>
+    <title>TinCan.Utils - TinCanJS</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -152,7 +152,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TinCan.Group Class</h1>
+                        <h1>TinCan.Utils Class</h1>
 <div class="box meta">
     
 
@@ -160,13 +160,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;src_Group.js.html#l26"><code>src&#x2F;Group.js:26</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;src_Utils.js.html#l26"><code>src&#x2F;Utils.js:26</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/TinCan.Group.html">TinCan.Group</a><br>
+            Module: <a href="../modules/TinCan.Utils.html">TinCan.Utils</a><br>
             Parent Module: <a href="../modules/TinCan.html">TinCan</a>
         
     
@@ -181,63 +181,6 @@
 </div>
 
 
-    <div class="constructor">
-        <h2>Constructor</h2>
-        <div id="method_TinCan.Group" class="method item">
-    <h3 class="name"><code>TinCan.Group</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l26"><code>src&#x2F;Group.js:26</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-    </div>
-
 
 <div id="classdocs" class="tabview">
     <ul class="api-class-tabs">
@@ -246,8 +189,6 @@
         
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
-        
-            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
         
         
         
@@ -264,45 +205,14 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_init">init</a>
+                                <a href="#method_getLangDictionaryValue">getLangDictionaryValue</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_log">log</a>
-
-                                
-                                
-                            </li>
-                        
-                    </ul>
-                </div>
-            
-
-            
-                <div class="index-section properties">
-                    <h3>Properties</h3>
-
-                    <ul class="index-list properties">
-                        
-                            <li class="index-item property">
-                                <a href="#property_LOG_SRC">LOG_SRC</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
-                                <a href="#property_member">member</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
-                                <a href="#property_objectType">objectType</a>
+                                <a href="#method_getUUID">getUUID</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -310,8 +220,17 @@
                                 
                             </li>
                         
+                            <li class="index-item method private">
+                                <a href="#method_parseURL">parseURL</a>
+
+                                
+                                
+                            </li>
+                        
                     </ul>
                 </div>
+            
+
             
 
             
@@ -324,8 +243,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_init" class="method item">
-    <h3 class="name"><code>init</code></h3>
+                    <div id="method_getLangDictionaryValue" class="method item">
+    <h3 class="name"><code>getLangDictionaryValue</code></h3>
 
     
         <div class="args">
@@ -333,7 +252,13 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options]</code>
+                        <code>prop</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[lang]</code>
                     
                 </li>
             
@@ -341,6 +266,10 @@
         </div>
     
 
+    
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
     
 
     
@@ -366,7 +295,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l60"><code>src&#x2F;Group.js:60</code></a>
+        <a href="..&#x2F;files&#x2F;src_Utils.js.html#l52"><code>src&#x2F;Utils.js:52</code></a>
         
         </p>
 
@@ -388,15 +317,30 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[options]</code>
-                        <span class="type">Object</span>
+                        <code class="param-name">prop</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Property name storing the dictionary</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[lang]</code>
+                        <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>Configuration used to initialize</p>
+                        <p>Language to return</p>
                     </div>
 
                     
@@ -407,164 +351,37 @@
     
 
     
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Intended to be inherited by objects with properties that store
+display values in a language based "dictionary"
+                
+            </div>
+        </div>
+    
 
     
 </div>
 
                 
-                    <div id="method_log" class="method item">
-    <h3 class="name"><code>log</code></h3>
+                    <div id="method_getUUID" class="method item">
+    <h3 class="name"><code>getUUID</code></h3>
 
     
         <span class="paren">()</span>
     
 
     
-
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l55"><code>src&#x2F;Group.js:55</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-            </div>
-        
-
-        
-            <div id="properties" class="api-class-tabpanel">
-                <h2 class="off-left">Properties</h2>
-
-                
-                    <div id="property_LOG_SRC" class="property item">
-    <h3 class="name"><code>LOG_SRC</code></h3>
-    <span class="type">Unknown</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l50"><code>src&#x2F;Group.js:50</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_member" class="property item">
-    <h3 class="name"><code>member</code></h3>
-    <span class="type">Array</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l33"><code>src&#x2F;Group.js:33</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_objectType" class="property item">
-    <h3 class="name"><code>objectType</code></h3>
-    <span class="type">String</span>
 
     
 
@@ -576,6 +393,10 @@
         <span class="flag static">static</span>
     
 
+    
+
+    
+
     <div class="meta">
         
             
@@ -587,9 +408,10 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Group.js.html#l42"><code>src&#x2F;Group.js:42</code></a>
+        <a href="..&#x2F;files&#x2F;src_Utils.js.html#l30"><code>src&#x2F;Utils.js:30</code></a>
         
         </p>
+
 
         
 
@@ -601,9 +423,126 @@
     </div>
 
     
-        <p><strong>Default:</strong> &quot;Group&quot;</p>
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    UUID
+                
+            </div>
+        </div>
     
 
+    
+</div>
+
+                
+                    <div id="method_parseURL" class="method item private">
+    <h3 class="name"><code>parseURL</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>url</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_Utils.js.html#l83"><code>src&#x2F;Utils.js:83</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">url</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    Object of values
+                
+            </div>
+        </div>
     
 
     
@@ -611,6 +550,8 @@
 
                 
             </div>
+        
+
         
 
         

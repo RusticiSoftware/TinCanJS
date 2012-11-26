@@ -73,6 +73,8 @@
             
                 <li><a href="..&#x2F;classes/TinCan.SubStatement.html">TinCan.SubStatement</a></li>
             
+                <li><a href="..&#x2F;classes/TinCan.Utils.html">TinCan.Utils</a></li>
+            
                 <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
             
             </ul>
@@ -323,6 +325,8 @@ TinCan client library
         },
 
         &#x2F;**
+        Method used to send a request via browser objects to the LRS
+
         @method sendRequest
         @param {Object} [cfg] Configuration for request
             @param {String} [cfg.url] URL portion to add to endpoint
@@ -680,7 +684,7 @@ TinCan client library
 
         @method _queryStatementsRequestCfg
         @private
-        @param {Object} [cfg] See configuration for queryStatements()
+        @param {Object} [cfg] See configuration for {{#crossLink &quot;TinCan.LRS&#x2F;queryStatements&quot;}}{{&#x2F;crossLink}}
         @return {Object} Request configuration object
         *&#x2F;
         _queryStatementsRequestCfg: function (cfg) {
@@ -1081,6 +1085,9 @@ TinCan client library
         },
 
         &#x2F;**
+        Non-environment safe method used to create a delay to give impression
+        of synchronous response
+
         @method __delay
         @private
         *&#x2F;
