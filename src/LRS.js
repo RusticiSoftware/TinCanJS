@@ -633,9 +633,9 @@ TinCan client library
         @method retrieveState
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
-            @param {Object} agent TinCan.Agent
-            @param {String} [registration] Registration
+            @param {Object} cfg.activity TinCan.Activity
+            @param {Object} cfg.agent TinCan.Agent
+            @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} TinCan.State retrieved
         */
@@ -688,11 +688,12 @@ TinCan client library
         Save a state value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method saveState
-        @param {String} key Key of state to retrieve
+        @param {String} key Key of state to save
+        @param {String} val Value of state to save
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
-            @param {Object} agent TinCan.Agent
-            @param {String} registration Registration
+            @param {Object} cfg.activity TinCan.Activity
+            @param {Object} cfg.agent TinCan.Agent
+            @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -751,9 +752,9 @@ TinCan client library
         @method dropState
         @param {String|null} key Key of state to delete, or null for all
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
-            @param {Object} agent TinCan.Agent
-            @param {String} [registration] Registration
+            @param {Object} [cfg.activity] TinCan.Activity
+            @param {Object} [cfg.agent] TinCan.Agent
+            @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         dropState: function (key, cfg) {
@@ -804,7 +805,7 @@ TinCan client library
         @method retrieveActivityProfile
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
+            @param {Object} cfg.activity TinCan.Activity
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} Value retrieved
         */
@@ -846,7 +847,7 @@ TinCan client library
         @method saveActivityProfile
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
+            @param {Object} cfg.activity TinCan.Activity
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -887,7 +888,7 @@ TinCan client library
         @method dropActivityProfile
         @param {String|null} key Key of activity profile to delete, or null for all
         @param {Object} cfg Configuration options
-            @param {Object} activity TinCan.Activity
+            @param {Object} cfg.activity TinCan.Activity
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         dropActivityProfile: function (key, cfg) {

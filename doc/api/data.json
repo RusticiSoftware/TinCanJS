@@ -2180,28 +2180,28 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object"
+                        },
+                        {
+                            "name": "agent",
+                            "description": "TinCan.Agent",
+                            "type": "Object"
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
-                },
-                {
-                    "name": "agent",
-                    "description": "TinCan.Agent",
-                    "type": "Object"
-                },
-                {
-                    "name": "registration",
-                    "description": "Registration",
-                    "type": "String",
-                    "optional": true
                 }
             ],
             "return": {
@@ -2221,7 +2221,12 @@
             "params": [
                 {
                     "name": "key",
-                    "description": "Key of state to retrieve",
+                    "description": "Key of state to save",
+                    "type": "String"
+                },
+                {
+                    "name": "val",
+                    "description": "Value of state to save",
                     "type": "String"
                 },
                 {
@@ -2230,27 +2235,28 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object"
+                        },
+                        {
+                            "name": "agent",
+                            "description": "TinCan.Agent",
+                            "type": "Object"
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
-                },
-                {
-                    "name": "agent",
-                    "description": "TinCan.Agent",
-                    "type": "Object"
-                },
-                {
-                    "name": "registration",
-                    "description": "Registration",
-                    "type": "String"
                 }
             ],
             "class": "TinCan.LRS",
@@ -2259,7 +2265,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 748,
+            "line": 749,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2275,28 +2281,30 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "agent",
+                            "description": "TinCan.Agent",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "registration",
+                            "description": "Registration",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
-                },
-                {
-                    "name": "agent",
-                    "description": "TinCan.Agent",
-                    "type": "Object"
-                },
-                {
-                    "name": "registration",
-                    "description": "Registration",
-                    "type": "String",
-                    "optional": true
                 }
             ],
             "class": "TinCan.LRS",
@@ -2305,7 +2313,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 801,
+            "line": 802,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2321,17 +2329,17 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object"
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
                 }
             ],
             "return": {
@@ -2344,7 +2352,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 843,
+            "line": 844,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2360,17 +2368,17 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object"
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
                 }
             ],
             "class": "TinCan.LRS",
@@ -2379,7 +2387,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 884,
+            "line": 885,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2395,17 +2403,17 @@
                     "type": "Object",
                     "props": [
                         {
+                            "name": "activity",
+                            "description": "TinCan.Activity",
+                            "type": "Object"
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
                             "optional": true
                         }
                     ]
-                },
-                {
-                    "name": "activity",
-                    "description": "TinCan.Activity",
-                    "type": "Object"
                 }
             ],
             "class": "TinCan.LRS",
@@ -2414,7 +2422,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 926,
+            "line": 927,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
