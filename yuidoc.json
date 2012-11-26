@@ -1,4 +1,5 @@
 {
+    "version": "0.1.0",
     "name": "TinCanJS",
     "description": "Client library for working with TinCan API in JavaScript",
     "url": "https://github.com/RusticiSoftware/TinCanJS",
