@@ -2193,8 +2193,8 @@
                     "type": "Object"
                 },
                 {
-                    "name": "actor",
-                    "description": "TinCan.Actor",
+                    "name": "agent",
+                    "description": "TinCan.Agent",
                     "type": "Object"
                 },
                 {
@@ -2214,7 +2214,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 682,
+            "line": 687,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2243,8 +2243,8 @@
                     "type": "Object"
                 },
                 {
-                    "name": "actor",
-                    "description": "TinCan.Actor",
+                    "name": "agent",
+                    "description": "TinCan.Agent",
                     "type": "Object"
                 },
                 {
@@ -2259,7 +2259,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 738,
+            "line": 748,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2288,8 +2288,8 @@
                     "type": "Object"
                 },
                 {
-                    "name": "actor",
-                    "description": "TinCan.Actor",
+                    "name": "agent",
+                    "description": "TinCan.Agent",
                     "type": "Object"
                 },
                 {
@@ -2305,7 +2305,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 786,
+            "line": 801,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2332,17 +2332,6 @@
                     "name": "activity",
                     "description": "TinCan.Activity",
                     "type": "Object"
-                },
-                {
-                    "name": "actor",
-                    "description": "TinCan.Actor",
-                    "type": "Object"
-                },
-                {
-                    "name": "registration",
-                    "description": "Registration",
-                    "type": "String",
-                    "optional": true
                 }
             ],
             "return": {
@@ -2355,7 +2344,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 830,
+            "line": 843,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2390,7 +2379,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 871,
+            "line": 884,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2425,7 +2414,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 913,
+            "line": 926,
             "itemtype": "method",
             "name": "__delay",
             "access": "private",
@@ -3246,7 +3235,7 @@
         {
             "file": "src/TinCan.js",
             "line": 55,
-            "description": "Default actor used when preparing statements that\ndon't yet have an actor set",
+            "description": "Default actor used when preparing statements that\ndon't yet have an actor set, and for saving state, etc.",
             "itemtype": "property",
             "name": "actor",
             "type": "Object",
@@ -3497,8 +3486,8 @@
                     "optional": true,
                     "props": [
                         {
-                            "name": "actor",
-                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "name": "agent",
+                            "description": "Agent used in query,\n        defaults to 'actor' property if empty",
                             "type": "Object",
                             "optional": true
                         },
@@ -3549,8 +3538,8 @@
                     "optional": true,
                     "props": [
                         {
-                            "name": "actor",
-                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "name": "agent",
+                            "description": "Agent used in query,\n        defaults to 'actor' property if empty",
                             "type": "Object",
                             "optional": true
                         },
@@ -3596,8 +3585,8 @@
                     "optional": true,
                     "props": [
                         {
-                            "name": "actor",
-                            "description": "Actor used in query,\n        defaults to 'actor' property if empty",
+                            "name": "agent",
+                            "description": "Agent used in query,\n        defaults to 'actor' property if empty",
                             "type": "Object",
                             "optional": true
                         },

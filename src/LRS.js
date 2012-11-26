@@ -634,7 +634,7 @@ TinCan client library
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} TinCan.State retrieved
@@ -656,9 +656,14 @@ TinCan client library
 
             requestParams = {
                 stateId: key,
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (typeof cfg.registration !== "undefined") {
                 requestParams.registrationId = cfg.registration;
             }
@@ -686,7 +691,7 @@ TinCan client library
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} registration Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
@@ -711,9 +716,14 @@ TinCan client library
 
             requestParams = {
                 stateId: key,
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (typeof cfg.registration !== "undefined") {
                 requestParams.registrationId = cfg.registration;
             }
@@ -742,7 +752,7 @@ TinCan client library
         @param {String|null} key Key of state to delete, or null for all
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
@@ -761,9 +771,14 @@ TinCan client library
             }
 
             requestParams = {
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (key !== null) {
                 requestParams.stateId = key;
             }
@@ -790,8 +805,6 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
-            @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} Value retrieved
         */

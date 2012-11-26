@@ -54,7 +54,7 @@ var TinCan;
 
         /**
         Default actor used when preparing statements that
-        don't yet have an actor set
+        don't yet have an actor set, and for saving state, etc.
 
         @property actor
         @type Object
@@ -540,7 +540,7 @@ var TinCan;
         @method getState
         @param {String} key Key to retrieve from the state
         @param {Object} [cfg] Configuration for request
-            @param {Object} [cfg.actor] Actor used in query,
+            @param {Object} [cfg.agent] Agent used in query,
                 defaults to 'actor' property if empty
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
@@ -569,7 +569,7 @@ var TinCan;
                 cfg = cfg || {};
 
                 queryCfg = {
-                    actor: (typeof cfg.actor !== "undefined" ? cfg.actor : this.actor),
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
                 if (typeof cfg.registration !== "undefined") {
@@ -599,7 +599,7 @@ var TinCan;
         @param {String} key Key to store into the state
         @param {String|Object} val Value to store into the state, objects will be stringified to JSON
         @param {Object} [cfg] Configuration for request
-            @param {Object} [cfg.actor] Actor used in query,
+            @param {Object} [cfg.agent] Agent used in query,
                 defaults to 'actor' property if empty
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
@@ -628,7 +628,7 @@ var TinCan;
                 cfg = cfg || {};
 
                 queryCfg = {
-                    actor: (typeof cfg.actor !== "undefined" ? cfg.actor : this.actor),
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
                 if (typeof cfg.registration !== "undefined") {
@@ -657,7 +657,7 @@ var TinCan;
         @method deleteState
         @param {String|null} key Key to remove from the state, or null to clear all
         @param {Object} [cfg] Configuration for request
-            @param {Object} [cfg.actor] Actor used in query,
+            @param {Object} [cfg.agent] Agent used in query,
                 defaults to 'actor' property if empty
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
@@ -686,7 +686,7 @@ var TinCan;
                 cfg = cfg || {};
 
                 queryCfg = {
-                    actor: (typeof cfg.actor !== "undefined" ? cfg.actor : this.actor),
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
                 if (typeof cfg.registration !== "undefined") {
@@ -1700,7 +1700,7 @@ TinCan client library
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} TinCan.State retrieved
@@ -1722,9 +1722,14 @@ TinCan client library
 
             requestParams = {
                 stateId: key,
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (typeof cfg.registration !== "undefined") {
                 requestParams.registrationId = cfg.registration;
             }
@@ -1752,7 +1757,7 @@ TinCan client library
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} registration Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
@@ -1777,9 +1782,14 @@ TinCan client library
 
             requestParams = {
                 stateId: key,
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (typeof cfg.registration !== "undefined") {
                 requestParams.registrationId = cfg.registration;
             }
@@ -1808,7 +1818,7 @@ TinCan client library
         @param {String|null} key Key of state to delete, or null for all
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
+            @param {Object} agent TinCan.Agent
             @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         */
@@ -1827,9 +1837,14 @@ TinCan client library
             }
 
             requestParams = {
-                activityId: cfg.activity.id,
-                actor: JSON.stringify(cfg.actor.asVersion(this.version))
+                activityId: cfg.activity.id
             };
+            if (this.version === "0.90") {
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (key !== null) {
                 requestParams.stateId = key;
             }
@@ -1856,8 +1871,6 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
             @param {Object} activity TinCan.Activity
-            @param {Object} actor TinCan.Actor
-            @param {String} [registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {Object} Value retrieved
         */
