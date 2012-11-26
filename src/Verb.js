@@ -119,6 +119,9 @@ TinCan client library
                 result = {
                     id: this.id
                 };
+                if (this.display !== null) {
+                    result.display = this.display;
+                }
             }
 
             return result;
