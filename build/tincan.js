@@ -105,7 +105,7 @@ var TinCan;
             if (TinCan.DEBUG && console && console.log) {
                 src = src || this.LOG_SRC || "TinCan";
 
-                console.log(src + ': ' + msg);
+                console.log("TinCan." + src + ': ' + msg);
             }
         },
 
@@ -115,6 +115,7 @@ var TinCan;
         */
         init: function (cfg) {
             this.log("init");
+            var i;
 
             cfg = cfg || {};
 
@@ -122,6 +123,20 @@ var TinCan;
 
             if (cfg.hasOwnProperty("url") && cfg.url !== "") {
                 this._initFromQueryString(cfg.url);
+            }
+
+            if (cfg.hasOwnProperty("recordStores") && cfg.recordStores.length > 0) {
+                for (i = 0; i < cfg.recordStores.length; i += 1) {
+                    this.addRecordStore(cfg.recordStores[i]);
+                }
+            }
+            if (cfg.hasOwnProperty("activity")) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
             }
         },
 
@@ -217,8 +232,13 @@ var TinCan;
         */
         addRecordStore: function (cfg) {
             this.log("addRecordStore");
-
-            var lrs = new TinCan.LRS (cfg);
+            var lrs;
+            if (cfg instanceof TinCan.LRS) {
+                lrs = cfg;
+            }
+            else {
+                lrs = new TinCan.LRS (cfg);
+            }
             this.recordStores.push(lrs);
         },
 
@@ -236,6 +256,9 @@ var TinCan;
 
             if (stmt.actor === null && this.actor !== null) {
                 stmt.actor = this.actor;
+            }
+            if (stmt.target === null && this.activity !== null) {
+                stmt.target = this.activity;
             }
 
             if (this.context !== null) {
@@ -270,7 +293,7 @@ var TinCan;
         Calls saveStatement on each configured LRS, provide callback to make it asynchronous
 
         @method sendStatement
-        @param {TinCan.Statement} statement Send statement to LRS
+        @param {TinCan.Statement|Object} statement Send statement to LRS
         @param {Function} [callback] Callback function to execute on completion
         */
         sendStatement: function (stmt, callback) {
@@ -1007,6 +1030,41 @@ TinCan client library
         },
 
         /**
+        @method getISODateString
+        @param {Date} date Date to stringify
+        @return {String} ISO date String
+        */
+        getISODateString: function (d) {
+            function pad (val, n) {
+                var padder,
+                    tempVal;
+                if (val === null) {
+                    val = 0;
+                }
+                if (n === null) {
+                    n = 2;
+                }
+                padder = Math.pow(10, n-1);
+                tempVal = val.toString();
+
+                while (val < padder && padder > 1) {
+                    tempVal = '0' + tempVal;
+                    padder = padder / 10;
+                }
+
+                return tempVal;
+            }
+
+            return d.getUTCFullYear() + '-'
+                + pad(d.getUTCMonth() + 1) + '-'
+                + pad(d.getUTCDate()) + 'T'
+                + pad(d.getUTCHours()) + ':'
+                + pad(d.getUTCMinutes()) + ':'
+                + pad(d.getUTCSeconds()) + '.'
+                + pad(d.getUTCMilliseconds(), 3) + 'Z';
+        },
+
+        /**
         @method getLangDictionaryValue
         @param {String} prop Property name storing the dictionary
         @param {String} [lang] Language to return
@@ -1126,6 +1184,13 @@ TinCan client library
         this.allowFail = true;
 
         /**
+        @property alertOnRequestFailure
+        @type Boolean
+        @default true
+        */
+        this.alertOnRequestFailure = true;
+
+        /**
         @property extended
         @type Object
         */
@@ -1168,7 +1233,7 @@ TinCan client library
             cfg = cfg || {};
 
             if (! cfg.hasOwnProperty("endpoint")) {
-                if (env.isBrowser) {
+                if (env.isBrowser && this.alertOnRequestFailure) {
                     alert("[error] LRS invalid: no endpoint");
                 }
                 throw {
@@ -1213,10 +1278,14 @@ TinCan client library
                     }
                     else {
                         if (cfg.allowFail) {
-                            alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                            if (this.alertOnRequestFailure) {
+                                alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                            }
                         }
                         else {
-                            alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                            if (this.alertOnRequestFailure) {
+                                alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                            }
                             throw {
                                 code: 2,
                                 mesg: "LRS invalid: cross domain request for differing scheme in IE"
@@ -1344,7 +1413,7 @@ TinCan client library
                 this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
             }
 
-            //Setup request callback
+            // Setup request callback
             function requestComplete () {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
                 var notFoundOk;
@@ -2466,11 +2535,26 @@ TinCan client library
 (function () {
     "use strict";
 
+    var _downConvertMap = {
+        "http://adlnet.gov/expapi/verbs/experienced": "experienced",
+        "http://adlnet.gov/expapi/verbs/attended":    "attended",
+        "http://adlnet.gov/expapi/verbs/attempted":   "attempted",
+        "http://adlnet.gov/expapi/verbs/completed":   "completed",
+        "http://adlnet.gov/expapi/verbs/passed":      "passed",
+        "http://adlnet.gov/expapi/verbs/failed":      "failed",
+        "http://adlnet.gov/expapi/verbs/answered":    "answered",
+        "http://adlnet.gov/expapi/verbs/interacted":  "interacted",
+        "http://adlnet.gov/expapi/verbs/imported":    "imported",
+        "http://adlnet.gov/expapi/verbs/created":     "created",
+        "http://adlnet.gov/expapi/verbs/shared":      "shared",
+        "http://adlnet.gov/expapi/verbs/voided":      "voided"
+    },
+
     /**
     @class TinCan.Verb
     @constructor
     */
-    var Verb = TinCan.Verb = function (cfg) {
+    Verb = TinCan.Verb = function (cfg) {
         this.log("constructor");
 
         /**
@@ -2508,10 +2592,17 @@ TinCan client library
                 directProps = [
                     "id",
                     "display"
-                ]
+                ],
+                prop
             ;
 
             if (typeof cfg === "string") {
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
+                        cfg = _downConvertMap[prop];
+                    }
+                }
+
                 this.id = cfg;
                 this.display = {
                     und: this.id
@@ -2526,8 +2617,6 @@ TinCan client library
                     }
                 }
             }
-
-            // TODO: check for acceptable verb list in 0.90
         },
 
         /**
@@ -2556,7 +2645,7 @@ TinCan client library
             version = version || TinCan.versions()[0];
 
             if (version === "0.90") {
-                result = this.id;
+                result = _downConvertMap[this.id];
             }
             else {
                 result = {
@@ -3018,7 +3107,7 @@ TinCan client library
 
         /**
         @property definition
-        @type Object
+        @type TinCan.ActivityDefinition
         */
         this.definition = null;
 
@@ -3741,7 +3830,7 @@ TinCan client library
         @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
-        @param {Object} [cfg.authority] Statement Authority
+        @param {TinCan.Agent} [cfg.authority] Statement Authority
         @param {Boolean} [cfg.voided] Whether the statement has been voided
         @param {Boolean} [cfg.inProgress] Whether the statement is in progress
     @param {Integer} [storeOriginal] Whether to store a JSON stringified version
@@ -3758,19 +3847,19 @@ TinCan client library
 
         /**
         @property actor
-        @type Object
+        @type TinCan.Agent|TinCan.Group|null
         */
         this.actor = null;
 
         /**
         @property verb
-        @type Object
+        @type TinCan.Verb|null
         */
         this.verb = null;
 
         /**
         @property target
-        @type Object
+        @type TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement|null
         */
         this.target = null;
 
@@ -3788,19 +3877,19 @@ TinCan client library
 
         /**
         @property timestamp
-        @type Date
+        @type String
         */
         this.timestamp = null;
 
         /**
         @property stored
-        @type Date
+        @type String
         */
         this.stored = null;
 
         /**
         @property authority
-        @type Object
+        @type TinCan.Agent|null
         */
         this.authority = null;
 
@@ -3821,10 +3910,9 @@ TinCan client library
         /**
         @property inProgress
         @type Boolean
-        @default false
         @deprecated
         */
-        this.inProgress = false;
+        this.inProgress = null;
 
         /**
         @property originalJSON
@@ -3869,10 +3957,6 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (cfg.id === null) {
-                cfg.id = TinCan.Utils.getUUID();
-            }
-
             if (cfg.hasOwnProperty("object")) {
                 cfg.target = cfg.object;
             }
@@ -3884,6 +3968,18 @@ TinCan client library
 
                 // TODO: check to see if already this type
                 if (cfg.actor.objectType === "Agent") {
+                    this.actor = new TinCan.Agent (cfg.actor);
+                } else if (cfg.actor.objectType === "Group") {
+                    this.actor = new TinCan.Group (cfg.actor);
+                }
+            }
+            if (cfg.hasOwnProperty("authority")) {
+                if (typeof cfg.authority.objectType === "undefined" || cfg.authority.objectType === "Person") {
+                    cfg.authority.objectType = "Agent";
+                }
+
+                // TODO: check to see if already this type
+                if (cfg.authority.objectType === "Agent") {
                     this.actor = new TinCan.Agent (cfg.actor);
                 } else if (cfg.actor.objectType === "Group") {
                     this.actor = new TinCan.Group (cfg.actor);
@@ -3925,6 +4021,13 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+
+            if (this.id === null) {
+                this.id = TinCan.Utils.getUUID();
+            }
+            if (this.timestamp === null) {
+                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            }
         },
 
         /**
@@ -3947,7 +4050,19 @@ TinCan client library
         */
         asVersion: function (version) {
             this.log("asVersion");
-            var result;
+            var result,
+                optionalDirectProps = [
+                    "id",
+                    "timestamp",
+                    "stored",
+                    "voided"
+                ],
+                optionalObjProps = [
+                    "result",
+                    "context",
+                    "authority"
+                ],
+                i;
 
             version = version || TinCan.versions()[0];
 
@@ -3956,12 +4071,20 @@ TinCan client library
                 verb: this.verb.asVersion(version),
                 object: this.target.asVersion(version)
             };
-            if (this.result !== null) {
-                result.result = this.result.asVersion(version);
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
             }
 
-            // TODO: rest of fields
-            // TODO: add timestamp
+            if (version === "0.90" && this.inProgress !== null) {
+                result.inProgress = this.inProgress;
+            }
 
             return result;
         }

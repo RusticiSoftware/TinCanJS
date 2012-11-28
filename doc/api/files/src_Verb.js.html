@@ -181,11 +181,26 @@ TinCan client library
 (function () {
     &quot;use strict&quot;;
 
+    var _downConvertMap = {
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;experienced&quot;: &quot;experienced&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;attended&quot;:    &quot;attended&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;attempted&quot;:   &quot;attempted&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;completed&quot;:   &quot;completed&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;passed&quot;:      &quot;passed&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;failed&quot;:      &quot;failed&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;answered&quot;:    &quot;answered&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;interacted&quot;:  &quot;interacted&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;imported&quot;:    &quot;imported&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;created&quot;:     &quot;created&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;shared&quot;:      &quot;shared&quot;,
+        &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;voided&quot;:      &quot;voided&quot;
+    },
+
     &#x2F;**
     @class TinCan.Verb
     @constructor
     *&#x2F;
-    var Verb = TinCan.Verb = function (cfg) {
+    Verb = TinCan.Verb = function (cfg) {
         this.log(&quot;constructor&quot;);
 
         &#x2F;**
@@ -223,10 +238,17 @@ TinCan client library
                 directProps = [
                     &quot;id&quot;,
                     &quot;display&quot;
-                ]
+                ],
+                prop
             ;
 
             if (typeof cfg === &quot;string&quot;) {
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) &amp;&amp; _downConvertMap[prop] === cfg) {
+                        cfg = _downConvertMap[prop];
+                    }
+                }
+
                 this.id = cfg;
                 this.display = {
                     und: this.id
@@ -241,8 +263,6 @@ TinCan client library
                     }
                 }
             }
-
-            &#x2F;&#x2F; TODO: check for acceptable verb list in 0.90
         },
 
         &#x2F;**
@@ -271,7 +291,7 @@ TinCan client library
             version = version || TinCan.versions()[0];
 
             if (version === &quot;0.90&quot;) {
-                result = this.id;
+                result = _downConvertMap[this.id];
             }
             else {
                 result = {

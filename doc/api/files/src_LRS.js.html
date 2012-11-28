@@ -215,6 +215,13 @@ TinCan client library
         this.allowFail = true;
 
         &#x2F;**
+        @property alertOnRequestFailure
+        @type Boolean
+        @default true
+        *&#x2F;
+        this.alertOnRequestFailure = true;
+
+        &#x2F;**
         @property extended
         @type Object
         *&#x2F;
@@ -257,7 +264,7 @@ TinCan client library
             cfg = cfg || {};
 
             if (! cfg.hasOwnProperty(&quot;endpoint&quot;)) {
-                if (env.isBrowser) {
+                if (env.isBrowser &amp;&amp; this.alertOnRequestFailure) {
                     alert(&quot;[error] LRS invalid: no endpoint&quot;);
                 }
                 throw {
@@ -302,10 +309,14 @@ TinCan client library
                     }
                     else {
                         if (cfg.allowFail) {
-                            alert(&quot;[warning] LRS invalid: cross domain request for differing scheme in IE&quot;);
+                            if (this.alertOnRequestFailure) {
+                                alert(&quot;[warning] LRS invalid: cross domain request for differing scheme in IE&quot;);
+                            }
                         }
                         else {
-                            alert(&quot;[error] LRS invalid: cross domain request for differing scheme in IE&quot;);
+                            if (this.alertOnRequestFailure) {
+                                alert(&quot;[error] LRS invalid: cross domain request for differing scheme in IE&quot;);
+                            }
                             throw {
                                 code: 2,
                                 mesg: &quot;LRS invalid: cross domain request for differing scheme in IE&quot;
@@ -433,7 +444,7 @@ TinCan client library
                 this.log(&quot;sendRequest unrecognized _requestMode: &quot; + this._requestMode);
             }
 
-            &#x2F;&#x2F;Setup request callback
+            &#x2F;&#x2F; Setup request callback
             function requestComplete () {
                 self.log(&quot;requestComplete: &quot; + finished + &quot;, xhr.status: &quot; + xhr.status);
                 var notFoundOk;

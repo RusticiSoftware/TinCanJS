@@ -263,7 +263,7 @@ var TinCan;
             if (TinCan.DEBUG &amp;&amp; console &amp;&amp; console.log) {
                 src = src || this.LOG_SRC || &quot;TinCan&quot;;
 
-                console.log(src + &#x27;: &#x27; + msg);
+                console.log(&quot;TinCan.&quot; + src + &#x27;: &#x27; + msg);
             }
         },
 
@@ -273,6 +273,7 @@ var TinCan;
         *&#x2F;
         init: function (cfg) {
             this.log(&quot;init&quot;);
+            var i;
 
             cfg = cfg || {};
 
@@ -280,6 +281,20 @@ var TinCan;
 
             if (cfg.hasOwnProperty(&quot;url&quot;) &amp;&amp; cfg.url !== &quot;&quot;) {
                 this._initFromQueryString(cfg.url);
+            }
+
+            if (cfg.hasOwnProperty(&quot;recordStores&quot;) &amp;&amp; cfg.recordStores.length &gt; 0) {
+                for (i = 0; i &lt; cfg.recordStores.length; i += 1) {
+                    this.addRecordStore(cfg.recordStores[i]);
+                }
+            }
+            if (cfg.hasOwnProperty(&quot;activity&quot;)) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
             }
         },
 
@@ -375,8 +390,13 @@ var TinCan;
         *&#x2F;
         addRecordStore: function (cfg) {
             this.log(&quot;addRecordStore&quot;);
-
-            var lrs = new TinCan.LRS (cfg);
+            var lrs;
+            if (cfg instanceof TinCan.LRS) {
+                lrs = cfg;
+            }
+            else {
+                lrs = new TinCan.LRS (cfg);
+            }
             this.recordStores.push(lrs);
         },
 
@@ -394,6 +414,9 @@ var TinCan;
 
             if (stmt.actor === null &amp;&amp; this.actor !== null) {
                 stmt.actor = this.actor;
+            }
+            if (stmt.target === null &amp;&amp; this.activity !== null) {
+                stmt.target = this.activity;
             }
 
             if (this.context !== null) {
@@ -428,7 +451,7 @@ var TinCan;
         Calls saveStatement on each configured LRS, provide callback to make it asynchronous
 
         @method sendStatement
-        @param {TinCan.Statement} statement Send statement to LRS
+        @param {TinCan.Statement|Object} statement Send statement to LRS
         @param {Function} [callback] Callback function to execute on completion
         *&#x2F;
         sendStatement: function (stmt, callback) {

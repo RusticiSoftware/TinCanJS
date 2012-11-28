@@ -192,7 +192,7 @@ TinCan client library
         @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
-        @param {Object} [cfg.authority] Statement Authority
+        @param {TinCan.Agent} [cfg.authority] Statement Authority
         @param {Boolean} [cfg.voided] Whether the statement has been voided
         @param {Boolean} [cfg.inProgress] Whether the statement is in progress
     @param {Integer} [storeOriginal] Whether to store a JSON stringified version
@@ -209,19 +209,19 @@ TinCan client library
 
         &#x2F;**
         @property actor
-        @type Object
+        @type TinCan.Agent|TinCan.Group|null
         *&#x2F;
         this.actor = null;
 
         &#x2F;**
         @property verb
-        @type Object
+        @type TinCan.Verb|null
         *&#x2F;
         this.verb = null;
 
         &#x2F;**
         @property target
-        @type Object
+        @type TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement|null
         *&#x2F;
         this.target = null;
 
@@ -239,19 +239,19 @@ TinCan client library
 
         &#x2F;**
         @property timestamp
-        @type Date
+        @type String
         *&#x2F;
         this.timestamp = null;
 
         &#x2F;**
         @property stored
-        @type Date
+        @type String
         *&#x2F;
         this.stored = null;
 
         &#x2F;**
         @property authority
-        @type Object
+        @type TinCan.Agent|null
         *&#x2F;
         this.authority = null;
 
@@ -272,10 +272,9 @@ TinCan client library
         &#x2F;**
         @property inProgress
         @type Boolean
-        @default false
         @deprecated
         *&#x2F;
-        this.inProgress = false;
+        this.inProgress = null;
 
         &#x2F;**
         @property originalJSON
@@ -320,10 +319,6 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (cfg.id === null) {
-                cfg.id = TinCan.Utils.getUUID();
-            }
-
             if (cfg.hasOwnProperty(&quot;object&quot;)) {
                 cfg.target = cfg.object;
             }
@@ -335,6 +330,18 @@ TinCan client library
 
                 &#x2F;&#x2F; TODO: check to see if already this type
                 if (cfg.actor.objectType === &quot;Agent&quot;) {
+                    this.actor = new TinCan.Agent (cfg.actor);
+                } else if (cfg.actor.objectType === &quot;Group&quot;) {
+                    this.actor = new TinCan.Group (cfg.actor);
+                }
+            }
+            if (cfg.hasOwnProperty(&quot;authority&quot;)) {
+                if (typeof cfg.authority.objectType === &quot;undefined&quot; || cfg.authority.objectType === &quot;Person&quot;) {
+                    cfg.authority.objectType = &quot;Agent&quot;;
+                }
+
+                &#x2F;&#x2F; TODO: check to see if already this type
+                if (cfg.authority.objectType === &quot;Agent&quot;) {
                     this.actor = new TinCan.Agent (cfg.actor);
                 } else if (cfg.actor.objectType === &quot;Group&quot;) {
                     this.actor = new TinCan.Group (cfg.actor);
@@ -376,6 +383,13 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+
+            if (this.id === null) {
+                this.id = TinCan.Utils.getUUID();
+            }
+            if (this.timestamp === null) {
+                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            }
         },
 
         &#x2F;**
@@ -398,7 +412,19 @@ TinCan client library
         *&#x2F;
         asVersion: function (version) {
             this.log(&quot;asVersion&quot;);
-            var result;
+            var result,
+                optionalDirectProps = [
+                    &quot;id&quot;,
+                    &quot;timestamp&quot;,
+                    &quot;stored&quot;,
+                    &quot;voided&quot;
+                ],
+                optionalObjProps = [
+                    &quot;result&quot;,
+                    &quot;context&quot;,
+                    &quot;authority&quot;
+                ],
+                i;
 
             version = version || TinCan.versions()[0];
 
@@ -407,12 +433,20 @@ TinCan client library
                 verb: this.verb.asVersion(version),
                 object: this.target.asVersion(version)
             };
-            if (this.result !== null) {
-                result.result = this.result.asVersion(version);
+            for (i = 0; i &lt; optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i &lt; optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
             }
 
-            &#x2F;&#x2F; TODO: rest of fields
-            &#x2F;&#x2F; TODO: add timestamp
+            if (version === &quot;0.90&quot; &amp;&amp; this.inProgress !== null) {
+                result.inProgress = this.inProgress;
+            }
 
             return result;
         }

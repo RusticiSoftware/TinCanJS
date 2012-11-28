@@ -45,7 +45,7 @@ TinCan client library
 
         /**
         @property definition
-        @type Object
+        @type TinCan.ActivityDefinition
         */
         this.definition = null;
 

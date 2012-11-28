@@ -23,11 +23,26 @@ TinCan client library
 (function () {
     "use strict";
 
+    var _downConvertMap = {
+        "http://adlnet.gov/expapi/verbs/experienced": "experienced",
+        "http://adlnet.gov/expapi/verbs/attended":    "attended",
+        "http://adlnet.gov/expapi/verbs/attempted":   "attempted",
+        "http://adlnet.gov/expapi/verbs/completed":   "completed",
+        "http://adlnet.gov/expapi/verbs/passed":      "passed",
+        "http://adlnet.gov/expapi/verbs/failed":      "failed",
+        "http://adlnet.gov/expapi/verbs/answered":    "answered",
+        "http://adlnet.gov/expapi/verbs/interacted":  "interacted",
+        "http://adlnet.gov/expapi/verbs/imported":    "imported",
+        "http://adlnet.gov/expapi/verbs/created":     "created",
+        "http://adlnet.gov/expapi/verbs/shared":      "shared",
+        "http://adlnet.gov/expapi/verbs/voided":      "voided"
+    },
+
     /**
     @class TinCan.Verb
     @constructor
     */
-    var Verb = TinCan.Verb = function (cfg) {
+    Verb = TinCan.Verb = function (cfg) {
         this.log("constructor");
 
         /**
@@ -65,10 +80,17 @@ TinCan client library
                 directProps = [
                     "id",
                     "display"
-                ]
+                ],
+                prop
             ;
 
             if (typeof cfg === "string") {
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
+                        cfg = _downConvertMap[prop];
+                    }
+                }
+
                 this.id = cfg;
                 this.display = {
                     und: this.id
@@ -83,8 +105,6 @@ TinCan client library
                     }
                 }
             }
-
-            // TODO: check for acceptable verb list in 0.90
         },
 
         /**
@@ -113,7 +133,7 @@ TinCan client library
             version = version || TinCan.versions()[0];
 
             if (version === "0.90") {
-                result = this.id;
+                result = _downConvertMap[this.id];
             }
             else {
                 result = {

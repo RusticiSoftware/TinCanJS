@@ -50,6 +50,41 @@ TinCan client library
         },
 
         /**
+        @method getISODateString
+        @param {Date} date Date to stringify
+        @return {String} ISO date String
+        */
+        getISODateString: function (d) {
+            function pad (val, n) {
+                var padder,
+                    tempVal;
+                if (val === null) {
+                    val = 0;
+                }
+                if (n === null) {
+                    n = 2;
+                }
+                padder = Math.pow(10, n-1);
+                tempVal = val.toString();
+
+                while (val < padder && padder > 1) {
+                    tempVal = '0' + tempVal;
+                    padder = padder / 10;
+                }
+
+                return tempVal;
+            }
+
+            return d.getUTCFullYear() + '-'
+                + pad(d.getUTCMonth() + 1) + '-'
+                + pad(d.getUTCDate()) + 'T'
+                + pad(d.getUTCHours()) + ':'
+                + pad(d.getUTCMinutes()) + ':'
+                + pad(d.getUTCSeconds()) + '.'
+                + pad(d.getUTCMilliseconds(), 3) + 'Z';
+        },
+
+        /**
         @method getLangDictionaryValue
         @param {String} prop Property name storing the dictionary
         @param {String} [lang] Language to return

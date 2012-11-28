@@ -57,6 +57,13 @@ TinCan client library
         this.allowFail = true;
 
         /**
+        @property alertOnRequestFailure
+        @type Boolean
+        @default true
+        */
+        this.alertOnRequestFailure = true;
+
+        /**
         @property extended
         @type Object
         */
@@ -99,7 +106,7 @@ TinCan client library
             cfg = cfg || {};
 
             if (! cfg.hasOwnProperty("endpoint")) {
-                if (env.isBrowser) {
+                if (env.isBrowser && this.alertOnRequestFailure) {
                     alert("[error] LRS invalid: no endpoint");
                 }
                 throw {
@@ -144,10 +151,14 @@ TinCan client library
                     }
                     else {
                         if (cfg.allowFail) {
-                            alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                            if (this.alertOnRequestFailure) {
+                                alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                            }
                         }
                         else {
-                            alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                            if (this.alertOnRequestFailure) {
+                                alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                            }
                             throw {
                                 code: 2,
                                 mesg: "LRS invalid: cross domain request for differing scheme in IE"
@@ -275,7 +286,7 @@ TinCan client library
                 this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
             }
 
-            //Setup request callback
+            // Setup request callback
             function requestComplete () {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
                 var notFoundOk;
