@@ -1327,9 +1327,13 @@ TinCan client library
             @param {String} [cfg.method] GET, PUT, POST, etc.
             @param {Object} [cfg.params] Parameters to set on the querystring
             @param {String} [cfg.data] String of body content
-            @param {Function} [cfg.callback] Function to run at completion
-            @param {Boolean} [cfg.ignore404] Whether 404 status codes should be ignored
             @param {Object} [cfg.headers] Additional headers to set in the request
+            @param {Function} [cfg.callback] Function to run at completion
+                @param {String|Null} cfg.callback.err If an error occurred, this parameter will contain the HTTP status code.
+                    If the operation succeeded, err will be null.
+                @param {Object} cfg.callback.xhr XHR object
+            @param {Boolean} [cfg.ignore404] Whether 404 status codes should be considered an error
+        @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
             this.log("sendRequest");
@@ -1441,19 +1445,31 @@ TinCan client library
                     notFoundOk = (cfg.ignore404 && xhr.status === 404);
                     if (xhr.status === undefined || (xhr.status >= 200 && xhr.status < 400) || notFoundOk) {
                         if (cfg.callback) {
-                            cfg.callback(xhr);
+                            cfg.callback(null, xhr);
                         }
                         else {
-                            requestCompleteResult = xhr;
-                            return xhr;
+                            requestCompleteResult = {
+                                err: null,
+                                xhr: xhr
+                            };
+                            return requestCompleteResult;
                         }
                     }
                     else {
                         // Alert all errors except cancelled XHR requests
                         if (xhr.status > 0) {
-                            alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                            requestCompleteResult = {
+                                err: xhr.status,
+                                xhr: xhr
+                            };
+                            if (self.alertOnRequestFailure) {
+                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                            }
+                            if (cfg.callback) {
+                                cfg.callback(xhr.status, xhr);
+                            }
                         }
-                        return xhr;
+                        return requestCompleteResult;
                     }
                 }
                 else {
@@ -1486,6 +1502,14 @@ TinCan client library
                 }
                 return requestComplete();
             }
+
+            //
+            // for async requests give them the XHR object directly
+            // as the return value, the actual stuff they should be
+            // caring about is params to the callback, for sync
+            // requests they got the return value above
+            //
+            return xhr;
         },
 
         /**
@@ -1504,24 +1528,24 @@ TinCan client library
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
             //       that it needs to
-            if (TinCan.environment().isBrowser) {
-                requestCfg = {
-                    url: "statements",
-                    method: "PUT",
-                    params: {
-                        statementId: stmt.id
-                    },
-                    data: JSON.stringify(stmt.asVersion( this.version ))
-                };
-                if (typeof cfg.callback !== "undefined") {
-                    requestCfg.callback = cfg.callback;
-                }
-
-                this.sendRequest(requestCfg);
-            }
-            else {
+            if (! TinCan.environment().isBrowser) {
                 this.log("error: environment not implemented");
+                return;
             }
+
+            requestCfg = {
+                url: "statements",
+                method: "PUT",
+                params: {
+                    statementId: stmt.id
+                },
+                data: JSON.stringify(stmt.asVersion( this.version ))
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -1535,32 +1559,47 @@ TinCan client library
         */
         retrieveStatement: function (stmtId, cfg) {
             this.log("retrieveStatement");
-            var callbackWrapper;
-
-            callbackWrapper = function () {
-                var statement;
-
-                cfg.callback(statement);
-            };
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
 
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
             //       that it needs to
             if (TinCan.environment().isBrowser) {
-                this.sendRequest(
-                    {
-                        url: "statements",
-                        method: "GET",
-                        params: {
-                            statementId: stmtId
-                        }
-                        //callback: cfg.callback
-                    }
-                );
-            }
-            else {
                 this.log("error: environment not implemented");
+                return;
             }
+
+            requestCfg = {
+                url: "statements",
+                method: "GET",
+                params: {
+                    statementId: stmtId
+                }
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.statement = null;
+                if (requestResult.err === null) {
+                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                }
+            }
+
+            return requestResult;
         },
 
         /**
@@ -1579,6 +1618,14 @@ TinCan client library
                 i
             ;
 
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
             cfg = cfg || {};
 
             if (stmts.length > 0) {
@@ -1588,24 +1635,16 @@ TinCan client library
                     );
                 }
 
-                // TODO: it would be better to make a subclass that knows
-                //       its own environment and just implements the protocol
-                //       that it needs to
-                if (TinCan.environment().isBrowser) {
-                    requestCfg = {
-                        url: "statements",
-                        method: "POST",
-                        data: JSON.stringify(versionedStatements)
-                    };
-                    if (typeof cfg.callback !== "undefined") {
-                        requestCfg.callback = cfg.callback;
-                    }
+                requestCfg = {
+                    url: "statements",
+                    method: "POST",
+                    data: JSON.stringify(versionedStatements)
+                };
+                if (typeof cfg.callback !== "undefined") {
+                    requestCfg.callback = cfg.callback;
+                }
 
-                    this.sendRequest(requestCfg);
-                }
-                else {
-                    this.log("error: environment not implemented");
-                }
+                return this.sendRequest(requestCfg);
             }
         },
 
@@ -1629,8 +1668,9 @@ TinCan client library
                 @param {Boolean} [cfg.params.sparse] Get sparse results
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
             @param {Function} [cfg.callback] Callback to execute on completion
-                @param {TinCan.StatementsResult} cfg.callback.response Receives a StatementsResult argument
-        @return {TinCan.StatementsResult} StatementsResult object if no callback configured
+                @param {String|null} cfg.callback.err Error status or null if succcess
+                @param {TinCan.StatementsResult|XHR} cfg.callback.response Receives a StatementsResult argument
+        @return {Object} Request result
         */
         queryStatements: function (cfg) {
             this.log("queryStatements");
@@ -1656,21 +1696,29 @@ TinCan client library
             requestCfg = this._queryStatementsRequestCfg(cfg);
 
             if (typeof cfg.callback !== "undefined") {
-                callbackWrapper = function (xhr) {
-                    var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
 
-                    cfg.callback(stResult);
+                    if (err === null) {
+                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
                 };
                 requestCfg.callback = callbackWrapper;
             }
 
             requestResult = this.sendRequest(requestCfg);
+            requestResult.config = requestCfg;
 
-            if (typeof requestCfg.callback === "undefined") {
-                return TinCan.StatementsResult.fromJSON(requestResult.responseText);
+            if (! callbackWrapper) {
+                requestResult.statementsResult = null;
+                if (requestResult.err === null) {
+                    requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                }
             }
 
-            return requestCfg;
+            return requestResult;
         },
 
         /**
@@ -1736,8 +1784,9 @@ TinCan client library
         @param {Object} [cfg] Configuration used to query
             @param {String} [cfg.url] More URL
             @param {Function} [cfg.callback] Callback to execute on completion
-                @param {TinCan.StatementsResult} cfg.callback.response Receives a StatementsResult argument
-        @return {TinCan.StatementsResult} StatementsResult object if no callback configured
+                @param {String|null} cfg.callback.err Error status or null if succcess
+                @param {TinCan.StatementsResult|XHR} cfg.callback.response Receives a StatementsResult argument
+        @return {Object} Request result
         */
         moreStatements: function (cfg) {
             this.log("moreStatements: " + cfg.url);
@@ -1766,19 +1815,29 @@ TinCan client library
                 params: parsedURL.params
             };
             if (typeof cfg.callback !== "undefined") {
-                callbackWrapper = function (xhr) {
-                    var stResult = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
 
-                    cfg.callback(stResult);
+                    if (err === null) {
+                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
                 };
                 requestCfg.callback = callbackWrapper;
             }
 
             requestResult = this.sendRequest(requestCfg);
+            requestResult.config = requestCfg;
 
-            if (typeof requestCfg.callback === "undefined") {
-                return TinCan.StatementsResult.fromJSON(requestResult.responseText);
+            if (! callbackWrapper) {
+                requestResult.statementsResult = null;
+                if (requestResult.err === null) {
+                    requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                }
             }
+
+            return requestResult;
         },
 
         /**
@@ -1791,13 +1850,16 @@ TinCan client library
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
-        @return {Object} TinCan.State retrieved
+                @param {Object|Null} cfg.callback.error
+                @param {TinCan.State|null} cfg.callback.result null if state is 404
+        @return {Object} TinCan.State retrieved when synchronous, or result from sendRequest
         */
         retrieveState: function (key, cfg) {
             this.log("retrieveState");
             var requestParams = {},
                 requestCfg = {},
-                requestResult
+                requestResult,
+                callbackWrapper
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -1825,17 +1887,46 @@ TinCan client library
             requestCfg = {
                 url: "activities/state",
                 method: "GET",
-                params: requestParams
+                params: requestParams,
+                ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
-                requestCfg.callback = cfg.callback;
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        if (xhr.status === 404) {
+                            result = null;
+                        }
+                        else {
+                            result = new TinCan.State(
+                                {
+                                    id: key,
+                                    contents: xhr.responseText
+                                }
+                            );
+                        }
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
             }
 
             requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.state = null;
+                if (requestResult.err === null && requestResult.xhr.status !== 404) {
+                    requestResult.state = new TinCan.State(
+                        {
+                            id: key,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                }
+            }
 
-            // TODO: need to convert into a TinCan.State object
-            // TODO: this seems like a bad interface decision
-            return requestResult.responseText;
+            return requestResult;
         },
 
         /**
@@ -1893,11 +1984,7 @@ TinCan client library
                 requestCfg.callback = cfg.callback;
             }
 
-            requestResult = this.sendRequest(requestCfg);
-
-            // TODO: need to convert into a TinCan.State object
-            // TODO: this seems like a bad interface decision
-            return requestResult.responseText;
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -1950,7 +2037,7 @@ TinCan client library
                 requestCfg.callback = cfg.callback;
             }
 
-            this.sendRequest(requestCfg);
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -1989,10 +2076,7 @@ TinCan client library
                 requestCfg.callback = cfg.callback;
             }
 
-            requestResult = this.sendRequest(requestCfg);
-
-            // TODO: this seems like a bad interface decision
-            return requestResult.responseText;
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -2033,7 +2117,7 @@ TinCan client library
                 requestCfg.callback = cfg.callback;
             }
 
-            this.sendRequest(requestCfg);
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -2075,7 +2159,7 @@ TinCan client library
                 requestCfg.callback = cfg.callback;
             }
 
-            this.sendRequest(requestCfg);
+            return this.sendRequest(requestCfg);
         },
 
         /**

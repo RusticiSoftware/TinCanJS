@@ -1945,33 +1945,49 @@
                             "optional": true
                         },
                         {
-                            "name": "callback",
-                            "description": "Function to run at completion",
-                            "type": "Function",
-                            "optional": true
-                        },
-                        {
-                            "name": "ignore404",
-                            "description": "Whether 404 status codes should be ignored",
-                            "type": "Boolean",
-                            "optional": true
-                        },
-                        {
                             "name": "headers",
                             "description": "Additional headers to set in the request",
                             "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "callback",
+                            "description": "Function to run at completion",
+                            "type": "Function",
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "err",
+                                    "description": "If an error occurred, this parameter will contain the HTTP status code.\n            If the operation succeeded, err will be null.",
+                                    "type": "String|Null"
+                                },
+                                {
+                                    "name": "xhr",
+                                    "description": "XHR object",
+                                    "type": "Object"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "ignore404",
+                            "description": "Whether 404 status codes should be considered an error",
+                            "type": "Boolean",
                             "optional": true
                         }
                     ]
                 }
             ],
+            "return": {
+                "description": "XHR if called in a synchronous way (in other words no callback)",
+                "type": "Object"
+            },
             "class": "TinCan.LRS",
             "module": "TinCan",
             "submodule": "TinCan.LRS"
         },
         {
             "file": "src/LRS.js",
-            "line": 357,
+            "line": 381,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -2002,7 +2018,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 393,
+            "line": 417,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -2037,7 +2053,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 432,
+            "line": 471,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -2068,7 +2084,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 478,
+            "line": 517,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2166,9 +2182,14 @@
                             "optional": true,
                             "props": [
                                 {
+                                    "name": "err",
+                                    "description": "Error status or null if succcess",
+                                    "type": "String|null"
+                                },
+                                {
                                     "name": "response",
                                     "description": "Receives a StatementsResult argument",
-                                    "type": "TinCan.StatementsResult"
+                                    "type": "TinCan.StatementsResult|XHR"
                                 }
                             ]
                         }
@@ -2176,8 +2197,8 @@
                 }
             ],
             "return": {
-                "description": "StatementsResult object if no callback configured",
-                "type": "TinCan.StatementsResult"
+                "description": "Request result",
+                "type": "Object"
             },
             "class": "TinCan.LRS",
             "module": "TinCan",
@@ -2185,7 +2206,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 542,
+            "line": 590,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2209,7 +2230,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 597,
+            "line": 645,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2233,9 +2254,14 @@
                             "optional": true,
                             "props": [
                                 {
+                                    "name": "err",
+                                    "description": "Error status or null if succcess",
+                                    "type": "String|null"
+                                },
+                                {
                                     "name": "response",
                                     "description": "Receives a StatementsResult argument",
-                                    "type": "TinCan.StatementsResult"
+                                    "type": "TinCan.StatementsResult|XHR"
                                 }
                             ]
                         }
@@ -2243,8 +2269,8 @@
                 }
             ],
             "return": {
-                "description": "StatementsResult object if no callback configured",
-                "type": "TinCan.StatementsResult"
+                "description": "Request result",
+                "type": "Object"
             },
             "class": "TinCan.LRS",
             "module": "TinCan",
@@ -2252,7 +2278,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 650,
+            "line": 709,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2287,13 +2313,25 @@
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
-                            "optional": true
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "error",
+                                    "description": "",
+                                    "type": "Object|Null"
+                                },
+                                {
+                                    "name": "result",
+                                    "description": "null if state is 404",
+                                    "type": "TinCan.State|null"
+                                }
+                            ]
                         }
                     ]
                 }
             ],
             "return": {
-                "description": "TinCan.State retrieved",
+                "description": "TinCan.State retrieved when synchronous, or result from sendRequest",
                 "type": "Object"
             },
             "class": "TinCan.LRS",
@@ -2302,7 +2340,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 707,
+            "line": 798,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2353,7 +2391,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 769,
+            "line": 856,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2401,7 +2439,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 822,
+            "line": 909,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2440,7 +2478,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 864,
+            "line": 948,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2475,7 +2513,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 905,
+            "line": 989,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2510,7 +2548,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 947,
+            "line": 1031,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
