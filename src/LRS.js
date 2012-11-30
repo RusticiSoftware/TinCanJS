@@ -175,6 +175,13 @@ TinCan client library
                 this.log("version: " + cfg.version);
                 this.version = cfg.version;
             }
+            else {
+                //
+                // assume max supported when not specified,
+                // TODO: add detection of LRS from call to endpoint
+                //
+                this.version = TinCan.versions()[0];
+            }
         },
 
         /**
@@ -243,7 +250,7 @@ TinCan client library
                 }
 
                 xhr = new XMLHttpRequest();
-                xhr.open(cfg.method, fullUrl, cfg.callback !== undefined);
+                xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
                 for (prop in headers) {
                     if (headers.hasOwnProperty(prop)) {
                         xhr.setRequestHeader(prop, headers[prop]);
@@ -336,7 +343,7 @@ TinCan client library
                 if (this._requestMode === IE) {
                     // synchronous call in IE, with no synchronous mode available
                     until = 1000 + Date.now();
-                    this.log("sendRequest: until: " + until + ", finished: " + finished);
+                    this.log("sendRequest - until: " + until + ", finished: " + finished);
 
                     while (Date.now() < until && ! finished) {
                         //this.log("calling __delay");

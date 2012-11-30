@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.1.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -190,53 +190,50 @@ TinCan client library
 
         &#x2F;**
         @property registration
-        @type String
+        @type String|null
         *&#x2F;
         this.registration = null;
 
         &#x2F;**
         @property instructor
-        @type Object
+        @type TinCan.Agent|TinCan.Group|null
         *&#x2F;
         this.instructor = null;
 
         &#x2F;**
         @property team
-        @type Object
+        @type TinCan.Agent|TinCan.Group|null
         *&#x2F;
         this.team = null;
 
         &#x2F;**
         @property contextActivities
-        @type Object
+        @type Object|null
         *&#x2F;
-        this.contextActivities = {
-            parent: null,
-            grouping: null,
-            other: null
-        };
+        this.contextActivities = null;
 
         &#x2F;**
         @property revision
-        @type Object
+        @type Object|null
         *&#x2F;
         this.revision = null;
 
         &#x2F;**
         @property platform
-        @type Object
+        @type Object|null
         *&#x2F;
         this.platform = null;
 
         &#x2F;**
         @property language
-        @type String
+        @type String|null
         *&#x2F;
         this.language = null;
 
         &#x2F;**
+        TODO: should this be statement ref, statement, substatement? spec is unclear
         @property statement
-        @type String
+        @type String|null
         *&#x2F;
         this.statement = null;
 
@@ -269,26 +266,121 @@ TinCan client library
             var i,
                 directProps = [
                     &quot;registration&quot;,
-                    &quot;instructor&quot;,
-                    &quot;team&quot;,
                     &quot;revision&quot;,
                     &quot;platform&quot;,
                     &quot;language&quot;,
                     &quot;statement&quot;,
                     &quot;extensions&quot;
                 ],
+                agentGroupProps = [
+                    &quot;instructor&quot;,
+                    &quot;team&quot;
+                ],
+                contextActivityProps = [
+                    &quot;parent&quot;,
+                    &quot;grouping&quot;,
+                    &quot;other&quot;
+                ],
+                prop,
                 val
             ;
 
             cfg = cfg || {};
 
-            &#x2F;&#x2F; TODO: handle contextActivities
-
             for (i = 0; i &lt; directProps.length; i += 1) {
-                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
+                prop = directProps[i];
+                if (cfg.hasOwnProperty(prop) &amp;&amp; cfg[prop] !== null) {
+                    this[prop] = cfg[prop];
                 }
             }
+            for (i = 0; i &lt; agentGroupProps.length; i += 1) {
+                prop = agentGroupProps[i];
+                if (cfg.hasOwnProperty(prop) &amp;&amp; cfg[prop] !== null) {
+                    val = cfg[prop];
+
+                    if (typeof val.objectType === &quot;undefined&quot; || val.objectType === &quot;Person&quot;) {
+                        val.objectType = &quot;Agent&quot;;
+                    }
+
+                    if (val.objectType === &quot;Agent&quot; &amp;&amp; ! (val instanceof TinCan.Agent)) {
+                        val = new TinCan.Agent (val);
+                    } else if (val.objectType === &quot;Group&quot; &amp;&amp; ! (val instanceof TinCan.Group)) {
+                        val = new TinCan.Group (val);
+                    }
+
+                    this[prop] = val;
+                }
+            }
+
+            if (cfg.hasOwnProperty(&quot;contextActivities&quot;) &amp;&amp; cfg.contextActivities !== null) {
+                this.contextActivities = {};
+
+                for (i = 0; i &lt; contextActivityProps.length; i += 1) {
+                    prop = contextActivityProps[i];
+                    if (cfg.contextActivities.hasOwnProperty(prop) &amp;&amp; cfg.contextActivities[prop] !== null) {
+                        val = cfg.contextActivities[prop];
+
+                        if (! (val instanceof TinCan.Activity)) {
+                            val = new TinCan.Activity (val);
+                        }
+
+                        this.contextActivities[prop] = val;
+                    }
+                }
+            }
+        },
+
+        &#x2F;**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        *&#x2F;
+        asVersion: function (version) {
+            this.log(&quot;asVersion&quot;);
+            var result = {},
+                optionalDirectProps = [
+                    &quot;registration&quot;,
+                    &quot;revision&quot;,
+                    &quot;platform&quot;,
+                    &quot;language&quot;,
+                    &quot;statement&quot;,
+                    &quot;extensions&quot;
+                ],
+                optionalObjProps = [
+                    &quot;instructor&quot;,
+                    &quot;team&quot;
+                ],
+                contextActivityProps = [
+                    &quot;parent&quot;,
+                    &quot;grouping&quot;,
+                    &quot;other&quot;
+                ],
+                i,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i &lt; optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i &lt; optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
+            if (this.contextActivities !== null) {
+                result.contextActivities = {};
+                for (i = 0; i &lt; contextActivityProps.length; i += 1) {
+                    prop = contextActivityProps[i];
+                    if (typeof this.contextActivities[prop] !== &quot;undefined&quot; &amp;&amp; this.contextActivities[prop] !== null) {
+                        result.contextActivities[prop] = this.contextActivities[prop].asVersion(version);
+                    }
+                }
+            }
+
+            return result;
         }
     };
 

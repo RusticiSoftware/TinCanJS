@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.1.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -333,6 +333,13 @@ TinCan client library
                 this.log(&quot;version: &quot; + cfg.version);
                 this.version = cfg.version;
             }
+            else {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; assume max supported when not specified,
+                &#x2F;&#x2F; TODO: add detection of LRS from call to endpoint
+                &#x2F;&#x2F;
+                this.version = TinCan.versions()[0];
+            }
         },
 
         &#x2F;**
@@ -401,7 +408,7 @@ TinCan client library
                 }
 
                 xhr = new XMLHttpRequest();
-                xhr.open(cfg.method, fullUrl, cfg.callback !== undefined);
+                xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== &quot;undefined&quot;));
                 for (prop in headers) {
                     if (headers.hasOwnProperty(prop)) {
                         xhr.setRequestHeader(prop, headers[prop]);
@@ -494,7 +501,7 @@ TinCan client library
                 if (this._requestMode === IE) {
                     &#x2F;&#x2F; synchronous call in IE, with no synchronous mode available
                     until = 1000 + Date.now();
-                    this.log(&quot;sendRequest: until: &quot; + until + &quot;, finished: &quot; + finished);
+                    this.log(&quot;sendRequest - until: &quot; + until + &quot;, finished: &quot; + finished);
 
                     while (Date.now() &lt; until &amp;&amp; ! finished) {
                         &#x2F;&#x2F;this.log(&quot;calling __delay&quot;);

@@ -1,6 +1,6 @@
 {
     "project": {
-        "version": "0.1.0",
+        "version": "0.1.1",
         "name": "TinCanJS",
         "description": "Client library for working with TinCan API in JavaScript",
         "url": "https://github.com/RusticiSoftware/TinCanJS",
@@ -252,7 +252,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "src/Verb.js",
-            "line": 41,
+            "line": 51,
             "description": "TinCan client library\n\nTODO:\n\n* Add statement queueing"
         },
         "TinCan.Activity": {
@@ -282,7 +282,7 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/ActivityDefinition.js",
-            "line": 26,
+            "line": 51,
             "description": "TinCan client library"
         },
         "TinCan.Agent": {
@@ -507,7 +507,7 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/Verb.js",
-            "line": 41,
+            "line": 51,
             "description": "TinCan client library"
         }
     },
@@ -539,7 +539,7 @@
             "submodule": "TinCan.ActivityDefinition",
             "namespace": "",
             "file": "src/ActivityDefinition.js",
-            "line": 26,
+            "line": 51,
             "is_constructor": 1
         },
         "TinCan.Agent": {
@@ -915,15 +915,21 @@
                     "optional": true,
                     "props": [
                         {
+                            "name": "url",
+                            "description": "URL for determining launch provided\n        configuration options",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "recordStores",
                             "description": "list of pre-configured LRSes",
                             "type": "Array",
                             "optional": true
                         },
                         {
-                            "name": "url",
-                            "description": "URL for determining launch provided\n        configuration options",
-                            "type": "String",
+                            "name": "activity",
+                            "description": "default activity",
+                            "type": "Object|TinCan.Activity",
                             "optional": true
                         }
                     ]
@@ -956,7 +962,7 @@
             "submodule": "TinCan.Verb",
             "namespace": "",
             "file": "src/Verb.js",
-            "line": 41,
+            "line": 51,
             "is_constructor": 1
         }
     },
@@ -1081,7 +1087,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 33,
+            "line": 58,
             "itemtype": "property",
             "name": "name",
             "type": "Object",
@@ -1091,7 +1097,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 39,
+            "line": 64,
             "itemtype": "property",
             "name": "description",
             "type": "Object",
@@ -1101,7 +1107,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 45,
+            "line": 70,
             "itemtype": "property",
             "name": "type",
             "type": "String",
@@ -1111,7 +1117,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 51,
+            "line": 76,
             "itemtype": "property",
             "name": "extensions",
             "type": "Object",
@@ -1121,7 +1127,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 57,
+            "line": 82,
             "itemtype": "property",
             "name": "interactionType",
             "type": "Object",
@@ -1131,7 +1137,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 63,
+            "line": 88,
             "itemtype": "property",
             "name": "correctResponsesPattern",
             "type": "Array",
@@ -1141,7 +1147,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 69,
+            "line": 94,
             "itemtype": "property",
             "name": "choices",
             "type": "Array",
@@ -1151,7 +1157,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 75,
+            "line": 100,
             "itemtype": "property",
             "name": "scale",
             "type": "Array",
@@ -1161,7 +1167,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 81,
+            "line": 106,
             "itemtype": "property",
             "name": "source",
             "type": "Array",
@@ -1171,7 +1177,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 87,
+            "line": 112,
             "itemtype": "property",
             "name": "target",
             "type": "Array",
@@ -1181,7 +1187,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 93,
+            "line": 118,
             "itemtype": "property",
             "name": "steps",
             "type": "Array",
@@ -1191,7 +1197,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 102,
+            "line": 127,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.ActivityDefinition",
@@ -1200,7 +1206,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 107,
+            "line": 132,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.ActivityDefinition",
@@ -1209,7 +1215,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 112,
+            "line": 137,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1226,7 +1232,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 147,
+            "line": 210,
             "itemtype": "method",
             "name": "toString",
             "return": {
@@ -1239,7 +1245,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 165,
+            "line": 228,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1264,7 +1270,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 194,
+            "line": 287,
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
@@ -1274,7 +1280,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 202,
+            "line": 295,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1492,7 +1498,7 @@
             "line": 33,
             "itemtype": "property",
             "name": "registration",
-            "type": "String",
+            "type": "String|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
@@ -1502,7 +1508,7 @@
             "line": 39,
             "itemtype": "property",
             "name": "instructor",
-            "type": "Object",
+            "type": "TinCan.Agent|TinCan.Group|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
@@ -1512,7 +1518,7 @@
             "line": 45,
             "itemtype": "property",
             "name": "team",
-            "type": "Object",
+            "type": "TinCan.Agent|TinCan.Group|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
@@ -1522,54 +1528,55 @@
             "line": 51,
             "itemtype": "property",
             "name": "contextActivities",
-            "type": "Object",
+            "type": "Object|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
         },
         {
             "file": "src/Context.js",
-            "line": 61,
+            "line": 57,
             "itemtype": "property",
             "name": "revision",
-            "type": "Object",
+            "type": "Object|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
         },
         {
             "file": "src/Context.js",
-            "line": 67,
+            "line": 63,
             "itemtype": "property",
             "name": "platform",
-            "type": "Object",
+            "type": "Object|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
         },
         {
             "file": "src/Context.js",
-            "line": 73,
+            "line": 69,
             "itemtype": "property",
             "name": "language",
-            "type": "String",
+            "type": "String|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
         },
         {
             "file": "src/Context.js",
-            "line": 79,
+            "line": 75,
+            "description": "TODO: should this be statement ref, statement, substatement? spec is unclear",
             "itemtype": "property",
             "name": "statement",
-            "type": "String",
+            "type": "String|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
         },
         {
             "file": "src/Context.js",
-            "line": 85,
+            "line": 82,
             "itemtype": "property",
             "name": "extensions",
             "type": "String",
@@ -1579,7 +1586,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 94,
+            "line": 91,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Context",
@@ -1588,7 +1595,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 99,
+            "line": 96,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Context",
@@ -1597,7 +1604,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 104,
+            "line": 101,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1614,7 +1621,32 @@
         },
         {
             "file": "src/Context.js",
-            "line": 137,
+            "line": 175,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Context",
+            "module": "TinCan",
+            "submodule": "TinCan.Context"
+        },
+        {
+            "file": "src/Context.js",
+            "line": 229,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1741,6 +1773,31 @@
         {
             "file": "src/InteractionComponent.js",
             "line": 80,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 108,
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
@@ -1852,7 +1909,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 180,
+            "line": 187,
             "description": "Method used to send a request via browser objects to the LRS",
             "itemtype": "method",
             "name": "sendRequest",
@@ -1914,7 +1971,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 350,
+            "line": 357,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -1945,7 +2002,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 386,
+            "line": 393,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -1980,7 +2037,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 425,
+            "line": 432,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -2011,7 +2068,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 471,
+            "line": 478,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2128,7 +2185,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 535,
+            "line": 542,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2152,7 +2209,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 590,
+            "line": 597,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2195,7 +2252,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 643,
+            "line": 650,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2245,7 +2302,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 700,
+            "line": 707,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2296,7 +2353,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 762,
+            "line": 769,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2344,7 +2401,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 815,
+            "line": 822,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2383,7 +2440,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 857,
+            "line": 864,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2418,7 +2475,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 898,
+            "line": 905,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2453,7 +2510,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 940,
+            "line": 947,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
@@ -2468,7 +2525,7 @@
             "line": 33,
             "itemtype": "property",
             "name": "score",
-            "type": "Object",
+            "type": "TinCan.Score|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2478,7 +2535,7 @@
             "line": 39,
             "itemtype": "property",
             "name": "success",
-            "type": "Boolean",
+            "type": "Boolean|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2488,7 +2545,7 @@
             "line": 45,
             "itemtype": "property",
             "name": "completion",
-            "type": "String",
+            "type": "Boolean|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2498,7 +2555,7 @@
             "line": 51,
             "itemtype": "property",
             "name": "duration",
-            "type": "String",
+            "type": "String|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2508,7 +2565,7 @@
             "line": 57,
             "itemtype": "property",
             "name": "response",
-            "type": "Object",
+            "type": "String|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2518,7 +2575,7 @@
             "line": 63,
             "itemtype": "property",
             "name": "extensions",
-            "type": "Object",
+            "type": "Object|null",
             "class": "TinCan.Result",
             "module": "TinCan",
             "submodule": "TinCan.Result"
@@ -2560,7 +2617,32 @@
         },
         {
             "file": "src/Result.js",
-            "line": 114,
+            "line": 122,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Result",
+            "module": "TinCan",
+            "submodule": "TinCan.Result"
+        },
+        {
+            "file": "src/Result.js",
+            "line": 169,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2649,7 +2731,32 @@
         },
         {
             "file": "src/Score.js",
-            "line": 96,
+            "line": 95,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Score",
+            "module": "TinCan",
+            "submodule": "TinCan.Score"
+        },
+        {
+            "file": "src/Score.js",
+            "line": 124,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2728,7 +2835,7 @@
         },
         {
             "file": "src/State.js",
-            "line": 75,
+            "line": 90,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -3255,7 +3362,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 43,
+            "line": 44,
             "itemtype": "property",
             "name": "environment",
             "type": "String",
@@ -3264,7 +3371,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 49,
+            "line": 50,
             "itemtype": "property",
             "name": "recordStores",
             "type": "Array",
@@ -3273,7 +3380,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 55,
+            "line": 56,
             "description": "Default actor used when preparing statements that\ndon't yet have an actor set, and for saving state, etc.",
             "itemtype": "property",
             "name": "actor",
@@ -3283,7 +3390,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 64,
+            "line": 65,
             "description": "Default activity, may be used as a statement 'target'\nor incorporated into 'context'",
             "itemtype": "property",
             "name": "activity",
@@ -3293,7 +3400,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 73,
+            "line": 74,
             "description": "Default registration, included in default context when\nprovided, otherwise used in statement queries",
             "itemtype": "property",
             "name": "registration",
@@ -3303,7 +3410,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 82,
+            "line": 83,
             "description": "Default context used when preparing statements that\ndon't yet have a context set, or mixed in when one\nhas been provided, properties do NOT override on mixing",
             "itemtype": "property",
             "name": "context",
@@ -3313,7 +3420,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 98,
+            "line": 99,
             "description": "Safe version of logging",
             "itemtype": "method",
             "name": "log",
@@ -3329,7 +3436,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 112,
+            "line": 113,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -3345,7 +3452,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 143,
+            "line": 144,
             "itemtype": "method",
             "name": "_handleQueryString",
             "params": [
@@ -3362,7 +3469,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 225,
+            "line": 226,
             "itemtype": "method",
             "name": "addRecordStore",
             "params": [
@@ -3377,7 +3484,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 245,
+            "line": 246,
             "itemtype": "method",
             "name": "prepareStatement",
             "params": [
@@ -3396,7 +3503,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 292,
+            "line": 299,
             "description": "Calls saveStatement on each configured LRS, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "sendStatement",
@@ -3418,7 +3525,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 358,
+            "line": 365,
             "description": "Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "getStatement",
@@ -3444,8 +3551,8 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 425,
-            "description": "Calls saveStatements with list of statements",
+            "line": 432,
+            "description": "Calls saveStatements with list of prepared statements",
             "itemtype": "method",
             "name": "sendStatements",
             "params": [
@@ -3465,7 +3572,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 495,
+            "line": 502,
             "itemtype": "method",
             "name": "getStatements",
             "params": [
@@ -3509,7 +3616,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 562,
+            "line": 569,
             "itemtype": "method",
             "name": "getState",
             "params": [
@@ -3556,7 +3663,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 620,
+            "line": 627,
             "itemtype": "method",
             "name": "setState",
             "params": [
@@ -3608,7 +3715,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 679,
+            "line": 686,
             "itemtype": "method",
             "name": "deleteState",
             "params": [
@@ -3655,7 +3762,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 737,
+            "line": 744,
             "itemtype": "method",
             "name": "getActivityProfile",
             "params": [
@@ -3690,7 +3797,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 784,
+            "line": 791,
             "itemtype": "method",
             "name": "setActivityProfile",
             "params": [
@@ -3730,7 +3837,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 832,
+            "line": 839,
             "itemtype": "method",
             "name": "deleteActivityProfile",
             "params": [
@@ -3765,7 +3872,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 880,
+            "line": 887,
             "itemtype": "property",
             "name": "DEBUG",
             "static": 1,
@@ -3775,7 +3882,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 887,
+            "line": 894,
             "description": "Turn on debug logging",
             "itemtype": "method",
             "name": "enableDebug",
@@ -3785,7 +3892,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 897,
+            "line": 904,
             "description": "Turn off debug logging",
             "itemtype": "method",
             "name": "disableDebug",
@@ -3795,7 +3902,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 907,
+            "line": 914,
             "itemtype": "method",
             "name": "versions",
             "return": {
@@ -3808,7 +3915,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 920,
+            "line": 927,
             "itemtype": "method",
             "name": "environment",
             "return": {
@@ -3903,7 +4010,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 48,
+            "line": 58,
             "itemtype": "property",
             "name": "id",
             "type": "String",
@@ -3913,7 +4020,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 54,
+            "line": 64,
             "itemtype": "property",
             "name": "display",
             "type": "Object",
@@ -3923,7 +4030,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 63,
+            "line": 73,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Verb",
@@ -3932,7 +4039,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 68,
+            "line": 78,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Verb",
@@ -3941,7 +4048,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 73,
+            "line": 83,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -3958,7 +4065,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 110,
+            "line": 120,
             "itemtype": "method",
             "name": "toString",
             "return": {
@@ -3971,7 +4078,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 124,
+            "line": 134,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -3996,7 +4103,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 150,
+            "line": 160,
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
@@ -4006,7 +4113,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 158,
+            "line": 168,
             "itemtype": "method",
             "name": "fromJSON",
             "params": [

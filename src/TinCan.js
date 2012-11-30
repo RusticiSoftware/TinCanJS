@@ -33,9 +33,10 @@ var TinCan;
     @class TinCan
     @constructor
     @param {Object} [options] Configuration used to initialize.
-        @param {Array} [options.recordStores] list of pre-configured LRSes
         @param {String} [options.url] URL for determining launch provided
             configuration options
+        @param {Array} [options.recordStores] list of pre-configured LRSes
+        @param {Object|TinCan.Activity} [options.activity] default activity
     **/
     TinCan = function (cfg) {
         this.log("constructor");
@@ -281,6 +282,12 @@ var TinCan;
                             if (this.context.contextActivities.grouping !== null && stmt.context.contextActivities.grouping === null) {
                                 stmt.context.contextActivities.grouping = this.context.contextActivities.grouping;
                             }
+                            if (this.context.contextActivities.parent !== null && stmt.context.contextActivities.parent === null) {
+                                stmt.context.contextActivities.parent = this.context.contextActivities.parent;
+                            }
+                            if (this.context.contextActivities.other !== null && stmt.context.contextActivities.other === null) {
+                                stmt.context.contextActivities.other = this.context.contextActivities.other;
+                            }
                         }
                     }
                 }
@@ -423,7 +430,7 @@ var TinCan;
         },
 
         /**
-        Calls saveStatements with list of statements
+        Calls saveStatements with list of prepared statements
 
         @method sendStatements
         @param {Array} Array of statements to send

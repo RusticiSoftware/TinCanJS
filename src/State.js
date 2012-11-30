@@ -67,8 +67,23 @@ TinCan client library
         */
         init: function (cfg) {
             this.log("init");
+            var i,
+                directProps = [
+                    "id",
+                    "contents"
+                ],
+                val
+            ;
 
             cfg = cfg || {};
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+
+            this.updated = false;
         }
     };
 

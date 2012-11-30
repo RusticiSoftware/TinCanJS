@@ -23,6 +23,16 @@ TinCan client library
 (function () {
     "use strict";
 
+    //
+    // this represents the full set of verb values that were
+    // allowed by the .9 spec version, if an object is created with one of
+    // the short forms it will be upconverted to the matching long form,
+    // for local storage and use and if an object is needed in .9 version
+    // consequently down converted
+    //
+    // hopefully this list will never grow (or change) and only the exact
+    // ADL compatible URLs should be matched
+    //
     var _downConvertMap = {
         "http://adlnet.gov/expapi/verbs/experienced": "experienced",
         "http://adlnet.gov/expapi/verbs/attended":    "attended",

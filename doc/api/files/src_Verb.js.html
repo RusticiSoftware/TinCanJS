@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.1.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -181,6 +181,16 @@ TinCan client library
 (function () {
     &quot;use strict&quot;;
 
+    &#x2F;&#x2F;
+    &#x2F;&#x2F; this represents the full set of verb values that were
+    &#x2F;&#x2F; allowed by the .9 spec version, if an object is created with one of
+    &#x2F;&#x2F; the short forms it will be upconverted to the matching long form,
+    &#x2F;&#x2F; for local storage and use and if an object is needed in .9 version
+    &#x2F;&#x2F; consequently down converted
+    &#x2F;&#x2F;
+    &#x2F;&#x2F; hopefully this list will never grow (or change) and only the exact
+    &#x2F;&#x2F; ADL compatible URLs should be matched
+    &#x2F;&#x2F;
     var _downConvertMap = {
         &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;experienced&quot;: &quot;experienced&quot;,
         &quot;http:&#x2F;&#x2F;adlnet.gov&#x2F;expapi&#x2F;verbs&#x2F;attended&quot;:    &quot;attended&quot;,

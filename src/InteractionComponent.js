@@ -78,6 +78,34 @@ TinCan client library
         },
 
         /**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result = {
+                    id: this.id
+                },
+                optionalDirectProps = [
+                    "description"
+                ],
+                i,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                prop = optionalDirectProps[i];
+                if (this[prop] !== null) {
+                    result[prop] = this[prop];
+                }
+            }
+
+            return result;
+        },
+
+        /**
         See {{#crossLink "TinCan.Utils/getLangDictionaryValue"}}{{/crossLink}}
 
         @method getLangDictionaryValue

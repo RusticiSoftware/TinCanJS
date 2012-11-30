@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.1.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -190,37 +190,37 @@ TinCan client library
 
         &#x2F;**
         @property score
-        @type Object
+        @type TinCan.Score|null
         *&#x2F;
         this.score = null;
 
         &#x2F;**
         @property success
-        @type Boolean
+        @type Boolean|null
         *&#x2F;
         this.success = null;
 
         &#x2F;**
         @property completion
-        @type String
+        @type Boolean|null
         *&#x2F;
         this.completion = null;
 
         &#x2F;**
         @property duration
-        @type String
+        @type String|null
         *&#x2F;
         this.duration = null;
 
         &#x2F;**
         @property response
-        @type Object
+        @type String|null
         *&#x2F;
         this.response = null;
 
         &#x2F;**
         @property extensions
-        @type Object
+        @type Object|null
         *&#x2F;
         this.extensions = null;
 
@@ -257,8 +257,12 @@ TinCan client library
             cfg = cfg || {};
 
             if (cfg.hasOwnProperty(&quot;score&quot;)) {
-                &#x2F;&#x2F; TODO: check to see if already this type
-                this.score = new TinCan.Score (cfg.score);
+                if (cfg.score instanceof TinCan.Score) {
+                    this.score = cfg.score;
+                }
+                else {
+                    this.score = new TinCan.Score (cfg.score);
+                }
             }
 
             for (i = 0; i &lt; directProps.length; i += 1) {
@@ -266,6 +270,57 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+
+            &#x2F;&#x2F; 0.90 used a string, store it internally as a bool
+            if (this.completion === &quot;Completed&quot;) {
+                this.completion = true;
+            }
+        },
+
+        &#x2F;**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        *&#x2F;
+        asVersion: function (version) {
+            this.log(&quot;asVersion&quot;);
+            var result = {},
+                optionalDirectProps = [
+                    &quot;success&quot;,
+                    &quot;duration&quot;,
+                    &quot;response&quot;,
+                    &quot;extensions&quot;
+                ],
+                optionalObjProps = [
+                    &quot;score&quot;
+                ],
+                i,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i &lt; optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i &lt; optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
+            if (this.completion !== null) {
+                if (version === &quot;0.90&quot;) {
+                    if (this.completion) {
+                        result.completion = &quot;Completed&quot;;
+                    }
+                }
+                else {
+                    result.completion = this.completion;
+                }
+            }
+
+            return result;
         }
     };
 

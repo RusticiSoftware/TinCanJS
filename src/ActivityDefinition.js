@@ -23,11 +23,36 @@ TinCan client library
 (function () {
     "use strict";
 
+    //
+    // this represents the full set of activity definition types that were
+    // allowed by the .9 spec version, if an object is created with one of
+    // the short forms it will be upconverted to the matching long form,
+    // for local storage and use and if an object is needed in .9 version
+    // consequently down converted
+    //
+    // hopefully this list will never grow (or change) and only the exact
+    // ADL compatible URLs should be matched
+    //
+    var _downConvertMap = {
+        "http://adlnet.gov/expapi/activities/course": "course",
+        "http://adlnet.gov/expapi/activities/module": "module",
+        "http://adlnet.gov/expapi/activities/meeting": "meeting",
+        "http://adlnet.gov/expapi/activities/media": "media",
+        "http://adlnet.gov/expapi/activities/performance": "performance",
+        "http://adlnet.gov/expapi/activities/simulation": "simulation",
+        "http://adlnet.gov/expapi/activities/assessment": "assessment",
+        "http://adlnet.gov/expapi/activities/interaction": "interaction",
+        "http://adlnet.gov/expapi/activities/cmi.interaction": "cmi.interaction",
+        "http://adlnet.gov/expapi/activities/question": "question",
+        "http://adlnet.gov/expapi/activities/objective": "objective",
+        "http://adlnet.gov/expapi/activities/link": "link"
+    },
+
     /**
     @class TinCan.ActivityDefinition
     @constructor
     */
-    var ActivityDefinition = TinCan.ActivityDefinition = function (cfg) {
+    ActivityDefinition = TinCan.ActivityDefinition = function (cfg) {
         this.log("constructor");
 
         /**
@@ -117,24 +142,62 @@ TinCan client library
             this.log("init");
 
             var i,
+                j,
+                prop,
                 directProps = [
                     "name",
                     "description",
-                    "type",
-                    "interactionType",
-                    "extensions"
-                ]
+                    "extensions",
+                    "correctResponsesPattern"
+                ],
+                interactionComponentProps = []
             ;
 
             cfg = cfg || {};
 
-            // TODO: verify type is URI?
-            // TODO: verify interaction types and formats
-            // TODO: handle creation of interaction components
+            if (cfg.hasOwnProperty("type") && cfg.type !== null) {
+                // TODO: verify type is URI?
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg.type) {
+                        cfg.type = _downConvertMap[prop];
+                    }
+                }
+                this.type = cfg.type;
+            }
 
-            if (cfg.hasOwnProperty("definition")) {
-                // TODO: check to see if already this type
-                this.definition = new TinCan.ActivityDefinition (cfg.definition);
+            if (cfg.hasOwnProperty("interactionType") && cfg.interactionType !== null) {
+                // TODO: verify interaction type in acceptable set?
+                this.interactionType = cfg.interactionType;
+                if (cfg.interactionType === "choice" || cfg.interactionType === "sequencing") {
+                    interactionComponentProps.push("choices");
+                }
+                else if (cfg.interactionType === "likert") {
+                    interactionComponentProps.push("scale");
+                }
+                else if (cfg.interactionType === "matching") {
+                    interactionComponentProps.push("source");
+                    interactionComponentProps.push("target");
+                }
+                else if (cfg.interactionType === "performance") {
+                    interactionComponentProps.push("steps");
+                }
+
+                if (interactionComponentProps.length > 0) {
+                    for (i = 0; i < interactionComponentProps.length; i += 1) {
+                        prop = interactionComponentProps[i];
+                        if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
+                            this[prop] = [];
+                            for (j = 0; j < cfg[prop].length; j += 1) {
+                                this[prop].push(
+                                    // TODO: check to see if already this type
+                                    new TinCan.InteractionComponent (
+                                        cfg[prop][j]
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -173,18 +236,48 @@ TinCan client library
                 directProps = [
                     "name",
                     "description",
-                    "type",
                     "interactionType",
                     "extensions"
                 ],
-                i
+                interactionComponentProps = [
+                    "choices",
+                    "scale",
+                    "source",
+                    "target",
+                    "steps"
+                ],
+                i,
+                j,
+                prop
             ;
 
             version = version || TinCan.versions()[0];
 
+            if (this.type !== null) {
+                if (version === "0.90") {
+                    result.type = _downConvertMap[this.type];
+                }
+                else {
+                    result.type = this.type;
+                }
+            }
+
             for (i = 0; i < directProps.length; i += 1) {
-                if (this[directProps[i]] !== null) {
-                    result[directProps[i]] = this[directProps[i]];
+                prop = directProps[i];
+                if (this[prop] !== null) {
+                    result[prop] = this[prop];
+                }
+            }
+
+            for (i = 0; i < interactionComponentProps.length; i += 1) {
+                prop = interactionComponentProps[i];
+                if (this[prop] !== null) {
+                    result[prop] = [];
+                    for (j = 0; j < this[prop].length; j += 1) {
+                        result[prop].push(
+                            this[prop][j].asVersion(version)
+                        );
+                    }
                 }
             }
 

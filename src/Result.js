@@ -32,37 +32,37 @@ TinCan client library
 
         /**
         @property score
-        @type Object
+        @type TinCan.Score|null
         */
         this.score = null;
 
         /**
         @property success
-        @type Boolean
+        @type Boolean|null
         */
         this.success = null;
 
         /**
         @property completion
-        @type String
+        @type Boolean|null
         */
         this.completion = null;
 
         /**
         @property duration
-        @type String
+        @type String|null
         */
         this.duration = null;
 
         /**
         @property response
-        @type Object
+        @type String|null
         */
         this.response = null;
 
         /**
         @property extensions
-        @type Object
+        @type Object|null
         */
         this.extensions = null;
 
@@ -99,8 +99,12 @@ TinCan client library
             cfg = cfg || {};
 
             if (cfg.hasOwnProperty("score")) {
-                // TODO: check to see if already this type
-                this.score = new TinCan.Score (cfg.score);
+                if (cfg.score instanceof TinCan.Score) {
+                    this.score = cfg.score;
+                }
+                else {
+                    this.score = new TinCan.Score (cfg.score);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -108,6 +112,57 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+
+            // 0.90 used a string, store it internally as a bool
+            if (this.completion === "Completed") {
+                this.completion = true;
+            }
+        },
+
+        /**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result = {},
+                optionalDirectProps = [
+                    "success",
+                    "duration",
+                    "response",
+                    "extensions"
+                ],
+                optionalObjProps = [
+                    "score"
+                ],
+                i,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
+            if (this.completion !== null) {
+                if (version === "0.90") {
+                    if (this.completion) {
+                        result.completion = "Completed";
+                    }
+                }
+                else {
+                    result.completion = this.completion;
+                }
+            }
+
+            return result;
         }
     };
 
