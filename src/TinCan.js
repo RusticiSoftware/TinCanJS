@@ -126,7 +126,7 @@ var TinCan;
                 this._initFromQueryString(cfg.url);
             }
 
-            if (cfg.hasOwnProperty("recordStores") && cfg.recordStores.length > 0) {
+            if (cfg.hasOwnProperty("recordStores") && cfg.recordStores !== undefined) {
                 for (i = 0; i < cfg.recordStores.length; i += 1) {
                     this.addRecordStore(cfg.recordStores[i]);
                 }
@@ -153,7 +153,7 @@ var TinCan;
                 prop,
                 qsParams = TinCan.Utils.parseURL(url).params,
                 lrsProps = ["endpoint", "auth"],
-                lrsCfg,
+                lrsCfg = {},
                 activityCfg,
                 contextCfg
             ;
@@ -198,6 +198,7 @@ var TinCan;
                     contextCfg.registration = this.registration = qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty("grouping")) {
+                    contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
                 }
 
