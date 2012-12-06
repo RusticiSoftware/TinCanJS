@@ -142,6 +142,17 @@ TinCan client library
                 path: parts[0],
                 params: params
             };
+        },
+
+        /**
+        @method getServerRoot
+        @param {String} absoluteUrl
+        @return {String} server root of url
+        @private
+        */
+        getServerRoot: function (absoluteUrl) {
+            var urlParts = absoluteUrl.split("/");
+            return urlParts[0] + "//" + urlParts[2];
         }
     };
 }());

@@ -114,6 +114,7 @@ TinCan client library
                     mesg: "LRS invalid: no endpoint"
                 };
             }
+
             this.endpoint = cfg.endpoint;
 
             if (cfg.hasOwnProperty("allowFail")) {
@@ -215,6 +216,11 @@ TinCan client library
                 pairs = [],
                 self = this
             ;
+
+            // respect absolute URLs passed in
+            if (cfg.url.indexOf("http") === 0) {
+                fullUrl = cfg.url;
+            }
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
@@ -659,7 +665,8 @@ TinCan client library
             var requestCfg,
                 requestResult,
                 callbackWrapper,
-                parsedURL;
+                parsedURL,
+                serverRoot;
 
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
@@ -675,9 +682,19 @@ TinCan client library
             // the more URL query params so that the request can be made properly later
             parsedURL = TinCan.Utils.parseURL(cfg.url);
 
+            //Respect a moreUrl that is relative to either the server root 
+            //or endpoint (though only the former is allowed in the spec)
+            serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
+            if (parsedURL.path.indexOf("/statements") === 0){
+                parsedURL.path = this.endpoint.replace(serverRoot, '') + parsedURL.path;
+                this.log("converting non-standard more URL to " + parsedURL.path);
+            }
+
             requestCfg = {
                 method: "GET",
-                url: parsedURL.path,
+                //For arbitrary more URLs to work, 
+                //we need to make the URL absolute here
+                url: serverRoot + parsedURL.path,
                 params: parsedURL.params
             };
             if (typeof cfg.callback !== "undefined") {
