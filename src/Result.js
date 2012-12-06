@@ -113,7 +113,7 @@ TinCan client library
                 }
             }
 
-            // 0.90 used a string, store it internally as a bool
+            // 0.9 used a string, store it internally as a bool
             if (this.completion === "Completed") {
                 this.completion = true;
             }
@@ -152,7 +152,7 @@ TinCan client library
                 }
             }
             if (this.completion !== null) {
-                if (version === "0.90") {
+                if (version === "0.9") {
                     if (this.completion) {
                         result.completion = "Completed";
                     }

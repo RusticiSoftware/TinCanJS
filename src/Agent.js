@@ -227,7 +227,7 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.90") {
+            if (version === "0.9") {
                 if (this.mbox !== null) {
                     result.mbox = [
                         this.mbox

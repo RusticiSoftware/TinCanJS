@@ -921,7 +921,7 @@ var TinCan;
         // newest first so we can use the first as the default
         return [
             "0.95",
-            "0.90"
+            "0.9"
         ];
     };
 
@@ -1383,7 +1383,7 @@ TinCan client library
             // consolidate headers
             headers["Content-Type"] = "application/json";
             headers.Authorization = this.auth;
-            if (this.version !== "0.90") {
+            if (this.version !== "0.9") {
                 headers["X-Experience-API-Version"] = this.version;
             }
 
@@ -1903,7 +1903,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -1993,7 +1993,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -2044,7 +2044,7 @@ TinCan client library
             requestParams = {
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -2533,7 +2533,7 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.90") {
+            if (version === "0.9") {
                 if (this.mbox !== null) {
                     result.mbox = [
                         this.mbox
@@ -2781,7 +2781,7 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.90") {
+            if (version === "0.9") {
                 result = _downConvertMap[this.id];
             }
             else {
@@ -2932,7 +2932,7 @@ TinCan client library
                 }
             }
 
-            // 0.90 used a string, store it internally as a bool
+            // 0.9 used a string, store it internally as a bool
             if (this.completion === "Completed") {
                 this.completion = true;
             }
@@ -2971,7 +2971,7 @@ TinCan client library
                 }
             }
             if (this.completion !== null) {
-                if (version === "0.90") {
+                if (version === "0.9") {
                     if (this.completion) {
                         result.completion = "Completed";
                     }
@@ -3890,7 +3890,7 @@ TinCan client library
             version = version || TinCan.versions()[0];
 
             if (this.type !== null) {
-                if (version === "0.90") {
+                if (version === "0.9") {
                     result.type = _downConvertMap[this.type];
                 }
                 else {
@@ -4515,7 +4515,7 @@ TinCan client library
                 }
             }
 
-            if (version === "0.90" && this.inProgress !== null) {
+            if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
 

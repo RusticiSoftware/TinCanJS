@@ -237,7 +237,7 @@ TinCan client library
             // consolidate headers
             headers["Content-Type"] = "application/json";
             headers.Authorization = this.auth;
-            if (this.version !== "0.90") {
+            if (this.version !== "0.9") {
                 headers["X-Experience-API-Version"] = this.version;
             }
 
@@ -757,7 +757,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -847,7 +847,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -898,7 +898,7 @@ TinCan client library
             requestParams = {
                 activityId: cfg.activity.id
             };
-            if (this.version === "0.90") {
+            if (this.version === "0.9") {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {

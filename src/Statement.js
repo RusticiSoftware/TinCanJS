@@ -286,7 +286,7 @@ TinCan client library
                 }
             }
 
-            if (version === "0.90" && this.inProgress !== null) {
+            if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
 

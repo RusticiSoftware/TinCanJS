@@ -254,7 +254,7 @@ TinCan client library
             version = version || TinCan.versions()[0];
 
             if (this.type !== null) {
-                if (version === "0.90") {
+                if (version === "0.9") {
                     result.type = _downConvertMap[this.type];
                 }
                 else {

@@ -921,7 +921,7 @@ var TinCan;
         // newest first so we can use the first as the default
         return [
             "0.95",
-            "0.90"
+            "0.9"
         ];
     };
 
