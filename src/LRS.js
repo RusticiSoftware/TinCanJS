@@ -682,12 +682,17 @@ TinCan client library
             // the more URL query params so that the request can be made properly later
             parsedURL = TinCan.Utils.parseURL(cfg.url);
 
-            //Respect a moreUrl that is relative to either the server root 
+            //Respect a more URL that is relative to either the server root 
             //or endpoint (though only the former is allowed in the spec)
             serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
             if (parsedURL.path.indexOf("/statements") === 0){
                 parsedURL.path = this.endpoint.replace(serverRoot, '') + parsedURL.path;
                 this.log("converting non-standard more URL to " + parsedURL.path);
+            }
+
+            //The more relative URL might not start with a slash, add it if not
+            if (parsedURL.path.indexOf("/") !== 0) {
+                parsedURL.path = "/" + parsedURL.path;
             }
 
             requestCfg = {
