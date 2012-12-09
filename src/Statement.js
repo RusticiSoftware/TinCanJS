@@ -199,7 +199,7 @@ TinCan client library
                     cfg.target.objectType = "Activity";
                 }
                 if (cfg.target.objectType === "Activity") {
-                    this.target = cfg.target; //new TinCan.Activity (cfg.target); //This line was caasing an error. Not sure why or indeed why it is needed. 
+                    this.target = new TinCan.Activity (cfg.target); 
                 } else if (cfg.target.objectType === "Agent") {
                     this.target = new TinCan.Agent (cfg.target);
                 } else if (cfg.target.objectType === "SubStatement") {
