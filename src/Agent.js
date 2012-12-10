@@ -172,16 +172,16 @@ TinCan client library
             }
             if (cfg.account) {
     	        if  (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
-		            if (cfg.account.length === 0) {
-		                delete cfg.account;
-		            }
-		            else {
-		                if (cfg.account.length > 1) {
-		                    this.degraded = true;
-		                }
-		                cfg.account = cfg.account[0];
-		            }
-		        }
+	            if (cfg.account.length === 0) {
+	                delete cfg.account;
+	            }
+	            else {
+	                if (cfg.account.length > 1) {
+	                    this.degraded = true;
+	                }
+	                cfg.account = cfg.account[0];
+	            }
+	        }
             }
 
             if (cfg.hasOwnProperty("account")) {
