@@ -170,9 +170,8 @@ TinCan client library
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (cfg.account)
-            {
-    	        if (cfg.account.homePage && (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") ){
+            if (cfg.account) {
+    	        if  (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
 		            if (cfg.account.length === 0) {
 		                delete cfg.account;
 		            }
