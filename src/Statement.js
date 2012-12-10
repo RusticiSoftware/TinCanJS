@@ -193,14 +193,13 @@ TinCan client library
                 // TODO: check to see if already this type
                 this.verb = new TinCan.Verb (cfg.verb);
             }
-            if (cfg.hasOwnProperty("target")) {
+            if (cfg.hasOwnProperty("target")) { 
                 // TODO: check to see if already this type
                 if (typeof cfg.target.objectType === "undefined") {
                     cfg.target.objectType = "Activity";
                 }
-
                 if (cfg.target.objectType === "Activity") {
-                    this.target = new TinCan.Activity (cfg.target);
+                    this.target = new TinCan.Activity (cfg.target); 
                 } else if (cfg.target.objectType === "Agent") {
                     this.target = new TinCan.Agent (cfg.target);
                 } else if (cfg.target.objectType === "SubStatement") {
