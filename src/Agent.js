@@ -152,34 +152,37 @@ TinCan client library
                 }
                 cfg.name = cfg.name[0];
             }
-            if (typeof cfg.mbox === "object") {
+            if (cfg.mbox && (typeof cfg.mbox === "object")) {
                 if (cfg.mbox.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox = cfg.mbox[0];
             }
-            if (typeof cfg.mbox_sha1sum === "object") {
+            if (cfg.mbox_sha1sum && (typeof cfg.mbox_sha1sum === "object")) {
                 if (cfg.mbox_sha1sum.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
             }
-            if (typeof cfg.openid === "object") {
+            if (cfg.openid && (typeof cfg.openid === "object")) {
                 if (cfg.openid.length > 1) {
                     this.degraded = true;
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
-                if (cfg.account.length === 0) {
-                    delete cfg.account;
-                }
-                else {
-                    if (cfg.account.length > 1) {
-                        this.degraded = true;
-                    }
-                    cfg.account = cfg.account[0];
-                }
+            if (cfg.account)
+            {
+    	        if (cfg.account.homePage && (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") ){
+		            if (cfg.account.length === 0) {
+		                delete cfg.account;
+		            }
+		            else {
+		                if (cfg.account.length > 1) {
+		                    this.degraded = true;
+		                }
+		                cfg.account = cfg.account[0];
+		            }
+		        }
             }
 
             if (cfg.hasOwnProperty("account")) {
