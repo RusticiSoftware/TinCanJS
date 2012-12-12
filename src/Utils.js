@@ -51,6 +51,7 @@ TinCan client library
 
         /**
         @method getISODateString
+        @static
         @param {Date} date Date to stringify
         @return {String} ISO date String
         */

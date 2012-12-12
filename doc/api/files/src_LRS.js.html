@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.1</em>
+            <em>API Docs for: 0.1.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -46,6 +46,8 @@
                 <li><a href="..&#x2F;classes/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -272,6 +276,7 @@ TinCan client library
                     mesg: &quot;LRS invalid: no endpoint&quot;
                 };
             }
+
             this.endpoint = cfg.endpoint;
 
             if (cfg.hasOwnProperty(&quot;allowFail&quot;)) {
@@ -374,6 +379,11 @@ TinCan client library
                 self = this
             ;
 
+            &#x2F;&#x2F; respect absolute URLs passed in
+            if (cfg.url.indexOf(&quot;http&quot;) === 0) {
+                fullUrl = cfg.url;
+            }
+
             &#x2F;&#x2F; add extended LMS-specified values to the params
             if (this.extended !== null) {
                 for (prop in this.extended) {
@@ -389,7 +399,7 @@ TinCan client library
             &#x2F;&#x2F; consolidate headers
             headers[&quot;Content-Type&quot;] = &quot;application&#x2F;json&quot;;
             headers.Authorization = this.auth;
-            if (this.version !== &quot;0.90&quot;) {
+            if (this.version !== &quot;0.9&quot;) {
                 headers[&quot;X-Experience-API-Version&quot;] = this.version;
             }
 
@@ -817,7 +827,8 @@ TinCan client library
             var requestCfg,
                 requestResult,
                 callbackWrapper,
-                parsedURL;
+                parsedURL,
+                serverRoot;
 
             &#x2F;&#x2F; TODO: it would be better to make a subclass that knows
             &#x2F;&#x2F;       its own environment and just implements the protocol
@@ -833,9 +844,24 @@ TinCan client library
             &#x2F;&#x2F; the more URL query params so that the request can be made properly later
             parsedURL = TinCan.Utils.parseURL(cfg.url);
 
+            &#x2F;&#x2F;Respect a more URL that is relative to either the server root 
+            &#x2F;&#x2F;or endpoint (though only the former is allowed in the spec)
+            serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
+            if (parsedURL.path.indexOf(&quot;&#x2F;statements&quot;) === 0){
+                parsedURL.path = this.endpoint.replace(serverRoot, &#x27;&#x27;) + parsedURL.path;
+                this.log(&quot;converting non-standard more URL to &quot; + parsedURL.path);
+            }
+
+            &#x2F;&#x2F;The more relative URL might not start with a slash, add it if not
+            if (parsedURL.path.indexOf(&quot;&#x2F;&quot;) !== 0) {
+                parsedURL.path = &quot;&#x2F;&quot; + parsedURL.path;
+            }
+
             requestCfg = {
                 method: &quot;GET&quot;,
-                url: parsedURL.path,
+                &#x2F;&#x2F;For arbitrary more URLs to work, 
+                &#x2F;&#x2F;we need to make the URL absolute here
+                url: serverRoot + parsedURL.path,
                 params: parsedURL.params
             };
             if (typeof cfg.callback !== &quot;undefined&quot;) {
@@ -898,7 +924,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === &quot;0.90&quot;) {
+            if (this.version === &quot;0.9&quot;) {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -988,7 +1014,7 @@ TinCan client library
                 stateId: key,
                 activityId: cfg.activity.id
             };
-            if (this.version === &quot;0.90&quot;) {
+            if (this.version === &quot;0.9&quot;) {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -1039,7 +1065,7 @@ TinCan client library
             requestParams = {
                 activityId: cfg.activity.id
             };
-            if (this.version === &quot;0.90&quot;) {
+            if (this.version === &quot;0.9&quot;) {
                 requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             else {
@@ -1077,7 +1103,8 @@ TinCan client library
         retrieveActivityProfile: function (key, cfg) {
             this.log(&quot;retrieveActivityProfile&quot;);
             var requestCfg = {},
-                requestResult
+                requestResult,
+                callbackWrapper
             ;
 
             &#x2F;&#x2F; TODO: it would be better to make a subclass that knows
@@ -1097,10 +1124,39 @@ TinCan client library
                 }
             };
             if (typeof cfg.callback !== &quot;undefined&quot;) {
-                requestCfg.callback = cfg.callback;
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = new TinCan.ActivityProfile(
+                            {
+                                id: key,
+                                activity: cfg.activity,
+                                contents: xhr.responseText
+                            }
+                        );
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
             }
 
-            return this.sendRequest(requestCfg);
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.profile = null;
+                if (requestResult.err === null) {
+                    requestResult.profile = new TinCan.ActivityProfile(
+                        {
+                            id: key,
+                            activity: cfg.activity,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                }
+            }
+
+            return requestResult;
         },
 
         &#x2F;**

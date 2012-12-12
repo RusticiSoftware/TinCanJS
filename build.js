@@ -32,6 +32,7 @@ new gear.Queue(
         ,'src/Statement.js'
         ,'src/StatementsResult.js'
         ,'src/State.js'
+        ,'src/ActivityProfile.js'
     ]
 )
 .log("Linting")

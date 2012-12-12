@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TinCan.Context - TinCanJS</title>
+    <title>src&#x2F;ActivityProfile.js - TinCanJS</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -156,49 +156,128 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TinCan.Context Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: src&#x2F;ActivityProfile.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;*
+    Copyright 2012 Rustici Software
 
-    
-        <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;src_Context.js.html#l26"><code>src&#x2F;Context.js:26</code></a>
-        </div>
-    
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    
-</div>
+    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0
 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*&#x2F;
 
+&#x2F;**
+TinCan client library
 
-<div class="box intro">
-    <p>TinCan client library</p>
-</div>
+@module TinCan
+@submodule TinCan.ActivityProfile
+**&#x2F;
+(function () {
+    &quot;use strict&quot;;
 
+    &#x2F;**
+    @class TinCan.ActivityProfile
+    @constructor
+    *&#x2F;
+    var ActivityProfile = TinCan.ActivityProfile = function (cfg) {
+        this.log(&quot;constructor&quot;);
 
+        &#x2F;**
+        @property id
+        @type String
+        *&#x2F;
+        this.id = null;
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-            <p>This module provides the following classes:</p>
+        &#x2F;**
+        @property activity
+        @type TinCan.Activity
+        *&#x2F;
+        this.activity = null;
 
-            <ul class="module-classes">
-            
-                <li class="module-class">
-                    <a href="..&#x2F;classes/TinCan.Context.html">
-                        TinCan.Context
-                    </a>
-                </li>
-            
-            </ul>
-        
-    </div>
+        &#x2F;**
+        @property updated
+        @type String
+        *&#x2F;
+        this.updated = null;
 
-    <div class="yui3-u-1-2">
-        
-    </div>
+        &#x2F;**
+        @property contents
+        @type String
+        *&#x2F;
+        this.contents = null;
+
+        this.init(cfg);
+    };
+    ActivityProfile.prototype = {
+        &#x2F;**
+        @property LOG_SRC
+        *&#x2F;
+        LOG_SRC: &#x27;ActivityProfile&#x27;,
+
+        &#x2F;**
+        @method log
+        *&#x2F;
+        log: TinCan.prototype.log,
+
+        &#x2F;**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        *&#x2F;
+        init: function (cfg) {
+            this.log(&quot;init&quot;);
+            var i,
+                directProps = [
+                    &quot;id&quot;,
+                    &quot;contents&quot;
+                ],
+                val
+            ;
+
+            cfg = cfg || {};
+
+            if (cfg.hasOwnProperty(&quot;activity&quot;)) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
+            }
+
+            for (i = 0; i &lt; directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+
+            this.updated = false;
+        }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} ActivityProfile
+    @static
+    *&#x2F;
+    ActivityProfile.fromJSON = function (stateJSON) {
+        ActivityProfile.prototype.log(&quot;fromJSON&quot;);
+        var _state = JSON.parse(stateJSON);
+
+        return new ActivityProfile(_state);
+    };
+}());
+
+    </pre>
 </div>
 
                     </div>

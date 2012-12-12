@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.1</em>
+            <em>API Docs for: 0.1.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -46,6 +46,8 @@
                 <li><a href="..&#x2F;classes/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -284,7 +288,7 @@ var TinCan;
                 this._initFromQueryString(cfg.url);
             }
 
-            if (cfg.hasOwnProperty(&quot;recordStores&quot;) &amp;&amp; cfg.recordStores.length &gt; 0) {
+            if (cfg.hasOwnProperty(&quot;recordStores&quot;) &amp;&amp; cfg.recordStores !== undefined) {
                 for (i = 0; i &lt; cfg.recordStores.length; i += 1) {
                     this.addRecordStore(cfg.recordStores[i]);
                 }
@@ -311,7 +315,7 @@ var TinCan;
                 prop,
                 qsParams = TinCan.Utils.parseURL(url).params,
                 lrsProps = [&quot;endpoint&quot;, &quot;auth&quot;],
-                lrsCfg,
+                lrsCfg = {},
                 activityCfg,
                 contextCfg
             ;
@@ -356,6 +360,7 @@ var TinCan;
                     contextCfg.registration = this.registration = qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty(&quot;grouping&quot;)) {
+                    contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
                 }
 
@@ -1078,7 +1083,7 @@ var TinCan;
         &#x2F;&#x2F; newest first so we can use the first as the default
         return [
             &quot;0.95&quot;,
-            &quot;0.90&quot;
+            &quot;0.9&quot;
         ];
     };
 

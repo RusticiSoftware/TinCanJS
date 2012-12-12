@@ -941,7 +941,8 @@ TinCan client library
         retrieveActivityProfile: function (key, cfg) {
             this.log("retrieveActivityProfile");
             var requestCfg = {},
-                requestResult
+                requestResult,
+                callbackWrapper
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -961,10 +962,39 @@ TinCan client library
                 }
             };
             if (typeof cfg.callback !== "undefined") {
-                requestCfg.callback = cfg.callback;
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = new TinCan.ActivityProfile(
+                            {
+                                id: key,
+                                activity: cfg.activity,
+                                contents: xhr.responseText
+                            }
+                        );
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
             }
 
-            return this.sendRequest(requestCfg);
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.profile = null;
+                if (requestResult.err === null) {
+                    requestResult.profile = new TinCan.ActivityProfile(
+                        {
+                            id: key,
+                            activity: cfg.activity,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                }
+            }
+
+            return requestResult;
         },
 
         /**

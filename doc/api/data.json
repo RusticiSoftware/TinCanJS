@@ -1,6 +1,6 @@
 {
     "project": {
-        "version": "0.1.1",
+        "version": "0.1.2",
         "name": "TinCanJS",
         "description": "Client library for working with TinCan API in JavaScript",
         "url": "https://github.com/RusticiSoftware/TinCanJS",
@@ -25,6 +25,17 @@
             },
             "classes": {
                 "TinCan.ActivityDefinition": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ActivityProfile.js": {
+            "name": "src/ActivityProfile.js",
+            "modules": {
+                "TinCan.ActivityProfile": 1
+            },
+            "classes": {
+                "TinCan.ActivityProfile": 1
             },
             "fors": {},
             "namespaces": {}
@@ -212,6 +223,7 @@
             "submodules": {
                 "TinCan.Activity": 1,
                 "TinCan.ActivityDefinition": 1,
+                "TinCan.ActivityProfile": 1,
                 "TinCan.Agent": 1,
                 "TinCan.AgentAccount": 1,
                 "TinCan.Context": 1,
@@ -231,6 +243,7 @@
             "classes": {
                 "TinCan.Activity": 1,
                 "TinCan.ActivityDefinition": 1,
+                "TinCan.ActivityProfile": 1,
                 "TinCan.Agent": 1,
                 "TinCan.AgentAccount": 1,
                 "TinCan.Context": 1,
@@ -283,6 +296,21 @@
             "namespace": "",
             "file": "src/ActivityDefinition.js",
             "line": 51,
+            "description": "TinCan client library"
+        },
+        "TinCan.ActivityProfile": {
+            "name": "TinCan.ActivityProfile",
+            "submodules": {},
+            "classes": {
+                "TinCan.ActivityProfile": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "TinCan",
+            "namespace": "",
+            "file": "src/ActivityProfile.js",
+            "line": 26,
             "description": "TinCan client library"
         },
         "TinCan.Agent": {
@@ -540,6 +568,21 @@
             "namespace": "",
             "file": "src/ActivityDefinition.js",
             "line": 51,
+            "is_constructor": 1
+        },
+        "TinCan.ActivityProfile": {
+            "name": "TinCan.ActivityProfile",
+            "shortname": "TinCan.ActivityProfile",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile",
+            "namespace": "",
+            "file": "src/ActivityProfile.js",
+            "line": 26,
             "is_constructor": 1
         },
         "TinCan.Agent": {
@@ -1293,6 +1336,95 @@
             "submodule": "TinCan.ActivityDefinition"
         },
         {
+            "file": "src/ActivityProfile.js",
+            "line": 33,
+            "itemtype": "property",
+            "name": "id",
+            "type": "String",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "activity",
+            "type": "TinCan.Activity",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "updated",
+            "type": "String",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "contents",
+            "type": "String",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 60,
+            "itemtype": "property",
+            "name": "LOG_SRC",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 65,
+            "itemtype": "method",
+            "name": "log",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 70,
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration used to initialize",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 105,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "ActivityProfile",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
             "file": "src/Agent.js",
             "line": 33,
             "itemtype": "property",
@@ -1909,7 +2041,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 187,
+            "line": 188,
             "description": "Method used to send a request via browser objects to the LRS",
             "itemtype": "method",
             "name": "sendRequest",
@@ -1987,7 +2119,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 381,
+            "line": 387,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -2018,7 +2150,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 417,
+            "line": 423,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -2053,7 +2185,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 471,
+            "line": 477,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -2084,7 +2216,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 517,
+            "line": 523,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2206,7 +2338,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 590,
+            "line": 596,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2230,7 +2362,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 645,
+            "line": 651,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2278,7 +2410,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 709,
+            "line": 731,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2340,7 +2472,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 798,
+            "line": 820,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2391,7 +2523,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 856,
+            "line": 878,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2439,7 +2571,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 909,
+            "line": 931,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2478,7 +2610,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 948,
+            "line": 1000,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2513,7 +2645,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 989,
+            "line": 1041,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2548,7 +2680,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1031,
+            "line": 1083,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
@@ -3507,7 +3639,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 226,
+            "line": 227,
             "itemtype": "method",
             "name": "addRecordStore",
             "params": [
@@ -3522,7 +3654,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 246,
+            "line": 247,
             "itemtype": "method",
             "name": "prepareStatement",
             "params": [
@@ -3541,7 +3673,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 299,
+            "line": 300,
             "description": "Calls saveStatement on each configured LRS, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "sendStatement",
@@ -3563,7 +3695,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 365,
+            "line": 366,
             "description": "Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "getStatement",
@@ -3589,7 +3721,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 432,
+            "line": 433,
             "description": "Calls saveStatements with list of prepared statements",
             "itemtype": "method",
             "name": "sendStatements",
@@ -3610,7 +3742,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 502,
+            "line": 503,
             "itemtype": "method",
             "name": "getStatements",
             "params": [
@@ -3654,7 +3786,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 569,
+            "line": 570,
             "itemtype": "method",
             "name": "getState",
             "params": [
@@ -3701,7 +3833,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 627,
+            "line": 628,
             "itemtype": "method",
             "name": "setState",
             "params": [
@@ -3753,7 +3885,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 686,
+            "line": 687,
             "itemtype": "method",
             "name": "deleteState",
             "params": [
@@ -3800,7 +3932,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 744,
+            "line": 745,
             "itemtype": "method",
             "name": "getActivityProfile",
             "params": [
@@ -3835,7 +3967,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 791,
+            "line": 792,
             "itemtype": "method",
             "name": "setActivityProfile",
             "params": [
@@ -3875,7 +4007,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 839,
+            "line": 840,
             "itemtype": "method",
             "name": "deleteActivityProfile",
             "params": [
@@ -3910,7 +4042,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 887,
+            "line": 888,
             "itemtype": "property",
             "name": "DEBUG",
             "static": 1,
@@ -3920,7 +4052,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 894,
+            "line": 895,
             "description": "Turn on debug logging",
             "itemtype": "method",
             "name": "enableDebug",
@@ -3930,7 +4062,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 904,
+            "line": 905,
             "description": "Turn off debug logging",
             "itemtype": "method",
             "name": "disableDebug",
@@ -3940,7 +4072,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 914,
+            "line": 915,
             "itemtype": "method",
             "name": "versions",
             "return": {
@@ -3953,7 +4085,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 927,
+            "line": 928,
             "itemtype": "method",
             "name": "environment",
             "return": {
@@ -3983,6 +4115,7 @@
             "line": 52,
             "itemtype": "method",
             "name": "getISODateString",
+            "static": 1,
             "params": [
                 {
                     "name": "date",
@@ -4000,7 +4133,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 87,
+            "line": 88,
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "params": [
@@ -4026,7 +4159,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 118,
+            "line": 119,
             "itemtype": "method",
             "name": "parseURL",
             "params": [
@@ -4039,6 +4172,28 @@
             "return": {
                 "description": "Object of values",
                 "type": "Object"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "TinCan.Utils",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
+            "file": "src/Utils.js",
+            "line": 148,
+            "itemtype": "method",
+            "name": "getServerRoot",
+            "params": [
+                {
+                    "name": "absoluteUrl",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "server root of url",
+                "type": "String"
             },
             "access": "private",
             "tagname": "",
