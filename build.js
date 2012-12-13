@@ -78,6 +78,11 @@ new gear.Queue(
         }
     }
 )
+.read(
+    [
+        'vendor/cryptojs-v3.0.2/rollups/sha1.js'
+    ]
+)
 .log("Concating")
 .concat()
 .log("Writing raw")

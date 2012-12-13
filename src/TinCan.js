@@ -824,6 +824,9 @@ var TinCan;
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
                 }
+                if (typeof cfg.lastSHA1 !== "undefined") {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
 
                 return lrs.saveActivityProfile(key, val, queryCfg);
             }

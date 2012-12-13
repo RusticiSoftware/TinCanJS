@@ -54,6 +54,15 @@ TinCan client library
         */
         this.contents = null;
 
+        /**
+        SHA1 of contents as provided by the server during last fetch,
+        this should be passed through to saveActivityProfile
+
+        @property etag
+        @type String
+        */
+        this.etag = null;
+
         this.init(cfg);
     };
     ActivityProfile.prototype = {
@@ -76,7 +85,8 @@ TinCan client library
             var i,
                 directProps = [
                     "id",
-                    "contents"
+                    "contents",
+                    "etag"
                 ],
                 val
             ;

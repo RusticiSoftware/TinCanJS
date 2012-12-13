@@ -1377,7 +1377,18 @@
         },
         {
             "file": "src/ActivityProfile.js",
-            "line": 60,
+            "line": 57,
+            "description": "SHA1 of contents as provided by the server during last fetch,\nthis should be passed through to saveActivityProfile",
+            "itemtype": "property",
+            "name": "etag",
+            "type": "String",
+            "class": "TinCan.ActivityProfile",
+            "module": "TinCan",
+            "submodule": "TinCan.ActivityProfile"
+        },
+        {
+            "file": "src/ActivityProfile.js",
+            "line": 69,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.ActivityProfile",
@@ -1386,7 +1397,7 @@
         },
         {
             "file": "src/ActivityProfile.js",
-            "line": 65,
+            "line": 74,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.ActivityProfile",
@@ -1395,7 +1406,7 @@
         },
         {
             "file": "src/ActivityProfile.js",
-            "line": 70,
+            "line": 79,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1412,7 +1423,7 @@
         },
         {
             "file": "src/ActivityProfile.js",
-            "line": 105,
+            "line": 115,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2472,7 +2483,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 820,
+            "line": 822,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2509,6 +2520,12 @@
                             "optional": true
                         },
                         {
+                            "name": "lastSHA1",
+                            "description": "SHA1 of the previously seen existing state",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
@@ -2523,7 +2540,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 878,
+            "line": 886,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2571,7 +2588,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 931,
+            "line": 939,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2610,7 +2627,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1000,
+            "line": 1016,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2631,6 +2648,12 @@
                             "type": "Object"
                         },
                         {
+                            "name": "lastSHA1",
+                            "description": "SHA1 of the previously seen existing profile",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
                             "name": "callback",
                             "description": "Callback to execute on completion",
                             "type": "Function",
@@ -2645,7 +2668,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1041,
+            "line": 1063,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2680,7 +2703,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1083,
+            "line": 1105,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
@@ -4007,7 +4030,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 840,
+            "line": 843,
             "itemtype": "method",
             "name": "deleteActivityProfile",
             "params": [
@@ -4042,7 +4065,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 888,
+            "line": 891,
             "itemtype": "property",
             "name": "DEBUG",
             "static": 1,
@@ -4052,7 +4075,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 895,
+            "line": 898,
             "description": "Turn on debug logging",
             "itemtype": "method",
             "name": "enableDebug",
@@ -4062,7 +4085,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 905,
+            "line": 908,
             "description": "Turn off debug logging",
             "itemtype": "method",
             "name": "disableDebug",
@@ -4072,7 +4095,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 915,
+            "line": 918,
             "itemtype": "method",
             "name": "versions",
             "return": {
@@ -4085,7 +4108,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 928,
+            "line": 931,
             "itemtype": "method",
             "name": "environment",
             "return": {
@@ -4135,6 +4158,27 @@
             "file": "src/Utils.js",
             "line": 88,
             "itemtype": "method",
+            "name": "getSHA1String",
+            "static": 1,
+            "params": [
+                {
+                    "name": "str",
+                    "description": "Content to hash",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "SHA1 for contents",
+                "type": "String"
+            },
+            "class": "TinCan.Utils",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
+            "file": "src/Utils.js",
+            "line": 102,
+            "itemtype": "method",
             "name": "getLangDictionaryValue",
             "params": [
                 {
@@ -4159,7 +4203,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 119,
+            "line": 133,
             "itemtype": "method",
             "name": "parseURL",
             "params": [
@@ -4181,7 +4225,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 148,
+            "line": 162,
             "itemtype": "method",
             "name": "getServerRoot",
             "params": [

@@ -86,6 +86,20 @@ TinCan client library
         },
 
         /**
+        @method getSHA1String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA1 for contents
+        */
+        getSHA1String: function (str) {
+            /*global Crypto*/
+            var digestBytes = Crypto.SHA1(str, { asBytes: true }),
+                sha1 = Crypto.util.bytesToHex(digestBytes);
+
+            return sha1;
+        },
+
+        /**
         @method getLangDictionaryValue
         @param {String} prop Property name storing the dictionary
         @param {String} [lang] Language to return

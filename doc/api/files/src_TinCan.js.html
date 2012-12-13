@@ -986,6 +986,9 @@ var TinCan;
                 if (typeof cfg.callback !== &quot;undefined&quot;) {
                     queryCfg.callback = cfg.callback;
                 }
+                if (typeof cfg.lastSHA1 !== &quot;undefined&quot;) {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
 
                 return lrs.saveActivityProfile(key, val, queryCfg);
             }
