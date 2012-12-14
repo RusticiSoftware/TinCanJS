@@ -503,9 +503,9 @@ var TinCan;
         /**
         @method getStatements
         @param {Object} [cfg] Configuration for request
+            @param {Boolean} [cfg.sendActor] Include default actor in query params
+            @param {Boolean} [cfg.sendActivity] Include default activity in query params
             @param {Object} [cfg.params] Parameters used to filter
-                @param {Boolean} [cfg.params.sendActor] Include default actor in query params
-                @param {Boolean} [cfg.params.sendActivity] Include default activity in query params
 
             @param {Function} [cfg.callback] Function to run at completion
 
@@ -541,7 +541,7 @@ var TinCan;
                 if (cfg.sendActivity && this.activity !== null) {
                     params.activity = this.activity;
                 }
-                if (this.registration !== null) {
+                if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
 
@@ -1954,7 +1954,8 @@ TinCan client library
                             result = new TinCan.State(
                                 {
                                     id: key,
-                                    contents: xhr.responseText
+                                    contents: xhr.responseText,
+                                    etag: xhr.getResponseHeader("ETag")
                                 }
                             );
                         }
@@ -1972,7 +1973,8 @@ TinCan client library
                     requestResult.state = new TinCan.State(
                         {
                             id: key,
-                            contents: requestResult.xhr.responseText
+                            contents: requestResult.xhr.responseText,
+                            etag: requestResult.xhr.getResponseHeader("ETag")
                         }
                     );
                 }
@@ -1991,6 +1993,7 @@ TinCan client library
             @param {Object} cfg.activity TinCan.Activity
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.registration] Registration
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -2034,6 +2037,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers = {
+                    "If-Matches": cfg.lastSHA1
+                };
             }
 
             return this.sendRequest(requestCfg);
@@ -2176,7 +2184,7 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
-            @param {String} cfg.lastSHA1 SHA1 of the previously seen existing profile
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {

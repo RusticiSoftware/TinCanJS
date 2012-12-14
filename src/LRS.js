@@ -810,7 +810,7 @@ TinCan client library
                         {
                             id: key,
                             contents: requestResult.xhr.responseText,
-                            etag: xhr.getResponseHeader("ETag")
+                            etag: requestResult.xhr.getResponseHeader("ETag")
                         }
                     );
                 }

@@ -3776,24 +3776,22 @@
                     "optional": true,
                     "props": [
                         {
+                            "name": "sendActor",
+                            "description": "Include default actor in query params",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "sendActivity",
+                            "description": "Include default activity in query params",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
                             "name": "params",
                             "description": "Parameters used to filter",
                             "type": "Object",
-                            "optional": true,
-                            "props": [
-                                {
-                                    "name": "sendActor",
-                                    "description": "Include default actor in query params",
-                                    "type": "Boolean",
-                                    "optional": true
-                                },
-                                {
-                                    "name": "sendActivity",
-                                    "description": "Include default activity in query params",
-                                    "type": "Boolean",
-                                    "optional": true
-                                }
-                            ]
+                            "optional": true
                         },
                         {
                             "name": "callback",

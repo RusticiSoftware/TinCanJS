@@ -503,9 +503,9 @@ var TinCan;
         /**
         @method getStatements
         @param {Object} [cfg] Configuration for request
+            @param {Boolean} [cfg.sendActor] Include default actor in query params
+            @param {Boolean} [cfg.sendActivity] Include default activity in query params
             @param {Object} [cfg.params] Parameters used to filter
-                @param {Boolean} [cfg.params.sendActor] Include default actor in query params
-                @param {Boolean} [cfg.params.sendActivity] Include default activity in query params
 
             @param {Function} [cfg.callback] Function to run at completion
 
@@ -541,7 +541,7 @@ var TinCan;
                 if (cfg.sendActivity && this.activity !== null) {
                     params.activity = this.activity;
                 }
-                if (this.registration !== null) {
+                if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
 

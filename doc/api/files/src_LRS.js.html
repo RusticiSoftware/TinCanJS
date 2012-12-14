@@ -972,7 +972,7 @@ TinCan client library
                         {
                             id: key,
                             contents: requestResult.xhr.responseText,
-                            etag: xhr.getResponseHeader(&quot;ETag&quot;)
+                            etag: requestResult.xhr.getResponseHeader(&quot;ETag&quot;)
                         }
                     );
                 }
