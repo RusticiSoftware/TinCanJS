@@ -3948,6 +3948,7 @@ TinCan client library
                     "name",
                     "description",
                     "interactionType",
+                    "correctResponsesPattern",
                     "extensions"
                 ],
                 interactionComponentProps = [

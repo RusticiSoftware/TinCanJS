@@ -1313,7 +1313,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 287,
+            "line": 288,
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
@@ -1323,7 +1323,7 @@
         },
         {
             "file": "src/ActivityDefinition.js",
-            "line": 295,
+            "line": 296,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
