@@ -23,7 +23,24 @@ TinCan client library
 (function () {
     "use strict";
     var IE = "ie",
-
+    
+    //Reserved Query Parameters
+    QUERY_PARAMS = [
+        "verb",
+        "object",
+        "registration",
+        "context",
+        "actor",
+        "since",
+        "until",
+        "limit",
+        "continueToken",
+        "authoritative",
+        "sparse",
+        "instructor",
+        "ascending"
+    ],
+    
     /**
     @class TinCan.LRS
     @constructor
@@ -124,7 +141,11 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
-
+            
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+            
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -224,11 +245,20 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                if (!cfg.hasOwnProperty("params")){
+                    cfg.params = {};
+                }
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
                         if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                            //don't overwrite params that have already been added to the request with extended params
+                            if (!cfg.params.hasOwnProperty(prop)){
+                                //don't append the extended param if the method is a post and the property is a 'reserved' query param
+                                if (!(cfg.method === "POST" && TinCan.Utils.arrayIndexOf(QUERY_PARAMS, prop) !== -1)){
+                                    cfg.params[prop] = this.extended[prop];
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -278,7 +308,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 

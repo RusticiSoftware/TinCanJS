@@ -1039,7 +1039,7 @@ TinCan client library
                 }
             );
         },
-
+        
         /**
         @method getISODateString
         @static
@@ -1047,33 +1047,43 @@ TinCan client library
         @return {String} ISO date String
         */
         getISODateString: function (d) {
-            function pad (val, n) {
-                var padder,
-                    tempVal;
-                if (val === null) {
-                    val = 0;
-                }
-                if (n === null) {
-                    n = 2;
-                }
-                padder = Math.pow(10, n-1);
-                tempVal = val.toString();
+            function pad (intNum, intNumDigits){
 
-                while (val < padder && padder > 1) {
-                    tempVal = '0' + tempVal;
-                    padder = padder / 10;
-                }
+                var strTemp,intLen,i;
 
-                return tempVal;
+                strTemp = intNum.toString();
+                intLen = strTemp.length;
+
+                if (intLen > intNumDigits){
+                    strTemp = strTemp.substr(0,intNumDigits);
+                }
+                else{
+                    for (i=intLen; i<intNumDigits; i += 1){
+                        strTemp = "0" + strTemp;
+                    }
+                }
+                return strTemp;
             }
 
-            return d.getUTCFullYear() + '-'
-                + pad(d.getUTCMonth() + 1) + '-'
-                + pad(d.getUTCDate()) + 'T'
-                + pad(d.getUTCHours()) + ':'
-                + pad(d.getUTCMinutes()) + ':'
-                + pad(d.getUTCSeconds()) + '.'
-                + pad(d.getUTCMilliseconds(), 3) + 'Z';
+            var Year,Month,Day,Hour,Minute,Second,strTimeStamp,
+                dtm = new Date(d);
+            
+            Year   = dtm.getFullYear();
+            Month  = dtm.getMonth() + 1;
+            Day    = dtm.getDate();
+            Hour   = dtm.getHours();
+            Minute = dtm.getMinutes();
+            Second = dtm.getSeconds();
+
+            Month  = pad(Month, 2);
+            Day    = pad(Day, 2);
+            Hour   = pad(Hour, 2);
+            Minute = pad(Minute, 2);
+            Second = pad(Second, 2);
+
+            strTimeStamp = Year + "-" + Month + "-" + Day + "T" + Hour + ":" + Minute + ":" + Second;
+
+            return strTimeStamp;
         },
 
         /**
@@ -1159,7 +1169,28 @@ TinCan client library
         getServerRoot: function (absoluteUrl) {
             var urlParts = absoluteUrl.split("/");
             return urlParts[0] + "//" + urlParts[2];
+        },
+
+        /**
+        @method arrayValueIndex
+        @static
+        @param {Array} array object
+        @param {object} needle value
+        @return {int} index of the found value or -1 if not found
+        
+        IE does not support Array.indexOf
+        */
+        arrayIndexOf: function (arrayObj,value) {
+            var i;
+            
+            for(i = 0; i < arrayObj.length; i += 1) {
+                if(arrayObj[i] === value) {
+                    return i;
+                }
+            }
+            return -1;
         }
+        
     };
 }());
 /*
@@ -1187,7 +1218,24 @@ TinCan client library
 (function () {
     "use strict";
     var IE = "ie",
-
+    
+    //Reserved Query Parameters
+    QUERY_PARAMS = [
+        "verb",
+        "object",
+        "registration",
+        "context",
+        "actor",
+        "since",
+        "until",
+        "limit",
+        "continueToken",
+        "authoritative",
+        "sparse",
+        "instructor",
+        "ascending"
+    ],
+    
     /**
     @class TinCan.LRS
     @constructor
@@ -1288,7 +1336,11 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
-
+            
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+            
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -1388,11 +1440,20 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                if (!cfg.hasOwnProperty("params")){
+                    cfg.params = {};
+                }
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
                         if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                            //don't overwrite params that have already been added to the request with extended params
+                            if (!cfg.params.hasOwnProperty(prop)){
+                                //don't append the extended param if the method is a post and the property is a 'reserved' query param
+                                if (!(cfg.method === "POST" && TinCan.Utils.arrayIndexOf(QUERY_PARAMS, prop) !== -1)){
+                                    cfg.params[prop] = this.extended[prop];
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -1442,7 +1503,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 
@@ -2626,6 +2687,9 @@ TinCan client library
                 if (this.name !== null) {
                     result.name = this.name;
                 }
+                if (this.account !== null) {
+                    result.account = this.account;
+                }
             }
 
             return result;
@@ -3372,7 +3436,7 @@ TinCan client library
                         val = cfg.contextActivities[prop];
 
                         if (! (val instanceof TinCan.Activity)) {
-                            val = new TinCan.Activity (val);
+                            val = new TinCan.Activity ({id:val});
                         }
 
                         this.contextActivities[prop] = val;
