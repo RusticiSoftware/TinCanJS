@@ -27,7 +27,37 @@ var TinCan;
 
 (function () {
     "use strict";
-    var _environment = null;
+    var _environment = null,
+        _reservedQSParams = {
+            //
+            // these are TC spec reserved words that may end up in queries to the endpoint
+            //
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            //
+            // these are suggested by the LMS launch spec addition that TinCanJS consumes
+            //
+            activity_platform: true,
+            grouping:          true,
+            "Accept-Language": true
+        };
 
     /**
     @class TinCan
@@ -155,7 +185,8 @@ var TinCan;
                 lrsProps = ["endpoint", "auth"],
                 lrsCfg = {},
                 activityCfg,
-                contextCfg
+                contextCfg,
+                extended = null
             ;
 
             if (qsParams.hasOwnProperty("actor")) {
@@ -175,6 +206,7 @@ var TinCan;
                         id: qsParams.activity_id
                     }
                 );
+                delete qsParams.activity_id;
             }
 
             if (
@@ -188,6 +220,7 @@ var TinCan;
 
                 if (qsParams.hasOwnProperty("activity_platform")) {
                     contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
                 }
                 if (qsParams.hasOwnProperty("registration")) {
                     //
@@ -196,10 +229,12 @@ var TinCan;
                     // queries
                     //
                     contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty("grouping")) {
                     contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
                 }
 
                 this.context = new TinCan.Context (contextCfg);
@@ -217,7 +252,22 @@ var TinCan;
                         delete qsParams[prop];
                     }
                 }
-                lrsCfg.extended = qsParams;
+
+                // remove our reserved params so they don't end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
                 lrsCfg.allowFail = false;
 
                 this.addRecordStore(lrsCfg);
@@ -1287,6 +1337,10 @@ TinCan client library
                 this.auth = cfg.auth;
             }
 
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -1386,11 +1440,15 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
-                        if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
                         }
                     }
                 }
@@ -1440,7 +1498,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 
@@ -2659,6 +2717,9 @@ TinCan client library
                 }
                 if (this.name !== null) {
                     result.name = this.name;
+                }
+                if (this.account !== null) {
+                    result.account = this.account;
                 }
             }
 
@@ -4719,29 +4780,37 @@ TinCan client library
     */
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log("fromJSON");
-        // TODO: protect JSON call from bad JSON
-        var _result = JSON.parse(resultJSON),
+        var _result,
             stmts = [],
             stmt,
             i
         ;
-        for (i = 0; i < _result.statements.length; i += 1) {
-            try {
-                stmt = new TinCan.Statement (_result.statements[i], 4);
-            } catch (error) {
-                StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
 
-                stmt = new TinCan.Statement (
-                    {
-                        id: _result.statements[i].id
-                    },
-                    4
-                );
-            }
-
-            stmts.push(stmt);
+        try {
+            _result = JSON.parse(resultJSON);
+        } catch (parseError) {
+            StatementsResult.prototype.log("fromJSON - JSON.parse error: " + parseError);
         }
-        _result.statements = stmts;
+
+        if (_result) {
+            for (i = 0; i < _result.statements.length; i += 1) {
+                try {
+                    stmt = new TinCan.Statement (_result.statements[i], 4);
+                } catch (error) {
+                    StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
+
+                    stmt = new TinCan.Statement (
+                        {
+                            id: _result.statements[i].id
+                        },
+                        4
+                    );
+                }
+
+                stmts.push(stmt);
+            }
+            _result.statements = stmts;
+        }
 
         return new StatementsResult (_result);
     };

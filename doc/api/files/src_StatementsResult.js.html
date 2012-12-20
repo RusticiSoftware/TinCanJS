@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.2</em>
+            <em>API Docs for: 0.1.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -246,29 +246,37 @@ TinCan client library
     *&#x2F;
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log(&quot;fromJSON&quot;);
-        &#x2F;&#x2F; TODO: protect JSON call from bad JSON
-        var _result = JSON.parse(resultJSON),
+        var _result,
             stmts = [],
             stmt,
             i
         ;
-        for (i = 0; i &lt; _result.statements.length; i += 1) {
-            try {
-                stmt = new TinCan.Statement (_result.statements[i], 4);
-            } catch (error) {
-                StatementsResult.prototype.log(&quot;fromJSON - statement instantiation failed: &quot; + error + &quot; (&quot; + JSON.stringify(_result.statements[i]) + &quot;)&quot;);
 
-                stmt = new TinCan.Statement (
-                    {
-                        id: _result.statements[i].id
-                    },
-                    4
-                );
-            }
-
-            stmts.push(stmt);
+        try {
+            _result = JSON.parse(resultJSON);
+        } catch (parseError) {
+            StatementsResult.prototype.log(&quot;fromJSON - JSON.parse error: &quot; + parseError);
         }
-        _result.statements = stmts;
+
+        if (_result) {
+            for (i = 0; i &lt; _result.statements.length; i += 1) {
+                try {
+                    stmt = new TinCan.Statement (_result.statements[i], 4);
+                } catch (error) {
+                    StatementsResult.prototype.log(&quot;fromJSON - statement instantiation failed: &quot; + error + &quot; (&quot; + JSON.stringify(_result.statements[i]) + &quot;)&quot;);
+
+                    stmt = new TinCan.Statement (
+                        {
+                            id: _result.statements[i].id
+                        },
+                        4
+                    );
+                }
+
+                stmts.push(stmt);
+            }
+            _result.statements = stmts;
+        }
 
         return new StatementsResult (_result);
     };

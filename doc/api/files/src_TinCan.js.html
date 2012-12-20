@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.2</em>
+            <em>API Docs for: 0.1.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -189,7 +189,37 @@ var TinCan;
 
 (function () {
     &quot;use strict&quot;;
-    var _environment = null;
+    var _environment = null,
+        _reservedQSParams = {
+            &#x2F;&#x2F;
+            &#x2F;&#x2F; these are TC spec reserved words that may end up in queries to the endpoint
+            &#x2F;&#x2F;
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            &#x2F;&#x2F;
+            &#x2F;&#x2F; these are suggested by the LMS launch spec addition that TinCanJS consumes
+            &#x2F;&#x2F;
+            activity_platform: true,
+            grouping:          true,
+            &quot;Accept-Language&quot;: true
+        };
 
     &#x2F;**
     @class TinCan
@@ -317,7 +347,8 @@ var TinCan;
                 lrsProps = [&quot;endpoint&quot;, &quot;auth&quot;],
                 lrsCfg = {},
                 activityCfg,
-                contextCfg
+                contextCfg,
+                extended = null
             ;
 
             if (qsParams.hasOwnProperty(&quot;actor&quot;)) {
@@ -337,6 +368,7 @@ var TinCan;
                         id: qsParams.activity_id
                     }
                 );
+                delete qsParams.activity_id;
             }
 
             if (
@@ -350,6 +382,7 @@ var TinCan;
 
                 if (qsParams.hasOwnProperty(&quot;activity_platform&quot;)) {
                     contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
                 }
                 if (qsParams.hasOwnProperty(&quot;registration&quot;)) {
                     &#x2F;&#x2F;
@@ -358,10 +391,12 @@ var TinCan;
                     &#x2F;&#x2F; queries
                     &#x2F;&#x2F;
                     contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty(&quot;grouping&quot;)) {
                     contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
                 }
 
                 this.context = new TinCan.Context (contextCfg);
@@ -379,7 +414,22 @@ var TinCan;
                         delete qsParams[prop];
                     }
                 }
-                lrsCfg.extended = qsParams;
+
+                &#x2F;&#x2F; remove our reserved params so they don&#x27;t end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
                 lrsCfg.allowFail = false;
 
                 this.addRecordStore(lrsCfg);

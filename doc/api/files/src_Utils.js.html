@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.2</em>
+            <em>API Docs for: 0.1.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -254,11 +254,9 @@ TinCan client library
         @return {String} SHA1 for contents
         *&#x2F;
         getSHA1String: function (str) {
-            &#x2F;*global Crypto*&#x2F;
-            var digestBytes = Crypto.SHA1(str, { asBytes: true }),
-                sha1 = Crypto.util.bytesToHex(digestBytes);
+            &#x2F;*global CryptoJS*&#x2F;
 
-            return sha1;
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         &#x2F;**
