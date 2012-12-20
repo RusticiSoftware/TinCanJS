@@ -27,7 +27,37 @@ var TinCan;
 
 (function () {
     "use strict";
-    var _environment = null;
+    var _environment = null,
+        _reservedQSParams = {
+            //
+            // these are TC spec reserved words that may end up in queries to the endpoint
+            //
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            //
+            // these are suggested by the LMS launch spec addition that TinCanJS consumes
+            //
+            activity_platform: true,
+            grouping:          true,
+            "Accept-Language": true
+        };
 
     /**
     @class TinCan
@@ -155,7 +185,8 @@ var TinCan;
                 lrsProps = ["endpoint", "auth"],
                 lrsCfg = {},
                 activityCfg,
-                contextCfg
+                contextCfg,
+                extended = null
             ;
 
             if (qsParams.hasOwnProperty("actor")) {
@@ -175,6 +206,7 @@ var TinCan;
                         id: qsParams.activity_id
                     }
                 );
+                delete qsParams.activity_id;
             }
 
             if (
@@ -188,6 +220,7 @@ var TinCan;
 
                 if (qsParams.hasOwnProperty("activity_platform")) {
                     contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
                 }
                 if (qsParams.hasOwnProperty("registration")) {
                     //
@@ -196,10 +229,12 @@ var TinCan;
                     // queries
                     //
                     contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty("grouping")) {
                     contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
                 }
 
                 this.context = new TinCan.Context (contextCfg);
@@ -217,7 +252,22 @@ var TinCan;
                         delete qsParams[prop];
                     }
                 }
-                lrsCfg.extended = qsParams;
+
+                // remove our reserved params so they don't end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
                 lrsCfg.allowFail = false;
 
                 this.addRecordStore(lrsCfg);
@@ -1093,11 +1143,9 @@ TinCan client library
         @return {String} SHA1 for contents
         */
         getSHA1String: function (str) {
-            /*global Crypto*/
-            var digestBytes = Crypto.SHA1(str, { asBytes: true }),
-                sha1 = Crypto.util.bytesToHex(digestBytes);
+            /*global CryptoJS*/
 
-            return sha1;
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         /**
@@ -1336,11 +1384,19 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
+<<<<<<< HEAD
             
             if (cfg.hasOwnProperty("extended")) {
                 this.extended = cfg.extended;
             }
             
+=======
+
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+
+>>>>>>> master
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -1440,6 +1496,7 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+<<<<<<< HEAD
                 if (!cfg.hasOwnProperty("params")){
                     cfg.params = {};
                 }
@@ -1454,6 +1511,17 @@ TinCan client library
                                 }
                             }
                             
+=======
+                cfg.params = cfg.params || {};
+
+                for (prop in this.extended) {
+                    if (this.extended.hasOwnProperty(prop)) {
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
+>>>>>>> master
                         }
                     }
                 }
@@ -2015,10 +2083,19 @@ TinCan client library
                             result = new TinCan.State(
                                 {
                                     id: key,
-                                    contents: xhr.responseText,
-                                    etag: xhr.getResponseHeader("ETag")
+                                    contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -2034,10 +2111,19 @@ TinCan client library
                     requestResult.state = new TinCan.State(
                         {
                             id: key,
-                            contents: requestResult.xhr.responseText,
-                            etag: requestResult.xhr.getResponseHeader("ETag")
+                            contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
@@ -2208,10 +2294,19 @@ TinCan client library
                                 {
                                     id: key,
                                     activity: cfg.activity,
-                                    contents: xhr.responseText,
-                                    etag: xhr.getResponseHeader("ETag")
+                                    contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -2228,10 +2323,19 @@ TinCan client library
                         {
                             id: key,
                             activity: cfg.activity,
-                            contents: requestResult.xhr.responseText,
-                            etag: requestResult.xhr.getResponseHeader("ETag")
+                            contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
@@ -4749,29 +4853,37 @@ TinCan client library
     */
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log("fromJSON");
-        // TODO: protect JSON call from bad JSON
-        var _result = JSON.parse(resultJSON),
+        var _result,
             stmts = [],
             stmt,
             i
         ;
-        for (i = 0; i < _result.statements.length; i += 1) {
-            try {
-                stmt = new TinCan.Statement (_result.statements[i], 4);
-            } catch (error) {
-                StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
 
-                stmt = new TinCan.Statement (
-                    {
-                        id: _result.statements[i].id
-                    },
-                    4
-                );
-            }
-
-            stmts.push(stmt);
+        try {
+            _result = JSON.parse(resultJSON);
+        } catch (parseError) {
+            StatementsResult.prototype.log("fromJSON - JSON.parse error: " + parseError);
         }
-        _result.statements = stmts;
+
+        if (_result) {
+            for (i = 0; i < _result.statements.length; i += 1) {
+                try {
+                    stmt = new TinCan.Statement (_result.statements[i], 4);
+                } catch (error) {
+                    StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
+
+                    stmt = new TinCan.Statement (
+                        {
+                            id: _result.statements[i].id
+                        },
+                        4
+                    );
+                }
+
+                stmts.push(stmt);
+            }
+            _result.statements = stmts;
+        }
 
         return new StatementsResult (_result);
     };

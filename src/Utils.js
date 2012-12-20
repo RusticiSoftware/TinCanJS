@@ -92,11 +92,9 @@ TinCan client library
         @return {String} SHA1 for contents
         */
         getSHA1String: function (str) {
-            /*global Crypto*/
-            var digestBytes = Crypto.SHA1(str, { asBytes: true }),
-                sha1 = Crypto.util.bytesToHex(digestBytes);
+            /*global CryptoJS*/
 
-            return sha1;
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         /**

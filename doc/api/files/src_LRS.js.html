@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.2</em>
+            <em>API Docs for: 0.1.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -287,6 +287,10 @@ TinCan client library
                 this.auth = cfg.auth;
             }
 
+            if (cfg.hasOwnProperty(&quot;extended&quot;)) {
+                this.extended = cfg.extended;
+            }
+
             urlParts = cfg.endpoint.toLowerCase().match(&#x2F;([A-Za-z]+:)\&#x2F;\&#x2F;([^:\&#x2F;]+):?(\d+)?(\&#x2F;.*)?$&#x2F;);
 
             if (env.isBrowser) {
@@ -386,11 +390,15 @@ TinCan client library
 
             &#x2F;&#x2F; add extended LMS-specified values to the params
             if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        &#x2F;&#x2F; TODO: don&#x27;t overwrite cfg.params value
-                        if (this.extended[prop] !== null &amp;&amp; this.extended[prop].length &gt; 0) {
-                            cfg.params[prop] = this.extended[prop];
+                        &#x2F;&#x2F; don&#x27;t overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
                         }
                     }
                 }
@@ -440,7 +448,7 @@ TinCan client library
                 &#x2F;&#x2F; params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + &quot;=&quot; + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + &quot;=&quot; + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 
@@ -952,10 +960,19 @@ TinCan client library
                             result = new TinCan.State(
                                 {
                                     id: key,
-                                    contents: xhr.responseText,
-                                    etag: xhr.getResponseHeader(&quot;ETag&quot;)
+                                    contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== &quot;undefined&quot; &amp;&amp; xhr.getResponseHeader(&quot;ETag&quot;) !== null &amp;&amp; xhr.getResponseHeader(&quot;ETag&quot;) !== &quot;&quot;) {
+                                result.etag = xhr.getResponseHeader(&quot;ETag&quot;);
+                            } else {
+                                &#x2F;&#x2F;
+                                &#x2F;&#x2F; either XHR didn&#x27;t have getResponseHeader (probably cause it is an IE
+                                &#x2F;&#x2F; XDomainRequest object which doesn&#x27;t) or not populated by LRS so create
+                                &#x2F;&#x2F; the hash ourselves
+                                &#x2F;&#x2F;
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -971,10 +988,19 @@ TinCan client library
                     requestResult.state = new TinCan.State(
                         {
                             id: key,
-                            contents: requestResult.xhr.responseText,
-                            etag: requestResult.xhr.getResponseHeader(&quot;ETag&quot;)
+                            contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== &quot;undefined&quot; &amp;&amp; requestResult.xhr.getResponseHeader(&quot;ETag&quot;) !== null &amp;&amp; requestResult.xhr.getResponseHeader(&quot;ETag&quot;) !== &quot;&quot;) {
+                        requestResult.state.etag = requestResult.xhr.getResponseHeader(&quot;ETag&quot;);
+                    } else {
+                        &#x2F;&#x2F;
+                        &#x2F;&#x2F; either XHR didn&#x27;t have getResponseHeader (probably cause it is an IE
+                        &#x2F;&#x2F; XDomainRequest object which doesn&#x27;t) or not populated by LRS so create
+                        &#x2F;&#x2F; the hash ourselves
+                        &#x2F;&#x2F;
+                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
@@ -1145,10 +1171,19 @@ TinCan client library
                                 {
                                     id: key,
                                     activity: cfg.activity,
-                                    contents: xhr.responseText,
-                                    etag: xhr.getResponseHeader(&quot;ETag&quot;)
+                                    contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== &quot;undefined&quot; &amp;&amp; xhr.getResponseHeader(&quot;ETag&quot;) !== null &amp;&amp; xhr.getResponseHeader(&quot;ETag&quot;) !== &quot;&quot;) {
+                                result.etag = xhr.getResponseHeader(&quot;ETag&quot;);
+                            } else {
+                                &#x2F;&#x2F;
+                                &#x2F;&#x2F; either XHR didn&#x27;t have getResponseHeader (probably cause it is an IE
+                                &#x2F;&#x2F; XDomainRequest object which doesn&#x27;t) or not populated by LRS so create
+                                &#x2F;&#x2F; the hash ourselves
+                                &#x2F;&#x2F;
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -1165,10 +1200,19 @@ TinCan client library
                         {
                             id: key,
                             activity: cfg.activity,
-                            contents: requestResult.xhr.responseText,
-                            etag: requestResult.xhr.getResponseHeader(&quot;ETag&quot;)
+                            contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== &quot;undefined&quot; &amp;&amp; requestResult.xhr.getResponseHeader(&quot;ETag&quot;) !== null &amp;&amp; requestResult.xhr.getResponseHeader(&quot;ETag&quot;) !== &quot;&quot;) {
+                        requestResult.profile.etag = requestResult.xhr.getResponseHeader(&quot;ETag&quot;);
+                    } else {
+                        &#x2F;&#x2F;
+                        &#x2F;&#x2F; either XHR didn&#x27;t have getResponseHeader (probably cause it is an IE
+                        &#x2F;&#x2F; XDomainRequest object which doesn&#x27;t) or not populated by LRS so create
+                        &#x2F;&#x2F; the hash ourselves
+                        &#x2F;&#x2F;
+                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
