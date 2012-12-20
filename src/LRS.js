@@ -125,6 +125,10 @@ TinCan client library
                 this.auth = cfg.auth;
             }
 
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -224,11 +228,15 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
-                        if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
                         }
                     }
                 }
@@ -278,7 +286,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 

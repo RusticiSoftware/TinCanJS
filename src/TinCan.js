@@ -27,7 +27,37 @@ var TinCan;
 
 (function () {
     "use strict";
-    var _environment = null;
+    var _environment = null,
+        _reservedQSParams = {
+            //
+            // these are TC spec reserved words that may end up in queries to the endpoint
+            //
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            //
+            // these are suggested by the LMS launch spec addition that TinCanJS consumes
+            //
+            activity_platform: true,
+            grouping:          true,
+            "Accept-Language": true
+        };
 
     /**
     @class TinCan
@@ -155,7 +185,8 @@ var TinCan;
                 lrsProps = ["endpoint", "auth"],
                 lrsCfg = {},
                 activityCfg,
-                contextCfg
+                contextCfg,
+                extended = null
             ;
 
             if (qsParams.hasOwnProperty("actor")) {
@@ -175,6 +206,7 @@ var TinCan;
                         id: qsParams.activity_id
                     }
                 );
+                delete qsParams.activity_id;
             }
 
             if (
@@ -188,6 +220,7 @@ var TinCan;
 
                 if (qsParams.hasOwnProperty("activity_platform")) {
                     contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
                 }
                 if (qsParams.hasOwnProperty("registration")) {
                     //
@@ -196,10 +229,12 @@ var TinCan;
                     // queries
                     //
                     contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty("grouping")) {
                     contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
                 }
 
                 this.context = new TinCan.Context (contextCfg);
@@ -217,7 +252,22 @@ var TinCan;
                         delete qsParams[prop];
                     }
                 }
-                lrsCfg.extended = qsParams;
+
+                // remove our reserved params so they don't end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
                 lrsCfg.allowFail = false;
 
                 this.addRecordStore(lrsCfg);

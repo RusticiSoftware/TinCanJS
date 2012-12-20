@@ -245,6 +245,9 @@ TinCan client library
                 if (this.name !== null) {
                     result.name = this.name;
                 }
+                if (this.account !== null) {
+                    result.account = this.account;
+                }
             }
 
             return result;
