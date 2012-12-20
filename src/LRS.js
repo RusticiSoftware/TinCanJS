@@ -23,7 +23,7 @@ TinCan client library
 (function () {
     "use strict";
     var IE = "ie",
-    
+
     /**
     @class TinCan.LRS
     @constructor
@@ -777,7 +777,7 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {
@@ -888,7 +888,7 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {
@@ -947,7 +947,7 @@ TinCan client library
                 requestParams.stateId = key;
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {

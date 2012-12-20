@@ -1089,7 +1089,7 @@ TinCan client library
                 }
             );
         },
-        
+
         /**
         @method getISODateString
         @static
@@ -1097,43 +1097,33 @@ TinCan client library
         @return {String} ISO date String
         */
         getISODateString: function (d) {
-            function pad (intNum, intNumDigits){
-
-                var strTemp,intLen,i;
-
-                strTemp = intNum.toString();
-                intLen = strTemp.length;
-
-                if (intLen > intNumDigits){
-                    strTemp = strTemp.substr(0,intNumDigits);
+            function pad (val, n) {
+                var padder,
+                    tempVal;
+                if (val === null) {
+                    val = 0;
                 }
-                else{
-                    for (i=intLen; i<intNumDigits; i += 1){
-                        strTemp = "0" + strTemp;
-                    }
+                if (n === null) {
+                    n = 2;
                 }
-                return strTemp;
+                padder = Math.pow(10, n-1);
+                tempVal = val.toString();
+
+                while (val < padder && padder > 1) {
+                    tempVal = '0' + tempVal;
+                    padder = padder / 10;
+                }
+
+                return tempVal;
             }
 
-            var Year,Month,Day,Hour,Minute,Second,strTimeStamp,
-                dtm = new Date(d);
-            
-            Year   = dtm.getFullYear();
-            Month  = dtm.getMonth() + 1;
-            Day    = dtm.getDate();
-            Hour   = dtm.getHours();
-            Minute = dtm.getMinutes();
-            Second = dtm.getSeconds();
-
-            Month  = pad(Month, 2);
-            Day    = pad(Day, 2);
-            Hour   = pad(Hour, 2);
-            Minute = pad(Minute, 2);
-            Second = pad(Second, 2);
-
-            strTimeStamp = Year + "-" + Month + "-" + Day + "T" + Hour + ":" + Minute + ":" + Second;
-
-            return strTimeStamp;
+            return d.getUTCFullYear() + '-'
+                + pad(d.getUTCMonth() + 1) + '-'
+                + pad(d.getUTCDate()) + 'T'
+                + pad(d.getUTCHours()) + ':'
+                + pad(d.getUTCMinutes()) + ':'
+                + pad(d.getUTCSeconds()) + '.'
+                + pad(d.getUTCMilliseconds(), 3) + 'Z';
         },
 
         /**
@@ -1220,7 +1210,7 @@ TinCan client library
         },
 
         /**
-        @method arrayValueIndex
+        @method arrayIndexOf
         @static
         @param {Array} array object
         @param {object} needle value
@@ -1238,7 +1228,6 @@ TinCan client library
             }
             return -1;
         }
-        
     };
 }());
 /*
@@ -1266,24 +1255,7 @@ TinCan client library
 (function () {
     "use strict";
     var IE = "ie",
-    
-    //Reserved Query Parameters
-    QUERY_PARAMS = [
-        "verb",
-        "object",
-        "registration",
-        "context",
-        "actor",
-        "since",
-        "until",
-        "limit",
-        "continueToken",
-        "authoritative",
-        "sparse",
-        "instructor",
-        "ascending"
-    ],
-    
+
     /**
     @class TinCan.LRS
     @constructor
@@ -1384,19 +1356,11 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
-<<<<<<< HEAD
-            
-            if (cfg.hasOwnProperty("extended")) {
-                this.extended = cfg.extended;
-            }
-            
-=======
 
             if (cfg.hasOwnProperty("extended")) {
                 this.extended = cfg.extended;
             }
 
->>>>>>> master
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -1496,22 +1460,6 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
-<<<<<<< HEAD
-                if (!cfg.hasOwnProperty("params")){
-                    cfg.params = {};
-                }
-                for (prop in this.extended) {
-                    if (this.extended.hasOwnProperty(prop)) {
-                        if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            //don't overwrite params that have already been added to the request with extended params
-                            if (!cfg.params.hasOwnProperty(prop)){
-                                //don't append the extended param if the method is a post and the property is a 'reserved' query param
-                                if (!(cfg.method === "POST" && TinCan.Utils.arrayIndexOf(QUERY_PARAMS, prop) !== -1)){
-                                    cfg.params[prop] = this.extended[prop];
-                                }
-                            }
-                            
-=======
                 cfg.params = cfg.params || {};
 
                 for (prop in this.extended) {
@@ -1521,7 +1469,6 @@ TinCan client library
                             if (this.extended[prop] !== null) {
                                 cfg.params[prop] = this.extended[prop];
                             }
->>>>>>> master
                         }
                     }
                 }
@@ -2062,7 +2009,7 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {
@@ -2173,7 +2120,7 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {
@@ -2232,7 +2179,7 @@ TinCan client library
                 requestParams.stateId = key;
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                requestParams.registration = cfg.registration;
             }
 
             requestCfg = {
@@ -3540,7 +3487,8 @@ TinCan client library
                         val = cfg.contextActivities[prop];
 
                         if (! (val instanceof TinCan.Activity)) {
-                            val = new TinCan.Activity ({id:val});
+                            val = typeof val === 'string' ? { id: val } : val;
+                            val = new TinCan.Activity (val);
                         }
 
                         this.contextActivities[prop] = val;

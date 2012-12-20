@@ -48,7 +48,7 @@ TinCan client library
                 }
             );
         },
-        
+
         /**
         @method getISODateString
         @static
