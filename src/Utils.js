@@ -166,26 +166,6 @@ TinCan client library
         getServerRoot: function (absoluteUrl) {
             var urlParts = absoluteUrl.split("/");
             return urlParts[0] + "//" + urlParts[2];
-        },
-
-        /**
-        @method arrayIndexOf
-        @static
-        @param {Array} array object
-        @param {object} needle value
-        @return {int} index of the found value or -1 if not found
-        
-        IE does not support Array.indexOf
-        */
-        arrayIndexOf: function (arrayObj,value) {
-            var i;
-            
-            for(i = 0; i < arrayObj.length; i += 1) {
-                if(arrayObj[i] === value) {
-                    return i;
-                }
-            }
-            return -1;
         }
     };
 }());

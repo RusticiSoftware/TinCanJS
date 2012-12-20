@@ -1764,7 +1764,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 175,
+            "line": 176,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1789,7 +1789,7 @@
         },
         {
             "file": "src/Context.js",
-            "line": 229,
+            "line": 230,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -2483,7 +2483,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 848,
+            "line": 853,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2540,7 +2540,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 912,
+            "line": 922,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2588,7 +2588,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 965,
+            "line": 980,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2627,7 +2627,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1060,
+            "line": 1075,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2668,7 +2668,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1107,
+            "line": 1122,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2703,7 +2703,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1149,
+            "line": 1164,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",

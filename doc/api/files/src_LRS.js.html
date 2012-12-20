@@ -939,7 +939,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== &quot;undefined&quot;) {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === &quot;0.9&quot;) {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -1050,7 +1055,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== &quot;undefined&quot;) {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === &quot;0.9&quot;) {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -1109,7 +1119,12 @@ TinCan client library
                 requestParams.stateId = key;
             }
             if (typeof cfg.registration !== &quot;undefined&quot;) {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === &quot;0.9&quot;) {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
