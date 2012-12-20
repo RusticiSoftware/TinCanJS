@@ -24,23 +24,6 @@ TinCan client library
     "use strict";
     var IE = "ie",
     
-    //Reserved Query Parameters
-    QUERY_PARAMS = [
-        "verb",
-        "object",
-        "registration",
-        "context",
-        "actor",
-        "since",
-        "until",
-        "limit",
-        "continueToken",
-        "authoritative",
-        "sparse",
-        "instructor",
-        "ascending"
-    ],
-    
     /**
     @class TinCan.LRS
     @constructor
@@ -245,7 +228,7 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
-                if (!cfg.hasOwnProperty("params")){
+                if (!cfg.hasOwnProperty("params")) {
                     cfg.params = {};
                 }
                 for (prop in this.extended) {
@@ -253,10 +236,7 @@ TinCan client library
                         if (this.extended[prop] !== null && this.extended[prop].length > 0) {
                             //don't overwrite params that have already been added to the request with extended params
                             if (!cfg.params.hasOwnProperty(prop)){
-                                //don't append the extended param if the method is a post and the property is a 'reserved' query param
-                                if (!(cfg.method === "POST" && TinCan.Utils.arrayIndexOf(QUERY_PARAMS, prop) !== -1)){
-                                    cfg.params[prop] = this.extended[prop];
-                                }
+                                cfg.params[prop] = this.extended[prop];
                             }
                             
                         }

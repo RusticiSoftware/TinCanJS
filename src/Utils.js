@@ -56,43 +56,33 @@ TinCan client library
         @return {String} ISO date String
         */
         getISODateString: function (d) {
-            function pad (intNum, intNumDigits){
-
-                var strTemp,intLen,i;
-
-                strTemp = intNum.toString();
-                intLen = strTemp.length;
-
-                if (intLen > intNumDigits){
-                    strTemp = strTemp.substr(0,intNumDigits);
+            function pad (val, n) {
+                var padder,
+                    tempVal;
+                if (val === null) {
+                    val = 0;
                 }
-                else{
-                    for (i=intLen; i<intNumDigits; i += 1){
-                        strTemp = "0" + strTemp;
-                    }
+                if (n === null) {
+                    n = 2;
                 }
-                return strTemp;
+                padder = Math.pow(10, n-1);
+                tempVal = val.toString();
+
+                while (val < padder && padder > 1) {
+                    tempVal = '0' + tempVal;
+                    padder = padder / 10;
+                }
+
+                return tempVal;
             }
 
-            var Year,Month,Day,Hour,Minute,Second,strTimeStamp,
-                dtm = new Date(d);
-            
-            Year   = dtm.getFullYear();
-            Month  = dtm.getMonth() + 1;
-            Day    = dtm.getDate();
-            Hour   = dtm.getHours();
-            Minute = dtm.getMinutes();
-            Second = dtm.getSeconds();
-
-            Month  = pad(Month, 2);
-            Day    = pad(Day, 2);
-            Hour   = pad(Hour, 2);
-            Minute = pad(Minute, 2);
-            Second = pad(Second, 2);
-
-            strTimeStamp = Year + "-" + Month + "-" + Day + "T" + Hour + ":" + Minute + ":" + Second;
-
-            return strTimeStamp;
+            return d.getUTCFullYear() + '-'
+                + pad(d.getUTCMonth() + 1) + '-'
+                + pad(d.getUTCDate()) + 'T'
+                + pad(d.getUTCHours()) + ':'
+                + pad(d.getUTCMinutes()) + ':'
+                + pad(d.getUTCSeconds()) + '.'
+                + pad(d.getUTCMilliseconds(), 3) + 'Z';
         },
 
         /**
@@ -181,7 +171,7 @@ TinCan client library
         },
 
         /**
-        @method arrayValueIndex
+        @method arrayIndexOf
         @static
         @param {Array} array object
         @param {object} needle value
@@ -199,6 +189,5 @@ TinCan client library
             }
             return -1;
         }
-        
     };
 }());
