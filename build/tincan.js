@@ -2634,31 +2634,31 @@ TinCan client library
                 }
             }
 
-            if (typeof cfg.name === "object") {
+            if (typeof cfg.name === "object" && cfg.name !== null) {
                 if (cfg.name.length > 1) {
                     this.degraded = true;
                 }
                 cfg.name = cfg.name[0];
             }
-            if (typeof cfg.mbox === "object") {
+            if (typeof cfg.mbox === "object" && cfg.mbox !== null) {
                 if (cfg.mbox.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox = cfg.mbox[0];
             }
-            if (typeof cfg.mbox_sha1sum === "object") {
+            if (typeof cfg.mbox_sha1sum === "object" && cfg.mbox_sha1sum !== null) {
                 if (cfg.mbox_sha1sum.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
             }
-            if (typeof cfg.openid === "object") {
+            if (typeof cfg.openid === "object" && cfg.openid !== null) {
                 if (cfg.openid.length > 1) {
                     this.degraded = true;
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -2671,8 +2671,12 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("account")) {
-                // TODO: check to see if already this type
-                this.account = new TinCan.AgentAccount (cfg.account);
+                if (cfg.account instanceof TinCan.AgentAccount) {
+                    this.account = cfg.account;
+                }
+                else {
+                    this.account = new TinCan.AgentAccount (cfg.account);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {

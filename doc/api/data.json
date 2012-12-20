@@ -1544,7 +1544,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 217,
+            "line": 221,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1569,7 +1569,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 257,
+            "line": 261,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {

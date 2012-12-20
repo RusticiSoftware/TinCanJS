@@ -308,31 +308,31 @@ TinCan client library
                 }
             }
 
-            if (typeof cfg.name === &quot;object&quot;) {
+            if (typeof cfg.name === &quot;object&quot; &amp;&amp; cfg.name !== null) {
                 if (cfg.name.length &gt; 1) {
                     this.degraded = true;
                 }
                 cfg.name = cfg.name[0];
             }
-            if (typeof cfg.mbox === &quot;object&quot;) {
+            if (typeof cfg.mbox === &quot;object&quot; &amp;&amp; cfg.mbox !== null) {
                 if (cfg.mbox.length &gt; 1) {
                     this.degraded = true;
                 }
                 cfg.mbox = cfg.mbox[0];
             }
-            if (typeof cfg.mbox_sha1sum === &quot;object&quot;) {
+            if (typeof cfg.mbox_sha1sum === &quot;object&quot; &amp;&amp; cfg.mbox_sha1sum !== null) {
                 if (cfg.mbox_sha1sum.length &gt; 1) {
                     this.degraded = true;
                 }
                 cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
             }
-            if (typeof cfg.openid === &quot;object&quot;) {
+            if (typeof cfg.openid === &quot;object&quot; &amp;&amp; cfg.openid !== null) {
                 if (cfg.openid.length &gt; 1) {
                     this.degraded = true;
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === &quot;object&quot; &amp;&amp; typeof cfg.account.homePage === &quot;undefined&quot;) {
+            if (typeof cfg.account === &quot;object&quot; &amp;&amp; cfg.account !== null &amp;&amp; typeof cfg.account.homePage === &quot;undefined&quot;) {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -345,8 +345,12 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty(&quot;account&quot;)) {
-                &#x2F;&#x2F; TODO: check to see if already this type
-                this.account = new TinCan.AgentAccount (cfg.account);
+                if (cfg.account instanceof TinCan.AgentAccount) {
+                    this.account = cfg.account;
+                }
+                else {
+                    this.account = new TinCan.AgentAccount (cfg.account);
+                }
             }
 
             for (i = 0; i &lt; directProps.length; i += 1) {
