@@ -1100,10 +1100,10 @@ TinCan client library
             function pad (val, n) {
                 var padder,
                     tempVal;
-                if (val === null) {
+                if (typeof val === "undefined" || val === null) {
                     val = 0;
                 }
-                if (n === null) {
+                if (typeof n === "undefined" || n === null) {
                     n = 2;
                 }
                 padder = Math.pow(10, n-1);
