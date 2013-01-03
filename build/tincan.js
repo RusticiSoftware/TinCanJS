@@ -2923,16 +2923,19 @@ TinCan client library
             ;
 
             if (typeof cfg === "string") {
-                for (prop in _downConvertMap) {
-                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
-                        cfg = _downConvertMap[prop];
-                    }
-                }
-
                 this.id = cfg;
                 this.display = {
                     und: this.id
                 };
+
+                //If simple string like "attempted" was passed in (0.9 verbs), 
+                //upconvert the ID to the 0.95 ADL version
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
+                        this.id = prop;
+                        break;
+                    }
+                }
             }
             else {
                 cfg = cfg || {};
