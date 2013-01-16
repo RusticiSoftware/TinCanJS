@@ -314,7 +314,15 @@ TinCan client library
             // Setup request callback
             function requestComplete () {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
-                var notFoundOk;
+                var notFoundOk,
+                    httpStatus;
+
+                //
+                // older versions of IE don't properly handle 204 status codes
+                // so correct when receiving a 1223 to be 204 locally
+                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                //
+                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
 
                 if (! finished) {
                     // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
@@ -322,8 +330,8 @@ TinCan client library
                     // using 'finished' flag to avoid triggering events multiple times
                     finished = true;
 
-                    notFoundOk = (cfg.ignore404 && xhr.status === 404);
-                    if (xhr.status === undefined || (xhr.status >= 200 && xhr.status < 400) || notFoundOk) {
+                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
+                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
                         if (cfg.callback) {
                             cfg.callback(null, xhr);
                         }
@@ -337,16 +345,16 @@ TinCan client library
                     }
                     else {
                         // Alert all errors except cancelled XHR requests
-                        if (xhr.status > 0) {
+                        if (httpStatus > 0) {
                             requestCompleteResult = {
-                                err: xhr.status,
+                                err: httpStatus,
                                 xhr: xhr
                             };
                             if (self.alertOnRequestFailure) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                             }
                             if (cfg.callback) {
-                                cfg.callback(xhr.status, xhr);
+                                cfg.callback(httpStatus, xhr);
                             }
                         }
                         return requestCompleteResult;
