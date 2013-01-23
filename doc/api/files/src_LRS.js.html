@@ -436,6 +436,10 @@ TinCan client library
                         xhr.setRequestHeader(prop, headers[prop]);
                     }
                 }
+
+                if (typeof cfg.data !== &quot;undefined&quot;) {
+                    cfg.data += &quot;&quot;;
+                }
                 data = cfg.data;
             }
             else if (this._requestMode === IE) {
