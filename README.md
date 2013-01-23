@@ -54,7 +54,7 @@ Alternatively you can just link to the individual files themselves like so:
 API Documentation Generation
 ============================
 
-Install yuidoc via `npm install -g yuidoc` and then from the base directory issue:
+Install yuidoc via `npm install -g yuidocjs` and then from the base directory issue:
 
     yuidoc src/
 
