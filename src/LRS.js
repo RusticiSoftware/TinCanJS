@@ -274,9 +274,9 @@ TinCan client library
                         xhr.setRequestHeader(prop, headers[prop]);
                     }
                 }
-                
+
                 if (typeof cfg.data !== "undefined") {
-                	cfg.data += "";
+                    cfg.data += "";
                 }
                 data = cfg.data;
             }
