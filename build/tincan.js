@@ -1487,7 +1487,7 @@ TinCan client library
                     }
                 }
                 
-                if (typeof cfg.data != 'undefined') {
+                if (typeof cfg.data !== "undefined") {
                 	cfg.data += "";
                 }
                 data = cfg.data;
