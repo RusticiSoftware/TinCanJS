@@ -1670,7 +1670,7 @@ TinCan client library
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
             //       that it needs to
-            if (TinCan.environment().isBrowser) {
+            if (! TinCan.environment().isBrowser) {
                 this.log("error: environment not implemented");
                 return;
             }
