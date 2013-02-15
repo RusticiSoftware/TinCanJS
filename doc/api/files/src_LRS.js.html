@@ -620,7 +620,7 @@ TinCan client library
             &#x2F;&#x2F; TODO: it would be better to make a subclass that knows
             &#x2F;&#x2F;       its own environment and just implements the protocol
             &#x2F;&#x2F;       that it needs to
-            if (TinCan.environment().isBrowser) {
+            if (! TinCan.environment().isBrowser) {
                 this.log(&quot;error: environment not implemented&quot;);
                 return;
             }
