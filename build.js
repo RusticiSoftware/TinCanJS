@@ -32,6 +32,7 @@ new gear.Queue(
         ,'src/Statement.js'
         ,'src/StatementsResult.js'
         ,'src/State.js'
+        ,'src/ActivityProfile.js'
     ]
 )
 .log("Linting")
@@ -76,6 +77,11 @@ new gear.Queue(
             }
         }
     }
+)
+.read(
+    [
+        'vendor/cryptojs-v3.0.2/rollups/sha1.js'
+    ]
 )
 .log("Concating")
 .concat()

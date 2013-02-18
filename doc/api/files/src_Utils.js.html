@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.1</em>
+            <em>API Docs for: 0.1.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -46,6 +46,8 @@
                 <li><a href="..&#x2F;classes/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -86,6 +88,8 @@
                 <li><a href="..&#x2F;modules/TinCan.Activity.html">TinCan.Activity</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
             
                 <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
             
@@ -209,6 +213,7 @@ TinCan client library
 
         &#x2F;**
         @method getISODateString
+        @static
         @param {Date} date Date to stringify
         @return {String} ISO date String
         *&#x2F;
@@ -216,10 +221,10 @@ TinCan client library
             function pad (val, n) {
                 var padder,
                     tempVal;
-                if (val === null) {
+                if (typeof val === &quot;undefined&quot; || val === null) {
                     val = 0;
                 }
-                if (n === null) {
+                if (typeof n === &quot;undefined&quot; || n === null) {
                     n = 2;
                 }
                 padder = Math.pow(10, n-1);
@@ -240,6 +245,18 @@ TinCan client library
                 + pad(d.getUTCMinutes()) + &#x27;:&#x27;
                 + pad(d.getUTCSeconds()) + &#x27;.&#x27;
                 + pad(d.getUTCMilliseconds(), 3) + &#x27;Z&#x27;;
+        },
+
+        &#x2F;**
+        @method getSHA1String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA1 for contents
+        *&#x2F;
+        getSHA1String: function (str) {
+            &#x2F;*global CryptoJS*&#x2F;
+
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         &#x2F;**
@@ -300,6 +317,17 @@ TinCan client library
                 path: parts[0],
                 params: params
             };
+        },
+
+        &#x2F;**
+        @method getServerRoot
+        @param {String} absoluteUrl
+        @return {String} server root of url
+        @private
+        *&#x2F;
+        getServerRoot: function (absoluteUrl) {
+            var urlParts = absoluteUrl.split(&quot;&#x2F;&quot;);
+            return urlParts[0] + &quot;&#x2F;&#x2F;&quot; + urlParts[2];
         }
     };
 }());

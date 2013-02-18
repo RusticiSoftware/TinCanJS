@@ -51,6 +51,7 @@ TinCan client library
 
         /**
         @method getISODateString
+        @static
         @param {Date} date Date to stringify
         @return {String} ISO date String
         */
@@ -58,10 +59,10 @@ TinCan client library
             function pad (val, n) {
                 var padder,
                     tempVal;
-                if (val === null) {
+                if (typeof val === "undefined" || val === null) {
                     val = 0;
                 }
-                if (n === null) {
+                if (typeof n === "undefined" || n === null) {
                     n = 2;
                 }
                 padder = Math.pow(10, n-1);
@@ -82,6 +83,18 @@ TinCan client library
                 + pad(d.getUTCMinutes()) + ':'
                 + pad(d.getUTCSeconds()) + '.'
                 + pad(d.getUTCMilliseconds(), 3) + 'Z';
+        },
+
+        /**
+        @method getSHA1String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA1 for contents
+        */
+        getSHA1String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         /**

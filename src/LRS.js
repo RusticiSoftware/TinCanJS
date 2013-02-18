@@ -125,6 +125,10 @@ TinCan client library
                 this.auth = cfg.auth;
             }
 
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -224,11 +228,15 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
-                        if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
                         }
                     }
                 }
@@ -266,6 +274,10 @@ TinCan client library
                         xhr.setRequestHeader(prop, headers[prop]);
                     }
                 }
+
+                if (typeof cfg.data !== "undefined") {
+                    cfg.data += "";
+                }
                 data = cfg.data;
             }
             else if (this._requestMode === IE) {
@@ -278,7 +290,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 
@@ -306,7 +318,15 @@ TinCan client library
             // Setup request callback
             function requestComplete () {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
-                var notFoundOk;
+                var notFoundOk,
+                    httpStatus;
+
+                //
+                // older versions of IE don't properly handle 204 status codes
+                // so correct when receiving a 1223 to be 204 locally
+                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                //
+                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
 
                 if (! finished) {
                     // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
@@ -314,8 +334,8 @@ TinCan client library
                     // using 'finished' flag to avoid triggering events multiple times
                     finished = true;
 
-                    notFoundOk = (cfg.ignore404 && xhr.status === 404);
-                    if (xhr.status === undefined || (xhr.status >= 200 && xhr.status < 400) || notFoundOk) {
+                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
+                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
                         if (cfg.callback) {
                             cfg.callback(null, xhr);
                         }
@@ -329,16 +349,16 @@ TinCan client library
                     }
                     else {
                         // Alert all errors except cancelled XHR requests
-                        if (xhr.status > 0) {
+                        if (httpStatus > 0) {
                             requestCompleteResult = {
-                                err: xhr.status,
+                                err: httpStatus,
                                 xhr: xhr
                             };
                             if (self.alertOnRequestFailure) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                             }
                             if (cfg.callback) {
-                                cfg.callback(xhr.status, xhr);
+                                cfg.callback(httpStatus, xhr);
                             }
                         }
                         return requestCompleteResult;
@@ -438,7 +458,7 @@ TinCan client library
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
             //       that it needs to
-            if (TinCan.environment().isBrowser) {
+            if (! TinCan.environment().isBrowser) {
                 this.log("error: environment not implemented");
                 return;
             }
@@ -769,7 +789,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -793,6 +818,16 @@ TinCan client library
                                     contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -811,6 +846,16 @@ TinCan client library
                             contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
@@ -827,6 +872,7 @@ TinCan client library
             @param {Object} cfg.activity TinCan.Activity
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.registration] Registration
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -859,7 +905,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -870,6 +921,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers = {
+                    "If-Matches": cfg.lastSHA1
+                };
             }
 
             return this.sendRequest(requestCfg);
@@ -913,7 +969,12 @@ TinCan client library
                 requestParams.stateId = key;
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -941,7 +1002,8 @@ TinCan client library
         retrieveActivityProfile: function (key, cfg) {
             this.log("retrieveActivityProfile");
             var requestCfg = {},
-                requestResult
+                requestResult,
+                callbackWrapper
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -958,13 +1020,68 @@ TinCan client library
                 params: {
                     profileId: key,
                     activityId: cfg.activity.id
-                }
+                },
+                ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
-                requestCfg.callback = cfg.callback;
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        if (xhr.status === 404) {
+                            result = null;
+                        }
+                        else {
+                            result = new TinCan.ActivityProfile(
+                                {
+                                    id: key,
+                                    activity: cfg.activity,
+                                    contents: xhr.responseText
+                                }
+                            );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
             }
 
-            return this.sendRequest(requestCfg);
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.profile = null;
+                if (requestResult.err === null && requestResult.xhr.status !== 404) {
+                    requestResult.profile = new TinCan.ActivityProfile(
+                        {
+                            id: key,
+                            activity: cfg.activity,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
+                }
+            }
+
+            return requestResult;
         },
 
         /**
@@ -974,6 +1091,7 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -1003,6 +1121,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers = {
+                    "If-Matches": cfg.lastSHA1
+                };
             }
 
             return this.sendRequest(requestCfg);

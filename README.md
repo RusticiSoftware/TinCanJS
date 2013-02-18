@@ -30,6 +30,7 @@ Source instructions
 
 Alternatively you can just link to the individual files themselves like so:
 
+    <script type="text/javascript" src="vendor/cryptojs-v3.0.2/rollups/sha1.js"></script>
     <script type="text/javascript" src="src/TinCan.js"></script>
     <script type="text/javascript" src="src/Utils.js"></script>
     <script type="text/javascript" src="src/LRS.js"></script>
@@ -48,11 +49,12 @@ Alternatively you can just link to the individual files themselves like so:
     <script type="text/javascript" src="src/Statement.js"></script>
     <script type="text/javascript" src="src/StatementsResult.js"></script>
     <script type="text/javascript" src="src/State.js"></script>
+    <script type="text/javascript" src="src/ActivityProfile.js"></script>
 
 API Documentation Generation
 ============================
 
-Install yuidoc via `npm install -g yuidoc` and then from the base directory issue:
+Install yuidoc via `npm install -g yuidocjs` and then from the base directory issue:
 
     yuidoc src/
 

@@ -27,7 +27,6 @@
     <script type="text/javascript" src="../build/tincan-min.js"></script>
     -->
     <!-- Uncomment to test non-build version -->
-    <!--
     <script type="text/javascript" src="../src/TinCan.js"></script>
     <script type="text/javascript" src="../src/Utils.js"></script>
     <script type="text/javascript" src="../src/LRS.js"></script>
@@ -109,8 +108,8 @@
                     );
                     tincan.addRecordStore(
                         //{
-                            //endpoint: "http://cloud.scorm.com/ScormEngineInterface/TCAPI/3HYPTQLAI9/sandbox/",
-                            //auth: "Basic M0hZUFRRTEFJOTo2Zk9YNHpqckxOTWdPbnZtR3paeHY4eWQ2UWFuNkVMYkZQRFVxRGF3"
+                        //    endpoint: "http://192.168.157.129/ScormEngine/ScormEngineInterface/TCAPI/",
+                        //    auth: "Basic ZGVmYXVsdDpwYXNzd29yZA=="
                         //}
                     );
                 },
@@ -137,11 +136,9 @@
                 log("sendStatement sync");
                 var result = tincan.sendStatement(
                     {
-                        verb: {
-                            id: "attempted"
-                        },
+                        verb: "attempted",
                         target: {
-                            id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
                         }
                     }
                 );
@@ -156,19 +153,15 @@
                 var result = tincan.sendStatements(
                     [
                         {
-                            verb: {
-                                id: "attempted"
-                            },
+                            verb: "attempted",
                             target: {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         },
                         {
-                            verb: {
-                                id: "completed"
-                            },
+                            verb: "completed",
                             target: {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         }
                     ]
@@ -190,7 +183,7 @@
                             id: "attempted"
                         },
                         target: {
-                            id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
                         }
                     */
                     }
@@ -219,7 +212,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         )
                     }
@@ -236,7 +229,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         )
                     }
@@ -253,7 +246,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         )
                     }
@@ -270,7 +263,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
                             }
                         )
                     }
@@ -288,7 +281,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
                             }
                         )
                     }
@@ -305,7 +298,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
                             }
                         )
                     }
@@ -322,7 +315,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
                             }
                         )
                     }
@@ -339,7 +332,7 @@
                     {
                         activity: new TinCan.Activity(
                             {
-                                id: "tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
                             }
                         )
                     }

@@ -84,29 +84,37 @@ TinCan client library
     */
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log("fromJSON");
-        // TODO: protect JSON call from bad JSON
-        var _result = JSON.parse(resultJSON),
+        var _result,
             stmts = [],
             stmt,
             i
         ;
-        for (i = 0; i < _result.statements.length; i += 1) {
-            try {
-                stmt = new TinCan.Statement (_result.statements[i], 4);
-            } catch (error) {
-                StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
 
-                stmt = new TinCan.Statement (
-                    {
-                        id: _result.statements[i].id
-                    },
-                    4
-                );
-            }
-
-            stmts.push(stmt);
+        try {
+            _result = JSON.parse(resultJSON);
+        } catch (parseError) {
+            StatementsResult.prototype.log("fromJSON - JSON.parse error: " + parseError);
         }
-        _result.statements = stmts;
+
+        if (_result) {
+            for (i = 0; i < _result.statements.length; i += 1) {
+                try {
+                    stmt = new TinCan.Statement (_result.statements[i], 4);
+                } catch (error) {
+                    StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
+
+                    stmt = new TinCan.Statement (
+                        {
+                            id: _result.statements[i].id
+                        },
+                        4
+                    );
+                }
+
+                stmts.push(stmt);
+            }
+            _result.statements = stmts;
+        }
 
         return new StatementsResult (_result);
     };

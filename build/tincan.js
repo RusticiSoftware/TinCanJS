@@ -27,7 +27,37 @@ var TinCan;
 
 (function () {
     "use strict";
-    var _environment = null;
+    var _environment = null,
+        _reservedQSParams = {
+            //
+            // these are TC spec reserved words that may end up in queries to the endpoint
+            //
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            //
+            // these are suggested by the LMS launch spec addition that TinCanJS consumes
+            //
+            activity_platform: true,
+            grouping:          true,
+            "Accept-Language": true
+        };
 
     /**
     @class TinCan
@@ -155,7 +185,8 @@ var TinCan;
                 lrsProps = ["endpoint", "auth"],
                 lrsCfg = {},
                 activityCfg,
-                contextCfg
+                contextCfg,
+                extended = null
             ;
 
             if (qsParams.hasOwnProperty("actor")) {
@@ -175,6 +206,7 @@ var TinCan;
                         id: qsParams.activity_id
                     }
                 );
+                delete qsParams.activity_id;
             }
 
             if (
@@ -188,6 +220,7 @@ var TinCan;
 
                 if (qsParams.hasOwnProperty("activity_platform")) {
                     contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
                 }
                 if (qsParams.hasOwnProperty("registration")) {
                     //
@@ -196,10 +229,12 @@ var TinCan;
                     // queries
                     //
                     contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
                 }
                 if (qsParams.hasOwnProperty("grouping")) {
                     contextCfg.contextActivities = {};
                     contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
                 }
 
                 this.context = new TinCan.Context (contextCfg);
@@ -217,7 +252,22 @@ var TinCan;
                         delete qsParams[prop];
                     }
                 }
-                lrsCfg.extended = qsParams;
+
+                // remove our reserved params so they don't end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
                 lrsCfg.allowFail = false;
 
                 this.addRecordStore(lrsCfg);
@@ -503,9 +553,9 @@ var TinCan;
         /**
         @method getStatements
         @param {Object} [cfg] Configuration for request
+            @param {Boolean} [cfg.sendActor] Include default actor in query params
+            @param {Boolean} [cfg.sendActivity] Include default activity in query params
             @param {Object} [cfg.params] Parameters used to filter
-                @param {Boolean} [cfg.params.sendActor] Include default actor in query params
-                @param {Boolean} [cfg.params.sendActivity] Include default activity in query params
 
             @param {Function} [cfg.callback] Function to run at completion
 
@@ -541,7 +591,7 @@ var TinCan;
                 if (cfg.sendActivity && this.activity !== null) {
                     params.activity = this.activity;
                 }
-                if (this.registration !== null) {
+                if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
 
@@ -824,6 +874,9 @@ var TinCan;
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
                 }
+                if (typeof cfg.lastSHA1 !== "undefined") {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
 
                 return lrs.saveActivityProfile(key, val, queryCfg);
             }
@@ -1039,6 +1092,7 @@ TinCan client library
 
         /**
         @method getISODateString
+        @static
         @param {Date} date Date to stringify
         @return {String} ISO date String
         */
@@ -1046,10 +1100,10 @@ TinCan client library
             function pad (val, n) {
                 var padder,
                     tempVal;
-                if (val === null) {
+                if (typeof val === "undefined" || val === null) {
                     val = 0;
                 }
-                if (n === null) {
+                if (typeof n === "undefined" || n === null) {
                     n = 2;
                 }
                 padder = Math.pow(10, n-1);
@@ -1070,6 +1124,18 @@ TinCan client library
                 + pad(d.getUTCMinutes()) + ':'
                 + pad(d.getUTCSeconds()) + '.'
                 + pad(d.getUTCMilliseconds(), 3) + 'Z';
+        },
+
+        /**
+        @method getSHA1String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA1 for contents
+        */
+        getSHA1String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
         },
 
         /**
@@ -1271,6 +1337,10 @@ TinCan client library
                 this.auth = cfg.auth;
             }
 
+            if (cfg.hasOwnProperty("extended")) {
+                this.extended = cfg.extended;
+            }
+
             urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
 
             if (env.isBrowser) {
@@ -1370,11 +1440,15 @@ TinCan client library
 
             // add extended LMS-specified values to the params
             if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
                 for (prop in this.extended) {
                     if (this.extended.hasOwnProperty(prop)) {
-                        // TODO: don't overwrite cfg.params value
-                        if (this.extended[prop] !== null && this.extended[prop].length > 0) {
-                            cfg.params[prop] = this.extended[prop];
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
                         }
                     }
                 }
@@ -1412,6 +1486,10 @@ TinCan client library
                         xhr.setRequestHeader(prop, headers[prop]);
                     }
                 }
+
+                if (typeof cfg.data !== "undefined") {
+                    cfg.data += "";
+                }
                 data = cfg.data;
             }
             else if (this._requestMode === IE) {
@@ -1424,7 +1502,7 @@ TinCan client library
                 // params end up in the body
                 for (prop in cfg.params) {
                     if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
                     }
                 }
 
@@ -1452,7 +1530,15 @@ TinCan client library
             // Setup request callback
             function requestComplete () {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
-                var notFoundOk;
+                var notFoundOk,
+                    httpStatus;
+
+                //
+                // older versions of IE don't properly handle 204 status codes
+                // so correct when receiving a 1223 to be 204 locally
+                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                //
+                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
 
                 if (! finished) {
                     // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
@@ -1460,8 +1546,8 @@ TinCan client library
                     // using 'finished' flag to avoid triggering events multiple times
                     finished = true;
 
-                    notFoundOk = (cfg.ignore404 && xhr.status === 404);
-                    if (xhr.status === undefined || (xhr.status >= 200 && xhr.status < 400) || notFoundOk) {
+                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
+                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
                         if (cfg.callback) {
                             cfg.callback(null, xhr);
                         }
@@ -1475,16 +1561,16 @@ TinCan client library
                     }
                     else {
                         // Alert all errors except cancelled XHR requests
-                        if (xhr.status > 0) {
+                        if (httpStatus > 0) {
                             requestCompleteResult = {
-                                err: xhr.status,
+                                err: httpStatus,
                                 xhr: xhr
                             };
                             if (self.alertOnRequestFailure) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + xhr.status + " | " + xhr.responseText+ ")");
+                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                             }
                             if (cfg.callback) {
-                                cfg.callback(xhr.status, xhr);
+                                cfg.callback(httpStatus, xhr);
                             }
                         }
                         return requestCompleteResult;
@@ -1584,7 +1670,7 @@ TinCan client library
             // TODO: it would be better to make a subclass that knows
             //       its own environment and just implements the protocol
             //       that it needs to
-            if (TinCan.environment().isBrowser) {
+            if (! TinCan.environment().isBrowser) {
                 this.log("error: environment not implemented");
                 return;
             }
@@ -1915,7 +2001,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -1939,6 +2030,16 @@ TinCan client library
                                     contents: xhr.responseText
                                 }
                             );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
                         }
                     }
 
@@ -1957,6 +2058,16 @@ TinCan client library
                             contents: requestResult.xhr.responseText
                         }
                     );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
                 }
             }
 
@@ -1973,6 +2084,7 @@ TinCan client library
             @param {Object} cfg.activity TinCan.Activity
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.registration] Registration
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -2005,7 +2117,12 @@ TinCan client library
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -2016,6 +2133,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers = {
+                    "If-Matches": cfg.lastSHA1
+                };
             }
 
             return this.sendRequest(requestCfg);
@@ -2059,7 +2181,12 @@ TinCan client library
                 requestParams.stateId = key;
             }
             if (typeof cfg.registration !== "undefined") {
-                requestParams.registrationId = cfg.registration;
+                if (this.version === "0.9") {
+                    requestParams.registrationId = cfg.registration;
+                }
+                else {
+                    requestParams.registration = cfg.registration;
+                }
             }
 
             requestCfg = {
@@ -2087,7 +2214,8 @@ TinCan client library
         retrieveActivityProfile: function (key, cfg) {
             this.log("retrieveActivityProfile");
             var requestCfg = {},
-                requestResult
+                requestResult,
+                callbackWrapper
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -2104,13 +2232,68 @@ TinCan client library
                 params: {
                     profileId: key,
                     activityId: cfg.activity.id
-                }
+                },
+                ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
-                requestCfg.callback = cfg.callback;
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        if (xhr.status === 404) {
+                            result = null;
+                        }
+                        else {
+                            result = new TinCan.ActivityProfile(
+                                {
+                                    id: key,
+                                    activity: cfg.activity,
+                                    contents: xhr.responseText
+                                }
+                            );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
             }
 
-            return this.sendRequest(requestCfg);
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.profile = null;
+                if (requestResult.err === null && requestResult.xhr.status !== 404) {
+                    requestResult.profile = new TinCan.ActivityProfile(
+                        {
+                            id: key,
+                            activity: cfg.activity,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
+                }
+            }
+
+            return requestResult;
         },
 
         /**
@@ -2120,6 +2303,7 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -2149,6 +2333,11 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers = {
+                    "If-Matches": cfg.lastSHA1
+                };
             }
 
             return this.sendRequest(requestCfg);
@@ -2457,31 +2646,31 @@ TinCan client library
                 }
             }
 
-            if (typeof cfg.name === "object") {
+            if (typeof cfg.name === "object" && cfg.name !== null) {
                 if (cfg.name.length > 1) {
                     this.degraded = true;
                 }
                 cfg.name = cfg.name[0];
             }
-            if (typeof cfg.mbox === "object") {
+            if (typeof cfg.mbox === "object" && cfg.mbox !== null) {
                 if (cfg.mbox.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox = cfg.mbox[0];
             }
-            if (typeof cfg.mbox_sha1sum === "object") {
+            if (typeof cfg.mbox_sha1sum === "object" && cfg.mbox_sha1sum !== null) {
                 if (cfg.mbox_sha1sum.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
             }
-            if (typeof cfg.openid === "object") {
+            if (typeof cfg.openid === "object" && cfg.openid !== null) {
                 if (cfg.openid.length > 1) {
                     this.degraded = true;
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") {
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -2494,8 +2683,12 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("account")) {
-                // TODO: check to see if already this type
-                this.account = new TinCan.AgentAccount (cfg.account);
+                if (cfg.account instanceof TinCan.AgentAccount) {
+                    this.account = cfg.account;
+                }
+                else {
+                    this.account = new TinCan.AgentAccount (cfg.account);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -2555,6 +2748,9 @@ TinCan client library
                 }
                 if (this.name !== null) {
                     result.name = this.name;
+                }
+                if (this.account !== null) {
+                    result.account = this.account;
                 }
             }
 
@@ -2739,16 +2935,19 @@ TinCan client library
             ;
 
             if (typeof cfg === "string") {
-                for (prop in _downConvertMap) {
-                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
-                        cfg = _downConvertMap[prop];
-                    }
-                }
-
                 this.id = cfg;
                 this.display = {
                     und: this.id
                 };
+
+                //If simple string like "attempted" was passed in (0.9 verbs), 
+                //upconvert the ID to the 0.95 ADL version
+                for (prop in _downConvertMap) {
+                    if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
+                        this.id = prop;
+                        break;
+                    }
+                }
             }
             else {
                 cfg = cfg || {};
@@ -3302,6 +3501,7 @@ TinCan client library
                         val = cfg.contextActivities[prop];
 
                         if (! (val instanceof TinCan.Activity)) {
+                            val = typeof val === 'string' ? { id: val } : val;
                             val = new TinCan.Activity (val);
                         }
 
@@ -3878,6 +4078,7 @@ TinCan client library
                     "name",
                     "description",
                     "interactionType",
+                    "correctResponsesPattern",
                     "extensions"
                 ],
                 interactionComponentProps = [
@@ -4614,29 +4815,37 @@ TinCan client library
     */
     StatementsResult.fromJSON = function (resultJSON) {
         StatementsResult.prototype.log("fromJSON");
-        // TODO: protect JSON call from bad JSON
-        var _result = JSON.parse(resultJSON),
+        var _result,
             stmts = [],
             stmt,
             i
         ;
-        for (i = 0; i < _result.statements.length; i += 1) {
-            try {
-                stmt = new TinCan.Statement (_result.statements[i], 4);
-            } catch (error) {
-                StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
 
-                stmt = new TinCan.Statement (
-                    {
-                        id: _result.statements[i].id
-                    },
-                    4
-                );
-            }
-
-            stmts.push(stmt);
+        try {
+            _result = JSON.parse(resultJSON);
+        } catch (parseError) {
+            StatementsResult.prototype.log("fromJSON - JSON.parse error: " + parseError);
         }
-        _result.statements = stmts;
+
+        if (_result) {
+            for (i = 0; i < _result.statements.length; i += 1) {
+                try {
+                    stmt = new TinCan.Statement (_result.statements[i], 4);
+                } catch (error) {
+                    StatementsResult.prototype.log("fromJSON - statement instantiation failed: " + error + " (" + JSON.stringify(_result.statements[i]) + ")");
+
+                    stmt = new TinCan.Statement (
+                        {
+                            id: _result.statements[i].id
+                        },
+                        4
+                    );
+                }
+
+                stmts.push(stmt);
+            }
+            _result.statements = stmts;
+        }
 
         return new StatementsResult (_result);
     };
@@ -4742,3 +4951,143 @@ TinCan client library
         return new State(_state);
     };
 }());
+/*
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.ActivityProfile
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.ActivityProfile
+    @constructor
+    */
+    var ActivityProfile = TinCan.ActivityProfile = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property id
+        @type String
+        */
+        this.id = null;
+
+        /**
+        @property activity
+        @type TinCan.Activity
+        */
+        this.activity = null;
+
+        /**
+        @property updated
+        @type String
+        */
+        this.updated = null;
+
+        /**
+        @property contents
+        @type String
+        */
+        this.contents = null;
+
+        /**
+        SHA1 of contents as provided by the server during last fetch,
+        this should be passed through to saveActivityProfile
+
+        @property etag
+        @type String
+        */
+        this.etag = null;
+
+        this.init(cfg);
+    };
+    ActivityProfile.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: 'ActivityProfile',
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+            var i,
+                directProps = [
+                    "id",
+                    "contents",
+                    "etag"
+                ],
+                val
+            ;
+
+            cfg = cfg || {};
+
+            if (cfg.hasOwnProperty("activity")) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
+            }
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+
+            this.updated = false;
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} ActivityProfile
+    @static
+    */
+    ActivityProfile.fromJSON = function (stateJSON) {
+        ActivityProfile.prototype.log("fromJSON");
+        var _state = JSON.parse(stateJSON);
+
+        return new ActivityProfile(_state);
+    };
+}());
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+var CryptoJS=CryptoJS||function(i,m){var p={},h=p.lib={},n=h.Base=function(){function a(){}return{extend:function(b){a.prototype=this;var c=new a;b&&c.mixIn(b);c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.$super.extend(this)}}}(),o=h.WordArray=n.extend({init:function(a,b){a=
+this.words=a||[];this.sigBytes=b!=m?b:4*a.length},toString:function(a){return(a||e).stringify(this)},concat:function(a){var b=this.words,c=a.words,d=this.sigBytes,a=a.sigBytes;this.clamp();if(d%4)for(var f=0;f<a;f++)b[d+f>>>2]|=(c[f>>>2]>>>24-8*(f%4)&255)<<24-8*((d+f)%4);else if(65535<c.length)for(f=0;f<a;f+=4)b[d+f>>>2]=c[f>>>2];else b.push.apply(b,c);this.sigBytes+=a;return this},clamp:function(){var a=this.words,b=this.sigBytes;a[b>>>2]&=4294967295<<32-8*(b%4);a.length=i.ceil(b/4)},clone:function(){var a=
+n.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var b=[],c=0;c<a;c+=4)b.push(4294967296*i.random()|0);return o.create(b,a)}}),q=p.enc={},e=q.Hex={stringify:function(a){for(var b=a.words,a=a.sigBytes,c=[],d=0;d<a;d++){var f=b[d>>>2]>>>24-8*(d%4)&255;c.push((f>>>4).toString(16));c.push((f&15).toString(16))}return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d+=2)c[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return o.create(c,b/2)}},g=q.Latin1={stringify:function(a){for(var b=
+a.words,a=a.sigBytes,c=[],d=0;d<a;d++)c.push(String.fromCharCode(b[d>>>2]>>>24-8*(d%4)&255));return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d++)c[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%4);return o.create(c,b)}},j=q.Utf8={stringify:function(a){try{return decodeURIComponent(escape(g.stringify(a)))}catch(b){throw Error("Malformed UTF-8 data");}},parse:function(a){return g.parse(unescape(encodeURIComponent(a)))}},k=h.BufferedBlockAlgorithm=n.extend({reset:function(){this._data=o.create();
+this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=j.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var b=this._data,c=b.words,d=b.sigBytes,f=this.blockSize,e=d/(4*f),e=a?i.ceil(e):i.max((e|0)-this._minBufferSize,0),a=e*f,d=i.min(4*a,d);if(a){for(var g=0;g<a;g+=f)this._doProcessBlock(c,g);g=c.splice(0,a);b.sigBytes-=d}return o.create(g,d)},clone:function(){var a=n.clone.call(this);a._data=this._data.clone();return a},_minBufferSize:0});h.Hasher=k.extend({init:function(){this.reset()},
+reset:function(){k.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);this._doFinalize();return this._hash},clone:function(){var a=k.clone.call(this);a._hash=this._hash.clone();return a},blockSize:16,_createHelper:function(a){return function(b,c){return a.create(c).finalize(b)}},_createHmacHelper:function(a){return function(b,c){return l.HMAC.create(a,c).finalize(b)}}});var l=p.algo={};return p}(Math);
+(function(){var i=CryptoJS,m=i.lib,p=m.WordArray,m=m.Hasher,h=[],n=i.algo.SHA1=m.extend({_doReset:function(){this._hash=p.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(o,i){for(var e=this._hash.words,g=e[0],j=e[1],k=e[2],l=e[3],a=e[4],b=0;80>b;b++){if(16>b)h[b]=o[i+b]|0;else{var c=h[b-3]^h[b-8]^h[b-14]^h[b-16];h[b]=c<<1|c>>>31}c=(g<<5|g>>>27)+a+h[b];c=20>b?c+((j&k|~j&l)+1518500249):40>b?c+((j^k^l)+1859775393):60>b?c+((j&k|j&l|k&l)-1894007588):c+((j^k^l)-
+899497514);a=l;l=k;k=j<<30|j>>>2;j=g;g=c}e[0]=e[0]+g|0;e[1]=e[1]+j|0;e[2]=e[2]+k|0;e[3]=e[3]+l|0;e[4]=e[4]+a|0},_doFinalize:function(){var i=this._data,h=i.words,e=8*this._nDataBytes,g=8*i.sigBytes;h[g>>>5]|=128<<24-g%32;h[(g+64>>>9<<4)+15]=e;i.sigBytes=4*h.length;this._process()}});i.SHA1=m._createHelper(n);i.HmacSHA1=m._createHmacHelper(n)})();

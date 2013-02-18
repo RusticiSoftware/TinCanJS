@@ -163,6 +163,7 @@ TinCan client library
                         val = cfg.contextActivities[prop];
 
                         if (! (val instanceof TinCan.Activity)) {
+                            val = typeof val === 'string' ? { id: val } : val;
                             val = new TinCan.Activity (val);
                         }
 

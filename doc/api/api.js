@@ -4,6 +4,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan",
         "TinCan.Activity",
         "TinCan.ActivityDefinition",
+        "TinCan.ActivityProfile",
         "TinCan.Agent",
         "TinCan.AgentAccount",
         "TinCan.Context",
@@ -24,6 +25,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "TinCan",
         "TinCan.Activity",
         "TinCan.ActivityDefinition",
+        "TinCan.ActivityProfile",
         "TinCan.Agent",
         "TinCan.AgentAccount",
         "TinCan.Context",
@@ -54,6 +56,11 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "TinCan.ActivityDefinition",
             "name": "TinCan.ActivityDefinition",
+            "description": "TinCan client library"
+        },
+        {
+            "displayName": "TinCan.ActivityProfile",
+            "name": "TinCan.ActivityProfile",
             "description": "TinCan client library"
         },
         {
