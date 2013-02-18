@@ -167,5 +167,19 @@ TinCan client library
             var urlParts = absoluteUrl.split("/");
             return urlParts[0] + "//" + urlParts[2];
         }
+        deleteEmptyProperties: function (objectToTest)
+		{ 
+		    if (typeof objectToTest=="object"){
+		        for (i in objectToTest) {
+		            if (objectToTest[i] == null || objectToTest[i] == "" || (JSON.stringify(objectToTest[i])=="{}")) {
+		                delete objectToTest[i];
+		            }
+		            else {
+		                this.Utils.deleteEmptyProperties(objectToTest[i]);
+		            }
+		        }
+		    }
+			return objectToTest;
+		}
     };
 }());
