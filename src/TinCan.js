@@ -365,7 +365,7 @@ var TinCan;
             ;
 
             if (rsCount > 0) {
-                statement = this.prepareStatement(stmt);
+                statement = this.prepareStatement(this.Utils.deleteEmptyProperties(stmt));
 
                 /*
                    when there are multiple LRSes configured and
