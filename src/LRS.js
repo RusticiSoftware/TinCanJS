@@ -125,6 +125,9 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
+            else if (cfg.hasOwnProperty("username") && cfg.hasOwnProperty("password")) {
+                this.auth = "Basic " + TinCan.Utils.getBase64String(cfg.username + ":" + cfg.password);
+            }
 
             if (cfg.hasOwnProperty("extended")) {
                 this.extended = cfg.extended;

@@ -98,6 +98,20 @@ TinCan client library
         },
 
         /**
+        @method getBase64String
+        @static
+        @param {String} str Content to encode
+        @return {String} Base64 encoded contents
+        */
+        getBase64String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.enc.Base64.stringify(
+                CryptoJS.enc.Latin1.parse(str)
+            );
+        },
+
+        /**
         @method getLangDictionaryValue
         @param {String} prop Property name storing the dictionary
         @param {String} [lang] Language to return

@@ -31,6 +31,7 @@ Source instructions
 Alternatively you can just link to the individual files themselves like so:
 
     <script type="text/javascript" src="vendor/cryptojs-v3.0.2/rollups/sha1.js"></script>
+    <script type="text/javascript" src="vendor/cryptojs-v3.0.2/components/enc-base64.js"></script>
     <script type="text/javascript" src="src/TinCan.js"></script>
     <script type="text/javascript" src="src/Utils.js"></script>
     <script type="text/javascript" src="src/LRS.js"></script>
