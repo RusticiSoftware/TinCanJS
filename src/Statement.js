@@ -184,9 +184,9 @@ TinCan client library
 
                 // TODO: check to see if already this type
                 if (cfg.authority.objectType === "Agent") {
-                    this.actor = new TinCan.Agent (cfg.actor);
-                } else if (cfg.actor.objectType === "Group") {
-                    this.actor = new TinCan.Group (cfg.actor);
+                    this.authority = new TinCan.Agent (cfg.authority);
+                } else if (cfg.authority.objectType === "Group") {
+                    this.authority = new TinCan.Group (cfg.authority);
                 }
             }
             if (cfg.hasOwnProperty("verb")) {
