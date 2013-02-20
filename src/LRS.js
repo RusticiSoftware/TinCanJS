@@ -484,6 +484,8 @@ TinCan client library
                 return;
             }
 
+            cfg = cfg || {};
+
             requestCfg = {
                 url: "statements",
                 method: "GET",
