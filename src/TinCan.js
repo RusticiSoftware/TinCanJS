@@ -988,9 +988,15 @@ var TinCan;
             _environment = {};
             if (typeof window !== "undefined") {
                 _environment.isBrowser = true;
-                _environment.isIE = false;
-                if (typeof XDomainRequest !== "undefined") {
-                    _environment.isIE = true;
+                _environment.hasCORS = false;
+                _environment.useXDR = false;
+
+                if (typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
+                    _environment.hasCORS = true;
+                }
+                else if (typeof XDomainRequest !== "undefined") {
+                    _environment.hasCORS = true;
+                    _environment.useXDR = true;
                 }
             }
             else {
