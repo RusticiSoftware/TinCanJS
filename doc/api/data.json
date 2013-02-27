@@ -400,7 +400,7 @@
             "module": "TinCan",
             "namespace": "",
             "file": "src/LRS.js",
-            "line": 27,
+            "line": 28,
             "description": "TinCan client library"
         },
         "TinCan.Result": {
@@ -672,7 +672,7 @@
             "submodule": "TinCan.LRS",
             "namespace": "",
             "file": "src/LRS.js",
-            "line": 27,
+            "line": 28,
             "is_constructor": 1
         },
         "TinCan.Result": {
@@ -1950,7 +1950,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 34,
+            "line": 35,
             "itemtype": "property",
             "name": "endpoint",
             "type": "String",
@@ -1960,7 +1960,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 40,
+            "line": 41,
             "itemtype": "property",
             "name": "version",
             "type": "String",
@@ -1970,7 +1970,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 46,
+            "line": 47,
             "itemtype": "property",
             "name": "auth",
             "type": "String",
@@ -1980,7 +1980,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 52,
+            "line": 53,
             "itemtype": "property",
             "name": "allowFail",
             "type": "Boolean",
@@ -1991,7 +1991,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 59,
+            "line": 60,
             "itemtype": "property",
             "name": "alertOnRequestFailure",
             "type": "Boolean",
@@ -2002,7 +2002,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 66,
+            "line": 67,
             "itemtype": "property",
             "name": "extended",
             "type": "Object",
@@ -2012,7 +2012,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 72,
+            "line": 73,
             "itemtype": "property",
             "name": "_requestMode",
             "type": "String",
@@ -2025,7 +2025,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 83,
+            "line": 84,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.LRS",
@@ -2034,7 +2034,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 88,
+            "line": 89,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.LRS",
@@ -2043,7 +2043,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 93,
+            "line": 94,
             "itemtype": "method",
             "name": "init",
             "class": "TinCan.LRS",
@@ -2052,7 +2052,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 192,
+            "line": 213,
             "description": "Method used to send a request via browser objects to the LRS",
             "itemtype": "method",
             "name": "sendRequest",
@@ -2130,7 +2130,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 407,
+            "line": 428,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -2161,7 +2161,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 443,
+            "line": 464,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -2196,7 +2196,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 497,
+            "line": 518,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -2227,7 +2227,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 543,
+            "line": 564,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2349,7 +2349,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 616,
+            "line": 637,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2373,7 +2373,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 671,
+            "line": 692,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2421,7 +2421,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 751,
+            "line": 772,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2483,7 +2483,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 865,
+            "line": 886,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2540,7 +2540,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 934,
+            "line": 955,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2588,7 +2588,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 992,
+            "line": 1013,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2627,7 +2627,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1087,
+            "line": 1108,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2668,7 +2668,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1134,
+            "line": 1155,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2703,7 +2703,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1176,
+            "line": 1197,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
