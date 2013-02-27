@@ -22,7 +22,8 @@ TinCan client library
 **/
 (function () {
     "use strict";
-    var IE = "ie",
+    var XDR = "xdr",
+        NATIVE = "native",
 
     /**
     @class TinCan.LRS
@@ -75,7 +76,7 @@ TinCan client library
         @default "native"
         @private
         */
-        this._requestMode = "native";
+        this._requestMode = NATIVE;
 
         this.init(cfg);
     };
@@ -134,8 +135,10 @@ TinCan client library
             if (env.isBrowser) {
                 //
                 // determine whether this is a cross domain request,
-                // if it is then if we are in IE check that the schemes
-                // match to see if we should be able to talk to the LRS
+                // whether our browser has CORS support at all, and then
+                // if it does then if we are in IE with XDR only check that
+                // the schemes match to see if we should be able to talk to
+                // the LRS
                 //
                 schemeMatches = location.protocol.toLowerCase() === urlParts[1];
                 isXD = (
@@ -150,23 +153,41 @@ TinCan client library
                         urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : "443")
                     )
                 );
-                if (isXD && env.isIE) {
-                    if (schemeMatches) {
-                        this._requestMode = IE;
+                if (isXD) {
+                    if (env.hasCORS) {
+                        if (env.useXDR && schemeMatches) {
+                            this._requestMode = XDR;
+                        }
+                        else if (env.useXDR && ! schemeMatches) {
+                            if (cfg.allowFail) {
+                                if (this.alertOnRequestFailure) {
+                                    alert("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR");
+                                }
+                            }
+                            else {
+                                if (this.alertOnRequestFailure) {
+                                    alert("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
+                                }
+                                throw {
+                                    code: 2,
+                                    mesg: "LRS invalid: cross domain request for differing scheme in IE with XDR"
+                                };
+                            }
+                        }
                     }
                     else {
                         if (cfg.allowFail) {
                             if (this.alertOnRequestFailure) {
-                                alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                                alert("[warning] LRS invalid: cross domain requests not supported in this browser");
                             }
                         }
                         else {
                             if (this.alertOnRequestFailure) {
-                                alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                                alert("[error] LRS invalid: cross domain requests not supported in this browser");
                             }
                             throw {
                                 code: 2,
-                                mesg: "LRS invalid: cross domain request for differing scheme in IE"
+                                mesg: "LRS invalid: cross domain requests not supported in this browser"
                             };
                         }
                     }
@@ -255,7 +276,7 @@ TinCan client library
                 }
             }
 
-            if (this._requestMode === "native") {
+            if (this._requestMode === NATIVE) {
                 this.log("sendRequest using XMLHttpRequest");
 
                 for (prop in cfg.params) {
@@ -280,7 +301,7 @@ TinCan client library
                 }
                 data = cfg.data;
             }
-            else if (this._requestMode === IE) {
+            else if (this._requestMode === XDR) {
                 this.log("sendRequest using XDomainRequest");
 
                 // method has to go on querystring, and nothing else,
@@ -382,7 +403,7 @@ TinCan client library
 
             if (! cfg.callback) {
                 // synchronous
-                if (this._requestMode === IE) {
+                if (this._requestMode === XDR) {
                     // synchronous call in IE, with no synchronous mode available
                     until = 1000 + Date.now();
                     this.log("sendRequest - until: " + until + ", finished: " + finished);
