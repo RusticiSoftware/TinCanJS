@@ -1001,7 +1001,7 @@ var TinCan;
         return _environment;
     };
 
-    // Make sure we have JSON in general
+    // Shims for browsers not supporting our needs, mainly IE
     if (TinCan.environment().isBrowser) {
         /*
          * Make JSON safe for IE6
@@ -1035,6 +1035,16 @@ var TinCan;
                     }
                     return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
                 }
+            };
+        }
+
+        /*
+         * Make Date.now safe for IE < 9
+         * https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/now
+        */
+        if (!Date.now) {
+            Date.now = function () {
+                return +(new Date ());
             };
         }
     }

@@ -1163,7 +1163,7 @@ var TinCan;
         return _environment;
     };
 
-    &#x2F;&#x2F; Make sure we have JSON in general
+    &#x2F;&#x2F; Shims for browsers not supporting our needs, mainly IE
     if (TinCan.environment().isBrowser) {
         &#x2F;*
          * Make JSON safe for IE6
@@ -1197,6 +1197,16 @@ var TinCan;
                     }
                     return typeof vContent === &quot;string&quot; ? &quot;\&quot;&quot; + vContent.replace(&#x2F;&quot;&#x2F;g, &quot;\\$&amp;&quot;) + &quot;\&quot;&quot; : String(vContent);
                 }
+            };
+        }
+
+        &#x2F;*
+         * Make Date.now safe for IE &lt; 9
+         * https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en-US&#x2F;docs&#x2F;JavaScript&#x2F;Reference&#x2F;Global_Objects&#x2F;Date&#x2F;now
+        *&#x2F;
+        if (!Date.now) {
+            Date.now = function () {
+                return +(new Date ());
             };
         }
     }
