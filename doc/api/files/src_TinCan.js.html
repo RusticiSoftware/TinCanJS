@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src&#x2F;TinCan.js - TinCanJS</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="http:&#x2F;&#x2F;cdn4.tincanapi.com&#x2F;wp-content&#x2F;themes&#x2F;tincanapi&#x2F;images&#x2F;logo.png" title="TinCanJS"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1.3</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/TinCan.html">TinCan</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.StatementRef.html">TinCan.StatementRef</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.SubStatement.html">TinCan.SubStatement</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Utils.html">TinCan.Utils</a></li>
+            
+                <li><a href="..&#x2F;classes/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/TinCan.html">TinCan</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.StatementRef.html">TinCan.StatementRef</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.SubStatement.html">TinCan.SubStatement</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Utils.html">TinCan.Utils</a></li>
+            
+                <li><a href="..&#x2F;modules/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src&#x2F;TinCan.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;*!
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*&#x2F;
+
+&#x2F;**
+TinCan client library
+
+TODO:
+
+* Add statement queueing
+
+@module TinCan
+**&#x2F;
+var TinCan;
+
+(function () {
+    &quot;use strict&quot;;
+    var _environment = null,
+        _reservedQSParams = {
+            &#x2F;&#x2F;
+            &#x2F;&#x2F; these are TC spec reserved words that may end up in queries to the endpoint
+            &#x2F;&#x2F;
+            statementId:   true,
+            verb:          true,
+            object:        true,
+            registration:  true,
+            context:       true,
+            actor:         true,
+            since:         true,
+            until:         true,
+            limit:         true,
+            authoritative: true,
+            sparse:        true,
+            instructor:    true,
+            ascending:     true,
+            continueToken: true,
+            agent:         true,
+            activityId:    true,
+            stateId:       true,
+            profileId:     true,
+
+            &#x2F;&#x2F;
+            &#x2F;&#x2F; these are suggested by the LMS launch spec addition that TinCanJS consumes
+            &#x2F;&#x2F;
+            activity_platform: true,
+            grouping:          true,
+            &quot;Accept-Language&quot;: true
+        };
+
+    &#x2F;**
+    @class TinCan
+    @constructor
+    @param {Object} [options] Configuration used to initialize.
+        @param {String} [options.url] URL for determining launch provided
+            configuration options
+        @param {Array} [options.recordStores] list of pre-configured LRSes
+        @param {Object|TinCan.Activity} [options.activity] default activity
+    **&#x2F;
+    TinCan = function (cfg) {
+        this.log(&quot;constructor&quot;);
+
+        &#x2F;**
+        @property environment
+        @type String
+        *&#x2F;
+        this.environment = null;
+
+        &#x2F;**
+        @property recordStores
+        @type Array
+        *&#x2F;
+        this.recordStores = [];
+
+        &#x2F;**
+        Default actor used when preparing statements that
+        don&#x27;t yet have an actor set, and for saving state, etc.
+
+        @property actor
+        @type Object
+        *&#x2F;
+        this.actor = null;
+
+        &#x2F;**
+        Default activity, may be used as a statement &#x27;target&#x27;
+        or incorporated into &#x27;context&#x27;
+
+        @property activity
+        @type Object
+        *&#x2F;
+        this.activity = null;
+
+        &#x2F;**
+        Default registration, included in default context when
+        provided, otherwise used in statement queries
+
+        @property registration
+        @type String
+        *&#x2F;
+        this.registration = null;
+
+        &#x2F;**
+        Default context used when preparing statements that
+        don&#x27;t yet have a context set, or mixed in when one
+        has been provided, properties do NOT override on mixing
+
+        @property context
+        @type Object
+        *&#x2F;
+        this.context = null;
+
+        this.init(cfg);
+    };
+
+    TinCan.prototype = {
+        LOG_SRC: &quot;TinCan&quot;,
+
+        &#x2F;**
+        Safe version of logging
+
+        @method log
+        @param {String} msg Message to output
+        *&#x2F;
+        log: function (msg, src) {
+            if (TinCan.DEBUG &amp;&amp; console &amp;&amp; console.log) {
+                src = src || this.LOG_SRC || &quot;TinCan&quot;;
+
+                console.log(&quot;TinCan.&quot; + src + &#x27;: &#x27; + msg);
+            }
+        },
+
+        &#x2F;**
+        @method init
+        @param {Object} [options] Configuration used to initialize (see TinCan constructor).
+        *&#x2F;
+        init: function (cfg) {
+            this.log(&quot;init&quot;);
+            var i;
+
+            cfg = cfg || {};
+
+            &#x2F;&#x2F; TODO: check for environment and when in browser get location ourselves?
+
+            if (cfg.hasOwnProperty(&quot;url&quot;) &amp;&amp; cfg.url !== &quot;&quot;) {
+                this._initFromQueryString(cfg.url);
+            }
+
+            if (cfg.hasOwnProperty(&quot;recordStores&quot;) &amp;&amp; cfg.recordStores !== undefined) {
+                for (i = 0; i &lt; cfg.recordStores.length; i += 1) {
+                    this.addRecordStore(cfg.recordStores[i]);
+                }
+            }
+            if (cfg.hasOwnProperty(&quot;activity&quot;)) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
+            }
+        },
+
+        &#x2F;**
+        @method _handleQueryString
+        @param {String} url
+        @private
+        *&#x2F;
+        _initFromQueryString: function (url) {
+            this.log(&quot;_initFromQueryString&quot;);
+
+            var i,
+                prop,
+                qsParams = TinCan.Utils.parseURL(url).params,
+                lrsProps = [&quot;endpoint&quot;, &quot;auth&quot;],
+                lrsCfg = {},
+                activityCfg,
+                contextCfg,
+                extended = null
+            ;
+
+            if (qsParams.hasOwnProperty(&quot;actor&quot;)) {
+                this.log(&quot;_initFromQueryString - found actor: &quot; + qsParams.actor);
+                try {
+                    this.actor = TinCan.Agent.fromJSON(qsParams.actor);
+                    delete qsParams.actor;
+                }
+                catch (ex) {
+                    this.log(&quot;_initFromQueryString - failed to set actor: &quot; + ex);
+                }
+            }
+
+            if (qsParams.hasOwnProperty(&quot;activity_id&quot;)) {
+                this.activity = new TinCan.Activity (
+                    {
+                        id: qsParams.activity_id
+                    }
+                );
+                delete qsParams.activity_id;
+            }
+
+            if (
+                qsParams.hasOwnProperty(&quot;activity_platform&quot;)
+                ||
+                qsParams.hasOwnProperty(&quot;registration&quot;)
+                ||
+                qsParams.hasOwnProperty(&quot;grouping&quot;)
+            ) {
+                contextCfg = {};
+
+                if (qsParams.hasOwnProperty(&quot;activity_platform&quot;)) {
+                    contextCfg.platform = qsParams.activity_platform;
+                    delete qsParams.activity_platform;
+                }
+                if (qsParams.hasOwnProperty(&quot;registration&quot;)) {
+                    &#x2F;&#x2F;
+                    &#x2F;&#x2F; stored in two locations cause we always want it in the default
+                    &#x2F;&#x2F; context, but we also want to be able to get to it for Statement
+                    &#x2F;&#x2F; queries
+                    &#x2F;&#x2F;
+                    contextCfg.registration = this.registration = qsParams.registration;
+                    delete qsParams.registration;
+                }
+                if (qsParams.hasOwnProperty(&quot;grouping&quot;)) {
+                    contextCfg.contextActivities = {};
+                    contextCfg.contextActivities.grouping = qsParams.grouping;
+                    delete qsParams.grouping;
+                }
+
+                this.context = new TinCan.Context (contextCfg);
+            }
+
+            &#x2F;&#x2F;
+            &#x2F;&#x2F; order matters here, process the URL provided LRS last because it gets
+            &#x2F;&#x2F; all the remaining parameters so that they get passed through
+            &#x2F;&#x2F;
+            if (qsParams.hasOwnProperty(&quot;endpoint&quot;)) {
+                for (i = 0; i &lt; lrsProps.length; i += 1) {
+                    prop = lrsProps[i];
+                    if (qsParams.hasOwnProperty(prop)) {
+                        lrsCfg[prop] = qsParams[prop];
+                        delete qsParams[prop];
+                    }
+                }
+
+                &#x2F;&#x2F; remove our reserved params so they don&#x27;t end up  in the extended object
+                for (i in qsParams) {
+                    if (qsParams.hasOwnProperty(i)) {
+                        if (_reservedQSParams.hasOwnProperty(i)) {
+                            delete qsParams[i];
+                        } else {
+                            extended = extended || {};
+                            extended[i] = qsParams[i];
+                        }
+                    }
+                }
+                if (extended !== null) {
+                    lrsCfg.extended = extended;
+                }
+
+                lrsCfg.allowFail = false;
+
+                this.addRecordStore(lrsCfg);
+            }
+        },
+
+        &#x2F;**
+        @method addRecordStore
+        @param {Object} Configuration data
+
+         * TODO:
+         * check endpoint for trailing &#x27;&#x2F;&#x27;
+         * check for unique endpoints
+        *&#x2F;
+        addRecordStore: function (cfg) {
+            this.log(&quot;addRecordStore&quot;);
+            var lrs;
+            if (cfg instanceof TinCan.LRS) {
+                lrs = cfg;
+            }
+            else {
+                lrs = new TinCan.LRS (cfg);
+            }
+            this.recordStores.push(lrs);
+        },
+
+        &#x2F;**
+        @method prepareStatement
+        @param {Object|TinCan.Statement} Base statement properties or
+            pre-created TinCan.Statement instance
+        @return {TinCan.Statement}
+        *&#x2F;
+        prepareStatement: function (stmt) {
+            this.log(&quot;prepareStatement&quot;);
+            if (! (stmt instanceof TinCan.Statement)) {
+                stmt = new TinCan.Statement (stmt);
+            }
+
+            if (stmt.actor === null &amp;&amp; this.actor !== null) {
+                stmt.actor = this.actor;
+            }
+            if (stmt.target === null &amp;&amp; this.activity !== null) {
+                stmt.target = this.activity;
+            }
+
+            if (this.context !== null) {
+                if (stmt.context === null) {
+                    stmt.context = this.context;
+                }
+                else {
+                    if (stmt.context.registration === null) {
+                        stmt.context.registration = this.context.registration;
+                    }
+                    if (stmt.context.platform === null) {
+                        stmt.context.platform = this.context.platform;
+                    }
+
+                    if (this.context.contextActivities !== null) {
+                        if (stmt.context.contextActivities === null) {
+                            stmt.context.contextActivities = this.context.contextActivities;
+                        }
+                        else {
+                            if (this.context.contextActivities.grouping !== null &amp;&amp; stmt.context.contextActivities.grouping === null) {
+                                stmt.context.contextActivities.grouping = this.context.contextActivities.grouping;
+                            }
+                            if (this.context.contextActivities.parent !== null &amp;&amp; stmt.context.contextActivities.parent === null) {
+                                stmt.context.contextActivities.parent = this.context.contextActivities.parent;
+                            }
+                            if (this.context.contextActivities.other !== null &amp;&amp; stmt.context.contextActivities.other === null) {
+                                stmt.context.contextActivities.other = this.context.contextActivities.other;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return stmt;
+        },
+
+        &#x2F;**
+        Calls saveStatement on each configured LRS, provide callback to make it asynchronous
+
+        @method sendStatement
+        @param {TinCan.Statement|Object} statement Send statement to LRS
+        @param {Function} [callback] Callback function to execute on completion
+        *&#x2F;
+        sendStatement: function (stmt, callback) {
+            this.log(&quot;sendStatement&quot;);
+            var lrs,
+                statement,
+                callbackWrapper,
+                rsCount = this.recordStores.length,
+                i,
+                msg
+            ;
+
+            if (rsCount &gt; 0) {
+                statement = this.prepareStatement(stmt);
+
+                &#x2F;*
+                   when there are multiple LRSes configured and
+                   if there is a callback that is a function then we need
+                   to wrap that function with a function that becomes
+                   the new callback that reduces a closure count of the
+                   requests that don&#x27;t have allowFail set to true and
+                   when that number hits zero then the original callback
+                   is executed
+                *&#x2F;
+                if (rsCount === 1) {
+                    callbackWrapper = callback;
+                }
+                else {
+                    if (typeof callback === &quot;function&quot;) {
+                        callbackWrapper = function () {
+                            this.log(&quot;sendStatement - callbackWrapper: &quot; + rsCount);
+                            if (rsCount &gt; 1) {
+                                rsCount -= 1;
+                            }
+                            else if (rsCount === 1) {
+                                callback.apply(this, arguments);
+                            }
+                            else {
+                                this.log(&quot;sendStatement - unexpected record store count: &quot; + rsCount);
+                            }
+                        };
+                    }
+                }
+
+                for (i = 0; i &lt; rsCount; i += 1) {
+                    lrs = this.recordStores[i];
+
+                    lrs.saveStatement(statement, { callback: callbackWrapper });
+                }
+            }
+            else {
+                msg = &quot;[warning] sendStatement: No LRSs added yet (statement not sent)&quot;;
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + &quot;: &quot; + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+            }
+        },
+
+        &#x2F;**
+        Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous
+
+        @method getStatement
+        @param {String} statement Statement ID to get
+        @param {Function} [callback] Callback function to execute on completion
+        @return {TinCan.Statement} Retrieved statement from LRS
+
+        TODO: make TinCan track statements it has seen in a local cache to be returned easily
+        *&#x2F;
+        getStatement: function (stmtId, callback) {
+            this.log(&quot;getStatement&quot;);
+            var lrs,
+                statement,
+                callbackWrapper,
+                rsCount = this.recordStores.length,
+                i,
+                msg
+            ;
+
+            if (rsCount &gt; 0) {
+                &#x2F;*
+                   when there are multiple LRSes configured and
+                   if there is a callback that is a function then we need
+                   to wrap that function with a function that becomes
+                   the new callback that reduces a closure count of the
+                   requests that don&#x27;t have allowFail set to true and
+                   when that number hits zero then the original callback
+                   is executed
+                *&#x2F;
+                if (rsCount === 1) {
+                    callbackWrapper = callback;
+                }
+                else {
+                    if (typeof callback === &quot;function&quot;) {
+                        callbackWrapper = function () {
+                            this.log(&quot;sendStatement - callbackWrapper: &quot; + rsCount);
+                            if (rsCount &gt; 1) {
+                                rsCount -= 1;
+                            }
+                            else if (rsCount === 1) {
+                                callback.apply(this, arguments);
+                            }
+                            else {
+                                this.log(&quot;sendStatement - unexpected record store count: &quot; + rsCount);
+                            }
+                        };
+                    }
+                }
+
+                for (i = 0; i &lt; rsCount; i += 1) {
+                    lrs = this.recordStores[i];
+
+                    lrs.retrieveStatement(stmtId, callbackWrapper);
+                }
+            }
+            else {
+                msg = &quot;[warning] getStatement: No LRSs added yet (statement not sent)&quot;;
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + &quot;: &quot; + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+            }
+        },
+
+        &#x2F;**
+        Calls saveStatements with list of prepared statements
+
+        @method sendStatements
+        @param {Array} Array of statements to send
+        @param {Function} Callback function to execute on completion
+        *&#x2F;
+        sendStatements: function (stmts, callback) {
+            this.log(&quot;sendStatements&quot;);
+            var lrs,
+                statements = [],
+                callbackWrapper,
+                rsCount = this.recordStores.length,
+                i,
+                msg
+            ;
+
+            if (rsCount &gt; 0) {
+                if (stmts.length &gt; 0) {
+                    for (i = 0; i &lt; stmts.length; i += 1) {
+                        statements.push(
+                            this.prepareStatement(stmts[i])
+                        );
+                    }
+
+                    &#x2F;* when there are multiple LRSes configured and
+                       if there is a callback that is a function then we need
+                       to wrap that function with a function that becomes
+                       the new callback that reduces a closure count of the
+                       requests that don&#x27;t have allowFail set to true and
+                       when that number hits zero then the original callback
+                       is executed *&#x2F;
+                    if (rsCount === 1) {
+                        callbackWrapper = callback;
+                    }
+                    else {
+                        if (typeof callback === &quot;function&quot;) {
+                            callbackWrapper = function () {
+                                this.log(&quot;sendStatements - callbackWrapper: &quot; + rsCount);
+                                if (rsCount &gt; 1) {
+                                    rsCount -= 1;
+                                }
+                                else if (rsCount === 1) {
+                                    callback.apply(this, arguments);
+                                }
+                                else {
+                                    this.log(&quot;sendStatements - unexpected record store count: &quot; + rsCount);
+                                }
+                            };
+                        }
+                    }
+
+                    for (i = 0; i &lt; rsCount; i += 1) {
+                        lrs = this.recordStores[i];
+
+                        lrs.saveStatements(statements, { callback: callbackWrapper });
+                    }
+                }
+            }
+            else {
+                msg = &quot;[warning] sendStatements: No LRSs added yet (statements not sent)&quot;;
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + &quot;: &quot; + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+            }
+        },
+
+        &#x2F;**
+        @method getStatements
+        @param {Object} [cfg] Configuration for request
+            @param {Boolean} [cfg.sendActor] Include default actor in query params
+            @param {Boolean} [cfg.sendActivity] Include default activity in query params
+            @param {Object} [cfg.params] Parameters used to filter
+
+            @param {Function} [cfg.callback] Function to run at completion
+
+        TODO: support multiple LRSs and flag to use single
+        *&#x2F;
+        getStatements: function (cfg) {
+            this.log(&quot;getStatements&quot;);
+            var queryCfg = {},
+                lrs,
+                params,
+                msg
+            ;
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for get (for now) we only get from one (as they should be the same)
+                &#x2F;&#x2F; but it may make sense to long term try to merge statements, perhaps
+                &#x2F;&#x2F; by using statementId as unique
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                &#x2F;&#x2F; TODO: need a clone function?
+                params = cfg.params || {};
+
+                if (cfg.sendActor &amp;&amp; this.actor !== null) {
+                    params.actor = this.actor;
+                }
+                if (cfg.sendActivity &amp;&amp; this.activity !== null) {
+                    params.activity = this.activity;
+                }
+                if (typeof params.registration === &quot;undefined&quot; &amp;&amp; this.registration !== null) {
+                    params.registration = this.registration;
+                }
+
+                &#x2F;&#x2F; TODO: do we want to hard set this?
+                params.sparse = cfg.sparse || &quot;false&quot;;
+
+                queryCfg = {
+                    params: params
+                };
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.queryStatements(queryCfg);
+            }
+
+            msg = &quot;[warning] getStatements: No LRSs added yet (statements not read)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method getState
+        @param {String} key Key to retrieve from the state
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to &#x27;actor&#x27; property if empty
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Object} [cfg.registration] Registration used in query,
+                defaults to &#x27;registration&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with state
+        *&#x2F;
+        getState: function (key, cfg) {
+            this.log(&quot;getState&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for state (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== &quot;undefined&quot; ? cfg.agent : this.actor),
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.registration !== &quot;undefined&quot;) {
+                    queryCfg.registration = cfg.registration;
+                }
+                else if (this.registration !== null) {
+                    queryCfg.registration = this.registration;
+                }
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.retrieveState(key, queryCfg);
+            }
+
+            msg = &quot;[warning] getState: No LRSs added yet (state not retrieved)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method setState
+        @param {String} key Key to store into the state
+        @param {String|Object} val Value to store into the state, objects will be stringified to JSON
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to &#x27;actor&#x27; property if empty
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Object} [cfg.registration] Registration used in query,
+                defaults to &#x27;registration&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with state
+        *&#x2F;
+        setState: function (key, val, cfg) {
+            this.log(&quot;setState&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for state (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== &quot;undefined&quot; ? cfg.agent : this.actor),
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.registration !== &quot;undefined&quot;) {
+                    queryCfg.registration = cfg.registration;
+                }
+                else if (this.registration !== null) {
+                    queryCfg.registration = this.registration;
+                }
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.saveState(key, val, queryCfg);
+            }
+
+            msg = &quot;[warning] setState: No LRSs added yet (state not saved)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method deleteState
+        @param {String|null} key Key to remove from the state, or null to clear all
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to &#x27;actor&#x27; property if empty
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Object} [cfg.registration] Registration used in query,
+                defaults to &#x27;registration&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with state
+        *&#x2F;
+        deleteState: function (key, cfg) {
+            this.log(&quot;deleteState&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for state (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== &quot;undefined&quot; ? cfg.agent : this.actor),
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.registration !== &quot;undefined&quot;) {
+                    queryCfg.registration = cfg.registration;
+                }
+                else if (this.registration !== null) {
+                    queryCfg.registration = this.registration;
+                }
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.dropState(key, queryCfg);
+            }
+
+            msg = &quot;[warning] deleteState: No LRSs added yet (state not deleted)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method getActivityProfile
+        @param {String} key Key to retrieve from the profile
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with activity profile
+        *&#x2F;
+        getActivityProfile: function (key, cfg) {
+            this.log(&quot;getActivityProfile&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for activity profiles (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.retrieveActivityProfile(key, queryCfg);
+            }
+
+            msg = &quot;[warning] getActivityProfile: No LRSs added yet (activity profile not retrieved)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method setActivityProfile
+        @param {String} key Key to store into the activity profile
+        @param {String|Object} val Value to store into the activity profile, objects will be stringified to JSON
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with activity profile
+        *&#x2F;
+        setActivityProfile: function (key, val, cfg) {
+            this.log(&quot;setActivityProfile&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for activity profile (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+                if (typeof cfg.lastSHA1 !== &quot;undefined&quot;) {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
+
+                return lrs.saveActivityProfile(key, val, queryCfg);
+            }
+
+            msg = &quot;[warning] setActivityProfile: No LRSs added yet (activity profile not saved)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        &#x2F;**
+        @method deleteActivityProfile
+        @param {String|null} key Key to remove from the activity profile, or null to clear all
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.activity] Activity used in query,
+                defaults to &#x27;activity&#x27; property if empty
+            @param {Function} [cfg.callback] Function to run with activity profile
+        *&#x2F;
+        deleteActivityProfile: function (key, cfg) {
+            this.log(&quot;deleteActivityProfile&quot;);
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length &gt; 0) {
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; for activity profile (for now) we are only going to store to the first LRS
+                &#x2F;&#x2F; so only get from there too
+                &#x2F;&#x2F;
+                &#x2F;&#x2F; TODO: make this the first non-allowFail LRS but for now it should
+                &#x2F;&#x2F; be good enough to make it the first since we know the LMS provided
+                &#x2F;&#x2F; LRS is the first
+                &#x2F;&#x2F;
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    activity: (typeof cfg.activity !== &quot;undefined&quot; ? cfg.activity : this.activity)
+                };
+                if (typeof cfg.callback !== &quot;undefined&quot;) {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.dropActivityProfile(key, queryCfg);
+            }
+
+            msg = &quot;[warning] deleteActivityProfile: No LRSs added yet (activity profile not deleted)&quot;;
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + &quot;: &quot; + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        }
+    };
+
+    &#x2F;**
+    @property DEBUG
+    @static
+    @default false
+    *&#x2F;
+    TinCan.DEBUG = false;
+
+    &#x2F;**
+    Turn on debug logging
+
+    @method enableDebug
+    @static
+    *&#x2F;
+    TinCan.enableDebug = function () {
+        TinCan.DEBUG = true;
+    };
+
+    &#x2F;**
+    Turn off debug logging
+
+    @method disableDebug
+    @static
+    *&#x2F;
+    TinCan.disableDebug = function () {
+        TinCan.DEBUG = false;
+    };
+
+    &#x2F;**
+    @method versions
+    @return {Array} Array of supported version numbers
+    @static
+    *&#x2F;
+    TinCan.versions = function () {
+        &#x2F;&#x2F; newest first so we can use the first as the default
+        return [
+            &quot;0.95&quot;,
+            &quot;0.9&quot;
+        ];
+    };
+
+    &#x2F;**
+    @method environment
+    @return {Object} Object with properties depending on execution environment
+    @static
+    *&#x2F;
+    TinCan.environment = function () {
+        if (_environment === null) {
+            _environment = {};
+            if (typeof window !== &quot;undefined&quot;) {
+                _environment.isBrowser = true;
+                _environment.hasCORS = false;
+                _environment.useXDR = false;
+
+                if (typeof (new XMLHttpRequest()).withCredentials !== &quot;undefined&quot;) {
+                    _environment.hasCORS = true;
+                }
+                else if (typeof XDomainRequest !== &quot;undefined&quot;) {
+                    _environment.hasCORS = true;
+                    _environment.useXDR = true;
+                }
+            }
+            else {
+                _environment.isBrowser = false;
+            }
+        }
+
+        return _environment;
+    };
+
+    &#x2F;&#x2F; Shims for browsers not supporting our needs, mainly IE
+    if (TinCan.environment().isBrowser) {
+        &#x2F;*
+         * Make JSON safe for IE6
+         * https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en&#x2F;JavaScript&#x2F;Reference&#x2F;Global_Objects&#x2F;JSON#Browser_compatibility
+        *&#x2F;
+        if (!window.JSON) {
+            window.JSON = {
+                parse: function (sJSON) {
+                    &#x2F;*jslint evil: true *&#x2F;
+                    return eval(&quot;(&quot; + sJSON + &quot;)&quot;);
+                },
+                stringify: function (vContent) {
+                    var sOutput = &quot;&quot;,
+                        nId,
+                        sProp
+                    ;
+                    if (vContent instanceof Object) {
+                        if (vContent.constructor === Array) {
+                            for (nId = 0; nId &lt; vContent.length; nId += 1) {
+                                sOutput += this.stringify(vContent[nId]) + &quot;,&quot;;
+                            }
+                            return &quot;[&quot; + sOutput.substr(0, sOutput.length - 1) + &quot;]&quot;;
+                        }
+                        if (vContent.toString !== Object.prototype.toString) { return &quot;\&quot;&quot; + vContent.toString().replace(&#x2F;&quot;&#x2F;g, &quot;\\$&amp;&quot;) + &quot;\&quot;&quot;; }
+                        for (sProp in vContent) {
+                            if (vContent.hasOwnProperty(sProp)) {
+                                sOutput += &quot;\&quot;&quot; + sProp.replace(&#x2F;&quot;&#x2F;g, &quot;\\$&amp;&quot;) + &quot;\&quot;:&quot; + this.stringify(vContent[sProp]) + &quot;,&quot;;
+                            }
+                        }
+                        return &quot;{&quot; + sOutput.substr(0, sOutput.length - 1) + &quot;}&quot;;
+                    }
+                    return typeof vContent === &quot;string&quot; ? &quot;\&quot;&quot; + vContent.replace(&#x2F;&quot;&#x2F;g, &quot;\\$&amp;&quot;) + &quot;\&quot;&quot; : String(vContent);
+                }
+            };
+        }
+
+        &#x2F;*
+         * Make Date.now safe for IE &lt; 9
+         * https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en-US&#x2F;docs&#x2F;JavaScript&#x2F;Reference&#x2F;Global_Objects&#x2F;Date&#x2F;now
+        *&#x2F;
+        if (!Date.now) {
+            Date.now = function () {
+                return +(new Date ());
+            };
+        }
+    }
+}());
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>
