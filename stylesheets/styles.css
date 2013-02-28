@@ -98,7 +98,6 @@ img {
 header {
   width:270px;
   float:left;
-  position:fixed;
 }
 
 section.top ul {
@@ -160,13 +159,17 @@ section.top ul a strong {
 }
 
 section {
-  width:770px;
   padding-bottom:10px;
 }
 
 section.top {
   width:500px;
   float:right;
+}
+
+section.main {
+  padding-top: 120px;
+  width:770px;
 }
 
 small {
@@ -183,7 +186,6 @@ hr {
 footer {
   width:270px;
   float:left;
-  position:fixed;
   bottom:50px;
 }
 
