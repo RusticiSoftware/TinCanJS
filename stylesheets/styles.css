@@ -101,6 +101,7 @@ header {
 }
 
 section.top ul {
+  float: right;
   list-style:none;
   height:40px;
   
@@ -158,6 +159,10 @@ section.top ul a strong {
   color:#222;
 }
 
+section.top p {
+    clear: both;
+}
+
 section {
   padding-bottom:10px;
 }
@@ -165,6 +170,7 @@ section {
 section.top {
   width:500px;
   float:right;
+  text-align: right;
 }
 
 section.main {
@@ -184,8 +190,6 @@ hr {
 }
 
 footer {
-  width:270px;
-  float:left;
   bottom:50px;
 }
 
