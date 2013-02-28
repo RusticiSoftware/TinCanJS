@@ -39,12 +39,26 @@
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">tincan</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TinCan</span> <span class="p">(</span>
     <span class="p">{</span>
         <span class="nx">recordStores</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nx">endpoint</span><span class="o">:</span> <span class="s2">"https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/"</span><span class="p">,</span>
+                <span class="nx">username</span><span class="o">:</span> <span class="s2">"&lt;Test User&gt;"</span><span class="p">,</span>
+                <span class="nx">password</span><span class="o">:</span> <span class="s2">"&lt;Test User's Password&gt;"</span>
+            <span class="p">}</span>
         <span class="p">]</span>
     <span class="p">}</span>
 <span class="p">);</span>
 <span class="nx">tincan</span><span class="p">.</span><span class="nx">sendStatement</span><span class="p">(</span>
-    <span class="p">{</span>
-    <span class="p">}</span>
+    <span class="p">{</span>   
+        <span class="nx">actor</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">mbox</span><span class="o">:</span> <span class="s2">"mailto:info@tincanapi.com"</span>
+        <span class="p">},</span>  
+        <span class="nx">verb</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">id</span><span class="o">:</span> <span class="s2">"http://adlnet.gov/expapi/verbs/attempted"</span>
+        <span class="p">},</span>  
+        <span class="nx">target</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">id</span><span class="o">:</span> <span class="s2">"http://rusticisoftware.github.com/TinCanJS"</span>
+        <span class="p">}</span>   
+    <span class="p">}</span>   
 <span class="p">);</span>
 </pre></div>
       </section>
