@@ -53,13 +53,16 @@ test(
         ok(noDupe, "no duplicates in 500");
     }
 );
+// TODO: make this test not Central time dependent
 test(
     "getISODateString",
     function () {
         var d = new Date (
             2013, 2, 1, 2, 4, 6, 3
-        );
-        ok(TinCan.Utils.getISODateString(d) === "2013-03-01T08:04:06.003Z", "return value");
+        ),
+        result = TinCan.Utils.getISODateString(d);
+
+        ok(result === "2013-03-01T08:04:06.003Z", "return value");
     }
 );
 test(
