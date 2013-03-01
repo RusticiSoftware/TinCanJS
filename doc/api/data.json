@@ -1,6 +1,6 @@
 {
     "project": {
-        "version": "0.1.3",
+        "version": "0.2.0",
         "name": "TinCanJS",
         "description": "Client library for working with TinCan API in JavaScript",
         "url": "https://github.com/RusticiSoftware/TinCanJS",
@@ -2052,7 +2052,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 213,
+            "line": 216,
             "description": "Method used to send a request via browser objects to the LRS",
             "itemtype": "method",
             "name": "sendRequest",
@@ -2130,7 +2130,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 428,
+            "line": 433,
             "description": "Save a statement, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatement",
@@ -2161,7 +2161,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 464,
+            "line": 472,
             "description": "Retrieve a statement, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveStatement",
@@ -2196,7 +2196,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 518,
+            "line": 528,
             "description": "Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.\nUse a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "saveStatements",
@@ -2227,7 +2227,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 564,
+            "line": 579,
             "description": "Fetch a set of statements, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "queryStatements",
@@ -2349,7 +2349,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 637,
+            "line": 652,
             "description": "Build a request config object that can be passed to sendRequest() to make a query request",
             "itemtype": "method",
             "name": "_queryStatementsRequestCfg",
@@ -2373,7 +2373,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 692,
+            "line": 707,
             "description": "Fetch more statements from a previous query, when used from a browser sends to the endpoint using the\nRESTful interface.  Use a callback to make the call asynchronous.",
             "itemtype": "method",
             "name": "moreStatements",
@@ -2421,7 +2421,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 772,
+            "line": 787,
             "description": "Retrieve a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveState",
@@ -2483,7 +2483,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 886,
+            "line": 901,
             "description": "Save a state value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveState",
@@ -2540,7 +2540,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 955,
+            "line": 970,
             "description": "Drop a state value or all of the state, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropState",
@@ -2588,7 +2588,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1013,
+            "line": 1028,
             "description": "Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "retrieveActivityProfile",
@@ -2627,7 +2627,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1108,
+            "line": 1123,
             "description": "Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "saveActivityProfile",
@@ -2668,7 +2668,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1155,
+            "line": 1170,
             "description": "Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.",
             "itemtype": "method",
             "name": "dropActivityProfile",
@@ -2703,7 +2703,7 @@
         },
         {
             "file": "src/LRS.js",
-            "line": 1197,
+            "line": 1212,
             "description": "Non-environment safe method used to create a delay to give impression\nof synchronous response",
             "itemtype": "method",
             "name": "__delay",
@@ -3247,6 +3247,20 @@
             "submodule": "TinCan.Statement"
         },
         {
+            "file": "src/Statement.js",
+            "line": 297,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Statement",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.Statement",
+            "module": "TinCan",
+            "submodule": "TinCan.Statement"
+        },
+        {
             "file": "src/StatementRef.js",
             "line": 35,
             "itemtype": "property",
@@ -3718,8 +3732,8 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 416,
-            "description": "Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous",
+            "line": 441,
+            "description": "Calls retrieveStatement on the first LRS, provide callback to make it asynchronous",
             "itemtype": "method",
             "name": "getStatement",
             "params": [
@@ -3736,15 +3750,15 @@
                 }
             ],
             "return": {
-                "description": "Retrieved statement from LRS\n\nTODO: make TinCan track statements it has seen in a local cache to be returned easily",
-                "type": "TinCan.Statement"
+                "description": "Array of results, or single result\n\nTODO: make TinCan track statements it has seen in a local cache to be returned easily",
+                "type": "Array|Result"
             },
             "class": "TinCan",
             "module": "TinCan"
         },
         {
             "file": "src/TinCan.js",
-            "line": 483,
+            "line": 482,
             "description": "Calls saveStatements with list of prepared statements",
             "itemtype": "method",
             "name": "sendStatements",
@@ -3765,7 +3779,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 553,
+            "line": 584,
             "itemtype": "method",
             "name": "getStatements",
             "params": [
@@ -3807,7 +3821,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 620,
+            "line": 651,
             "itemtype": "method",
             "name": "getState",
             "params": [
@@ -3854,7 +3868,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 678,
+            "line": 709,
             "itemtype": "method",
             "name": "setState",
             "params": [
@@ -3906,7 +3920,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 737,
+            "line": 768,
             "itemtype": "method",
             "name": "deleteState",
             "params": [
@@ -3953,7 +3967,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 795,
+            "line": 826,
             "itemtype": "method",
             "name": "getActivityProfile",
             "params": [
@@ -3988,7 +4002,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 842,
+            "line": 873,
             "itemtype": "method",
             "name": "setActivityProfile",
             "params": [
@@ -4028,7 +4042,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 893,
+            "line": 924,
             "itemtype": "method",
             "name": "deleteActivityProfile",
             "params": [
@@ -4063,7 +4077,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 941,
+            "line": 972,
             "itemtype": "property",
             "name": "DEBUG",
             "static": 1,
@@ -4073,7 +4087,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 948,
+            "line": 979,
             "description": "Turn on debug logging",
             "itemtype": "method",
             "name": "enableDebug",
@@ -4083,7 +4097,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 958,
+            "line": 989,
             "description": "Turn off debug logging",
             "itemtype": "method",
             "name": "disableDebug",
@@ -4093,7 +4107,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 968,
+            "line": 999,
             "itemtype": "method",
             "name": "versions",
             "return": {
@@ -4106,7 +4120,7 @@
         },
         {
             "file": "src/TinCan.js",
-            "line": 981,
+            "line": 1012,
             "itemtype": "method",
             "name": "environment",
             "return": {
@@ -4120,20 +4134,21 @@
         {
             "file": "src/Utils.js",
             "line": 30,
+            "description": "Generates a UUIDv4 compliant string that should be reasonably unique",
             "itemtype": "method",
             "name": "getUUID",
             "return": {
                 "description": "UUID",
                 "type": "String"
             },
-            "static": "Excerpt from: Math.uuid.js (v1.4)\nhttp://www.broofa.com\nmailto:robert@broofa.com\nCopyright (c) 2010 Robert Kieffer\nDual licensed under the MIT and GPL licenses.",
+            "static": "Excerpt from: http://www.broofa.com/Tools/Math.uuid.js (v1.4)\nhttp://www.broofa.com\nmailto:robert@broofa.com\nCopyright (c) 2010 Robert Kieffer\nDual licensed under the MIT and GPL licenses.",
             "class": "TinCan.Utils",
             "module": "TinCan",
             "submodule": "TinCan.Utils"
         },
         {
             "file": "src/Utils.js",
-            "line": 52,
+            "line": 54,
             "itemtype": "method",
             "name": "getISODateString",
             "static": 1,
@@ -4154,7 +4169,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 88,
+            "line": 90,
             "itemtype": "method",
             "name": "getSHA1String",
             "static": 1,
@@ -4175,7 +4190,29 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 100,
+            "line": 102,
+            "itemtype": "method",
+            "name": "getBase64String",
+            "static": 1,
+            "params": [
+                {
+                    "name": "str",
+                    "description": "Content to encode",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Base64 encoded contents",
+                "type": "String"
+            },
+            "class": "TinCan.Utils",
+            "module": "TinCan",
+            "submodule": "TinCan.Utils"
+        },
+        {
+            "file": "src/Utils.js",
+            "line": 116,
+            "description": "Intended to be inherited by objects with properties that store\ndisplay values in a language based \"dictionary\"",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
             "params": [
@@ -4192,7 +4229,7 @@
                 }
             ],
             "return": {
-                "description": "\n\nIntended to be inherited by objects with properties that store\ndisplay values in a language based \"dictionary\"",
+                "description": "",
                 "type": "String"
             },
             "class": "TinCan.Utils",
@@ -4201,7 +4238,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 131,
+            "line": 147,
             "itemtype": "method",
             "name": "parseURL",
             "params": [
@@ -4223,7 +4260,7 @@
         },
         {
             "file": "src/Utils.js",
-            "line": 160,
+            "line": 176,
             "itemtype": "method",
             "name": "getServerRoot",
             "params": [

@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.3</em>
+            <em>API Docs for: 0.2.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -287,6 +287,9 @@ TinCan client library
             if (cfg.hasOwnProperty(&quot;auth&quot;)) {
                 this.auth = cfg.auth;
             }
+            else if (cfg.hasOwnProperty(&quot;username&quot;) &amp;&amp; cfg.hasOwnProperty(&quot;password&quot;)) {
+                this.auth = &quot;Basic &quot; + TinCan.Utils.getBase64String(cfg.username + &quot;:&quot; + cfg.password);
+            }
 
             if (cfg.hasOwnProperty(&quot;extended&quot;)) {
                 this.extended = cfg.extended;
@@ -450,6 +453,8 @@ TinCan client library
                     fullUrl += &quot;?&quot; + pairs.join(&quot;&amp;&quot;);
                 }
 
+                this.log(&quot;sendRequest using XMLHttpRequest - async: &quot; + (typeof cfg.callback !== &quot;undefined&quot;));
+
                 xhr = new XMLHttpRequest();
                 xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== &quot;undefined&quot;));
                 for (prop in headers) {
@@ -608,6 +613,9 @@ TinCan client library
                 return;
             }
 
+            cfg = cfg || {};
+
+            &#x2F;&#x2F; TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: &quot;statements&quot;,
                 method: &quot;PUT&quot;,
@@ -645,6 +653,8 @@ TinCan client library
                 this.log(&quot;error: environment not implemented&quot;);
                 return;
             }
+
+            cfg = cfg || {};
 
             requestCfg = {
                 url: &quot;statements&quot;,
@@ -688,8 +698,8 @@ TinCan client library
         *&#x2F;
         saveStatements: function (stmts, cfg) {
             this.log(&quot;saveStatements&quot;);
-            var versionedStatements = [],
-                requestCfg,
+            var requestCfg,
+                versionedStatements = [],
                 i
             ;
 
@@ -703,24 +713,29 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (stmts.length &gt; 0) {
-                for (i = 0; i &lt; stmts.length; i += 1) {
-                    versionedStatements.push(
-                        stmts[i].asVersion( this.version )
-                    );
-                }
-
-                requestCfg = {
-                    url: &quot;statements&quot;,
-                    method: &quot;POST&quot;,
-                    data: JSON.stringify(versionedStatements)
-                };
+            if (stmts.length === 0) {
                 if (typeof cfg.callback !== &quot;undefined&quot;) {
-                    requestCfg.callback = cfg.callback;
+                    cfg.callback.apply(this, [&quot;no statements&quot;]);
                 }
-
-                return this.sendRequest(requestCfg);
+                return;
             }
+
+            for (i = 0; i &lt; stmts.length; i += 1) {
+                versionedStatements.push(
+                    stmts[i].asVersion( this.version )
+                );
+            }
+
+            requestCfg = {
+                url: &quot;statements&quot;,
+                method: &quot;POST&quot;,
+                data: JSON.stringify(versionedStatements)
+            };
+            if (typeof cfg.callback !== &quot;undefined&quot;) {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         &#x2F;**
