@@ -291,6 +291,8 @@ TinCan client library
                     fullUrl += "?" + pairs.join("&");
                 }
 
+                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
+
                 xhr = new XMLHttpRequest();
                 xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
                 for (prop in headers) {
@@ -449,6 +451,9 @@ TinCan client library
                 return;
             }
 
+            cfg = cfg || {};
+
+            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
                 method: "PUT",
@@ -531,8 +536,8 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var versionedStatements = [],
-                requestCfg,
+            var requestCfg,
+                versionedStatements = [],
                 i
             ;
 
@@ -546,24 +551,29 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (stmts.length > 0) {
-                for (i = 0; i < stmts.length; i += 1) {
-                    versionedStatements.push(
-                        stmts[i].asVersion( this.version )
-                    );
-                }
-
-                requestCfg = {
-                    url: "statements",
-                    method: "POST",
-                    data: JSON.stringify(versionedStatements)
-                };
+            if (stmts.length === 0) {
                 if (typeof cfg.callback !== "undefined") {
-                    requestCfg.callback = cfg.callback;
+                    cfg.callback.apply(this, ["no statements"]);
                 }
-
-                return this.sendRequest(requestCfg);
+                return;
             }
+
+            for (i = 0; i < stmts.length; i += 1) {
+                versionedStatements.push(
+                    stmts[i].asVersion( this.version )
+                );
+            }
+
+            requestCfg = {
+                url: "statements",
+                method: "POST",
+                data: JSON.stringify(versionedStatements)
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         /**
