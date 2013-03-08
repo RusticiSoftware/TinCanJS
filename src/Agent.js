@@ -50,7 +50,7 @@ TinCan client library
 
         /**
         @property openid
-        @type Array
+        @type String
         */
         this.openid = null;
 

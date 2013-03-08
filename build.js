@@ -80,7 +80,8 @@ new gear.Queue(
 )
 .read(
     [
-        'vendor/cryptojs-v3.0.2/rollups/sha1.js'
+        'vendor/cryptojs-v3.0.2/rollups/sha1.js',
+        'vendor/cryptojs-v3.0.2/components/enc-base64.js'
     ]
 )
 .log("Concating")

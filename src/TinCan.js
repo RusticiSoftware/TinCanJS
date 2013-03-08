@@ -356,19 +356,21 @@ var TinCan;
         */
         sendStatement: function (stmt, callback) {
             this.log("sendStatement");
-            var lrs,
-                statement,
-                callbackWrapper,
+
+            // would prefer to use .bind instead of 'self'
+            var self = this,
+                lrs,
+                statement = this.prepareStatement(stmt),
                 rsCount = this.recordStores.length,
                 i,
-                msg
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
             ;
 
             if (rsCount > 0) {
-                statement = this.prepareStatement(stmt);
-
                 /*
-                   when there are multiple LRSes configured and
                    if there is a callback that is a function then we need
                    to wrap that function with a function that becomes
                    the new callback that reduces a closure count of the
@@ -376,30 +378,45 @@ var TinCan;
                    when that number hits zero then the original callback
                    is executed
                 */
-                if (rsCount === 1) {
-                    callbackWrapper = callback;
-                }
-                else {
-                    if (typeof callback === "function") {
-                        callbackWrapper = function () {
-                            this.log("sendStatement - callbackWrapper: " + rsCount);
-                            if (rsCount > 1) {
-                                rsCount -= 1;
-                            }
-                            else if (rsCount === 1) {
-                                callback.apply(this, arguments);
-                            }
-                            else {
-                                this.log("sendStatement - unexpected record store count: " + rsCount);
-                            }
-                        };
-                    }
+                if (typeof callback === "function") {
+                    callbackWrapper = function (err, xhr) {
+                        var args;
+
+                        self.log("sendStatement - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                        }
+                        else if (rsCount === 1) {
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                            args = [
+                                callbackResults,
+                                statement
+                            ];
+                            callback.apply(this, args);
+                        }
+                        else {
+                            self.log("sendStatement - unexpected record store count: " + rsCount);
+                        }
+                    };
                 }
 
                 for (i = 0; i < rsCount; i += 1) {
                     lrs = this.recordStores[i];
 
-                    lrs.saveStatement(statement, { callback: callbackWrapper });
+                    results.push(
+                        lrs.saveStatement(statement, { callback: callbackWrapper })
+                    );
                 }
             }
             else {
@@ -410,73 +427,55 @@ var TinCan;
                 else {
                     this.log(msg);
                 }
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, statement ]);
+                }
             }
+
+            return {
+                statement: statement,
+                results: results
+            };
         },
 
         /**
-        Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous
+        Calls retrieveStatement on the first LRS, provide callback to make it asynchronous
 
         @method getStatement
         @param {String} statement Statement ID to get
         @param {Function} [callback] Callback function to execute on completion
-        @return {TinCan.Statement} Retrieved statement from LRS
+        @return {Array|Result} Array of results, or single result
 
         TODO: make TinCan track statements it has seen in a local cache to be returned easily
         */
         getStatement: function (stmtId, callback) {
             this.log("getStatement");
+
             var lrs,
-                statement,
-                callbackWrapper,
-                rsCount = this.recordStores.length,
-                i,
                 msg
             ;
 
-            if (rsCount > 0) {
-                /*
-                   when there are multiple LRSes configured and
-                   if there is a callback that is a function then we need
-                   to wrap that function with a function that becomes
-                   the new callback that reduces a closure count of the
-                   requests that don't have allowFail set to true and
-                   when that number hits zero then the original callback
-                   is executed
-                */
-                if (rsCount === 1) {
-                    callbackWrapper = callback;
-                }
-                else {
-                    if (typeof callback === "function") {
-                        callbackWrapper = function () {
-                            this.log("sendStatement - callbackWrapper: " + rsCount);
-                            if (rsCount > 1) {
-                                rsCount -= 1;
-                            }
-                            else if (rsCount === 1) {
-                                callback.apply(this, arguments);
-                            }
-                            else {
-                                this.log("sendStatement - unexpected record store count: " + rsCount);
-                            }
-                        };
-                    }
-                }
+            if (this.recordStores.length > 0) {
+                //
+                // for statements (for now) we only need to read from the first LRS
+                // in the future it may make sense to get all from all LRSes and
+                // compare to remove duplicates or allow inspection of them for differences?
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
 
-                for (i = 0; i < rsCount; i += 1) {
-                    lrs = this.recordStores[i];
+                return lrs.retrieveStatement(stmtId, { callback: callback });
+            }
 
-                    lrs.retrieveStatement(stmtId, callbackWrapper);
-                }
+            msg = "[warning] getStatement: No LRSs added yet (statement not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
             }
             else {
-                msg = "[warning] getStatement: No LRSs added yet (statement not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
+                this.log(msg);
             }
         },
 
@@ -489,65 +488,97 @@ var TinCan;
         */
         sendStatements: function (stmts, callback) {
             this.log("sendStatements");
-            var lrs,
+            var self = this,
+                lrs,
                 statements = [],
-                callbackWrapper,
                 rsCount = this.recordStores.length,
                 i,
-                msg
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
             ;
+            if (stmts.length === 0) {
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, statements ]);
+                }
+            }
+            else {
+                for (i = 0; i < stmts.length; i += 1) {
+                    statements.push(
+                        this.prepareStatement(stmts[i])
+                    );
+                }
 
-            if (rsCount > 0) {
-                if (stmts.length > 0) {
-                    for (i = 0; i < stmts.length; i += 1) {
-                        statements.push(
-                            this.prepareStatement(stmts[i])
-                        );
-                    }
-
-                    /* when there are multiple LRSes configured and
+                if (rsCount > 0) {
+                    /*
                        if there is a callback that is a function then we need
                        to wrap that function with a function that becomes
                        the new callback that reduces a closure count of the
                        requests that don't have allowFail set to true and
                        when that number hits zero then the original callback
-                       is executed */
-                    if (rsCount === 1) {
-                        callbackWrapper = callback;
-                    }
-                    else {
-                        if (typeof callback === "function") {
-                            callbackWrapper = function () {
-                                this.log("sendStatements - callbackWrapper: " + rsCount);
-                                if (rsCount > 1) {
-                                    rsCount -= 1;
-                                }
-                                else if (rsCount === 1) {
-                                    callback.apply(this, arguments);
-                                }
-                                else {
-                                    this.log("sendStatements - unexpected record store count: " + rsCount);
-                                }
-                            };
-                        }
+                       is executed
+                    */
+
+                    if (typeof callback === "function") {
+                        callbackWrapper = function (err, xhr) {
+                            var args;
+
+                            self.log("sendStatements - callbackWrapper: " + rsCount);
+                            if (rsCount > 1) {
+                                rsCount -= 1;
+                                callbackResults.push(
+                                    {
+                                        err: err,
+                                        xhr: xhr
+                                    }
+                                );
+                            }
+                            else if (rsCount === 1) {
+                                callbackResults.push(
+                                    {
+                                        err: err,
+                                        xhr: xhr
+                                    }
+                                );
+                                args = [
+                                    callbackResults,
+                                    statements
+                                ];
+                                callback.apply(this, args);
+                            }
+                            else {
+                                self.log("sendStatements - unexpected record store count: " + rsCount);
+                            }
+                        };
                     }
 
                     for (i = 0; i < rsCount; i += 1) {
                         lrs = this.recordStores[i];
 
-                        lrs.saveStatements(statements, { callback: callbackWrapper });
+                        results.push(
+                            lrs.saveStatements(statements, { callback: callbackWrapper })
+                        );
+                    }
+                }
+                else {
+                    msg = "[warning] sendStatements: No LRSs added yet (statements not sent)";
+                    if (TinCan.environment().isBrowser) {
+                        alert(this.LOG_SRC + ": " + msg);
+                    }
+                    else {
+                        this.log(msg);
+                    }
+                    if (typeof callback === "function") {
+                        callback.apply(this, [ null, statements ]);
                     }
                 }
             }
-            else {
-                msg = "[warning] sendStatements: No LRSs added yet (statements not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
-            }
+
+            return {
+                statements: statements,
+                results: results
+            };
         },
 
         /**
