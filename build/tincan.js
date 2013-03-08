@@ -356,19 +356,21 @@ var TinCan;
         */
         sendStatement: function (stmt, callback) {
             this.log("sendStatement");
-            var lrs,
-                statement,
-                callbackWrapper,
+
+            // would prefer to use .bind instead of 'self'
+            var self = this,
+                lrs,
+                statement = this.prepareStatement(stmt),
                 rsCount = this.recordStores.length,
                 i,
-                msg
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
             ;
 
             if (rsCount > 0) {
-                statement = this.prepareStatement(stmt);
-
                 /*
-                   when there are multiple LRSes configured and
                    if there is a callback that is a function then we need
                    to wrap that function with a function that becomes
                    the new callback that reduces a closure count of the
@@ -376,30 +378,45 @@ var TinCan;
                    when that number hits zero then the original callback
                    is executed
                 */
-                if (rsCount === 1) {
-                    callbackWrapper = callback;
-                }
-                else {
-                    if (typeof callback === "function") {
-                        callbackWrapper = function () {
-                            this.log("sendStatement - callbackWrapper: " + rsCount);
-                            if (rsCount > 1) {
-                                rsCount -= 1;
-                            }
-                            else if (rsCount === 1) {
-                                callback.apply(this, arguments);
-                            }
-                            else {
-                                this.log("sendStatement - unexpected record store count: " + rsCount);
-                            }
-                        };
-                    }
+                if (typeof callback === "function") {
+                    callbackWrapper = function (err, xhr) {
+                        var args;
+
+                        self.log("sendStatement - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                        }
+                        else if (rsCount === 1) {
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                            args = [
+                                callbackResults,
+                                statement
+                            ];
+                            callback.apply(this, args);
+                        }
+                        else {
+                            self.log("sendStatement - unexpected record store count: " + rsCount);
+                        }
+                    };
                 }
 
                 for (i = 0; i < rsCount; i += 1) {
                     lrs = this.recordStores[i];
 
-                    lrs.saveStatement(statement, { callback: callbackWrapper });
+                    results.push(
+                        lrs.saveStatement(statement, { callback: callbackWrapper })
+                    );
                 }
             }
             else {
@@ -410,73 +427,55 @@ var TinCan;
                 else {
                     this.log(msg);
                 }
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, statement ]);
+                }
             }
+
+            return {
+                statement: statement,
+                results: results
+            };
         },
 
         /**
-        Calls retrieveStatement on each configured LRS until it gets a result, provide callback to make it asynchronous
+        Calls retrieveStatement on the first LRS, provide callback to make it asynchronous
 
         @method getStatement
         @param {String} statement Statement ID to get
         @param {Function} [callback] Callback function to execute on completion
-        @return {TinCan.Statement} Retrieved statement from LRS
+        @return {Array|Result} Array of results, or single result
 
         TODO: make TinCan track statements it has seen in a local cache to be returned easily
         */
         getStatement: function (stmtId, callback) {
             this.log("getStatement");
+
             var lrs,
-                statement,
-                callbackWrapper,
-                rsCount = this.recordStores.length,
-                i,
                 msg
             ;
 
-            if (rsCount > 0) {
-                /*
-                   when there are multiple LRSes configured and
-                   if there is a callback that is a function then we need
-                   to wrap that function with a function that becomes
-                   the new callback that reduces a closure count of the
-                   requests that don't have allowFail set to true and
-                   when that number hits zero then the original callback
-                   is executed
-                */
-                if (rsCount === 1) {
-                    callbackWrapper = callback;
-                }
-                else {
-                    if (typeof callback === "function") {
-                        callbackWrapper = function () {
-                            this.log("sendStatement - callbackWrapper: " + rsCount);
-                            if (rsCount > 1) {
-                                rsCount -= 1;
-                            }
-                            else if (rsCount === 1) {
-                                callback.apply(this, arguments);
-                            }
-                            else {
-                                this.log("sendStatement - unexpected record store count: " + rsCount);
-                            }
-                        };
-                    }
-                }
+            if (this.recordStores.length > 0) {
+                //
+                // for statements (for now) we only need to read from the first LRS
+                // in the future it may make sense to get all from all LRSes and
+                // compare to remove duplicates or allow inspection of them for differences?
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
 
-                for (i = 0; i < rsCount; i += 1) {
-                    lrs = this.recordStores[i];
+                return lrs.retrieveStatement(stmtId, { callback: callback });
+            }
 
-                    lrs.retrieveStatement(stmtId, callbackWrapper);
-                }
+            msg = "[warning] getStatement: No LRSs added yet (statement not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
             }
             else {
-                msg = "[warning] getStatement: No LRSs added yet (statement not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
+                this.log(msg);
             }
         },
 
@@ -489,65 +488,97 @@ var TinCan;
         */
         sendStatements: function (stmts, callback) {
             this.log("sendStatements");
-            var lrs,
+            var self = this,
+                lrs,
                 statements = [],
-                callbackWrapper,
                 rsCount = this.recordStores.length,
                 i,
-                msg
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
             ;
+            if (stmts.length === 0) {
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, statements ]);
+                }
+            }
+            else {
+                for (i = 0; i < stmts.length; i += 1) {
+                    statements.push(
+                        this.prepareStatement(stmts[i])
+                    );
+                }
 
-            if (rsCount > 0) {
-                if (stmts.length > 0) {
-                    for (i = 0; i < stmts.length; i += 1) {
-                        statements.push(
-                            this.prepareStatement(stmts[i])
-                        );
-                    }
-
-                    /* when there are multiple LRSes configured and
+                if (rsCount > 0) {
+                    /*
                        if there is a callback that is a function then we need
                        to wrap that function with a function that becomes
                        the new callback that reduces a closure count of the
                        requests that don't have allowFail set to true and
                        when that number hits zero then the original callback
-                       is executed */
-                    if (rsCount === 1) {
-                        callbackWrapper = callback;
-                    }
-                    else {
-                        if (typeof callback === "function") {
-                            callbackWrapper = function () {
-                                this.log("sendStatements - callbackWrapper: " + rsCount);
-                                if (rsCount > 1) {
-                                    rsCount -= 1;
-                                }
-                                else if (rsCount === 1) {
-                                    callback.apply(this, arguments);
-                                }
-                                else {
-                                    this.log("sendStatements - unexpected record store count: " + rsCount);
-                                }
-                            };
-                        }
+                       is executed
+                    */
+
+                    if (typeof callback === "function") {
+                        callbackWrapper = function (err, xhr) {
+                            var args;
+
+                            self.log("sendStatements - callbackWrapper: " + rsCount);
+                            if (rsCount > 1) {
+                                rsCount -= 1;
+                                callbackResults.push(
+                                    {
+                                        err: err,
+                                        xhr: xhr
+                                    }
+                                );
+                            }
+                            else if (rsCount === 1) {
+                                callbackResults.push(
+                                    {
+                                        err: err,
+                                        xhr: xhr
+                                    }
+                                );
+                                args = [
+                                    callbackResults,
+                                    statements
+                                ];
+                                callback.apply(this, args);
+                            }
+                            else {
+                                self.log("sendStatements - unexpected record store count: " + rsCount);
+                            }
+                        };
                     }
 
                     for (i = 0; i < rsCount; i += 1) {
                         lrs = this.recordStores[i];
 
-                        lrs.saveStatements(statements, { callback: callbackWrapper });
+                        results.push(
+                            lrs.saveStatements(statements, { callback: callbackWrapper })
+                        );
+                    }
+                }
+                else {
+                    msg = "[warning] sendStatements: No LRSs added yet (statements not sent)";
+                    if (TinCan.environment().isBrowser) {
+                        alert(this.LOG_SRC + ": " + msg);
+                    }
+                    else {
+                        this.log(msg);
+                    }
+                    if (typeof callback === "function") {
+                        callback.apply(this, [ null, statements ]);
                     }
                 }
             }
-            else {
-                msg = "[warning] sendStatements: No LRSs added yet (statements not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
-            }
+
+            return {
+                statements: statements,
+                results: results
+            };
         },
 
         /**
@@ -1085,11 +1116,13 @@ TinCan client library
     */
     TinCan.Utils = {
         /**
+        Generates a UUIDv4 compliant string that should be reasonably unique
+
         @method getUUID
         @return {String} UUID
         @static
 
-        Excerpt from: Math.uuid.js (v1.4)
+        Excerpt from: http://www.broofa.com/Tools/Math.uuid.js (v1.4)
         http://www.broofa.com
         mailto:robert@broofa.com
         Copyright (c) 2010 Robert Kieffer
@@ -1155,13 +1188,27 @@ TinCan client library
         },
 
         /**
+        @method getBase64String
+        @static
+        @param {String} str Content to encode
+        @return {String} Base64 encoded contents
+        */
+        getBase64String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.enc.Base64.stringify(
+                CryptoJS.enc.Latin1.parse(str)
+            );
+        },
+
+        /**
+        Intended to be inherited by objects with properties that store
+        display values in a language based "dictionary"
+
         @method getLangDictionaryValue
         @param {String} prop Property name storing the dictionary
         @param {String} [lang] Language to return
         @return {String}
-
-        Intended to be inherited by objects with properties that store
-        display values in a language based "dictionary"
         */
         getLangDictionaryValue: function (prop, lang) {
             var langDict = this[prop],
@@ -1353,6 +1400,9 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
+            else if (cfg.hasOwnProperty("username") && cfg.hasOwnProperty("password")) {
+                this.auth = "Basic " + TinCan.Utils.getBase64String(cfg.username + ":" + cfg.password);
+            }
 
             if (cfg.hasOwnProperty("extended")) {
                 this.extended = cfg.extended;
@@ -1516,6 +1566,8 @@ TinCan client library
                     fullUrl += "?" + pairs.join("&");
                 }
 
+                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
+
                 xhr = new XMLHttpRequest();
                 xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
                 for (prop in headers) {
@@ -1674,6 +1726,9 @@ TinCan client library
                 return;
             }
 
+            cfg = cfg || {};
+
+            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
                 method: "PUT",
@@ -1711,6 +1766,8 @@ TinCan client library
                 this.log("error: environment not implemented");
                 return;
             }
+
+            cfg = cfg || {};
 
             requestCfg = {
                 url: "statements",
@@ -1754,8 +1811,8 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var versionedStatements = [],
-                requestCfg,
+            var requestCfg,
+                versionedStatements = [],
                 i
             ;
 
@@ -1769,24 +1826,29 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (stmts.length > 0) {
-                for (i = 0; i < stmts.length; i += 1) {
-                    versionedStatements.push(
-                        stmts[i].asVersion( this.version )
-                    );
-                }
-
-                requestCfg = {
-                    url: "statements",
-                    method: "POST",
-                    data: JSON.stringify(versionedStatements)
-                };
+            if (stmts.length === 0) {
                 if (typeof cfg.callback !== "undefined") {
-                    requestCfg.callback = cfg.callback;
+                    cfg.callback.apply(this, ["no statements"]);
                 }
-
-                return this.sendRequest(requestCfg);
+                return;
             }
+
+            for (i = 0; i < stmts.length; i += 1) {
+                versionedStatements.push(
+                    stmts[i].asVersion( this.version )
+                );
+            }
+
+            requestCfg = {
+                url: "statements",
+                method: "POST",
+                data: JSON.stringify(versionedStatements)
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         /**
@@ -2587,7 +2649,7 @@ TinCan client library
 
         /**
         @property openid
-        @type Array
+        @type String
         */
         this.openid = null;
 
@@ -3959,7 +4021,7 @@ TinCan client library
 
         /**
         @property interactionType
-        @type Object
+        @type String
         */
         this.interactionType = null;
 
@@ -4656,9 +4718,9 @@ TinCan client library
 
                 // TODO: check to see if already this type
                 if (cfg.authority.objectType === "Agent") {
-                    this.actor = new TinCan.Agent (cfg.actor);
-                } else if (cfg.actor.objectType === "Group") {
-                    this.actor = new TinCan.Group (cfg.actor);
+                    this.authority = new TinCan.Agent (cfg.authority);
+                } else if (cfg.authority.objectType === "Group") {
+                    this.authority = new TinCan.Group (cfg.authority);
                 }
             }
             if (cfg.hasOwnProperty("verb")) {
@@ -4764,6 +4826,18 @@ TinCan client library
 
             return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Statement
+    @static
+    */
+    Statement.fromJSON = function (stJSON) {
+        Statement.prototype.log("fromJSON");
+        var _st = JSON.parse(stJSON);
+
+        return new Statement(_st);
     };
 }());
 /*
@@ -5128,3 +5202,115 @@ this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=j.parse(a));this.
 reset:function(){k.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);this._doFinalize();return this._hash},clone:function(){var a=k.clone.call(this);a._hash=this._hash.clone();return a},blockSize:16,_createHelper:function(a){return function(b,c){return a.create(c).finalize(b)}},_createHmacHelper:function(a){return function(b,c){return l.HMAC.create(a,c).finalize(b)}}});var l=p.algo={};return p}(Math);
 (function(){var i=CryptoJS,m=i.lib,p=m.WordArray,m=m.Hasher,h=[],n=i.algo.SHA1=m.extend({_doReset:function(){this._hash=p.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(o,i){for(var e=this._hash.words,g=e[0],j=e[1],k=e[2],l=e[3],a=e[4],b=0;80>b;b++){if(16>b)h[b]=o[i+b]|0;else{var c=h[b-3]^h[b-8]^h[b-14]^h[b-16];h[b]=c<<1|c>>>31}c=(g<<5|g>>>27)+a+h[b];c=20>b?c+((j&k|~j&l)+1518500249):40>b?c+((j^k^l)+1859775393):60>b?c+((j&k|j&l|k&l)-1894007588):c+((j^k^l)-
 899497514);a=l;l=k;k=j<<30|j>>>2;j=g;g=c}e[0]=e[0]+g|0;e[1]=e[1]+j|0;e[2]=e[2]+k|0;e[3]=e[3]+l|0;e[4]=e[4]+a|0},_doFinalize:function(){var i=this._data,h=i.words,e=8*this._nDataBytes,g=8*i.sigBytes;h[g>>>5]|=128<<24-g%32;h[(g+64>>>9<<4)+15]=e;i.sigBytes=4*h.length;this._process()}});i.SHA1=m._createHelper(n);i.HmacSHA1=m._createHmacHelper(n)})();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var WordArray = C_lib.WordArray;
+    var C_enc = C.enc;
+
+    /**
+     * Base64 encoding strategy.
+     */
+    var Base64 = C_enc.Base64 = {
+        /**
+         * Converts a word array to a Base64 string.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {string} The Base64 string.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var base64String = CryptoJS.enc.Base64.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+            var map = this._map;
+
+            // Clamp excess bits
+            wordArray.clamp();
+
+            // Convert
+            var base64Chars = [];
+            for (var i = 0; i < sigBytes; i += 3) {
+                var byte1 = (words[i >>> 2]       >>> (24 - (i % 4) * 8))       & 0xff;
+                var byte2 = (words[(i + 1) >>> 2] >>> (24 - ((i + 1) % 4) * 8)) & 0xff;
+                var byte3 = (words[(i + 2) >>> 2] >>> (24 - ((i + 2) % 4) * 8)) & 0xff;
+
+                var triplet = (byte1 << 16) | (byte2 << 8) | byte3;
+
+                for (var j = 0; (j < 4) && (i + j * 0.75 < sigBytes); j++) {
+                    base64Chars.push(map.charAt((triplet >>> (6 * (3 - j))) & 0x3f));
+                }
+            }
+
+            // Add padding
+            var paddingChar = map.charAt(64);
+            if (paddingChar) {
+                while (base64Chars.length % 4) {
+                    base64Chars.push(paddingChar);
+                }
+            }
+
+            return base64Chars.join('');
+        },
+
+        /**
+         * Converts a Base64 string to a word array.
+         *
+         * @param {string} base64Str The Base64 string.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
+         */
+        parse: function (base64Str) {
+            // Ignore whitespaces
+            base64Str = base64Str.replace(/\s/g, '');
+
+            // Shortcuts
+            var base64StrLength = base64Str.length;
+            var map = this._map;
+
+            // Ignore padding
+            var paddingChar = map.charAt(64);
+            if (paddingChar) {
+                var paddingIndex = base64Str.indexOf(paddingChar);
+                if (paddingIndex != -1) {
+                    base64StrLength = paddingIndex;
+                }
+            }
+
+            // Convert
+            var words = [];
+            var nBytes = 0;
+            for (var i = 0; i < base64StrLength; i++) {
+                if (i % 4) {
+                    var bitsHigh = map.indexOf(base64Str.charAt(i - 1)) << ((i % 4) * 2);
+                    var bitsLow  = map.indexOf(base64Str.charAt(i)) >>> (6 - (i % 4) * 2);
+                    words[nBytes >>> 2] |= (bitsHigh | bitsLow) << (24 - (nBytes % 4) * 8);
+                    nBytes++;
+                }
+            }
+
+            return WordArray.create(words, nBytes);
+        },
+
+        _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+    };
+}());

@@ -17,21 +17,25 @@
 <html>
 <head>
     <title>TinCanJS Tests</title>
+    <!-- TODO: we should really try to use SinonJS -->
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
     <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
-    <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="../build/tincan.js"></script>
     <!-- Uncomment to test minified version -->
     <!--
     <script type="text/javascript" src="../build/tincan-min.js"></script>
     -->
     <!-- Uncomment to test non-build version -->
+    <!--
+    <script type="text/javascript" src="../vendor/cryptojs-v3.0.2/rollups/sha1.js"></script>
+    <script type="text/javascript" src="../vendor/cryptojs-v3.0.2/components/enc-base64.js"></script>
     <script type="text/javascript" src="../src/TinCan.js"></script>
     <script type="text/javascript" src="../src/Utils.js"></script>
     <script type="text/javascript" src="../src/LRS.js"></script>
     <script type="text/javascript" src="../src/AgentAccount.js"></script>
     <script type="text/javascript" src="../src/Agent.js"></script>
+    <script type="text/javascript" src="../src/Group.js"></script>
     <script type="text/javascript" src="../src/Verb.js"></script>
     <script type="text/javascript" src="../src/Result.js"></script>
     <script type="text/javascript" src="../src/Score.js"></script>
@@ -39,9 +43,13 @@
     <script type="text/javascript" src="../src/Activity.js"></script>
     <script type="text/javascript" src="../src/InteractionComponent.js"></script>
     <script type="text/javascript" src="../src/ActivityDefinition.js"></script>
+    <script type="text/javascript" src="../src/StatementRef.js"></script>
+    <script type="text/javascript" src="../src/SubStatement.js"></script>
     <script type="text/javascript" src="../src/Statement.js"></script>
     <script type="text/javascript" src="../src/StatementsResult.js"></script>
     <script type="text/javascript" src="../src/State.js"></script>
+    <script type="text/javascript" src="../src/ActivityProfile.js"></script>
+    -->
 </head>
 <body>
     <h1 id="qunit-header">TinCanJS Test Suite</h1>
@@ -50,7 +58,7 @@
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
 
-    <script type="text/javascript">
+    <script>
         var log = function () {};
         if (console && console.log) {
             log = function (msg) {
@@ -58,288 +66,14 @@
             }
         }
 
-        var actor = {
-            name: "TinCanJS (0.95) Test 001",
-            mbox: "mailto:tincanjs-test-001@tincanapi.com",
-            objectType: "Person"
+        var TinCanTestCfg = {
+            recordStores: {}
         };
-        if (! window.location.search.match(/actor=/)) {
-            window.location.search = window.location.search + (window.location.search.length > 0 ? "&" : "") + "actor=" + encodeURIComponent((JSON.stringify(actor)));
-        }
-
-        TinCan.enableDebug();
-
-        module(
-            "Versions",
-            {}
-        );
-        test(
-            "TinCan.versions",
-            function () {
-                var versions = TinCan.versions();
-                deepEqual(versions, ["0.95", "0.9"], "Supported spec versions");
-            }
-        );
-        module(
-            "Environment",
-            {}
-        );
-        test(
-            "TinCan.environment",
-            function () {
-                var env = TinCan.environment();
-                ok(typeof env === "object", "TinCan.environment returns object");
-                ok(env.isBrowser, "TinCan.environment property: isBrowser");
-                ok(env.hasOwnProperty("isIE"), "TinCan.environment has property: isIE");
-            }
-        );
-
-        var tincan;
-
-        module(
-            "TinCan",
-            {
-                setup: function() {
-                    log("setup");
-                    tincan = new TinCan (
-                        {
-                            url: window.location
-                        }
-                    );
-                    tincan.addRecordStore(
-                        //{
-                        //    endpoint: "http://192.168.157.129/ScormEngine/ScormEngineInterface/TCAPI/",
-                        //    auth: "Basic ZGVmYXVsdDpwYXNzd29yZA=="
-                        //}
-                    );
-                },
-                teardown: function () {
-                }
-            }
-        );
-
-        test(
-            "tincan Object",
-            function () {
-                log("tincan Object");
-                ok(tincan instanceof TinCan, "tincan is TinCan");
-                ok(tincan.hasOwnProperty("actor"), "tincan has property: actor");
-                ok(tincan.hasOwnProperty("activity"), "tincan has property: activity");
-                ok(tincan.hasOwnProperty("context"), "tincan has property: context");
-                ok(tincan.hasOwnProperty("recordStores"), "tincan has property: recordStores");
-            }
-        );
-
-        test(
-            "sendStatement: sync",
-            function () {
-                log("sendStatement sync");
-                var result = tincan.sendStatement(
-                    {
-                        verb: "attempted",
-                        target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
-                        }
-                    }
-                );
-                equal(result, null, "result");
-            }
-        );
-
-        test(
-            "sendStatements: sync",
-            function () {
-                log("sendStatements sync");
-                var result = tincan.sendStatements(
-                    [
-                        {
-                            verb: "attempted",
-                            target: {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        },
-                        {
-                            verb: "completed",
-                            target: {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        }
-                    ]
-                );
-                equal(result, null, "result");
-            }
-        );
-
-        test(
-            "getStatements: sync",
-            function () {
-                log("getStatements sync");
-                var result = tincan.getStatements(
-                    {
-                        sendActivity: true,
-                        sendActor: true
-                    /*
-                        verb: {
-                            id: "attempted"
-                        },
-                        target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
-                        }
-                    */
-                    }
-                );
-                // TODO: need to test for something?
-            }
-        );
-
-        test(
-            "getStatement: sync",
-            function () {
-                log("getStatement sync");
-                // TODO: can't hardcode this id, need to do a send setup, capture, and use that ID
-                var result = tincan.getStatement("3e45fce1-7fdd-476f-9c3d-b18fa51c59e3");
-                // TODO: need to test for something?
-            }
-        );
-
-        test(
-            "setState: sync",
-            function () {
-                log("setState sync");
-                var result = tincan.setState(
-                    "test1",
-                    "ok",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "getState: sync",
-            function () {
-                log("getState sync");
-                var result = tincan.getState(
-                    "test1",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "deleteState: single sync",
-            function () {
-                log("dropState single sync");
-                var result = tincan.deleteState(
-                    "test1",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "deleteState: clear sync",
-            function () {
-                log("deleteState clear sync");
-                var result = tincan.deleteState(
-                    null,
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatements/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "setActivityProfile: sync",
-            function () {
-                log("setActivityProfile sync");
-                var result = tincan.setActivityProfile(
-                    "test1",
-                    "ok",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "getActivityProfile: sync",
-            function () {
-                log("getActivityProfile sync");
-                var result = tincan.getActivityProfile(
-                    "test1",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "deleteActivityProfile: single sync",
-            function () {
-                log("dropActivityProfile single sync");
-                var result = tincan.deleteActivityProfile(
-                    "test1",
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
-        test(
-            "deleteActivityProfile: clear sync",
-            function () {
-                log("deleteActivityProfile clear sync");
-                var result = tincan.deleteActivityProfile(
-                    null,
-                    {
-                        activity: new TinCan.Activity(
-                            {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendActivityProfile/sync"
-                            }
-                        )
-                    }
-                );
-            }
-        );
-
     </script>
+
+    <script src="config.js"></script>
+    <script src="js/TinCanTest.js"></script>
+    <script src="js/TinCan.js"></script>
+    <script src="js/Utils.js"></script>
 </body>
 </html>
