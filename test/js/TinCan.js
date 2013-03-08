@@ -289,12 +289,7 @@ asyncTest(
                 ok(results[0].hasOwnProperty("err"), "callback results argument 0 has property: err");
                 deepEqual(results[0].err, null, "callback results argument 0 property value: err");
                 ok(results[0].hasOwnProperty("xhr"), "callback results argument 0 has property: xhr");
-                if (TinCan.environment().useXDR) {
-                    ok(results[0].xhr instanceof XDomainRequest, "callback results argument 0 property value is XDomainRequest: xhr");
-                }
-                else {
-                    ok(results[0].xhr instanceof XMLHttpRequest, "callback results argument 0 property value is XHR: xhr");
-                }
+                TinCanTest.assertHttpRequestType(results[0].xhr, "callback results argument 0 property value: xhr");
                 deepEqual(preparedStmt, statement, "callback: statement matches");
             }
         );
@@ -304,12 +299,7 @@ asyncTest(
 
         ok(sendResult.hasOwnProperty("results"), "sendResult has property: results");
         ok(sendResult.results.length === 1, "sendResult results property: length");
-        if (TinCan.environment().useXDR) {
-            ok(sendResult.results[0] instanceof XDomainRequest, "sendResult results 0 value is XDomainRequest: xhr");
-        }
-        else {
-            ok(sendResult.results[0] instanceof XMLHttpRequest, "sendResult results 0 value is XHR: xhr");
-        }
+        TinCanTest.assertHttpRequestType(sendResult.results[0], "sendResult results 0 value is: xhr");
         stop();
     }
 );
@@ -347,12 +337,7 @@ test(
         ok(getResult.hasOwnProperty("err"), "getResult has property: err");
         ok(getResult.hasOwnProperty("xhr"), "getResult has property: xhr");
         deepEqual(getResult.err, null, "getResult property value: err");
-        if (TinCan.environment().useXDR) {
-            ok(getResult.xhr instanceof XDomainRequest, "getResult property value: xhr");
-        }
-        else {
-            ok(getResult.xhr instanceof XMLHttpRequest, "getResult property value: xhr");
-        }
+        TinCanTest.assertHttpRequestType(getResult.xhr, "getResult property value is: xhr");
 
         // clear the "stored" and "authority" properties since we couldn't have known them ahead of time
         getResult.statement.stored = null;
