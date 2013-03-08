@@ -2649,7 +2649,7 @@ TinCan client library
 
         /**
         @property openid
-        @type Array
+        @type String
         */
         this.openid = null;
 
@@ -4021,7 +4021,7 @@ TinCan client library
 
         /**
         @property interactionType
-        @type Object
+        @type String
         */
         this.interactionType = null;
 

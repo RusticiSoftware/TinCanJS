@@ -1173,7 +1173,7 @@
             "line": 82,
             "itemtype": "property",
             "name": "interactionType",
-            "type": "Object",
+            "type": "String",
             "class": "TinCan.ActivityDefinition",
             "module": "TinCan",
             "submodule": "TinCan.ActivityDefinition"
@@ -1470,7 +1470,7 @@
             "line": 51,
             "itemtype": "property",
             "name": "openid",
-            "type": "Array",
+            "type": "String",
             "class": "TinCan.Agent",
             "module": "TinCan",
             "submodule": "TinCan.Agent"
