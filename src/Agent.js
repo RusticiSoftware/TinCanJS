@@ -29,7 +29,14 @@ TinCan client library
     */
     var Agent = TinCan.Agent = function (cfg) {
         this.log("constructor");
-
+        
+        /**
+        @property objectType
+        @type String
+        @default Activity
+        */
+        this.objectType = "Agent";
+        
         /**
         @property name
         @type String
