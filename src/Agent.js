@@ -33,7 +33,7 @@ TinCan client library
         /**
         @property objectType
         @type String
-        @default Activity
+        @default Agent
         */
         this.objectType = "Agent";
         
