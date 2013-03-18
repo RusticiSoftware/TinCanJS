@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.3</em>
+            <em>API Docs for: 0.2.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -346,9 +346,9 @@ TinCan client library
 
                 &#x2F;&#x2F; TODO: check to see if already this type
                 if (cfg.authority.objectType === &quot;Agent&quot;) {
-                    this.actor = new TinCan.Agent (cfg.actor);
-                } else if (cfg.actor.objectType === &quot;Group&quot;) {
-                    this.actor = new TinCan.Group (cfg.actor);
+                    this.authority = new TinCan.Agent (cfg.authority);
+                } else if (cfg.authority.objectType === &quot;Group&quot;) {
+                    this.authority = new TinCan.Group (cfg.authority);
                 }
             }
             if (cfg.hasOwnProperty(&quot;verb&quot;)) {
@@ -454,6 +454,18 @@ TinCan client library
 
             return result;
         }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} Statement
+    @static
+    *&#x2F;
+    Statement.fromJSON = function (stJSON) {
+        Statement.prototype.log(&quot;fromJSON&quot;);
+        var _st = JSON.parse(stJSON);
+
+        return new Statement(_st);
     };
 }());
 
