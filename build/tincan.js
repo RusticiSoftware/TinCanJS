@@ -2628,7 +2628,14 @@ TinCan client library
     */
     var Agent = TinCan.Agent = function (cfg) {
         this.log("constructor");
-
+        
+        /**
+        @property objectType
+        @type String
+        @default Agent
+        */
+        this.objectType = "Agent";
+        
         /**
         @property name
         @type String
@@ -3493,7 +3500,7 @@ TinCan client library
 
         /**
         @property revision
-        @type Object|null
+        @type String|null
         */
         this.revision = null;
 
