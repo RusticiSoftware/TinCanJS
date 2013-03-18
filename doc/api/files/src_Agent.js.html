@@ -191,7 +191,14 @@ TinCan client library
     *&#x2F;
     var Agent = TinCan.Agent = function (cfg) {
         this.log(&quot;constructor&quot;);
-
+        
+        &#x2F;**
+        @property objectType
+        @type String
+        @default Agent
+        *&#x2F;
+        this.objectType = &quot;Agent&quot;;
+        
         &#x2F;**
         @property name
         @type String

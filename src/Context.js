@@ -56,7 +56,7 @@ TinCan client library
 
         /**
         @property revision
-        @type Object|null
+        @type String|null
         */
         this.revision = null;
 

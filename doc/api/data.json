@@ -1439,6 +1439,17 @@
             "file": "src/Agent.js",
             "line": 33,
             "itemtype": "property",
+            "name": "objectType",
+            "type": "String",
+            "default": "Agent",
+            "class": "TinCan.Agent",
+            "module": "TinCan",
+            "submodule": "TinCan.Agent"
+        },
+        {
+            "file": "src/Agent.js",
+            "line": 40,
+            "itemtype": "property",
             "name": "name",
             "type": "String",
             "class": "TinCan.Agent",
@@ -1447,7 +1458,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 39,
+            "line": 46,
             "itemtype": "property",
             "name": "mbox",
             "type": "String",
@@ -1457,7 +1468,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 45,
+            "line": 52,
             "itemtype": "property",
             "name": "mbox_sha1sum",
             "type": "String",
@@ -1467,7 +1478,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 51,
+            "line": 58,
             "itemtype": "property",
             "name": "openid",
             "type": "String",
@@ -1477,7 +1488,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 57,
+            "line": 64,
             "itemtype": "property",
             "name": "account",
             "type": "TinCan.AgentAccount",
@@ -1487,7 +1498,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 63,
+            "line": 70,
             "itemtype": "property",
             "name": "degraded",
             "type": "Boolean",
@@ -1498,7 +1509,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 73,
+            "line": 80,
             "itemtype": "property",
             "name": "objectType",
             "type": "String",
@@ -1509,7 +1520,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 80,
+            "line": 87,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Agent",
@@ -1518,7 +1529,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 85,
+            "line": 92,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Agent",
@@ -1527,7 +1538,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 90,
+            "line": 97,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1544,7 +1555,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 221,
+            "line": 228,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -1569,7 +1580,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 261,
+            "line": 268,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1681,7 +1692,7 @@
             "line": 57,
             "itemtype": "property",
             "name": "revision",
-            "type": "Object|null",
+            "type": "String|null",
             "class": "TinCan.Context",
             "module": "TinCan",
             "submodule": "TinCan.Context"
