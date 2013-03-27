@@ -172,7 +172,7 @@ var TinCan;
         },
 
         /**
-        @method _handleQueryString
+        @method _initFromQueryString
         @param {String} url
         @private
         */
