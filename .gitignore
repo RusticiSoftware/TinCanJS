@@ -1,3 +1,4 @@
 *.swp
+doc/api/*
 node_modules/
 test/config.js
