@@ -48,6 +48,12 @@ TinCan client library
         */
         this.contents = null;
 
+        /**
+        @property etag
+        @type String
+        */
+        this.etag = null;
+
         this.init(cfg);
     };
     State.prototype = {
