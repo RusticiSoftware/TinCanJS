@@ -38,7 +38,7 @@ TinCan client library
 
         /**
         @property updated
-        @type String
+        @type Boolean
         */
         this.updated = null;
 
