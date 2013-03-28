@@ -65,4 +65,16 @@ TinCan client library
             this.log("init");
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} Group
+    @static
+    */
+    Group.fromJSON = function (groupJSON) {
+        Group.prototype.log("fromJSON");
+        var _group = JSON.parse(groupJSON);
+
+        return new Group(_group);
+    };
 }());

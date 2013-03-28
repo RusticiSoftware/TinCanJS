@@ -13,107 +13,108 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+(function () {
+    var session = null,
+        mockAlerts = null,
+        alertFunc = function (msg) {
+            mockAlerts.push(msg);
+        },
+        alertBuiltin;
 
-var session = null,
-    mockAlerts = null,
-    alertFunc = function (msg) {
-        mockAlerts.push(msg);
-    },
-    alertBuiltin;
-
-module(
-    "Utils Statics",
-    {
-        setup: function () {},
-        teardown: function () {}
-    }
-);
-
-test(
-    "getUUID",
-    function () {
-        var re = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/,
-            i,
-            val,
-            list = [],
-            seen = {},
-            noDupe = true;
-        for (i = 0; i < 500; i += 1) {
-            val = TinCan.Utils.getUUID();
-            ok(re.test(val), "formatted correctly: " + i);
-
-            list.push(val);
+    module(
+        "Utils Statics",
+        {
+            setup: function () {},
+            teardown: function () {}
         }
-        for (i = 0; i < 500; i += 1) {
-            if (seen.hasOwnProperty(list[i])) {
-                noDupe = false;
+    );
+
+    test(
+        "getUUID",
+        function () {
+            var re = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/,
+                i,
+                val,
+                list = [],
+                seen = {},
+                noDupe = true;
+            for (i = 0; i < 500; i += 1) {
+                val = TinCan.Utils.getUUID();
+                ok(re.test(val), "formatted correctly: " + i);
+
+                list.push(val);
             }
-            seen[list[i]] = true;
+            for (i = 0; i < 500; i += 1) {
+                if (seen.hasOwnProperty(list[i])) {
+                    noDupe = false;
+                }
+                seen[list[i]] = true;
+            }
+            ok(noDupe, "no duplicates in 500");
         }
-        ok(noDupe, "no duplicates in 500");
-    }
-);
-test(
-    "getISODateString",
-    function () {
-        var d = new Date (
-            Date.UTC(2013, 2, 1, 8, 4, 6, 3)
-        );
-        result = TinCan.Utils.getISODateString(d);
+    );
+    test(
+        "getISODateString",
+        function () {
+            var d = new Date (
+                Date.UTC(2013, 2, 1, 8, 4, 6, 3)
+            );
+            result = TinCan.Utils.getISODateString(d);
 
-        ok(result === "2013-03-01T08:04:06.003Z", "return value");
-    }
-);
-test(
-    "getSHA1String",
-    function () {
-        ok(TinCan.Utils.getSHA1String("test") === "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", "return value");
-    }
-);
-test(
-    "getBase64String",
-    function () {
-        ok(TinCan.Utils.getBase64String("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3") === "YTk0YThmZTVjY2IxOWJhNjFjNGMwODczZDM5MWU5ODc5ODJmYmJkMw==", "return value");
-    }
-);
-test(
-    "parseURL",
-    function () {
-        var result;
+            ok(result === "2013-03-01T08:04:06.003Z", "return value");
+        }
+    );
+    test(
+        "getSHA1String",
+        function () {
+            ok(TinCan.Utils.getSHA1String("test") === "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", "return value");
+        }
+    );
+    test(
+        "getBase64String",
+        function () {
+            ok(TinCan.Utils.getBase64String("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3") === "YTk0YThmZTVjY2IxOWJhNjFjNGMwODczZDM5MWU5ODc5ODJmYmJkMw==", "return value");
+        }
+    );
+    test(
+        "parseURL",
+        function () {
+            var result;
 
-        result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test");
-        deepEqual(
-            result,
-            {
-                params: {},
-                path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
-            },
-             "return value: no params"
-        );
-
-        result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test?paramA=1&paramB=2");
-        deepEqual(
-            result,
-            {
-                params: {
-                    paramA: "1",
-                    paramB: "2"
+            result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test");
+            deepEqual(
+                result,
+                {
+                    params: {},
+                    path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
                 },
-                path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
-            },
-             "return value: with params"
-         );
-    }
-);
-test(
-    "getServerRoot",
-    function () {
-        var result;
+                 "return value: no params"
+            );
 
-        result = TinCan.Utils.getServerRoot("http://tincanapi.com/TinCanJS/Test/TinCan.Utils_getServerRoot/test");
-        ok(result === "http://tincanapi.com", "return value: no port");
+            result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test?paramA=1&paramB=2");
+            deepEqual(
+                result,
+                {
+                    params: {
+                        paramA: "1",
+                        paramB: "2"
+                    },
+                    path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
+                },
+                 "return value: with params"
+             );
+        }
+    );
+    test(
+        "getServerRoot",
+        function () {
+            var result;
 
-        result = TinCan.Utils.getServerRoot("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_getServerRoot/test");
-        ok(result === "http://tincanapi.com:8080", "return value: with port");
-    }
-);
+            result = TinCan.Utils.getServerRoot("http://tincanapi.com/TinCanJS/Test/TinCan.Utils_getServerRoot/test");
+            ok(result === "http://tincanapi.com", "return value: no port");
+
+            result = TinCan.Utils.getServerRoot("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_getServerRoot/test");
+            ok(result === "http://tincanapi.com:8080", "return value: with port");
+        }
+    );
+}());

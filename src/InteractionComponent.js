@@ -112,4 +112,16 @@ TinCan client library
         */
         getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
+
+    /**
+    @method fromJSON
+    @return {Object} InteractionComponent
+    @static
+    */
+    InteractionComponent.fromJSON = function (icJSON) {
+        InteractionComponent.prototype.log("fromJSON");
+        var _ic = JSON.parse(icJSON);
+
+        return new InteractionComponent(_ic);
+    };
 }());

@@ -104,4 +104,16 @@ TinCan client library
             };
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} StatementRef
+    @static
+    */
+    StatementRef.fromJSON = function (stRefJSON) {
+        StatementRef.prototype.log("fromJSON");
+        var _stRef = JSON.parse(stRefJSON);
+
+        return new StatementRef(_stRef);
+    };
 }());

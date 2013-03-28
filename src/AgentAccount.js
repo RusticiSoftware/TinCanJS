@@ -86,4 +86,16 @@ TinCan client library
             }
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} AgentAccount
+    @static
+    */
+    AgentAccount.fromJSON = function (acctJSON) {
+        AgentAccount.prototype.log("fromJSON");
+        var _acct = JSON.parse(acctJSON);
+
+        return new AgentAccount(_acct);
+    };
 }());
