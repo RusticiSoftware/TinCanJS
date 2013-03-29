@@ -2601,21 +2601,9 @@ TinCan client library
             var result = "";
 
             if (this.name !== null || this.homePage !== null) {
-                if (this.name !== null) {
-                    result += this.name;
-                }
-                else {
-                    result += "-";
-                }
-
+                result += this.name !== null ? this.name : "-";
                 result += ":";
-
-                if (this.homePage !== null) {
-                    result += this.homePage;
-                }
-                else {
-                    result += "-";
-                }
+                result += this.homePage !== null ? this.homePage : "-";
             }
             else {
                 result = "AgentAccount: unidentified";
