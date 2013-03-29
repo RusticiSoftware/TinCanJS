@@ -172,7 +172,7 @@ var TinCan;
         },
 
         /**
-        @method _handleQueryString
+        @method _initFromQueryString
         @param {String} url
         @private
         */
@@ -2594,7 +2594,68 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+            var result = "";
+
+            if (this.name !== null || this.homePage !== null) {
+                if (this.name !== null) {
+                    result += this.name;
+                }
+                else {
+                    result += "-";
+                }
+
+                result += ":";
+
+                if (this.homePage !== null) {
+                    result += this.homePage;
+                }
+                else {
+                    result += "-";
+                }
+            }
+            else {
+                result = "AgentAccount: unidentified";
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {String} version Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result = {};
+
+            version = version || TinCan.versions()[0];
+
+            if (version === "0.9") {
+                result.accountName = this.name;
+                result.accountServiceHomePage = this.homePage;
+            } else {
+                result.name = this.name;
+                result.homePage = this.homePage;
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} AgentAccount
+    @static
+    */
+    AgentAccount.fromJSON = function (acctJSON) {
+        AgentAccount.prototype.log("fromJSON");
+        var _acct = JSON.parse(acctJSON);
+
+        return new AgentAccount(_acct);
     };
 }());
 /*
@@ -2628,14 +2689,7 @@ TinCan client library
     */
     var Agent = TinCan.Agent = function (cfg) {
         this.log("constructor");
-        
-        /**
-        @property objectType
-        @type String
-        @default Agent
-        */
-        this.objectType = "Agent";
-        
+
         /**
         @property name
         @type String
@@ -2776,7 +2830,7 @@ TinCan client library
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined" && typeof cfg.account.name === "undefined") {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -2817,17 +2871,26 @@ TinCan client library
             if (this.mbox !== null) {
                 return this.mbox.replace("mailto:", "");
             }
+            if (this.mbox_sha1sum !== null) {
+                return this.mbox_sha1sum;
+            }
+            if (this.openid !== null) {
+                return this.openid;
+            }
             if (this.account !== null) {
-                return this.account.name;
+                return this.account.toString();
             }
 
-            return "";
+            return this.objectType + ": unidentified";
         },
 
         /**
+        While a TinCan.Agent instance can store more than one reverse functional identifier
+        this method will always only output one to be compliant with the statement sending
+        specification. Order of preference is: mbox, mbox_sha1sum, openid, account
+
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} version Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion: " + version);
@@ -2839,24 +2902,37 @@ TinCan client library
 
             if (version === "0.9") {
                 if (this.mbox !== null) {
-                    result.mbox = [
-                        this.mbox
-                    ];
+                    result.mbox = [ this.mbox ];
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = [ this.mbox_sha1sum ];
+                }
+                else if (this.openid !== null) {
+                    result.openid = [ this.openid ];
+                }
+                else if (this.account !== null) {
+                    result.account = [ this.account.asVersion(version) ];
+                }
+
                 if (this.name !== null) {
-                    result.name = [
-                        this.name
-                    ];
+                    result.name = [ this.name ];
                 }
             } else {
                 if (this.mbox !== null) {
                     result.mbox = this.mbox;
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = this.mbox_sha1sum;
+                }
+                else if (this.openid !== null) {
+                    result.openid = this.openid;
+                }
+                else if (this.account !== null) {
+                    result.account = this.account.asVersion(version);
+                }
+
                 if (this.name !== null) {
                     result.name = this.name;
-                }
-                if (this.account !== null) {
-                    result.account = this.account;
                 }
             }
 
@@ -2909,6 +2985,36 @@ TinCan client library
         this.log("constructor");
 
         /**
+        @property name
+        @type String
+        */
+        this.name = null;
+
+        /**
+        @property mbox
+        @type String
+        */
+        this.mbox = null;
+
+        /**
+        @property mbox_sha1sum
+        @type String
+        */
+        this.mbox_sha1sum = null;
+
+        /**
+        @property openid
+        @type String
+        */
+        this.openid = null;
+
+        /**
+        @property account
+        @type TinCan.AgentAccount
+        */
+        this.account = null;
+
+        /**
         @property member
         @type Array
         */
@@ -2928,7 +3034,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Group',
+        LOG_SRC: "Group",
 
         /**
         @method log
@@ -2941,7 +3047,71 @@ TinCan client library
         */
         init: function (cfg) {
             this.log("init");
+            var i;
+
+            cfg = cfg || {};
+
+            TinCan.Agent.prototype.init.call(this, cfg);
+
+            if (typeof cfg.member !== "undefined") {
+                for (i = 0; i < cfg.member.length; i += 1) {
+                    if (cfg.member[i] instanceof TinCan.Agent) {
+                        this.member.push(cfg.member[i]);
+                    }
+                    else {
+                        this.member.push(new TinCan.Agent (cfg.member[i]));
+                    }
+                }
+            }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+
+            var result = TinCan.Agent.prototype.toString.call(this, lang);
+            if (result !== this.objectType + ": unidentified") {
+                result = this.objectType + ": " + result;
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result,
+                i
+            ;
+
+            version = version || TinCan.versions()[0];
+
+            result = TinCan.Agent.prototype.asVersion.call(this, version);
+
+            if (this.member.length > 0) {
+                result.member = [];
+                for (i = 0; i < this.member.length; i += 1) {
+                    result.member.push(this.member[i].asVersion(version));
+                }
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Group
+    @static
+    */
+    Group.fromJSON = function (groupJSON) {
+        Group.prototype.log("fromJSON");
+        var _group = JSON.parse(groupJSON);
+
+        return new Group(_group);
     };
 }());
 /*
@@ -3944,6 +4114,18 @@ TinCan client library
         */
         getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
     };
+
+    /**
+    @method fromJSON
+    @return {Object} InteractionComponent
+    @static
+    */
+    InteractionComponent.fromJSON = function (icJSON) {
+        InteractionComponent.prototype.log("fromJSON");
+        var _ic = JSON.parse(icJSON);
+
+        return new InteractionComponent(_ic);
+    };
 }());
 /*
     Copyright 2012 Rustici Software
@@ -4358,6 +4540,18 @@ TinCan client library
             };
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} StatementRef
+    @static
+    */
+    StatementRef.fromJSON = function (stRefJSON) {
+        StatementRef.prototype.log("fromJSON");
+        var _stRef = JSON.parse(stRefJSON);
+
+        return new StatementRef(_stRef);
+    };
 }());
 /*
     Copyright 2012 Rustici Software
@@ -4537,6 +4731,18 @@ TinCan client library
 
             return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} SubStatement
+    @static
+    */
+    SubStatement.fromJSON = function (subStJSON) {
+        SubStatement.prototype.log("fromJSON");
+        var _subSt = JSON.parse(subStJSON);
+
+        return new SubStatement(_subSt);
     };
 }());
 /*
@@ -5008,7 +5214,7 @@ TinCan client library
 
         /**
         @property updated
-        @type String
+        @type Boolean
         */
         this.updated = null;
 
@@ -5017,6 +5223,12 @@ TinCan client library
         @type String
         */
         this.contents = null;
+
+        /**
+        @property etag
+        @type String
+        */
+        this.etag = null;
 
         this.init(cfg);
     };
