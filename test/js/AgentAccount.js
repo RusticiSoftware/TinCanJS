@@ -36,13 +36,21 @@
     test(
         "acct Object",
         function () {
-            var obj = new TinCan.AgentAccount ();
+            var obj = new TinCan.AgentAccount (),
+                nullProps = [
+                    "name",
+                    "homePage"
+                ],
+                i
+            ;
 
             ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount");
 
-            // test direct properties from construction
+            for (i = 0; i < nullProps.length; i += 1) {
+                ok(obj.hasOwnProperty(nullProps[i]), "object has property: " + nullProps[i]);
+                strictEqual(obj[nullProps[i]], null, "object property initial value: " + nullProps[i]);
+            }
 
-            // test properties from prototype
             strictEqual(obj.LOG_SRC, "AgentAccount", "object property LOG_SRC initial value");
         }
     );
@@ -51,67 +59,95 @@
         "object variations",
         function () {
             var obj,
-                result,
-                rawEmpty     = { name: null, homePage: null },
-                rawEmpty9    = { accountName: null, accountServiceHomePage: null }
-                rawName      = { name: "test", homePage: null },
-                rawName9     = { accountName: "test", accountServiceHomePage: null },
-                rawHomePage  = { name: null, homePage: "http://tincanapi.com/" },
-                rawHomePage9 = { accountName: null, accountServiceHomePage: "http://tincanapi.com/" },
-                rawFull      = { name: "test", homePage: "http://tincanapi.com/" },
-                rawFull9     = { accountName: "test", accountServiceHomePage: "http://tincanapi.com/" }
+                result
             ;
 
-            obj = new TinCan.AgentAccount ();
-            ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount (empty)");
-            ok(obj.hasOwnProperty("name"), "object has property: name (empty)");
-            strictEqual(obj.name, null, "object.name property initial value (empty)");
-            ok(obj.hasOwnProperty("homePage"), "object has property: homePage (empty)");
-            strictEqual(obj.homePage, null, "object.homePage property initial value (empty)");
-            equal(obj.toString(), "AgentAccount: unidentified", "object.toString (empty)");
-            deepEqual(obj.asVersion(), rawEmpty, "object.asVersion latest (empty)");
-            deepEqual(obj.asVersion("0.95"), rawEmpty, "object.asVersion 0.95 (empty)");
-            deepEqual(obj.asVersion("0.9"), rawEmpty9, "object.asVersion 0.9 (empty)");
+            var set = [
+                    {
+                        name: "empty",
+                        instanceConfig: {},
+                        toString: "AgentAccount: unidentified",
+                        checkProps: {
+                            name: null,
+                            homePage: null
+                        },
+                        checkAsVersions: {
+                            latest: { name: null, homePage: null },
+                            "0.9": { accountName: null, accountServiceHomePage: null }
+                        }
+                    },
+                    {
+                        name: "name only",
+                        instanceConfig: {
+                            name: "test"
+                        },
+                        toString: "test:-",
+                        checkProps: {
+                            name: "test"
+                        },
+                        checkAsVersions: {
+                            latest: { name: "test", homePage: null },
+                            "0.9": { accountName: "test", accountServiceHomePage: null }
+                        }
+                    },
+                    {
+                        name: "homePage only",
+                        instanceConfig: {
+                            homePage: "http://tincanapi.com/"
+                        },
+                        toString: "-:http://tincanapi.com/",
+                        checkProps: {
+                            homePage: "http://tincanapi.com/"
+                        },
+                        checkAsVersions: {
+                            latest: { name: null, homePage: "http://tincanapi.com/" },
+                            "0.9": { accountName: null, accountServiceHomePage: "http://tincanapi.com/" }
+                        }
+                    },
+                    {
+                        name: "full",
+                        instanceConfig: {
+                            name: "test",
+                            homePage: "http://tincanapi.com/"
+                        },
+                        toString: "test:http://tincanapi.com/",
+                        checkProps: {
+                            name: "test",
+                            homePage: "http://tincanapi.com/"
+                        },
+                        checkAsVersions: {
+                            latest: { name: "test", homePage: "http://tincanapi.com/" },
+                            "0.9": { accountName: "test", accountServiceHomePage: "http://tincanapi.com/" }
+                        }
+                    }
+                ],
+                versions = TinCan.versions(),
+                i,
+                v,
+                obj,
+                result
+            ;
+            for (i = 0; i < set.length; i += 1) {
+                row = set[i];
+                obj = new TinCan.AgentAccount (row.instanceConfig);
 
-            obj = new TinCan.AgentAccount (
-                {
-                    name: "test"
+                ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount (" + row.name + ")");
+                strictEqual(obj.toString(), row.toString, "object.toString (" + row.name + ")");
+                if (typeof row.checkProps !== "undefined") {
+                    for (key in row.checkProps) {
+                        deepEqual(obj[key], row.checkProps[key], "object property initial value: " + key + " (" + row.name + ")");
+                    }
                 }
-            );
-            ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount (name only)");
-            equal(obj.name, "test", "object.name property value (name only)");
-            strictEqual(obj.homePage, null, "object.homePage property value (name only)");
-            equal(obj.toString(), "test:-", "object.toString (name only)");
-            deepEqual(obj.asVersion(), rawName, "object.asVersion latest (name only)");
-            deepEqual(obj.asVersion("0.95"), rawName, "object.asVersion 0.95 (name only)");
-            deepEqual(obj.asVersion("0.9"), rawName9, "object.asVersion 0.9 (name only)");
+                if (typeof row.checkAsVersions !== "undefined") {
+                    result = obj.asVersion();
+                    deepEqual(result, row.checkAsVersions.latest, "object.asVersion() latest: " + row.name);
 
-            obj = new TinCan.AgentAccount (
-                {
-                    homePage: "http://tincanapi.com/"
+                    for (v = 0; v < versions.length; v += 1) {
+                        result = obj.asVersion(versions[v]);
+                        deepEqual(result, (row.checkAsVersions.hasOwnProperty(versions[v]) ? row.checkAsVersions[versions[v]] : row.checkAsVersions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
+                    }
                 }
-            );
-            ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount (homePage only)");
-            strictEqual(obj.name, null, "object.name property value (homePage only)");
-            equal(obj.homePage, "http://tincanapi.com/", "object.homePage property value (homePage only)");
-            equal(obj.toString(), "-:http://tincanapi.com/", "object.toString (homePage only)");
-            deepEqual(obj.asVersion(), rawHomePage, "object.asVersion latest (homePage only)");
-            deepEqual(obj.asVersion("0.95"), rawHomePage, "object.asVersion 0.95 (homePage only)");
-            deepEqual(obj.asVersion("0.9"), rawHomePage9, "object.asVersion 0.9 (homePage only)");
-
-            obj = new TinCan.AgentAccount (
-                {
-                    name: "test",
-                    homePage: "http://tincanapi.com/"
-                }
-            );
-            ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount (full)");
-            strictEqual(obj.name, "test", "object.name property value (full)");
-            equal(obj.homePage, "http://tincanapi.com/", "object.homePage property value (full)");
-            equal(obj.toString(), "test:http://tincanapi.com/", "object.toString (full)");
-            deepEqual(obj.asVersion(), rawFull, "object.asVersion latest (full)");
-            deepEqual(obj.asVersion("0.95"), rawFull, "object.asVersion 0.95 (full)");
-            deepEqual(obj.asVersion("0.9"), rawFull9, "object.asVersion 0.9 (full)");
+            }
         }
     );
 

@@ -38,235 +38,230 @@
     test(
         "agent Object",
         function () {
-            var obj = new TinCan.Agent ();
+            var obj = new TinCan.Agent (),
+                nullProps = [
+                    "name",
+                    "mbox",
+                    "mbox_sha1sum",
+                    "openid",
+                    "account"
+                ],
+                i
+            ;
 
             ok(obj instanceof TinCan.Agent, "object is TinCan.Agent");
 
-            // test direct properties from construction
-            ok(obj.hasOwnProperty("name"), "object has property: name");
-            strictEqual(obj.name, null, "object.name property initial value");
-            ok(obj.hasOwnProperty("mbox"), "object has property: mbox");
-            strictEqual(obj.mbox, null, "object.mbox property initial value");
-            ok(obj.hasOwnProperty("mbox_sha1sum"), "object has property: mbox_sha1sum");
-            strictEqual(obj.mbox_sha1sum, null, "object.mbox_sha1sum property initial value");
-            ok(obj.hasOwnProperty("openid"), "object has property: openid");
-            strictEqual(obj.openid, null, "object.openid property initial value");
-            ok(obj.hasOwnProperty("account"), "object has property: account");
-            strictEqual(obj.account, null, "object.account property initial value");
+            for (i = 0; i < nullProps.length; i += 1) {
+                ok(obj.hasOwnProperty(nullProps[i]), "object has property: " + nullProps[i]);
+                strictEqual(obj[nullProps[i]], null, "object property initial value: " + nullProps[i]);
+            }
 
-            // test properties from prototype
             strictEqual(obj.LOG_SRC, "Agent", "object property LOG_SRC initial value");
             strictEqual(obj.objectType, "Agent", "object property objectType initial value");
         }
     );
 
     test(
-        "agent with mbox",
+        "agent variants",
         function () {
-            var obj,
+            var set = [
+                    {
+                        name: "agent with name",
+                        instanceConfig: {
+                            name: "Test Agent"
+                        },
+                        toString: "Test Agent",
+                        checkProps: {
+                            name: "Test Agent"
+                        }
+                    },
+                    {
+                        name: "agent with mbox (mailto: added)",
+                        instanceConfig: {
+                            mbox: "test-agent@tincanapi.com"
+                        },
+                        toString: "test-agent@tincanapi.com",
+                        checkProps: {
+                            mbox: "mailto:test-agent@tincanapi.com"
+                        }
+                    },
+                    {
+                        name: "agent with mbox",
+                        instanceConfig: {
+                            mbox: "mailto:test-agent@tincanapi.com"
+                        },
+                        toString: "test-agent@tincanapi.com",
+                        checkProps: {
+                            mbox: "mailto:test-agent@tincanapi.com"
+                        }
+                    },
+                    {
+                        name: "agent with mbox_sha1sum",
+                        instanceConfig: {
+                            mbox_sha1sum: "arbitrary"
+                        },
+                        toString: "arbitrary",
+                        checkProps: {
+                            mbox_sha1sum: "arbitrary"
+                        }
+                    },
+                    {
+                        name: "agent with openid",
+                        instanceConfig: {
+                            openid: "http://tincanapi.com/"
+                        },
+                        toString: "http://tincanapi.com/",
+                        checkProps: {
+                            openid: "http://tincanapi.com/"
+                        }
+                    },
+                    {
+                        name: "agent with account (empty)",
+                        instanceConfig: {
+                            account: {}
+                        },
+                        toString: "AgentAccount: unidentified",
+                        checkProps: {
+                            account: new TinCan.AgentAccount({ name: null, homePage: null })
+                        }
+                    },
+                    {
+                        name: "agent with account (name only)",
+                        instanceConfig: {
+                            account: {
+                                name: "test"
+                            }
+                        },
+                        toString: "test:-",
+                        checkProps: {
+                            account: new TinCan.AgentAccount({ name: "test", homePage: null })
+                        }
+                    },
+                    {
+                        name: "agent with account (homePage only)",
+                        instanceConfig: {
+                            account: {
+                                homePage: "http://tincanapi.com/"
+                            }
+                        },
+                        toString: "-:http://tincanapi.com/",
+                        checkProps: {
+                            account: new TinCan.AgentAccount({ name: null, homePage: "http://tincanapi.com/" })
+                        }
+                    },
+                    {
+                        name: "agent with account (full)",
+                        instanceConfig: {
+                            account: {
+                                name: "test",
+                                homePage: "http://tincanapi.com/"
+                            }
+                        },
+                        toString: "test:http://tincanapi.com/",
+                        checkProps: {
+                            account: new TinCan.AgentAccount({ name: "test", homePage: "http://tincanapi.com/" })
+                        }
+                    }
+                ],
+                i,
+                obj,
                 result
             ;
 
-            obj = new TinCan.Agent (
-                {
-                    mbox: "test-agent@tincanapi.com"
-                }
-            );
+            for (i = 0; i < set.length; i += 1) {
+                row = set[i];
+                obj = new TinCan.Agent (row.instanceConfig);
 
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent");
-            equal(obj.mbox, "mailto:test-agent@tincanapi.com", "object.mbox property initial value (mailto: added)");
-
-            obj = new TinCan.Agent (
-                {
-                    mbox: "mailto:test-agent@tincanapi.com"
-                }
-            );
-
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent");
-            equal(obj.mbox, "mailto:test-agent@tincanapi.com", "object.mbox property initial value");
-            equal(obj.toString(), "test-agent@tincanapi.com", "object.toString");
-        }
-    );
-
-    test(
-        "agent with mbox_sha1sum",
-        function () {
-            var obj,
-                result
-            ;
-
-            obj = new TinCan.Agent (
-                {
-                    mbox_sha1sum: "arbitrary"
-                }
-            );
-
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent");
-            equal(obj.mbox_sha1sum, "arbitrary", "object.mbox_sha1sum property initial value");
-            equal(obj.toString(), "arbitrary", "object.toString");
-        }
-    );
-
-    test(
-        "agent with openid",
-        function () {
-            var obj,
-                result
-            ;
-
-            obj = new TinCan.Agent (
-                {
-                    openid: "http://tincanapi.com/"
-                }
-            );
-
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent");
-            equal(obj.openid, "http://tincanapi.com/", "object.mbox_sha1sum property initial value");
-            equal(obj.toString(), "http://tincanapi.com/", "object.toString");
-        }
-    );
-
-    test(
-        "agent with account",
-        function () {
-            var obj,
-                result
-            ;
-
-            obj = new TinCan.Agent (
-                {
-                    account: {}
-                }
-            );
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent (empty)");
-            deepEqual(obj.account, new TinCan.AgentAccount({ name: null, homePage: null }), "account property value (empty)");
-            equal(obj.toString(), "AgentAccount: unidentified", "object.toString (empty)");
-
-            obj = new TinCan.Agent (
-                {
-                    account: {
-                        name: "test"
+                ok(obj instanceof TinCan.Agent, "object is TinCan.Agent (" + row.name + ")");
+                strictEqual(obj.toString(), row.toString, "object.toString (" + row.name + ")");
+                if (typeof row.checkProps !== "undefined") {
+                    for (key in row.checkProps) {
+                        deepEqual(obj[key], row.checkProps[key], "object property initial value: " + key + " (" + row.name + ")");
                     }
                 }
-            );
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent (name only)");
-            deepEqual(obj.account, new TinCan.AgentAccount({ name: "test", homePage: null }), "account property value (name only)");
-            equal(obj.toString(), "test:-", "object.toString (name only)");
-
-            obj = new TinCan.Agent (
-                {
-                    account: {
-                        homePage: "http://tincanapi.com/"
-                    }
-                }
-            );
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent (homePage only)");
-            deepEqual(obj.account, new TinCan.AgentAccount({ name: null, homePage: "http://tincanapi.com/" }), "account property value (homePage only)");
-            equal(obj.toString(), "-:http://tincanapi.com/", "object.toString (homePage only)");
-
-            obj = new TinCan.Agent (
-                {
-                    account: {
-                        name: "test",
-                        homePage: "http://tincanapi.com/"
-                    }
-                }
-            );
-            ok(obj instanceof TinCan.Agent, "object is TinCan.Agent (full)");
-            deepEqual(obj.account, new TinCan.AgentAccount({ name: "test", homePage: "http://tincanapi.com/" }), "account property value (full)");
-            equal(obj.toString(), "test:http://tincanapi.com/", "object.toString (full)");
+            }
         }
     );
 
     test(
         "agent asVersion",
         function () {
-            var obj,
-                result,
-                rawMbox      = { objectType: "Agent", name: "Test Agent", mbox: "mailto:test-agent@tincanapi.com" },
-                rawMbox9     = { objectType: "Agent", name: [ "Test Agent" ], mbox: [ "mailto:test-agent@tincanapi.com" ] }
-                rawMboxSHA1  = { objectType: "Agent", name: "Test Agent", mbox_sha1sum: "arbitrary" },
-                rawMboxSHA19 = { objectType: "Agent", name: [ "Test Agent" ], mbox_sha1sum: [ "arbitrary" ] },
-                rawOpenID    = { objectType: "Agent", name: "Test Agent", openid: "http://tincanapi.com/" },
-                rawOpenID9   = { objectType: "Agent", name: [ "Test Agent" ], openid: [ "http://tincanapi.com/" ] }
-                rawAccount   = { objectType: "Agent", name: "Test Agent", account: { name: "name", homePage: "homePage" } },
-                rawAccount9  = { objectType: "Agent", name: [ "Test Agent" ], account: [ { accountName: "name", accountServiceHomePage: "homePage" } ] }
-            ;
-
             // include other properties to confirm correct response
             // of single unique id field
-            obj = new TinCan.Agent (
-                {
-                    name: "Test Agent",
-                    mbox: "test-agent@tincanapi.com",
-                    mbox_sha1sum: "arbitrary",
-                    openid: "http://tincanapi.com/",
-                    account: {}
-                }
-            );
-
-            result = obj.asVersion("0.9");
-            deepEqual(result, rawMbox9, "object.asVersion() mbox 0.9");
-
-            result = obj.asVersion("0.95");
-            deepEqual(result, rawMbox, "object.asVersion() mbox 0.95");
-
-            result = obj.asVersion();
-            deepEqual(result, rawMbox, "object.asVersion() mbox latest");
-
-            obj = new TinCan.Agent (
-                {
-                    name: "Test Agent",
-                    mbox_sha1sum: "arbitrary",
-                    openid: "http://tincanapi.com/",
-                    account: {}
-                }
-            );
-
-            result = obj.asVersion("0.9");
-            deepEqual(result, rawMboxSHA19, "object.asVersion() mbox_sha1sum 0.9");
-
-            result = obj.asVersion("0.95");
-            deepEqual(result, rawMboxSHA1, "object.asVersion() mbox_sha1sum 0.95");
-
-            result = obj.asVersion();
-            deepEqual(result, rawMboxSHA1, "object.asVersion() mbox_sha1sum latest");
-
-            obj = new TinCan.Agent (
-                {
-                    name: "Test Agent",
-                    openid: "http://tincanapi.com/",
-                    account: {}
-                }
-            );
-
-            result = obj.asVersion("0.9");
-            deepEqual(result, rawOpenID9, "object.asVersion() openid 0.9");
-
-            result = obj.asVersion("0.95");
-            deepEqual(result, rawOpenID, "object.asVersion() openid 0.95");
-
-            result = obj.asVersion();
-            deepEqual(result, rawOpenID, "object.asVersion() openid latest");
-
-            obj = new TinCan.Agent (
-                {
-                    name: "Test Agent",
-                    account: {
-                        name: "name",
-                        homePage: "homePage"
+            var set = [
+                    {
+                        name: "mbox",
+                        instanceConfig: {
+                            name: "Test Agent",
+                            mbox: "test-agent@tincanapi.com",
+                            mbox_sha1sum: "arbitrary",
+                            openid: "http://tincanapi.com/",
+                            account: {}
+                        },
+                        versions: {
+                            latest: { objectType: "Agent", name: "Test Agent", mbox: "mailto:test-agent@tincanapi.com" },
+                            "0.9": { objectType: "Agent", name: [ "Test Agent" ], mbox: [ "mailto:test-agent@tincanapi.com" ] }
+                        }
+                    },
+                    {
+                        name: "mbox_sha1sum",
+                        instanceConfig: {
+                            name: "Test Agent",
+                            mbox_sha1sum: "arbitrary",
+                            openid: "http://tincanapi.com/",
+                            account: {}
+                        },
+                        versions: {
+                            latest: { objectType: "Agent", name: "Test Agent", mbox_sha1sum: "arbitrary" },
+                            "0.9": { objectType: "Agent", name: [ "Test Agent" ], mbox_sha1sum: [ "arbitrary" ] }
+                        }
+                    },
+                    {
+                        name: "openid",
+                        instanceConfig: {
+                            name: "Test Agent",
+                            openid: "http://tincanapi.com/",
+                            account: {}
+                        },
+                        versions: {
+                            latest: { objectType: "Agent", name: "Test Agent", openid: "http://tincanapi.com/" },
+                            "0.9": { objectType: "Agent", name: [ "Test Agent" ], openid: [ "http://tincanapi.com/" ] }
+                        }
+                    },
+                    {
+                        name: "account",
+                        instanceConfig: {
+                            name: "Test Agent",
+                            account: {
+                                name: "name",
+                                homePage: "homePage"
+                            }
+                        },
+                        versions: {
+                            latest: { objectType: "Agent", name: "Test Agent", account: { name: "name", homePage: "homePage" } },
+                            "0.9": { objectType: "Agent", name: [ "Test Agent" ], account: [ { accountName: "name", accountServiceHomePage: "homePage" } ] }
+                        }
                     }
+                ],
+                versions = TinCan.versions(),
+                i,
+                v,
+                obj,
+                result
+            ;
+
+            for (i = 0; i < set.length; i += 1) {
+                row = set[i];
+                obj = new TinCan.Agent (row.instanceConfig);
+
+                result = obj.asVersion();
+                deepEqual(result, row.versions.latest, "object.asVersion() latest: " + row.name);
+
+                for (v = 0; v < versions.length; v += 1) {
+                    result = obj.asVersion(versions[v]);
+                    deepEqual(result, (row.versions.hasOwnProperty(versions[v]) ? row.versions[versions[v]] : row.versions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
                 }
-            );
-
-            result = obj.asVersion("0.9");
-            deepEqual(result, rawAccount9, "object.asVersion() account 0.9");
-
-            result = obj.asVersion("0.95");
-            deepEqual(result, rawAccount, "object.asVersion() account 0.95");
-
-            result = obj.asVersion();
-            deepEqual(result, rawAccount, "object.asVersion() account latest");
+            }
         }
     );
 }());
