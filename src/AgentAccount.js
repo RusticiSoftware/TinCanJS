@@ -84,6 +84,55 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+            var result = "";
+
+            if (this.name !== null || this.homePage !== null) {
+                if (this.name !== null) {
+                    result += this.name;
+                }
+                else {
+                    result += "-";
+                }
+
+                result += ":";
+
+                if (this.homePage !== null) {
+                    result += this.homePage;
+                }
+                else {
+                    result += "-";
+                }
+            }
+            else {
+                result = "AgentAccount: unidentified";
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {String} version Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result = {};
+
+            version = version || TinCan.versions()[0];
+
+            if (version === "0.9") {
+                result.accountName = this.name;
+                result.accountServiceHomePage = this.homePage;
+            } else {
+                result.name = this.name;
+                result.homePage = this.homePage;
+            }
+
+            return result;
         }
     };
 
