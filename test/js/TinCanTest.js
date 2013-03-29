@@ -1,4 +1,16 @@
-var TinCanTest;
+var TinCanTest,
+    TinCanTestCfg = {
+        recordStores: {}
+    },
+    log
+;
+
+log = function () {};
+if (console && console.log) {
+    log = function (msg) {
+        console.log("Test: " + msg);
+    }
+}
 
 (function () {
     TinCanTest = {};

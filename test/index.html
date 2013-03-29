@@ -17,63 +17,33 @@
 <html>
 <head>
     <title>TinCanJS Tests</title>
-    <!-- TODO: we should really try to use SinonJS -->
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
-    <script type="text/javascript" src="../build/tincan.js"></script>
-    <!-- Uncomment to test minified version -->
-    <!--
-    <script type="text/javascript" src="../build/tincan-min.js"></script>
-    -->
-    <!-- Uncomment to test non-build version -->
-    <!--
-    <script type="text/javascript" src="../vendor/cryptojs-v3.0.2/rollups/sha1.js"></script>
-    <script type="text/javascript" src="../vendor/cryptojs-v3.0.2/components/enc-base64.js"></script>
-    <script type="text/javascript" src="../src/TinCan.js"></script>
-    <script type="text/javascript" src="../src/Utils.js"></script>
-    <script type="text/javascript" src="../src/LRS.js"></script>
-    <script type="text/javascript" src="../src/AgentAccount.js"></script>
-    <script type="text/javascript" src="../src/Agent.js"></script>
-    <script type="text/javascript" src="../src/Group.js"></script>
-    <script type="text/javascript" src="../src/Verb.js"></script>
-    <script type="text/javascript" src="../src/Result.js"></script>
-    <script type="text/javascript" src="../src/Score.js"></script>
-    <script type="text/javascript" src="../src/Context.js"></script>
-    <script type="text/javascript" src="../src/Activity.js"></script>
-    <script type="text/javascript" src="../src/InteractionComponent.js"></script>
-    <script type="text/javascript" src="../src/ActivityDefinition.js"></script>
-    <script type="text/javascript" src="../src/StatementRef.js"></script>
-    <script type="text/javascript" src="../src/SubStatement.js"></script>
-    <script type="text/javascript" src="../src/Statement.js"></script>
-    <script type="text/javascript" src="../src/StatementsResult.js"></script>
-    <script type="text/javascript" src="../src/State.js"></script>
-    <script type="text/javascript" src="../src/ActivityProfile.js"></script>
-    -->
 </head>
 <body>
-    <h1 id="qunit-header">TinCanJS Test Suite</h1>
-    <h2 id="qunit-banner"></h2>
-    <div id="qunit-testrunner-toolbar"></div>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
 
-    <script>
-        var log = function () {};
-        if (console && console.log) {
-            log = function (msg) {
-                console.log("Test: " + msg);
-            }
-        }
+<h2>Full Suite</h2>
+<a href="complete.html">Complete Test</a>
 
-        var TinCanTestCfg = {
-            recordStores: {}
-        };
-    </script>
+<h2>Single Test Files</h2>
+<ul>
+    <li><a href="single/TinCan.html">TinCan</a></li>
+    <li><a href="single/LRS.html">LRS</a></li>
+    <li><a href="single/State.html">State</a></li>
+    <li><a href="single/StatementsResult.html">StatementsResult</a></li>
+    <li><a href="single/Agent.html">Agent</a></li>
+    <li><a href="single/Group.html">Group</a></li>
+    <li><a href="single/AgentAccount.html">AgentAccount</a></li>
+    <li><a href="single/Activity.html">Activity</a></li>
+    <li><a href="single/ActivityDefinition.html">ActivityDefinition</a></li>
+    <li><a href="single/Context.html">Context</a></li>
+    <li><a href="single/InteractionComponent.html">InteractionComponent</a></li>
+    <li><a href="single/Result.html">Result</a></li>
+    <li><a href="single/Score.html">Score</a></li>
+    <li><a href="single/Statement.html">Statement</a></li>
+    <li><a href="single/StatementRef.html">StatementRef</a></li>
+    <li><a href="single/SubStatement.html">SubStatement</a></li>
+    <li><a href="single/Verb.html">Verb</a></li>
+    <li><a href="single/Utils.html">Utils</a></li>
+</ul>
 
-    <script src="config.js"></script>
-    <script src="js/TinCanTest.js"></script>
-    <script src="js/TinCan.js"></script>
-    <script src="js/Utils.js"></script>
 </body>
 </html>
