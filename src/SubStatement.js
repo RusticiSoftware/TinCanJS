@@ -177,4 +177,16 @@ TinCan client library
             return result;
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} SubStatement
+    @static
+    */
+    SubStatement.fromJSON = function (subStJSON) {
+        SubStatement.prototype.log("fromJSON");
+        var _subSt = JSON.parse(subStJSON);
+
+        return new SubStatement(_subSt);
+    };
 }());
