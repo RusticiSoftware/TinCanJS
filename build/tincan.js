@@ -3221,6 +3221,12 @@ TinCan client library
                         this[directProps[i]] = cfg[directProps[i]];
                     }
                 }
+
+                if (this.display === null && typeof _downConvertMap[this.id] !== "undefined") {
+                    this.display = {
+                        "und": _downConvertMap[this.id]
+                    };
+                }
             }
         },
 
