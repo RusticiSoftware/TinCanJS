@@ -78,8 +78,11 @@ TinCan client library
             cfg = cfg || {};
 
             if (cfg.hasOwnProperty("definition")) {
-                // TODO: check to see if already this type
-                this.definition = new TinCan.ActivityDefinition (cfg.definition);
+                if (cfg.definition instanceof TinCan.ActivityDefinition) {
+                    this.definition = cfg.definition;
+                } else {
+                    this.definition = new TinCan.ActivityDefinition (cfg.definition);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -108,7 +111,7 @@ TinCan client library
                 return this.id;
             }
 
-            return "";
+            return "Activity: unidentified";
         },
 
         /**

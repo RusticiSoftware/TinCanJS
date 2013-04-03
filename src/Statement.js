@@ -63,7 +63,7 @@ TinCan client library
 
         /**
         @property target
-        @type TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement|null
+        @type TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement|null
         */
         this.target = null;
 
@@ -170,11 +170,18 @@ TinCan client library
                     cfg.actor.objectType = "Agent";
                 }
 
-                // TODO: check to see if already this type
                 if (cfg.actor.objectType === "Agent") {
-                    this.actor = new TinCan.Agent (cfg.actor);
+                    if (cfg.actor instanceof TinCan.Agent) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Agent (cfg.actor);
+                    }
                 } else if (cfg.actor.objectType === "Group") {
-                    this.actor = new TinCan.Group (cfg.actor);
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Group (cfg.actor);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("authority")) {
@@ -182,42 +189,72 @@ TinCan client library
                     cfg.authority.objectType = "Agent";
                 }
 
-                // TODO: check to see if already this type
                 if (cfg.authority.objectType === "Agent") {
-                    this.authority = new TinCan.Agent (cfg.authority);
+                    if (cfg.authority instanceof TinCan.Agent) {
+                        this.authority = cfg.authority;
+                    } else {
+                        this.authority = new TinCan.Agent (cfg.authority);
+                    }
                 } else if (cfg.authority.objectType === "Group") {
-                    this.authority = new TinCan.Group (cfg.authority);
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.authority = cfg.authority;
+                    } else {
+                        this.authority = new TinCan.Group (cfg.authority);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("verb")) {
-                // TODO: check to see if already this type
-                this.verb = new TinCan.Verb (cfg.verb);
+                if (cfg.verb instanceof TinCan.Verb) {
+                    this.verb = cfg.verb;
+                } else {
+                    this.verb = new TinCan.Verb (cfg.verb);
+                }
             }
             if (cfg.hasOwnProperty("target")) {
-                // TODO: check to see if already this type
-                if (typeof cfg.target.objectType === "undefined") {
-                    cfg.target.objectType = "Activity";
-                }
-
-                if (cfg.target.objectType === "Activity") {
-                    this.target = new TinCan.Activity (cfg.target);
-                } else if (cfg.target.objectType === "Agent") {
-                    this.target = new TinCan.Agent (cfg.target);
-                } else if (cfg.target.objectType === "SubStatement") {
-                    this.target = new TinCan.SubStatement (cfg.target);
-                } else if (cfg.target.objectType === "StatementRef") {
-                    this.target = new TinCan.StatementRef (cfg.target);
+                if (cfg.target instanceof TinCan.Activity
+                    ||
+                    cfg.target instanceof TinCan.Agent
+                    ||
+                    cfg.target instanceof TinCan.Group
+                    ||
+                    cfg.target instanceof TinCan.SubStatement
+                    ||
+                    cfg.target instanceof TinCan.StatementRef
+                ) {
+                    this.target = cfg.target;
                 } else {
-                    this.log("Unrecognized target type: " + cfg.target.objectType);
+                    if (typeof cfg.target.objectType === "undefined") {
+                        cfg.target.objectType = "Activity";
+                    }
+
+                    if (cfg.target.objectType === "Activity") {
+                        this.target = new TinCan.Activity (cfg.target);
+                    } else if (cfg.target.objectType === "Agent") {
+                        this.target = new TinCan.Agent (cfg.target);
+                    } else if (cfg.target.objectType === "Group") {
+                        this.target = new TinCan.Group (cfg.target);
+                    } else if (cfg.target.objectType === "SubStatement") {
+                        this.target = new TinCan.SubStatement (cfg.target);
+                    } else if (cfg.target.objectType === "StatementRef") {
+                        this.target = new TinCan.StatementRef (cfg.target);
+                    } else {
+                        this.log("Unrecognized target type: " + cfg.target.objectType);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("result")) {
-                // TODO: check to see if already this type
-                this.result = new TinCan.Result (cfg.result);
+                if (cfg.result instanceof TinCan.Result) {
+                    this.result = cfg.result;
+                } else {
+                    this.result = new TinCan.Result (cfg.result);
+                }
             }
             if (cfg.hasOwnProperty("context")) {
-                // TODO: check to see if already this type
-                this.context = new TinCan.Context (cfg.context);
+                if (cfg.context instanceof TinCan.Context) {
+                    this.context = cfg.context;
+                } else {
+                    this.context = new TinCan.Context (cfg.context);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {

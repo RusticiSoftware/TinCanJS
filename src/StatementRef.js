@@ -98,7 +98,7 @@ TinCan client library
             this.log("asVersion");
 
             return {
-                objectType: this.prototype.objectType,
+                objectType: this.objectType,
                 id: this.id
             };
         }
