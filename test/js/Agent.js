@@ -28,7 +28,7 @@
                 result
             ;
 
-            var result = TinCan.Agent.fromJSON(JSON.stringify(raw));
+            result = TinCan.Agent.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Agent, "returns TinCan.Agent");
         }
     );

@@ -16,13 +16,7 @@
 (function () {
     var session = null;
 
-    module(
-        "ActivityDefinition Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("ActivityDefinition Statics");
 
     test(
         "ActivityDefinition.fromJSON",
@@ -33,7 +27,7 @@
                 result
             ;
 
-            var result = TinCan.ActivityDefinition.fromJSON(JSON.stringify(raw));
+            result = TinCan.ActivityDefinition.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.ActivityDefinition, "returns TinCan.ActivityDefinition");
         }
     );

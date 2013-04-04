@@ -26,7 +26,7 @@
                 result
             ;
 
-            var result = TinCan.ContextActivities.fromJSON(JSON.stringify(raw));
+            result = TinCan.ContextActivities.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.ContextActivities, "returns TinCan.ContextActivities");
         }
     );

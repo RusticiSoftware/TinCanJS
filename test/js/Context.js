@@ -26,7 +26,7 @@
                 result
             ;
 
-            var result = TinCan.Context.fromJSON(JSON.stringify(raw));
+            result = TinCan.Context.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Context, "returns TinCan.Context");
         }
     );

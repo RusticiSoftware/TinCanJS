@@ -16,13 +16,7 @@
 (function () {
     var session = null;
 
-    module(
-        "Verb Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("Verb Statics");
 
     test(
         "Verb.fromJSON",
@@ -34,7 +28,7 @@
                 result
             ;
 
-            var result = TinCan.Verb.fromJSON(JSON.stringify(raw));
+            result = TinCan.Verb.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Verb, "returns TinCan.Verb");
         }
     );

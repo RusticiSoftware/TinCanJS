@@ -16,11 +16,5 @@
 (function () {
     var session = null;
 
-    module(
-        "LRS Instance",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("LRS Instance");
 }());

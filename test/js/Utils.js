@@ -21,13 +21,7 @@
         },
         alertBuiltin;
 
-    module(
-        "Utils Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("Utils Statics");
 
     test(
         "getUUID",

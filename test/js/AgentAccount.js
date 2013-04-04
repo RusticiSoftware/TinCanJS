@@ -26,7 +26,7 @@
                 result
             ;
 
-            var result = TinCan.AgentAccount.fromJSON(JSON.stringify(raw));
+            result = TinCan.AgentAccount.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.AgentAccount, "returns TinCan.AgentAccount");
         }
     );
