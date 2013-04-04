@@ -4956,7 +4956,7 @@ TinCan client library
     };
 }());
 /*
-    Copyright 2012 Rustici Software
+    Copyright 2012-3 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -4983,22 +4983,41 @@ TinCan client library
     /**
     @class TinCan.Statement
     @constructor
-    @param {Object} [cfg] Configuration used to initialize.
-        @param {Object} [cfg.id] Statement ID
+    @param {Object} [cfg] Values to set in properties
+        @param {String} [cfg.id] Statement ID (UUID)
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
-        @param {Boolean} [cfg.voided] Whether the statement has been voided
-        @param {Boolean} [cfg.inProgress] Whether the statement is in progress
-    @param {Integer} [storeOriginal] Whether to store a JSON stringified version
-        of the original options object, pass number of spaces used for indent
+        @param {String} [cfg.timestamp] ISO8601 Date/time value
+        @param {String} [cfg.stored] ISO8601 Date/time value
+        @param {String} [cfg.version] Version of the statement (post 0.95)
+    @param {Object} [initCfg] Configuration of initialization process
+        @param {Integer} [storeOriginal] Whether to store a JSON stringified version
+            of the original options object, pass number of spaces used for indent
+        @param {Boolean} [doStamp] Whether to automatically set the 'id' and 'timestamp'
+            properties (default: true)
     **/
-    var Statement = TinCan.Statement = function (cfg, storeOriginal) {
+    var Statement = TinCan.Statement = function (cfg, initCfg) {
         this.log("constructor");
+
+        // check for true value for API backwards compat
+        if (typeof initCfg === "number") {
+            initCfg = {
+                storeOriginal: initCfg
+            };
+        } else {
+            initCfg = initCfg || {};
+        }
+        if (typeof initCfg.storeOriginal === "undefined") {
+            initCfg.storeOriginal = null;
+        }
+        if (typeof initCfg.doStamp === "undefined") {
+            initCfg.doStamp = true;
+        }
 
         /**
         @property id
@@ -5055,11 +5074,10 @@ TinCan client library
         this.authority = null;
 
         /**
-        @property voided
-        @type Boolean
-        @default false
+        @property version
+        @type String
         */
-        this.voided = false;
+        this.version = null;
 
         /**
         @property degraded
@@ -5067,6 +5085,14 @@ TinCan client library
         @default false
         */
         this.degraded = false;
+
+        /**
+        @property voided
+        @type Boolean
+        @default null
+        @deprecated
+        */
+        this.voided = null;
 
         /**
         @property inProgress
@@ -5081,11 +5107,7 @@ TinCan client library
         */
         this.originalJSON = null;
 
-        if (storeOriginal) {
-            this.originalJSON = JSON.stringify(cfg, null, storeOriginal);
-        }
-
-        this.init(cfg);
+        this.init(cfg, initCfg);
     };
 
     Statement.prototype = {
@@ -5101,15 +5123,17 @@ TinCan client library
 
         /**
         @method init
-        @param {Object} [options] Configuration used to initialize (see constructor)
+        @param {Object} [properties] Configuration used to set properties (see constructor)
+        @param {Object} [cfg] Configuration used to initialize (see constructor)
         */
-        init: function (cfg) {
+        init: function (cfg, initCfg) {
             this.log("init");
             var i,
                 directProps = [
                     "id",
                     "stored",
                     "timestamp",
+                    "version",
                     "inProgress",
                     "voided"
                 ],
@@ -5117,6 +5141,10 @@ TinCan client library
             ;
 
             cfg = cfg || {};
+
+            if (initCfg.storeOriginal) {
+                this.originalJSON = JSON.stringify(cfg, null, initCfg.storeOriginal);
+            }
 
             if (cfg.hasOwnProperty("object")) {
                 cfg.target = cfg.object;
@@ -5220,11 +5248,8 @@ TinCan client library
                 }
             }
 
-            if (this.id === null) {
-                this.id = TinCan.Utils.getUUID();
-            }
-            if (this.timestamp === null) {
-                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            if (initCfg.doStamp) {
+                this.stamp();
             }
         },
 
@@ -5247,14 +5272,14 @@ TinCan client library
         */
         asVersion: function (version) {
             this.log("asVersion");
-            var result,
+            var result = {},
                 optionalDirectProps = [
                     "id",
-                    "timestamp",
-                    "stored",
-                    "voided"
+                    "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
                     "result",
                     "context",
                     "authority"
@@ -5263,11 +5288,6 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            result = {
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
@@ -5278,12 +5298,35 @@ TinCan client library
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
                 }
             }
+            if (this.target !== null) {
+                result.object = this.target.asVersion(version);
+            }
 
+            if (version === "0.9" || version === "0.95") {
+                if (this.voided !== null) {
+                    result.voided = this.voided;
+                }
+            }
             if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
 
             return result;
+        },
+
+        /**
+        Sets 'id' and 'timestamp' properties if not already set
+
+        @method stamp
+        */
+        stamp: function () {
+            this.log("stamp");
+            if (this.id === null) {
+                this.id = TinCan.Utils.getUUID();
+            }
+            if (this.timestamp === null) {
+                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            }
         }
     };
 
