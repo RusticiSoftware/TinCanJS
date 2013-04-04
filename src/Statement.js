@@ -27,16 +27,17 @@ TinCan client library
     @class TinCan.Statement
     @constructor
     @param {Object} [cfg] Values to set in properties
-        @param {Object} [cfg.id] Statement ID
+        @param {String} [cfg.id] Statement ID (UUID)
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
-        @param {Boolean} [cfg.voided] Whether the statement has been voided
-        @param {Boolean} [cfg.inProgress] Whether the statement is in progress
+        @param {String} [cfg.timestamp] ISO8601 Date/time value
+        @param {String} [cfg.stored] ISO8601 Date/time value
+        @param {String} [cfg.version] Version of the statement (post 0.95)
     @param {Object} [initCfg] Configuration of initialization process
         @param {Integer} [storeOriginal] Whether to store a JSON stringified version
             of the original options object, pass number of spaces used for indent
