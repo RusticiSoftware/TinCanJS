@@ -335,7 +335,7 @@
                             id: "http://adlnet.gov/expapi/verbs/attempted"
                         },
                         target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/sync"
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync"
                         }
                     }
                 );
@@ -409,6 +409,12 @@
                         // TODO: should we check the authority?
                         statement.stored = null;
                         statement.authority = null;
+
+                        // at 1.0 and after the version returned should be the version we are sending under
+                        // for this statement since we know we are generating it
+                        if (version !== "0.9" && version !== "0.95") {
+                            statement.version = version;
+                        }
                         if (version === "0.9") {
                             sendResult.statement.inProgress = false;
                         }
