@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -193,6 +193,36 @@ TinCan client library
         this.log(&quot;constructor&quot;);
 
         &#x2F;**
+        @property name
+        @type String
+        *&#x2F;
+        this.name = null;
+
+        &#x2F;**
+        @property mbox
+        @type String
+        *&#x2F;
+        this.mbox = null;
+
+        &#x2F;**
+        @property mbox_sha1sum
+        @type String
+        *&#x2F;
+        this.mbox_sha1sum = null;
+
+        &#x2F;**
+        @property openid
+        @type String
+        *&#x2F;
+        this.openid = null;
+
+        &#x2F;**
+        @property account
+        @type TinCan.AgentAccount
+        *&#x2F;
+        this.account = null;
+
+        &#x2F;**
         @property member
         @type Array
         *&#x2F;
@@ -212,7 +242,7 @@ TinCan client library
         &#x2F;**
         @property LOG_SRC
         *&#x2F;
-        LOG_SRC: &#x27;Group&#x27;,
+        LOG_SRC: &quot;Group&quot;,
 
         &#x2F;**
         @method log
@@ -225,7 +255,71 @@ TinCan client library
         *&#x2F;
         init: function (cfg) {
             this.log(&quot;init&quot;);
+            var i;
+
+            cfg = cfg || {};
+
+            TinCan.Agent.prototype.init.call(this, cfg);
+
+            if (typeof cfg.member !== &quot;undefined&quot;) {
+                for (i = 0; i &lt; cfg.member.length; i += 1) {
+                    if (cfg.member[i] instanceof TinCan.Agent) {
+                        this.member.push(cfg.member[i]);
+                    }
+                    else {
+                        this.member.push(new TinCan.Agent (cfg.member[i]));
+                    }
+                }
+            }
+        },
+
+        toString: function (lang) {
+            this.log(&quot;toString&quot;);
+
+            var result = TinCan.Agent.prototype.toString.call(this, lang);
+            if (result !== this.objectType + &quot;: unidentified&quot;) {
+                result = this.objectType + &quot;: &quot; + result;
+            }
+
+            return result;
+        },
+
+        &#x2F;**
+        @method asVersion
+        @param {Object} [options]
+        @param {String} [options.version] Version to return (defaults to newest supported)
+        *&#x2F;
+        asVersion: function (version) {
+            this.log(&quot;asVersion: &quot; + version);
+            var result,
+                i
+            ;
+
+            version = version || TinCan.versions()[0];
+
+            result = TinCan.Agent.prototype.asVersion.call(this, version);
+
+            if (this.member.length &gt; 0) {
+                result.member = [];
+                for (i = 0; i &lt; this.member.length; i += 1) {
+                    result.member.push(this.member[i].asVersion(version));
+                }
+            }
+
+            return result;
         }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} Group
+    @static
+    *&#x2F;
+    Group.fromJSON = function (groupJSON) {
+        Group.prototype.log(&quot;fromJSON&quot;);
+        var _group = JSON.parse(groupJSON);
+
+        return new Group(_group);
     };
 }());
 

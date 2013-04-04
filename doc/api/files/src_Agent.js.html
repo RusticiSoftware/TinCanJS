@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -191,14 +191,7 @@ TinCan client library
     *&#x2F;
     var Agent = TinCan.Agent = function (cfg) {
         this.log(&quot;constructor&quot;);
-        
-        &#x2F;**
-        @property objectType
-        @type String
-        @default Agent
-        *&#x2F;
-        this.objectType = &quot;Agent&quot;;
-        
+
         &#x2F;**
         @property name
         @type String
@@ -339,7 +332,7 @@ TinCan client library
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === &quot;object&quot; &amp;&amp; cfg.account !== null &amp;&amp; typeof cfg.account.homePage === &quot;undefined&quot;) {
+            if (typeof cfg.account === &quot;object&quot; &amp;&amp; cfg.account !== null &amp;&amp; typeof cfg.account.homePage === &quot;undefined&quot; &amp;&amp; typeof cfg.account.name === &quot;undefined&quot;) {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -380,17 +373,26 @@ TinCan client library
             if (this.mbox !== null) {
                 return this.mbox.replace(&quot;mailto:&quot;, &quot;&quot;);
             }
+            if (this.mbox_sha1sum !== null) {
+                return this.mbox_sha1sum;
+            }
+            if (this.openid !== null) {
+                return this.openid;
+            }
             if (this.account !== null) {
-                return this.account.name;
+                return this.account.toString();
             }
 
-            return &quot;&quot;;
+            return this.objectType + &quot;: unidentified&quot;;
         },
 
         &#x2F;**
+        While a TinCan.Agent instance can store more than one reverse functional identifier
+        this method will always only output one to be compliant with the statement sending
+        specification. Order of preference is: mbox, mbox_sha1sum, openid, account
+
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} version Version to return (defaults to newest supported)
         *&#x2F;
         asVersion: function (version) {
             this.log(&quot;asVersion: &quot; + version);
@@ -402,24 +404,37 @@ TinCan client library
 
             if (version === &quot;0.9&quot;) {
                 if (this.mbox !== null) {
-                    result.mbox = [
-                        this.mbox
-                    ];
+                    result.mbox = [ this.mbox ];
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = [ this.mbox_sha1sum ];
+                }
+                else if (this.openid !== null) {
+                    result.openid = [ this.openid ];
+                }
+                else if (this.account !== null) {
+                    result.account = [ this.account.asVersion(version) ];
+                }
+
                 if (this.name !== null) {
-                    result.name = [
-                        this.name
-                    ];
+                    result.name = [ this.name ];
                 }
             } else {
                 if (this.mbox !== null) {
                     result.mbox = this.mbox;
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = this.mbox_sha1sum;
+                }
+                else if (this.openid !== null) {
+                    result.openid = this.openid;
+                }
+                else if (this.account !== null) {
+                    result.account = this.account.asVersion(version);
+                }
+
                 if (this.name !== null) {
                     result.name = this.name;
-                }
-                if (this.account !== null) {
-                    result.account = this.account;
                 }
             }
 

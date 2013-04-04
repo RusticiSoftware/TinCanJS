@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -278,6 +278,12 @@ TinCan client library
                     if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
                         this[directProps[i]] = cfg[directProps[i]];
                     }
+                }
+
+                if (this.display === null &amp;&amp; typeof _downConvertMap[this.id] !== &quot;undefined&quot;) {
+                    this.display = {
+                        &quot;und&quot;: _downConvertMap[this.id]
+                    };
                 }
             }
         },

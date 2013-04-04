@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -265,6 +265,18 @@ TinCan client library
                 id: this.id
             };
         }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} StatementRef
+    @static
+    *&#x2F;
+    StatementRef.fromJSON = function (stRefJSON) {
+        StatementRef.prototype.log(&quot;fromJSON&quot;);
+        var _stRef = JSON.parse(stRefJSON);
+
+        return new StatementRef(_stRef);
     };
 }());
 

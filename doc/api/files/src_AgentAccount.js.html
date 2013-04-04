@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -246,7 +246,56 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log(&quot;toString&quot;);
+            var result = &quot;&quot;;
+
+            if (this.name !== null || this.homePage !== null) {
+                result += this.name !== null ? this.name : &quot;-&quot;;
+                result += &quot;:&quot;;
+                result += this.homePage !== null ? this.homePage : &quot;-&quot;;
+            }
+            else {
+                result = &quot;AgentAccount: unidentified&quot;;
+            }
+
+            return result;
+        },
+
+        &#x2F;**
+        @method asVersion
+        @param {String} version Version to return (defaults to newest supported)
+        *&#x2F;
+        asVersion: function (version) {
+            this.log(&quot;asVersion: &quot; + version);
+            var result = {};
+
+            version = version || TinCan.versions()[0];
+
+            if (version === &quot;0.9&quot;) {
+                result.accountName = this.name;
+                result.accountServiceHomePage = this.homePage;
+            } else {
+                result.name = this.name;
+                result.homePage = this.homePage;
+            }
+
+            return result;
         }
+    };
+
+    &#x2F;**
+    @method fromJSON
+    @return {Object} AgentAccount
+    @static
+    *&#x2F;
+    AgentAccount.fromJSON = function (acctJSON) {
+        AgentAccount.prototype.log(&quot;fromJSON&quot;);
+        var _acct = JSON.parse(acctJSON);
+
+        return new AgentAccount(_acct);
     };
 }());
 

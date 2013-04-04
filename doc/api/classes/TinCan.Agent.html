@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -357,13 +357,6 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_objectType">objectType</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
                                 <a href="#property_openid">openid</a>
 
                                 
@@ -393,7 +386,7 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options]</code>
+                        <code>version</code>
                     
                 </li>
             
@@ -426,7 +419,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l228"><code>src&#x2F;Agent.js:228</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l227"><code>src&#x2F;Agent.js:227</code></a>
         
         </p>
 
@@ -437,7 +430,9 @@
     </div>
 
     <div class="description">
-        
+        <p>While a TinCan.Agent instance can store more than one reverse functional identifier
+this method will always only output one to be compliant with the statement sending
+specification. Order of preference is: mbox, mbox_sha1sum, openid, account</p>
     </div>
 
     
@@ -448,35 +443,16 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[options]</code>
-                        <span class="type">Object</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">version</code>
+                        <span class="type">String</span>
                     
 
                     
 
                     <div class="param-description">
-                         
+                        <p>Version to return (defaults to newest supported)</p>
                     </div>
 
-                    
-                        <ul class="params-list">
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[version]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>Version to return (defaults to newest supported)</p>
-                                </div>
-
-                                
-                            </li>
-                            
-                        </ul>
                     
                 </li>
             
@@ -528,7 +504,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l268"><code>src&#x2F;Agent.js:268</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l283"><code>src&#x2F;Agent.js:283</code></a>
         
         </p>
 
@@ -605,7 +581,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l97"><code>src&#x2F;Agent.js:97</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l90"><code>src&#x2F;Agent.js:90</code></a>
         
         </p>
 
@@ -683,7 +659,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l92"><code>src&#x2F;Agent.js:92</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l85"><code>src&#x2F;Agent.js:85</code></a>
         
         </p>
 
@@ -736,7 +712,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l64"><code>src&#x2F;Agent.js:64</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l57"><code>src&#x2F;Agent.js:57</code></a>
         
         </p>
 
@@ -780,7 +756,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l70"><code>src&#x2F;Agent.js:70</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l63"><code>src&#x2F;Agent.js:63</code></a>
         
         </p>
 
@@ -826,7 +802,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l87"><code>src&#x2F;Agent.js:87</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l80"><code>src&#x2F;Agent.js:80</code></a>
         
         </p>
 
@@ -870,7 +846,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l46"><code>src&#x2F;Agent.js:46</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l39"><code>src&#x2F;Agent.js:39</code></a>
         
         </p>
 
@@ -914,7 +890,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l52"><code>src&#x2F;Agent.js:52</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l45"><code>src&#x2F;Agent.js:45</code></a>
         
         </p>
 
@@ -958,50 +934,6 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l40"><code>src&#x2F;Agent.js:40</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_objectType" class="property item">
-    <h3 class="name"><code>objectType</code></h3>
-    <span class="type">String</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
         <a href="..&#x2F;files&#x2F;src_Agent.js.html#l33"><code>src&#x2F;Agent.js:33</code></a>
         
         </p>
@@ -1016,8 +948,6 @@
     </div>
 
     
-        <p><strong>Default:</strong> Agent</p>
-    
 
     
 
@@ -1048,7 +978,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l80"><code>src&#x2F;Agent.js:80</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l73"><code>src&#x2F;Agent.js:73</code></a>
         
         </p>
 
@@ -1094,7 +1024,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l58"><code>src&#x2F;Agent.js:58</code></a>
+        <a href="..&#x2F;files&#x2F;src_Agent.js.html#l51"><code>src&#x2F;Agent.js:51</code></a>
         
         </p>
 

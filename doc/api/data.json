@@ -1,6 +1,6 @@
 {
     "project": {
-        "version": "0.2.0",
+        "version": "0.2.2",
         "name": "TinCanJS",
         "description": "Client library for working with TinCan API in JavaScript",
         "url": "https://github.com/RusticiSoftware/TinCanJS",
@@ -1439,17 +1439,6 @@
             "file": "src/Agent.js",
             "line": 33,
             "itemtype": "property",
-            "name": "objectType",
-            "type": "String",
-            "default": "Agent",
-            "class": "TinCan.Agent",
-            "module": "TinCan",
-            "submodule": "TinCan.Agent"
-        },
-        {
-            "file": "src/Agent.js",
-            "line": 40,
-            "itemtype": "property",
             "name": "name",
             "type": "String",
             "class": "TinCan.Agent",
@@ -1458,7 +1447,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 46,
+            "line": 39,
             "itemtype": "property",
             "name": "mbox",
             "type": "String",
@@ -1468,7 +1457,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 52,
+            "line": 45,
             "itemtype": "property",
             "name": "mbox_sha1sum",
             "type": "String",
@@ -1478,7 +1467,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 58,
+            "line": 51,
             "itemtype": "property",
             "name": "openid",
             "type": "String",
@@ -1488,7 +1477,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 64,
+            "line": 57,
             "itemtype": "property",
             "name": "account",
             "type": "TinCan.AgentAccount",
@@ -1498,7 +1487,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 70,
+            "line": 63,
             "itemtype": "property",
             "name": "degraded",
             "type": "Boolean",
@@ -1509,7 +1498,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 80,
+            "line": 73,
             "itemtype": "property",
             "name": "objectType",
             "type": "String",
@@ -1520,7 +1509,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 87,
+            "line": 80,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Agent",
@@ -1529,7 +1518,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 92,
+            "line": 85,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Agent",
@@ -1538,7 +1527,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 97,
+            "line": 90,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1555,23 +1544,15 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 228,
+            "line": 227,
+            "description": "While a TinCan.Agent instance can store more than one reverse functional identifier\nthis method will always only output one to be compliant with the statement sending\nspecification. Order of preference is: mbox, mbox_sha1sum, openid, account",
             "itemtype": "method",
             "name": "asVersion",
             "params": [
                 {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true,
-                    "props": [
-                        {
-                            "name": "version",
-                            "description": "Version to return (defaults to newest supported)",
-                            "type": "String",
-                            "optional": true
-                        }
-                    ]
+                    "name": "version",
+                    "description": "Version to return (defaults to newest supported)",
+                    "type": "String"
                 }
             ],
             "class": "TinCan.Agent",
@@ -1580,7 +1561,7 @@
         },
         {
             "file": "src/Agent.js",
-            "line": 268,
+            "line": 283,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -1643,6 +1624,36 @@
                     "optional": true
                 }
             ],
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 105,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "version",
+                    "description": "Version to return (defaults to newest supported)",
+                    "type": "String"
+                }
+            ],
+            "class": "TinCan.AgentAccount",
+            "module": "TinCan",
+            "submodule": "TinCan.AgentAccount"
+        },
+        {
+            "file": "src/AgentAccount.js",
+            "line": 127,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "AgentAccount",
+                "type": "Object"
+            },
+            "static": 1,
             "class": "TinCan.AgentAccount",
             "module": "TinCan",
             "submodule": "TinCan.AgentAccount"
@@ -1816,6 +1827,56 @@
             "file": "src/Group.js",
             "line": 33,
             "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 39,
+            "itemtype": "property",
+            "name": "mbox",
+            "type": "String",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 45,
+            "itemtype": "property",
+            "name": "mbox_sha1sum",
+            "type": "String",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 51,
+            "itemtype": "property",
+            "name": "openid",
+            "type": "String",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 57,
+            "itemtype": "property",
+            "name": "account",
+            "type": "TinCan.AgentAccount",
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 63,
+            "itemtype": "property",
             "name": "member",
             "type": "Array",
             "class": "TinCan.Group",
@@ -1824,7 +1885,7 @@
         },
         {
             "file": "src/Group.js",
-            "line": 42,
+            "line": 72,
             "itemtype": "property",
             "name": "objectType",
             "type": "String",
@@ -1836,7 +1897,7 @@
         },
         {
             "file": "src/Group.js",
-            "line": 50,
+            "line": 80,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.Group",
@@ -1845,7 +1906,7 @@
         },
         {
             "file": "src/Group.js",
-            "line": 55,
+            "line": 85,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.Group",
@@ -1854,7 +1915,7 @@
         },
         {
             "file": "src/Group.js",
-            "line": 60,
+            "line": 90,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -1865,6 +1926,45 @@
                     "optional": true
                 }
             ],
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 125,
+            "itemtype": "method",
+            "name": "asVersion",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "version",
+                            "description": "Version to return (defaults to newest supported)",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "TinCan.Group",
+            "module": "TinCan",
+            "submodule": "TinCan.Group"
+        },
+        {
+            "file": "src/Group.js",
+            "line": 151,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "Group",
+                "type": "Object"
+            },
+            "static": 1,
             "class": "TinCan.Group",
             "module": "TinCan",
             "submodule": "TinCan.Group"
@@ -1955,6 +2055,20 @@
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
+            "class": "TinCan.InteractionComponent",
+            "module": "TinCan",
+            "submodule": "TinCan.InteractionComponent"
+        },
+        {
+            "file": "src/InteractionComponent.js",
+            "line": 116,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "InteractionComponent",
+                "type": "Object"
+            },
+            "static": 1,
             "class": "TinCan.InteractionComponent",
             "module": "TinCan",
             "submodule": "TinCan.InteractionComponent"
@@ -2987,7 +3101,7 @@
             "line": 39,
             "itemtype": "property",
             "name": "updated",
-            "type": "String",
+            "type": "Boolean",
             "class": "TinCan.State",
             "module": "TinCan",
             "submodule": "TinCan.State"
@@ -3004,7 +3118,17 @@
         },
         {
             "file": "src/State.js",
-            "line": 54,
+            "line": 51,
+            "itemtype": "property",
+            "name": "etag",
+            "type": "String",
+            "class": "TinCan.State",
+            "module": "TinCan",
+            "submodule": "TinCan.State"
+        },
+        {
+            "file": "src/State.js",
+            "line": 60,
             "itemtype": "property",
             "name": "LOG_SRC",
             "class": "TinCan.State",
@@ -3013,7 +3137,7 @@
         },
         {
             "file": "src/State.js",
-            "line": 59,
+            "line": 65,
             "itemtype": "method",
             "name": "log",
             "class": "TinCan.State",
@@ -3022,7 +3146,7 @@
         },
         {
             "file": "src/State.js",
-            "line": 64,
+            "line": 70,
             "itemtype": "method",
             "name": "init",
             "params": [
@@ -3039,7 +3163,7 @@
         },
         {
             "file": "src/State.js",
-            "line": 90,
+            "line": 96,
             "itemtype": "method",
             "name": "fromJSON",
             "return": {
@@ -3366,6 +3490,20 @@
             "submodule": "TinCan.StatementRef"
         },
         {
+            "file": "src/StatementRef.js",
+            "line": 108,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "StatementRef",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.StatementRef",
+            "module": "TinCan",
+            "submodule": "TinCan.StatementRef"
+        },
+        {
             "file": "src/StatementsResult.js",
             "line": 36,
             "itemtype": "property",
@@ -3579,6 +3717,20 @@
             "submodule": "TinCan.SubStatement"
         },
         {
+            "file": "src/SubStatement.js",
+            "line": 181,
+            "itemtype": "method",
+            "name": "fromJSON",
+            "return": {
+                "description": "SubStatement",
+                "type": "Object"
+            },
+            "static": 1,
+            "class": "TinCan.SubStatement",
+            "module": "TinCan",
+            "submodule": "TinCan.SubStatement"
+        },
+        {
             "file": "src/TinCan.js",
             "line": 74,
             "itemtype": "property",
@@ -3672,7 +3824,7 @@
             "file": "src/TinCan.js",
             "line": 174,
             "itemtype": "method",
-            "name": "_handleQueryString",
+            "name": "_initFromQueryString",
             "params": [
                 {
                     "name": "url",
@@ -4348,7 +4500,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 123,
+            "line": 129,
             "itemtype": "method",
             "name": "toString",
             "return": {
@@ -4361,7 +4513,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 137,
+            "line": 143,
             "itemtype": "method",
             "name": "asVersion",
             "params": [
@@ -4386,7 +4538,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 163,
+            "line": 169,
             "description": "See {{#crossLink \"TinCan.Utils/getLangDictionaryValue\"}}{{/crossLink}}",
             "itemtype": "method",
             "name": "getLangDictionaryValue",
@@ -4396,7 +4548,7 @@
         },
         {
             "file": "src/Verb.js",
-            "line": 171,
+            "line": 177,
             "itemtype": "method",
             "name": "fromJSON",
             "params": [

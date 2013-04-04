@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.2.0</em>
+            <em>API Docs for: 0.2.2</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -200,7 +200,7 @@ TinCan client library
 
         &#x2F;**
         @property updated
-        @type String
+        @type Boolean
         *&#x2F;
         this.updated = null;
 
@@ -209,6 +209,12 @@ TinCan client library
         @type String
         *&#x2F;
         this.contents = null;
+
+        &#x2F;**
+        @property etag
+        @type String
+        *&#x2F;
+        this.etag = null;
 
         this.init(cfg);
     };
