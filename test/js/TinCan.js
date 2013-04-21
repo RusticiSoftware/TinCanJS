@@ -46,7 +46,7 @@
     test(
         "TinCan.versions",
         function () {
-            deepEqual(TinCan.versions(), ["1.0", "0.95", "0.9"], "Supported spec versions");
+            deepEqual(TinCan.versions(), ["1.0.0", "0.95", "0.9"], "Supported spec versions");
         }
     );
     test(
@@ -115,7 +115,7 @@
                 // Cloud is lowercasing the mbox value so just use a lowercase one
                 // and make sure it is unique to prevent merging that was previously
                 // possible, but leaving the commented version as a marker for something
-                // that ought to be tested against a 1.0 spec
+                // that ought to be tested against a 1.0.0 spec
                 //
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -156,7 +156,7 @@
                 // Cloud is lowercasing the mbox value so just use a lowercase one
                 // and make sure it is unique to prevent merging that was previously
                 // possible, but leaving the commented version as a marker for something
-                // that ought to be tested against a 1.0 spec
+                // that ought to be tested against a 1.0.0 spec
                 //
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -227,7 +227,7 @@
                         // Cloud is lowercasing the mbox value so just use a lowercase one
                         // and make sure it is unique to prevent merging that was previously
                         // possible, but leaving the commented version as a marker for something
-                        // that ought to be tested against a 1.0 spec
+                        // that ought to be tested against a 1.0.0 spec
                         //
                         //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                         actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -272,7 +272,7 @@
                         // Cloud is lowercasing the mbox value so just use a lowercase one
                         // and make sure it is unique to prevent merging that was previously
                         // possible, but leaving the commented version as a marker for something
-                        // that ought to be tested against a 1.0 spec
+                        // that ought to be tested against a 1.0.0 spec
                         //
                         //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                         actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -321,7 +321,7 @@
                     // Cloud is lowercasing the mbox value so just use a lowercase one
                     // and make sure it is unique to prevent merging that was previously
                     // possible, but leaving the commented version as a marker for something
-                    // that ought to be tested against a 1.0 spec
+                    // that ought to be tested against a 1.0.0 spec
                     //
                     //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                     actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -380,7 +380,7 @@
                     // Cloud is lowercasing the mbox value so just use a lowercase one
                     // and make sure it is unique to prevent merging that was previously
                     // possible, but leaving the commented version as a marker for something
-                    // that ought to be tested against a 1.0 spec
+                    // that ought to be tested against a 1.0.0 spec
                     //
                     //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                     actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
@@ -410,7 +410,7 @@
                         statement.stored = null;
                         statement.authority = null;
 
-                        // at 1.0 and after the version returned should be the version we are sending under
+                        // at 1.0.0 and after the version returned should be the version we are sending under
                         // for this statement since we know we are generating it
                         if (version !== "0.9" && version !== "0.95") {
                             sendResult.statement.version = version;

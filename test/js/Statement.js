@@ -112,7 +112,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
-                            version: "1.0",
+                            version: "1.0.0",
 
                             // deprecated
                             voided: false,
@@ -128,7 +128,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
-                            version: "1.0",
+                            version: "1.0.0",
                             degraded: false,
                             voided: false,
                             inProgress: true
