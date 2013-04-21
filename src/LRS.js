@@ -453,15 +453,20 @@ TinCan client library
 
             cfg = cfg || {};
 
-            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
-                method: "PUT",
-                params: {
-                    statementId: stmt.id
-                },
                 data: JSON.stringify(stmt.asVersion( this.version ))
             };
+            if (stmt.id !== null) {
+                requestCfg.method = "PUT";
+                requestCfg.params = {
+                    statementId: stmt.id
+                };
+            }
+            else {
+                requestCfg.method = "POST";
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
