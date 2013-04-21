@@ -1004,7 +1004,7 @@ var TinCan;
     TinCan.versions = function () {
         // newest first so we can use the first as the default
         return [
-            "1.0",
+            "1.0.0",
             "0.95",
             "0.9"
         ];
