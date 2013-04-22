@@ -32,24 +32,25 @@ var TinCan;
             //
             // these are TC spec reserved words that may end up in queries to the endpoint
             //
-            statementId:   true,
-            verb:          true,
-            object:        true,
-            registration:  true,
-            context:       true,
-            actor:         true,
-            since:         true,
-            until:         true,
-            limit:         true,
-            authoritative: true,
-            sparse:        true,
-            instructor:    true,
-            ascending:     true,
-            continueToken: true,
-            agent:         true,
-            activityId:    true,
-            stateId:       true,
-            profileId:     true,
+            statementId:       true,
+            voidedStatementId: true,
+            verb:              true,
+            object:            true,
+            registration:      true,
+            context:           true,
+            actor:             true,
+            since:             true,
+            until:             true,
+            limit:             true,
+            authoritative:     true,
+            sparse:            true,
+            instructor:        true,
+            ascending:         true,
+            continueToken:     true,
+            agent:             true,
+            activityId:        true,
+            stateId:           true,
+            profileId:         true,
 
             //
             // these are suggested by the LMS launch spec addition that TinCanJS consumes
@@ -471,6 +472,166 @@ var TinCan;
             }
 
             msg = "[warning] getStatement: No LRSs added yet (statement not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        /**
+        Creates a statement used for voiding the passed statement/statement ID and calls
+        send statement with the voiding statement.
+
+        @method voidStatement
+        @param {TinCan.Statement|String} statement Statement or statement ID to void
+        @param {Function} [callback] Callback function to execute on completion
+        @param {Object} [options] Options used to build voiding statement
+            @param {TinCan.Agent} [options.actor] Agent to be used as 'actor' in voiding statement
+        */
+        voidStatement: function (stmt, callback, options) {
+            this.log("voidStatement");
+
+            // would prefer to use .bind instead of 'self'
+            var self = this,
+                lrs,
+                actor,
+                voidingStatement,
+                rsCount = this.recordStores.length,
+                i,
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
+            ;
+
+            if (stmt instanceof TinCan.Statement) {
+                stmt = stmt.id;
+            }
+
+            if (typeof options.actor !== "undefined") {
+                actor = options.actor;
+            }
+            else if (this.actor !== null) {
+                actor = this.actor;
+            }
+
+            voidingStatement = new TinCan.Statement(
+                {
+                    actor: actor,
+                    verb: {
+                       id: "http://adlnet.gov/expapi/verbs/voided"
+                    },
+                    target: {
+                        objectType: "StatementRef",
+                        id: stmt
+                    }
+                }
+            );
+
+            if (rsCount > 0) {
+                /*
+                   if there is a callback that is a function then we need
+                   to wrap that function with a function that becomes
+                   the new callback that reduces a closure count of the
+                   requests that don't have allowFail set to true and
+                   when that number hits zero then the original callback
+                   is executed
+                */
+                if (typeof callback === "function") {
+                    callbackWrapper = function (err, xhr) {
+                        var args;
+
+                        self.log("voidStatement - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                        }
+                        else if (rsCount === 1) {
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                            args = [
+                                callbackResults,
+                                voidingStatement
+                            ];
+                            callback.apply(this, args);
+                        }
+                        else {
+                            self.log("voidStatement - unexpected record store count: " + rsCount);
+                        }
+                    };
+                }
+
+                for (i = 0; i < rsCount; i += 1) {
+                    lrs = this.recordStores[i];
+
+                    results.push(
+                        lrs.saveStatement(voidingStatement, { callback: callbackWrapper })
+                    );
+                }
+            }
+            else {
+                msg = "[warning] voidStatement: No LRSs added yet (statement not sent)";
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + ": " + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, voidingStatement ]);
+                }
+            }
+
+            return {
+                statement: voidingStatement,
+                results: results
+            };
+        },
+
+        /**
+        Calls retrieveVoidedStatement on the first LRS, provide callback to make it asynchronous
+
+        @method getVoidedStatement
+        @param {String} statement Statement ID to get
+        @param {Function} [callback] Callback function to execute on completion
+        @return {Array|Result} Array of results, or single result
+
+        TODO: make TinCan track voided statements it has seen in a local cache to be returned easily
+        */
+        getVoidedStatement: function (stmtId, callback) {
+            this.log("getVoidedStatement");
+
+            var lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for statements (for now) we only need to read from the first LRS
+                // in the future it may make sense to get all from all LRSes and
+                // compare to remove duplicates or allow inspection of them for differences?
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                return lrs.retrieveVoidedStatement(stmtId, { callback: callback });
+            }
+
+            msg = "[warning] getVoidedStatement: No LRSs added yet (statement not retrieved)";
             if (TinCan.environment().isBrowser) {
                 alert(this.LOG_SRC + ": " + msg);
             }
@@ -1729,15 +1890,20 @@ TinCan client library
 
             cfg = cfg || {};
 
-            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
-                method: "PUT",
-                params: {
-                    statementId: stmt.id
-                },
                 data: JSON.stringify(stmt.asVersion( this.version ))
             };
+            if (stmt.id !== null) {
+                requestCfg.method = "PUT";
+                requestCfg.params = {
+                    statementId: stmt.id
+                };
+            }
+            else {
+                requestCfg.method = "POST";
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -1777,6 +1943,67 @@ TinCan client library
                     statementId: stmtId
                 }
             };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.statement = null;
+                if (requestResult.err === null) {
+                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
+        Retrieve a voided statement, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveVoidedStatement
+        @param {String} ID of voided statement to retrieve
+        @param {Object} [cfg] Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+        @return {Object} TinCan.Statement retrieved
+        */
+        retrieveVoidedStatement: function (stmtId, cfg) {
+            this.log("retrieveStatement");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "statements",
+                method: "GET",
+                params: {}
+            };
+            if (this.version === "0.9" || this.version === "0.95") {
+                requestCfg.params.statementId = stmtId;
+            }
+            else {
+                requestCfg.params.voidedStatementId = stmtId;
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
