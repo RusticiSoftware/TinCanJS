@@ -531,6 +531,67 @@ TinCan client library
         },
 
         /**
+        Retrieve a voided statement, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveVoidedStatement
+        @param {String} ID of voided statement to retrieve
+        @param {Object} [cfg] Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+        @return {Object} TinCan.Statement retrieved
+        */
+        retrieveVoidedStatement: function (stmtId, cfg) {
+            this.log("retrieveStatement");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "statements",
+                method: "GET",
+                params: {}
+            };
+            if (this.version === "0.9" || this.version === "0.95") {
+                requestCfg.params.statementId = stmtId;
+            }
+            else {
+                requestCfg.params.voidedStatementId = stmtId;
+            }
+
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.statement = null;
+                if (requestResult.err === null) {
+                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
         Save a set of statements, when used from a browser sends to the endpoint using the RESTful interface.
         Use a callback to make the call asynchronous.
 
