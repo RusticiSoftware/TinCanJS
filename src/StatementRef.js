@@ -96,11 +96,16 @@ TinCan client library
         */
         asVersion: function (version) {
             this.log("asVersion");
-
-            return {
+            var result = {
                 objectType: this.objectType,
                 id: this.id
             };
+
+            if (version === "0.9") {
+                result.objectType = "Statement";
+            }
+
+            return result;
         }
     };
 

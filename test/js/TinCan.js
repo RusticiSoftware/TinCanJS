@@ -406,7 +406,7 @@
                 getVoidedResult.statement.stored = null;
                 getVoidedResult.statement.authority = null;
                 if (v === "0.9") {
-                    getVoidedResult.statement.inProgress = false;
+                    sendResult.statement.inProgress = false;
                 }
                 if (v === "0.9" || v === "0.95") {
                     sendResult.statement.voided = true;
