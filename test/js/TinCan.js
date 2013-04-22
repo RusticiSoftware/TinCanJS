@@ -310,6 +310,11 @@
                 if (v === "0.9") {
                     sendResult.statement.inProgress = false;
                 }
+                // at 1.0.0 and after the version returned should be the version we are sending under
+                // for this statement since we know we are generating it
+                if (v !== "0.9" && v !== "0.95") {
+                    sendResult.statement.version = v;
+                }
                 deepEqual(getResult.statement, sendResult.statement, "getResult property value: statement (" + v + ")");
             }
         );
@@ -410,6 +415,11 @@
                 }
                 if (v === "0.9" || v === "0.95") {
                     sendResult.statement.voided = true;
+                }
+                // at 1.0.0 and after the version returned should be the version we are sending under
+                // for this statement since we know we are generating it
+                if (v !== "0.9" && v !== "0.95") {
+                    sendResult.statement.version = v;
                 }
                 deepEqual(getVoidedResult.statement, sendResult.statement, "getVoidedResult property value: statement (" + v + ")");
             }

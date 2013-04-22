@@ -144,7 +144,7 @@
                                 contextActivities: { parent: { objectType: "Activity", id: activityId } },
                                 platform: { test: "Test" },
                                 language: "en-US",
-                                statement: { objectType: "StatementRef", id: stRefId },
+                                statement: { objectType: "Statement", id: stRefId },
                                 extensions: { test: "Test" }
                             }
                         }
