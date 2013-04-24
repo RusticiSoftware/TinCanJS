@@ -128,7 +128,8 @@ var TinCan;
         LOG_SRC: "TinCan",
 
         /**
-        Safe version of logging
+        Safe version of logging, only displays when .DEBUG is true, and console.log
+        is available
 
         @method log
         @param {String} msg Message to output
