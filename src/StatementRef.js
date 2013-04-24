@@ -92,16 +92,20 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
-
-            return {
-                objectType: this.prototype.objectType,
+            var result = {
+                objectType: this.objectType,
                 id: this.id
             };
+
+            if (version === "0.9") {
+                result.objectType = "Statement";
+            }
+
+            return result;
         }
     };
 

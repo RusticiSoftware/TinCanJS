@@ -104,7 +104,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {String} version Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion: " + version);
