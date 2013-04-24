@@ -2238,7 +2238,7 @@ TinCan client library
                 // for the removal of these things
                 //
                 compatibility = {
-                    "0.90": {
+                    "0.9": {
                         supported: {
                             actor: true,
                             instructor: true,
@@ -2260,7 +2260,7 @@ TinCan client library
                     }
                 };
 
-            compatibility["0.95"] = compatibility["0.90"];
+            compatibility["0.95"] = compatibility["0.9"];
 
             if (cfg.params.hasOwnProperty("target")) {
                 cfg.params.object = cfg.params.target;
