@@ -779,17 +779,24 @@ var TinCan;
                 params = cfg.params || {};
 
                 if (cfg.sendActor && this.actor !== null) {
-                    params.actor = this.actor;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.actor = this.actor;
+                    }
+                    else {
+                        params.agent = this.actor;
+                    }
                 }
                 if (cfg.sendActivity && this.activity !== null) {
-                    params.activity = this.activity;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.target = this.activity;
+                    }
+                    else {
+                        params.activity = this.activity;
+                    }
                 }
                 if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
-
-                // TODO: do we want to hard set this?
-                params.sparse = cfg.sparse || "false";
 
                 queryCfg = {
                     params: params
