@@ -626,11 +626,16 @@
 
                 getResult = session[v].getActivityProfile(key, options);
 
+                // this should "fail"
+                session[v].recordStores[0].alertOnRequestFailure = false;
+                setResult = session[v].setActivityProfile(key, val + 1, options);
+                session[v].recordStores[0].alertOnRequestFailure = true;
+
                 //
                 // reset the state to make sure we test the concurrency handling
                 //
                 options.lastSHA1 = getResult.profile.etag;
-                setResult = session[v].setActivityProfile(key, val + 1, options);
+                setResult = session[v].setActivityProfile(key, val + 2, options);
                 delete options.lastSHA1;
 
                 deleteResult = session[v].deleteActivityProfile(key, options);
