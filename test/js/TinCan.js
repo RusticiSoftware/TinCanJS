@@ -29,7 +29,9 @@
         doGetStatementSyncTest,
         doVoidStatementSyncTest,
         doSendStatementAsyncTest,
-        doGetStatementAsyncTest;
+        doGetStatementAsyncTest,
+        doStateSyncTest,
+        doActivityProfileSyncTest;
 
     module("TinCan Statics");
 
@@ -554,4 +556,93 @@
             doGetStatementAsyncTest(version);
         }
     }
+
+    doStateSyncTest = function (v) {
+        test(
+            "tincan state (prepared, sync): " + v,
+            function () {
+                var setResult,
+                    key = "setState (prepared, sync)",
+                    val = "TinCanJS",
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setState/sync/" + v
+                            }
+                        )
+                    };
+
+                setResult = session[v].setState(key, val, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getState(key, options);
+
+                //
+                // reset the state to make sure we test the concurrency handling
+                //
+                options.lastSHA1 = getResult.state.etag;
+                setResult = session[v].setState(key, val + 1, options);
+                delete options.lastSHA1;
+
+                deleteResult = session[v].deleteState(key, options);
+            }
+        );
+    };
+
+    for (i = 0; i < versions.length; i += 1) {
+        version = versions[i];
+        if (TinCanTestCfg.recordStores[version]) {
+            doStateSyncTest(version);
+        }
+    }
+
+    doActivityProfileSyncTest = function (v) {
+        test(
+            "tincan activityProfile (prepared, sync): " + v,
+            function () {
+                var setResult,
+                    key = "activityProfile (prepared, sync)",
+                    val = "TinCanJS",
+                    options = {
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setActivityProfile/sync/" + v
+                            }
+                        )
+                    };
+
+                setResult = session[v].setActivityProfile(key, val, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getActivityProfile(key, options);
+
+                //
+                // reset the state to make sure we test the concurrency handling
+                //
+                options.lastSHA1 = getResult.profile.etag;
+                setResult = session[v].setActivityProfile(key, val + 1, options);
+                delete options.lastSHA1;
+
+                deleteResult = session[v].deleteActivityProfile(key, options);
+            }
+        );
+    };
+
+    for (i = 0; i < versions.length; i += 1) {
+        version = versions[i];
+        if (TinCanTestCfg.recordStores[version]) {
+            doActivityProfileSyncTest(version);
+        }
+    }
+
 }());
