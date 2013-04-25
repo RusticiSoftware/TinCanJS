@@ -16,24 +16,17 @@
 (function () {
     var session = null;
 
-    module(
-        "StatementRef Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("StatementRef Statics");
 
     test(
         "StatementRef.fromJSON",
         function () {
-            var raw = {
-                },
+            var raw = {},
                 string,
                 result
             ;
 
-            var result = TinCan.StatementRef.fromJSON(JSON.stringify(raw));
+            result = TinCan.StatementRef.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.StatementRef, "returns TinCan.StatementRef");
         }
     );

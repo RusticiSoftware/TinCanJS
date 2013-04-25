@@ -26,7 +26,7 @@
                 result
             ;
 
-            var result = TinCan.AgentAccount.fromJSON(JSON.stringify(raw));
+            result = TinCan.AgentAccount.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.AgentAccount, "returns TinCan.AgentAccount");
         }
     );
@@ -34,23 +34,9 @@
     module("AgentAccount Instance");
 
     test(
-        "acct Object",
+        "object prototype",
         function () {
-            var obj = new TinCan.AgentAccount (),
-                nullProps = [
-                    "name",
-                    "homePage"
-                ],
-                i
-            ;
-
-            ok(obj instanceof TinCan.AgentAccount, "object is TinCan.AgentAccount");
-
-            for (i = 0; i < nullProps.length; i += 1) {
-                ok(obj.hasOwnProperty(nullProps[i]), "object has property: " + nullProps[i]);
-                strictEqual(obj[nullProps[i]], null, "object property initial value: " + nullProps[i]);
-            }
-
+            var obj = new TinCan.AgentAccount ();
             strictEqual(obj.LOG_SRC, "AgentAccount", "object property LOG_SRC initial value");
         }
     );

@@ -16,24 +16,17 @@
 (function () {
     var session = null;
 
-    module(
-        "Result Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("Result Statics");
 
     test(
         "Result.fromJSON",
         function () {
-            var raw = {
-                },
+            var raw = {},
                 string,
                 result
             ;
 
-            var result = TinCan.Result.fromJSON(JSON.stringify(raw));
+            result = TinCan.Result.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Result, "returns TinCan.Result");
         }
     );

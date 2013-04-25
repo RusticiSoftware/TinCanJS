@@ -16,13 +16,7 @@
 (function () {
     var session = null;
 
-    module(
-        "StatementsResult Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("StatementsResult Statics");
 
     test(
         "StatementsResult.fromJSON",
@@ -34,7 +28,7 @@
                 result
             ;
 
-            var result = TinCan.StatementsResult.fromJSON(JSON.stringify(raw));
+            result = TinCan.StatementsResult.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.StatementsResult, "returns TinCan.StatementsResult");
         }
     );

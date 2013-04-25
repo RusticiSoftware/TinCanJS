@@ -16,13 +16,7 @@
 (function () {
     var session = null;
 
-    module(
-        "Activity Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("Activity Statics");
 
     test(
         "Activity.fromJSON",
@@ -34,7 +28,7 @@
                 result
             ;
 
-            var result = TinCan.Activity.fromJSON(JSON.stringify(raw));
+            result = TinCan.Activity.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Activity, "returns TinCan.Activity");
         }
     );

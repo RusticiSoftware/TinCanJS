@@ -188,12 +188,15 @@ TinCan client library
                         if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
                             this[prop] = [];
                             for (j = 0; j < cfg[prop].length; j += 1) {
-                                this[prop].push(
-                                    // TODO: check to see if already this type
-                                    new TinCan.InteractionComponent (
-                                        cfg[prop][j]
-                                    )
-                                );
+                                if (cfg[prop][j] instanceof TinCan.InteractionComponent) {
+                                    this[prop].push(cfg[prop][j]);
+                                } else {
+                                    this[prop].push(
+                                        new TinCan.InteractionComponent (
+                                            cfg[prop][j]
+                                        )
+                                    );
+                                }
                             }
                         }
                     }
@@ -227,8 +230,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");

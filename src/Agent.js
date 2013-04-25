@@ -230,7 +230,7 @@ TinCan client library
         specification. Order of preference is: mbox, mbox_sha1sum, openid, account
 
         @method asVersion
-        @param {String} version Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion: " + version);

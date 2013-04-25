@@ -16,24 +16,17 @@
 (function () {
     var session = null;
 
-    module(
-        "InteractionComponent Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("InteractionComponent Statics");
 
     test(
         "InteractionComponent.fromJSON",
         function () {
-            var raw = {
-                },
+            var raw = {},
                 string,
                 result
             ;
 
-            var result = TinCan.InteractionComponent.fromJSON(JSON.stringify(raw));
+            result = TinCan.InteractionComponent.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.InteractionComponent, "returns TinCan.InteractionComponent");
         }
     );

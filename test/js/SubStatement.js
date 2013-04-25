@@ -16,24 +16,17 @@
 (function () {
     var session = null;
 
-    module(
-        "SubStatement Statics",
-        {
-            setup: function () {},
-            teardown: function () {}
-        }
-    );
+    module("SubStatement Statics");
 
     test(
         "SubStatement.fromJSON",
         function () {
-            var raw = {
-                },
+            var raw = {},
                 string,
                 result
             ;
 
-            var result = TinCan.SubStatement.fromJSON(JSON.stringify(raw));
+            result = TinCan.SubStatement.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.SubStatement, "returns TinCan.SubStatement");
         }
     );

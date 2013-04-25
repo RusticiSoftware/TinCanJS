@@ -32,7 +32,7 @@
                 result
             ;
 
-            var result = TinCan.Group.fromJSON(JSON.stringify(raw));
+            result = TinCan.Group.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Group, "returns TinCan.Group");
         }
     );
