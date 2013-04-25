@@ -2249,6 +2249,7 @@ TinCan client library
                         supported: {
                             actor: true,
                             instructor: true,
+                            target: true,
                             object: true,
                             context: true,
                             authoritative: true,
