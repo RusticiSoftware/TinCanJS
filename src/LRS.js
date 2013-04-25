@@ -1125,7 +1125,12 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
+                };
+            }
+            else {
+                requestCfg.headers = {
+                    "If-None-Match": "*"
                 };
             }
 
@@ -1325,7 +1330,12 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
+                };
+            }
+            else {
+                requestCfg.headers = {
+                    "If-None-Match": "*"
                 };
             }
 
