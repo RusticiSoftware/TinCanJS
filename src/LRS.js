@@ -1128,11 +1128,6 @@ TinCan client library
                     "If-Match": cfg.lastSHA1
                 };
             }
-            else {
-                requestCfg.headers = {
-                    "If-None-Match": "*"
-                };
-            }
 
             return this.sendRequest(requestCfg);
         },
