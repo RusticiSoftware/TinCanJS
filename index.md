@@ -4,7 +4,7 @@ layout: index
 
 ### Supported API Versions
 
-*1.0.0*, 0.95, 0.9
+**1.0.0**, 0.95, 0.9
 
 ### Getting Started
 
