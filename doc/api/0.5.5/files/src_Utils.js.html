@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/Utils.js - TinCanJS</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="http://cdn4.tincanapi.com/wp-content/themes/tincanapi/images/logo.png" title="TinCanJS"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.5.5</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/TinCan.html">TinCan</a></li>
+            
+                <li><a href="../classes/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="../classes/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="../classes/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
+            
+                <li><a href="../classes/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="../classes/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
+                <li><a href="../classes/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="../classes/TinCan.ContextActivities.html">TinCan.ContextActivities</a></li>
+            
+                <li><a href="../classes/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="../classes/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
+            
+                <li><a href="../classes/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="../classes/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="../classes/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="../classes/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="../classes/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="../classes/TinCan.StatementRef.html">TinCan.StatementRef</a></li>
+            
+                <li><a href="../classes/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
+                <li><a href="../classes/TinCan.SubStatement.html">TinCan.SubStatement</a></li>
+            
+                <li><a href="../classes/TinCan.Utils.html">TinCan.Utils</a></li>
+            
+                <li><a href="../classes/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/TinCan.html">TinCan</a></li>
+            
+                <li><a href="../modules/TinCan.Activity.html">TinCan.Activity</a></li>
+            
+                <li><a href="../modules/TinCan.ActivityDefinition.html">TinCan.ActivityDefinition</a></li>
+            
+                <li><a href="../modules/TinCan.ActivityProfile.html">TinCan.ActivityProfile</a></li>
+            
+                <li><a href="../modules/TinCan.Agent.html">TinCan.Agent</a></li>
+            
+                <li><a href="../modules/TinCan.AgentAccount.html">TinCan.AgentAccount</a></li>
+            
+                <li><a href="../modules/TinCan.Context.html">TinCan.Context</a></li>
+            
+                <li><a href="../modules/TinCan.ContextActivities.html">TinCan.ContextActivities</a></li>
+            
+                <li><a href="../modules/TinCan.Group.html">TinCan.Group</a></li>
+            
+                <li><a href="../modules/TinCan.InteractionComponent.html">TinCan.InteractionComponent</a></li>
+            
+                <li><a href="../modules/TinCan.LRS.html">TinCan.LRS</a></li>
+            
+                <li><a href="../modules/TinCan.Result.html">TinCan.Result</a></li>
+            
+                <li><a href="../modules/TinCan.Score.html">TinCan.Score</a></li>
+            
+                <li><a href="../modules/TinCan.State.html">TinCan.State</a></li>
+            
+                <li><a href="../modules/TinCan.Statement.html">TinCan.Statement</a></li>
+            
+                <li><a href="../modules/TinCan.StatementRef.html">TinCan.StatementRef</a></li>
+            
+                <li><a href="../modules/TinCan.StatementsResult.html">TinCan.StatementsResult</a></li>
+            
+                <li><a href="../modules/TinCan.SubStatement.html">TinCan.SubStatement</a></li>
+            
+                <li><a href="../modules/TinCan.Utils.html">TinCan.Utils</a></li>
+            
+                <li><a href="../modules/TinCan.Verb.html">TinCan.Verb</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src/Utils.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/*
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.Utils
+**/
+(function () {
+    &quot;use strict&quot;;
+
+    /**
+    @class TinCan.Utils
+    */
+    TinCan.Utils = {
+        /**
+        Generates a UUIDv4 compliant string that should be reasonably unique
+
+        @method getUUID
+        @return {String} UUID
+        @static
+
+        Excerpt from: http://www.broofa.com/Tools/Math.uuid.js (v1.4)
+        http://www.broofa.com
+        mailto:robert@broofa.com
+        Copyright (c) 2010 Robert Kieffer
+        Dual licensed under the MIT and GPL licenses.
+        */
+        getUUID: function () {
+            /*jslint bitwise: true eqeq: true */
+            return &#x27;xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx&#x27;.replace(
+                /[xy]/g,
+                function (c) {
+                    var r = Math.random() * 16|0, v = c == &#x27;x&#x27; ? r : (r&amp;0x3|0x8);
+                    return v.toString(16);
+                }
+            );
+        },
+
+        /**
+        @method getISODateString
+        @static
+        @param {Date} date Date to stringify
+        @return {String} ISO date String
+        */
+        getISODateString: function (d) {
+            function pad (val, n) {
+                var padder,
+                    tempVal;
+                if (typeof val === &quot;undefined&quot; || val === null) {
+                    val = 0;
+                }
+                if (typeof n === &quot;undefined&quot; || n === null) {
+                    n = 2;
+                }
+                padder = Math.pow(10, n-1);
+                tempVal = val.toString();
+
+                while (val &lt; padder &amp;&amp; padder &gt; 1) {
+                    tempVal = &#x27;0&#x27; + tempVal;
+                    padder = padder / 10;
+                }
+
+                return tempVal;
+            }
+
+            return d.getUTCFullYear() + &#x27;-&#x27;
+                + pad(d.getUTCMonth() + 1) + &#x27;-&#x27;
+                + pad(d.getUTCDate()) + &#x27;T&#x27;
+                + pad(d.getUTCHours()) + &#x27;:&#x27;
+                + pad(d.getUTCMinutes()) + &#x27;:&#x27;
+                + pad(d.getUTCSeconds()) + &#x27;.&#x27;
+                + pad(d.getUTCMilliseconds(), 3) + &#x27;Z&#x27;;
+        },
+
+        /**
+        @method getSHA1String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA1 for contents
+        */
+        getSHA1String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
+        },
+
+        /**
+        @method getBase64String
+        @static
+        @param {String} str Content to encode
+        @return {String} Base64 encoded contents
+        */
+        getBase64String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.enc.Base64.stringify(
+                CryptoJS.enc.Latin1.parse(str)
+            );
+        },
+
+        /**
+        Intended to be inherited by objects with properties that store
+        display values in a language based &quot;dictionary&quot;
+
+        @method getLangDictionaryValue
+        @param {String} prop Property name storing the dictionary
+        @param {String} [lang] Language to return
+        @return {String}
+        */
+        getLangDictionaryValue: function (prop, lang) {
+            var langDict = this[prop],
+                key;
+
+            if (typeof lang !== &quot;undefined&quot; &amp;&amp; typeof langDict[lang] !== &quot;undefined&quot;) {
+                return langDict[lang];
+            }
+            if (typeof langDict.und !== &quot;undefined&quot;) {
+                return langDict.und;
+            }
+            if (typeof langDict[&quot;en-US&quot;] !== &quot;undefined&quot;) {
+                return langDict[&quot;en-US&quot;];
+            }
+            for (key in langDict) {
+                if (langDict.hasOwnProperty(key)) {
+                    return langDict[key];
+                }
+            }
+
+            return &quot;&quot;;
+        },
+
+        /**
+        @method parseURL
+        @param {String} url
+        @return {Object} Object of values
+        @private
+        */
+        parseURL: function (url) {
+            var parts = String(url).split(&#x27;?&#x27;),
+                pairs,
+                pair,
+                i,
+                params = {}
+            ;
+            if (parts.length === 2) {
+                pairs = parts[1].split(&#x27;&amp;&#x27;);
+                for (i = 0; i &lt; pairs.length; i += 1) {
+                    pair = pairs[i].split(&#x27;=&#x27;);
+                    if (pair.length === 2 &amp;&amp; pair[0]) {
+                        params[pair[0]] = decodeURIComponent(pair[1]);
+                    }
+                }
+            }
+
+            return {
+                path: parts[0],
+                params: params
+            };
+        },
+
+        /**
+        @method getServerRoot
+        @param {String} absoluteUrl
+        @return {String} server root of url
+        @private
+        */
+        getServerRoot: function (absoluteUrl) {
+            var urlParts = absoluteUrl.split(&quot;/&quot;);
+            return urlParts[0] + &quot;//&quot; + urlParts[2];
+        }
+    };
+}());
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
