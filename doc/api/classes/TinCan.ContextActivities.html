@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TinCan.Utils - TinCanJS</title>
+    <title>TinCan.ContextActivities - TinCanJS</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -160,7 +160,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>TinCan.Utils Class</h1>
+                        <h1>TinCan.ContextActivities Class</h1>
 <div class="box meta">
     
 
@@ -168,13 +168,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/src_Utils.js.html#l26"><code>src&#x2F;Utils.js:26</code></a>
+            Defined in: <a href="../files/src_ContextActivities.js.html#l26"><code>src&#x2F;ContextActivities.js:26</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/TinCan.Utils.html">TinCan.Utils</a><br>
+            Module: <a href="../modules/TinCan.ContextActivities.html">TinCan.ContextActivities</a><br>
             Parent Module: <a href="../modules/TinCan.html">TinCan</a>
         
     
@@ -189,6 +189,63 @@
 </div>
 
 
+    <div class="constructor">
+        <h2>Constructor</h2>
+        <div id="method_TinCan.ContextActivities" class="method item">
+    <h3 class="name"><code>TinCan.ContextActivities</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l26"><code>src&#x2F;ContextActivities.js:26</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+    </div>
+
 
 <div id="classdocs" class="tabview">
     <ul class="api-class-tabs">
@@ -197,6 +254,8 @@
         
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
+        
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
         
         
         
@@ -213,7 +272,21 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_getBase64String">getBase64String</a>
+                                <a href="#method_add">add</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_asVersion">asVersion</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_fromJSON">fromJSON</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -222,48 +295,52 @@
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_getISODateString">getISODateString</a>
-
-                                
-                                    <span class="flag static">static</span>
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_getLangDictionaryValue">getLangDictionaryValue</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method private">
-                                <a href="#method_getServerRoot">getServerRoot</a>
+                                <a href="#method_init">init</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_getSHA1String">getSHA1String</a>
+                                <a href="#method_log">log</a>
 
-                                
-                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_getUUID">getUUID</a>
+                    </ul>
+                </div>
+            
 
-                                
-                                    <span class="flag static">static</span>
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_grouping">grouping</a>
+
                                 
                                 
                             </li>
                         
-                            <li class="index-item method private">
-                                <a href="#method_parseURL">parseURL</a>
+                            <li class="index-item property">
+                                <a href="#property_LOG_SRC">LOG_SRC</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_other">other</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_parent">parent</a>
 
                                 
                                 
@@ -276,8 +353,6 @@
             
 
             
-
-            
         </div>
 
         
@@ -285,8 +360,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_getBase64String" class="method item">
-    <h3 class="name"><code>getBase64String</code></h3>
+                    <div id="method_add" class="method item">
+    <h3 class="name"><code>add</code></h3>
 
     
         <div class="args">
@@ -294,7 +369,7 @@
             
                 <li class="arg">
                     
-                        <code>str</code>
+                        <code>String</code>
                     
                 </li>
             
@@ -304,7 +379,7 @@
 
     
         <span class="returns-inline">
-            <span class="type">String</span>
+            <span class="type"></span>
         </span>
     
 
@@ -314,8 +389,6 @@
 
     
 
-    
-        <span class="flag static">static</span>
     
 
     
@@ -333,7 +406,7 @@
             
         
         
-        <a href="../files/src_Utils.js.html#l102"><code>src&#x2F;Utils.js:102</code></a>
+        <a href="../files/src_ContextActivities.js.html#l101"><code>src&#x2F;ContextActivities.js:101</code></a>
         
         </p>
 
@@ -355,14 +428,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">str</code>
-                        <span class="type">String</span>
+                        <code class="param-name">String</code>
+                        <span class="type">Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>Content to encode</p>
+                        <p>key Property to add value to one of "parent", "grouping", "other"</p>
                     </div>
 
                     
@@ -379,9 +452,7 @@
             <div class="returns-description">
                 
                     
-                        <span class="type">String</span>:
-                    
-                    Base64 encoded contents
+                    Number index where the value was added
                 
             </div>
         </div>
@@ -391,8 +462,8 @@
 </div>
 
                 
-                    <div id="method_getISODateString" class="method item">
-    <h3 class="name"><code>getISODateString</code></h3>
+                    <div id="method_asVersion" class="method item">
+    <h3 class="name"><code>asVersion</code></h3>
 
     
         <div class="args">
@@ -400,7 +471,7 @@
             
                 <li class="arg">
                     
-                        <code>date</code>
+                        <code class="optional">[version]</code>
                     
                 </li>
             
@@ -408,122 +479,6 @@
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type">String</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-        <span class="flag static">static</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/src_Utils.js.html#l54"><code>src&#x2F;Utils.js:54</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">date</code>
-                        <span class="type">Date</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Date to stringify</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">String</span>:
-                    
-                    ISO date String
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getLangDictionaryValue" class="method item">
-    <h3 class="name"><code>getLangDictionaryValue</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>prop</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[lang]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">String</span>
-        </span>
     
 
     
@@ -549,7 +504,7 @@
             
         
         
-        <a href="../files/src_Utils.js.html#l116"><code>src&#x2F;Utils.js:116</code></a>
+        <a href="../files/src_ContextActivities.js.html#l125"><code>src&#x2F;ContextActivities.js:125</code></a>
         
         </p>
 
@@ -560,8 +515,7 @@
     </div>
 
     <div class="description">
-        <p>Intended to be inherited by objects with properties that store
-display values in a language based "dictionary"</p>
+        
     </div>
 
     
@@ -572,22 +526,7 @@ display values in a language based "dictionary"</p>
             
                 <li class="param">
                     
-                        <code class="param-name">prop</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Property name storing the dictionary</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[lang]</code>
+                        <code class="param-name optional">[version]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
@@ -595,7 +534,7 @@ display values in a language based "dictionary"</p>
                     
 
                     <div class="param-description">
-                        <p>Language to return</p>
+                        <p>Version to return (defaults to newest supported)</p>
                     </div>
 
                     
@@ -606,323 +545,16 @@ display values in a language based "dictionary"</p>
     
 
     
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">String</span>:
-                    
-                
-            </div>
-        </div>
-    
 
     
 </div>
 
                 
-                    <div id="method_getServerRoot" class="method item private">
-    <h3 class="name"><code>getServerRoot</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>absoluteUrl</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">String</span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/src_Utils.js.html#l176"><code>src&#x2F;Utils.js:176</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">absoluteUrl</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                         
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">String</span>:
-                    
-                    server root of url
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getSHA1String" class="method item">
-    <h3 class="name"><code>getSHA1String</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>str</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">String</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-        <span class="flag static">static</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/src_Utils.js.html#l90"><code>src&#x2F;Utils.js:90</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">str</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Content to hash</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">String</span>:
-                    
-                    SHA1 for contents
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getUUID" class="method item">
-    <h3 class="name"><code>getUUID</code></h3>
+                    <div id="method_fromJSON" class="method item">
+    <h3 class="name"><code>fromJSON</code></h3>
 
     
         <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">String</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-        <span class="flag static">static</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/src_Utils.js.html#l30"><code>src&#x2F;Utils.js:30</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Generates a UUIDv4 compliant string that should be reasonably unique</p>
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">String</span>:
-                    
-                    UUID
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_parseURL" class="method item private">
-    <h3 class="name"><code>parseURL</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>url</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
     
 
     
@@ -934,7 +566,84 @@ display values in a language based "dictionary"</p>
     
 
     
-        <span class="flag private">private</span>
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l168"><code>src&#x2F;ContextActivities.js:168</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    ContextActivities
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_init" class="method item">
+    <h3 class="name"><code>init</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
     
 
     
@@ -956,7 +665,7 @@ display values in a language based "dictionary"</p>
             
         
         
-        <a href="../files/src_Utils.js.html#l147"><code>src&#x2F;Utils.js:147</code></a>
+        <a href="../files/src_ContextActivities.js.html#l64"><code>src&#x2F;ContextActivities.js:64</code></a>
         
         </p>
 
@@ -978,14 +687,15 @@ display values in a language based "dictionary"</p>
             
                 <li class="param">
                     
-                        <code class="param-name">url</code>
-                        <span class="type">String</span>
+                        <code class="param-name optional">[options]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                         
+                        <p>Configuration used to initialize</p>
                     </div>
 
                     
@@ -996,18 +706,59 @@ display values in a language based "dictionary"</p>
     
 
     
-        <div class="returns">
-            <h4>Returns:</h4>
 
-            <div class="returns-description">
+    
+</div>
+
                 
-                    
-                        <span class="type">Object</span>:
-                    
-                    Object of values
+                    <div id="method_log" class="method item">
+    <h3 class="name"><code>log</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
                 
-            </div>
-        </div>
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l59"><code>src&#x2F;ContextActivities.js:59</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
     
 
     
@@ -1017,6 +768,188 @@ display values in a language based "dictionary"</p>
             </div>
         
 
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_grouping" class="property item">
+    <h3 class="name"><code>grouping</code></h3>
+    <span class="type">Array</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l39"><code>src&#x2F;ContextActivities.js:39</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_LOG_SRC" class="property item">
+    <h3 class="name"><code>LOG_SRC</code></h3>
+    <span class="type">Unknown</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l54"><code>src&#x2F;ContextActivities.js:54</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_other" class="property item">
+    <h3 class="name"><code>other</code></h3>
+    <span class="type">Array</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l45"><code>src&#x2F;ContextActivities.js:45</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_parent" class="property item">
+    <h3 class="name"><code>parent</code></h3>
+    <span class="type">Array</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/src_ContextActivities.js.html#l33"><code>src&#x2F;ContextActivities.js:33</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
         
 
         

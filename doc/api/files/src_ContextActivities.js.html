@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/AgentAccount.js - TinCanJS</title>
+    <title>src/ContextActivities.js - TinCanJS</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -160,12 +160,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/AgentAccount.js</h1>
+                        <h1 class="file-heading">File: src/ContextActivities.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 /*
-    Copyright 2012 Rustici Software
+    Copyright 2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
     you may not use this file except in compliance with the License.
@@ -184,37 +184,43 @@
 TinCan client library
 
 @module TinCan
-@submodule TinCan.AgentAccount
+@submodule TinCan.ContextActivities
 **/
 (function () {
     &quot;use strict&quot;;
 
     /**
-    @class TinCan.AgentAccount
+    @class TinCan.ContextActivities
     @constructor
     */
-    var AgentAccount = TinCan.AgentAccount = function (cfg) {
+    var ContextActivities = TinCan.ContextActivities = function (cfg) {
         this.log(&quot;constructor&quot;);
 
         /**
-        @property homePage
-        @type String
+        @property parent
+        @type Array
         */
-        this.homePage = null;
+        this.parent = null;
 
         /**
-        @property name
-        @type String
+        @property grouping
+        @type Array
         */
-        this.name = null;
+        this.grouping = null;
+
+        /**
+        @property other
+        @type Array
+        */
+        this.other = null;
 
         this.init(cfg);
     };
-    AgentAccount.prototype = {
+    ContextActivities.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: &#x27;AgentAccount&#x27;,
+        LOG_SRC: &#x27;ContextActivities&#x27;,
 
         /**
         @method log
@@ -227,45 +233,59 @@ TinCan client library
         */
         init: function (cfg) {
             this.log(&quot;init&quot;);
+
             var i,
-                directProps = [
-                    &quot;name&quot;,
-                    &quot;homePage&quot;
+                j,
+                objProps = [
+                    &quot;parent&quot;,
+                    &quot;grouping&quot;,
+                    &quot;other&quot;
                 ],
+                prop,
                 val
             ;
 
             cfg = cfg || {};
 
-            // handle .9 name changes
-            if (typeof cfg.accountServiceHomePage !== &quot;undefined&quot;) {
-                cfg.homePage = cfg.accountServiceHomePage;
-            }
-            if (typeof cfg.accountName !== &quot;undefined&quot;) {
-                cfg.name = cfg.accountName;
-            }
+            for (i = 0; i &lt; objProps.length; i += 1) {
+                prop = objProps[i];
+                if (cfg.hasOwnProperty(prop) &amp;&amp; cfg[prop] !== null) {
+                    if (Object.prototype.toString.call(cfg[prop]) === &quot;[object Array]&quot;) {
+                        for (j = 0; j &lt; cfg[prop].length; j += 1) {
+                            this.add(prop, cfg[prop][j]);
+                        }
+                    }
+                    else {
+                        val = cfg[prop];
 
-            for (i = 0; i &lt; directProps.length; i += 1) {
-                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
+                        this.add(prop, val);
+                    }
                 }
             }
         },
 
-        toString: function (lang) {
-            this.log(&quot;toString&quot;);
-            var result = &quot;&quot;;
-
-            if (this.name !== null || this.homePage !== null) {
-                result += this.name !== null ? this.name : &quot;-&quot;;
-                result += &quot;:&quot;;
-                result += this.homePage !== null ? this.homePage : &quot;-&quot;;
-            }
-            else {
-                result = &quot;AgentAccount: unidentified&quot;;
+        /**
+        @method add
+        @param String key Property to add value to one of &quot;parent&quot;, &quot;grouping&quot;, &quot;other&quot;
+        @return Number index where the value was added
+        */
+        add: function (key, val) {
+            if (key !== &quot;parent&quot; &amp;&amp; key !== &quot;grouping&quot; &amp;&amp; key !== &quot;other&quot;) {
+                return;
             }
 
-            return result;
+            if (this[key] === null) {
+                this[key] = [];
+            }
+
+            if (! (val instanceof TinCan.Activity)) {
+                val = typeof val === &#x27;string&#x27; ? { id: val } : val;
+                val = new TinCan.Activity (val);
+            }
+
+            this[key].push(val);
+
+            return this[key].length - 1;
         },
 
         /**
@@ -273,17 +293,38 @@ TinCan client library
         @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
-            this.log(&quot;asVersion: &quot; + version);
-            var result = {};
+            this.log(&quot;asVersion&quot;);
+            var result = {},
+                optionalObjProps = [
+                    &quot;parent&quot;,
+                    &quot;grouping&quot;,
+                    &quot;other&quot;
+                ],
+                i,
+                j,
+                prop;
 
             version = version || TinCan.versions()[0];
 
-            if (version === &quot;0.9&quot;) {
-                result.accountName = this.name;
-                result.accountServiceHomePage = this.homePage;
-            } else {
-                result.name = this.name;
-                result.homePage = this.homePage;
+            for (i = 0; i &lt; optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null &amp;&amp; this[optionalObjProps[i]].length &gt; 0) {
+                    if (version === &quot;0.9&quot; || version === &quot;0.95&quot;) {
+                        if (this[optionalObjProps[i]].length &gt; 1) {
+                            // TODO: exception?
+                            this.log(&quot;[WARNING] version does not support multiple values in: &quot; + optionalObjProps[i]);
+                        }
+
+                        result[optionalObjProps[i]] = this[optionalObjProps[i]][0].asVersion(version);
+                    }
+                    else {
+                        result[optionalObjProps[i]] = [];
+                        for (j = 0; j &lt; this[optionalObjProps[i]].length; j += 1) {
+                            result[optionalObjProps[i]].push(
+                                this[optionalObjProps[i]][j].asVersion(version)
+                            );
+                        }
+                    }
+                }
             }
 
             return result;
@@ -292,14 +333,14 @@ TinCan client library
 
     /**
     @method fromJSON
-    @return {Object} AgentAccount
+    @return {Object} ContextActivities
     @static
     */
-    AgentAccount.fromJSON = function (acctJSON) {
-        AgentAccount.prototype.log(&quot;fromJSON&quot;);
-        var _acct = JSON.parse(acctJSON);
+    ContextActivities.fromJSON = function (contextActivitiesJSON) {
+        ContextActivities.prototype.log(&quot;fromJSON&quot;);
+        var _contextActivities = JSON.parse(contextActivitiesJSON);
 
-        return new AgentAccount(_acct);
+        return new ContextActivities(_contextActivities);
     };
 }());
 

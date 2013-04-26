@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/AgentAccount.js - TinCanJS</title>
+    <title>TinCan.ContextActivities - TinCanJS</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -160,150 +160,49 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/AgentAccount.js</h1>
+                        <h1>TinCan.ContextActivities Module</h1>
+<div class="box clearfix meta">
+    
 
-<div class="file">
-    <pre class="code prettyprint linenums">
-/*
-    Copyright 2012 Rustici Software
+    
 
-    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+    
+        <div class="foundat">
+            Defined in: <a href="../files/src_ContextActivities.js.html#l26"><code>src&#x2F;ContextActivities.js:26</code></a>
+        </div>
+    
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    
+</div>
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
 
-/**
-TinCan client library
 
-@module TinCan
-@submodule TinCan.AgentAccount
-**/
-(function () {
-    &quot;use strict&quot;;
+<div class="box intro">
+    <p>TinCan client library</p>
+</div>
 
-    /**
-    @class TinCan.AgentAccount
-    @constructor
-    */
-    var AgentAccount = TinCan.AgentAccount = function (cfg) {
-        this.log(&quot;constructor&quot;);
 
-        /**
-        @property homePage
-        @type String
-        */
-        this.homePage = null;
 
-        /**
-        @property name
-        @type String
-        */
-        this.name = null;
+<div class="yui3-g">
+    <div class="yui3-u-1-2">
+        
+            <p>This module provides the following classes:</p>
 
-        this.init(cfg);
-    };
-    AgentAccount.prototype = {
-        /**
-        @property LOG_SRC
-        */
-        LOG_SRC: &#x27;AgentAccount&#x27;,
+            <ul class="module-classes">
+            
+                <li class="module-class">
+                    <a href="../classes/TinCan.ContextActivities.html">
+                        TinCan.ContextActivities
+                    </a>
+                </li>
+            
+            </ul>
+        
+    </div>
 
-        /**
-        @method log
-        */
-        log: TinCan.prototype.log,
-
-        /**
-        @method init
-        @param {Object} [options] Configuration used to initialize
-        */
-        init: function (cfg) {
-            this.log(&quot;init&quot;);
-            var i,
-                directProps = [
-                    &quot;name&quot;,
-                    &quot;homePage&quot;
-                ],
-                val
-            ;
-
-            cfg = cfg || {};
-
-            // handle .9 name changes
-            if (typeof cfg.accountServiceHomePage !== &quot;undefined&quot;) {
-                cfg.homePage = cfg.accountServiceHomePage;
-            }
-            if (typeof cfg.accountName !== &quot;undefined&quot;) {
-                cfg.name = cfg.accountName;
-            }
-
-            for (i = 0; i &lt; directProps.length; i += 1) {
-                if (cfg.hasOwnProperty(directProps[i]) &amp;&amp; cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
-                }
-            }
-        },
-
-        toString: function (lang) {
-            this.log(&quot;toString&quot;);
-            var result = &quot;&quot;;
-
-            if (this.name !== null || this.homePage !== null) {
-                result += this.name !== null ? this.name : &quot;-&quot;;
-                result += &quot;:&quot;;
-                result += this.homePage !== null ? this.homePage : &quot;-&quot;;
-            }
-            else {
-                result = &quot;AgentAccount: unidentified&quot;;
-            }
-
-            return result;
-        },
-
-        /**
-        @method asVersion
-        @param {String} [version] Version to return (defaults to newest supported)
-        */
-        asVersion: function (version) {
-            this.log(&quot;asVersion: &quot; + version);
-            var result = {};
-
-            version = version || TinCan.versions()[0];
-
-            if (version === &quot;0.9&quot;) {
-                result.accountName = this.name;
-                result.accountServiceHomePage = this.homePage;
-            } else {
-                result.name = this.name;
-                result.homePage = this.homePage;
-            }
-
-            return result;
-        }
-    };
-
-    /**
-    @method fromJSON
-    @return {Object} AgentAccount
-    @static
-    */
-    AgentAccount.fromJSON = function (acctJSON) {
-        AgentAccount.prototype.log(&quot;fromJSON&quot;);
-        var _acct = JSON.parse(acctJSON);
-
-        return new AgentAccount(_acct);
-    };
-}());
-
-    </pre>
+    <div class="yui3-u-1-2">
+        
+    </div>
 </div>
 
                     </div>
