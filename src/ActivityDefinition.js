@@ -274,7 +274,7 @@ TinCan client library
 
             for (i = 0; i < interactionComponentProps.length; i += 1) {
                 prop = interactionComponentProps[i];
-                if (this[prop] !== null) {
+ 				if (this.hasOwnProperty(prop) && this[prop] !== null) {
                     result[prop] = [];
                     for (j = 0; j < this[prop].length; j += 1) {
                         result[prop].push(
