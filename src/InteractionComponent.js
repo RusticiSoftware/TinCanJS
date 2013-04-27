@@ -79,8 +79,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -111,5 +110,17 @@ TinCan client library
         @method getLangDictionaryValue
         */
         getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} InteractionComponent
+    @static
+    */
+    InteractionComponent.fromJSON = function (icJSON) {
+        InteractionComponent.prototype.log("fromJSON");
+        var _ic = JSON.parse(icJSON);
+
+        return new InteractionComponent(_ic);
     };
 }());

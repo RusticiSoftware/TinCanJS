@@ -50,13 +50,13 @@ TinCan client library
 
         /**
         @property contextActivities
-        @type Object|null
+        @type ContextActivities|null
         */
         this.contextActivities = null;
 
         /**
         @property revision
-        @type Object|null
+        @type String|null
         */
         this.revision = null;
 
@@ -73,9 +73,8 @@ TinCan client library
         this.language = null;
 
         /**
-        TODO: should this be statement ref, statement, substatement? spec is unclear
         @property statement
-        @type String|null
+        @type SubStatement|StatementRef|null
         */
         this.statement = null;
 
@@ -118,11 +117,6 @@ TinCan client library
                     "instructor",
                     "team"
                 ],
-                contextActivityProps = [
-                    "parent",
-                    "grouping",
-                    "other"
-                ],
                 prop,
                 val
             ;
@@ -155,28 +149,18 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("contextActivities") && cfg.contextActivities !== null) {
-                this.contextActivities = {};
-
-                for (i = 0; i < contextActivityProps.length; i += 1) {
-                    prop = contextActivityProps[i];
-                    if (cfg.contextActivities.hasOwnProperty(prop) && cfg.contextActivities[prop] !== null) {
-                        val = cfg.contextActivities[prop];
-
-                        if (! (val instanceof TinCan.Activity)) {
-                            val = typeof val === 'string' ? { id: val } : val;
-                            val = new TinCan.Activity (val);
-                        }
-
-                        this.contextActivities[prop] = val;
-                    }
+                if (cfg.contextActivities instanceof TinCan.ContextActivities) {
+                    this.contextActivities = cfg.contextActivities;
+                }
+                else {
+                    this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
                 }
             }
         },
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -186,17 +170,13 @@ TinCan client library
                     "revision",
                     "platform",
                     "language",
-                    "statement",
                     "extensions"
                 ],
                 optionalObjProps = [
                     "instructor",
-                    "team"
-                ],
-                contextActivityProps = [
-                    "parent",
-                    "grouping",
-                    "other"
+                    "team",
+                    "contextActivities",
+                    "statement"
                 ],
                 i,
                 prop;
@@ -211,15 +191,6 @@ TinCan client library
             for (i = 0; i < optionalObjProps.length; i += 1) {
                 if (this[optionalObjProps[i]] !== null) {
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
-                }
-            }
-            if (this.contextActivities !== null) {
-                result.contextActivities = {};
-                for (i = 0; i < contextActivityProps.length; i += 1) {
-                    prop = contextActivityProps[i];
-                    if (typeof this.contextActivities[prop] !== "undefined" && this.contextActivities[prop] !== null) {
-                        result.contextActivities[prop] = this.contextActivities[prop].asVersion(version);
-                    }
                 }
             }
 

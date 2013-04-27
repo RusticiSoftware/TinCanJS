@@ -170,7 +170,7 @@ TinCan client library
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined" && typeof cfg.account.name === "undefined") {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -211,17 +211,26 @@ TinCan client library
             if (this.mbox !== null) {
                 return this.mbox.replace("mailto:", "");
             }
+            if (this.mbox_sha1sum !== null) {
+                return this.mbox_sha1sum;
+            }
+            if (this.openid !== null) {
+                return this.openid;
+            }
             if (this.account !== null) {
-                return this.account.name;
+                return this.account.toString();
             }
 
-            return "";
+            return this.objectType + ": unidentified";
         },
 
         /**
+        While a TinCan.Agent instance can store more than one reverse functional identifier
+        this method will always only output one to be compliant with the statement sending
+        specification. Order of preference is: mbox, mbox_sha1sum, openid, account
+
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion: " + version);
@@ -233,24 +242,37 @@ TinCan client library
 
             if (version === "0.9") {
                 if (this.mbox !== null) {
-                    result.mbox = [
-                        this.mbox
-                    ];
+                    result.mbox = [ this.mbox ];
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = [ this.mbox_sha1sum ];
+                }
+                else if (this.openid !== null) {
+                    result.openid = [ this.openid ];
+                }
+                else if (this.account !== null) {
+                    result.account = [ this.account.asVersion(version) ];
+                }
+
                 if (this.name !== null) {
-                    result.name = [
-                        this.name
-                    ];
+                    result.name = [ this.name ];
                 }
             } else {
                 if (this.mbox !== null) {
                     result.mbox = this.mbox;
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = this.mbox_sha1sum;
+                }
+                else if (this.openid !== null) {
+                    result.openid = this.openid;
+                }
+                else if (this.account !== null) {
+                    result.account = this.account.asVersion(version);
+                }
+
                 if (this.name !== null) {
                     result.name = this.name;
-                }
-                if (this.account !== null) {
-                    result.account = this.account;
                 }
             }
 

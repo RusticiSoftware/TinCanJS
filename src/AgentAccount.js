@@ -84,6 +84,55 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+            var result = "";
+
+            if (this.name !== null || this.homePage !== null) {
+                result += this.name !== null ? this.name : "-";
+                result += ":";
+                result += this.homePage !== null ? this.homePage : "-";
+            }
+            else {
+                result = "AgentAccount: unidentified";
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result = {};
+
+            version = version || TinCan.versions()[0];
+
+            if (version === "0.9") {
+                result.accountName = this.name;
+                result.accountServiceHomePage = this.homePage;
+            } else {
+                result.name = this.name;
+                result.homePage = this.homePage;
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} AgentAccount
+    @static
+    */
+    AgentAccount.fromJSON = function (acctJSON) {
+        AgentAccount.prototype.log("fromJSON");
+        var _acct = JSON.parse(acctJSON);
+
+        return new AgentAccount(_acct);
     };
 }());

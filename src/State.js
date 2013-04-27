@@ -38,7 +38,7 @@ TinCan client library
 
         /**
         @property updated
-        @type String
+        @type Boolean
         */
         this.updated = null;
 
@@ -47,6 +47,12 @@ TinCan client library
         @type String
         */
         this.contents = null;
+
+        /**
+        @property etag
+        @type String
+        */
+        this.etag = null;
 
         this.init(cfg);
     };

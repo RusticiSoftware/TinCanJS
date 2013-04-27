@@ -453,15 +453,20 @@ TinCan client library
 
             cfg = cfg || {};
 
-            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
-                method: "PUT",
-                params: {
-                    statementId: stmt.id
-                },
                 data: JSON.stringify(stmt.asVersion( this.version ))
             };
+            if (stmt.id !== null) {
+                requestCfg.method = "PUT";
+                requestCfg.params = {
+                    statementId: stmt.id
+                };
+            }
+            else {
+                requestCfg.method = "POST";
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -501,6 +506,67 @@ TinCan client library
                     statementId: stmtId
                 }
             };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.statement = null;
+                if (requestResult.err === null) {
+                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
+        Retrieve a voided statement, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveVoidedStatement
+        @param {String} ID of voided statement to retrieve
+        @param {Object} [cfg] Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+        @return {Object} TinCan.Statement retrieved
+        */
+        retrieveVoidedStatement: function (stmtId, cfg) {
+            this.log("retrieveStatement");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "statements",
+                method: "GET",
+                params: {}
+            };
+            if (this.version === "0.9" || this.version === "0.95") {
+                requestCfg.params.statementId = stmtId;
+            }
+            else {
+                requestCfg.params.voidedStatementId = stmtId;
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
@@ -583,18 +649,26 @@ TinCan client library
         @method queryStatements
         @param {Object} [cfg] Configuration used to query
             @param {Object} [cfg.params] Query parameters
-                @param {TinCan.Agent} [cfg.params.actor] Agent matches 'actor'
+                @param {TinCan.Agent|TinCan.Group} [cfg.params.agent] Agent matches 'actor' or 'object'
                 @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity|TinCan.Agent|TinCan.Statement} [cfg.params.target] Activity, Agent, or Statement matches 'object'
-                @param {TinCan.Agent} [cfg.params.instructor] Agent matches 'context:instructor'
+                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
                 @param {String} [cfg.params.registration] Registration UUID
-                @param {Boolean} [cfg.params.context] When filtering on target, include statements with matching context
+                @param {Boolean} [cfg.params.related_activities] Match related activities
+                @param {Boolean} [cfg.params.related_agents] Match related agents
                 @param {String} [cfg.params.since] Match statements stored since specified timestamp
                 @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
-                @param {Boolean} [cfg.params.authoritative] Get authoritative results
-                @param {Boolean} [cfg.params.sparse] Get sparse results
+                @param {String} [cfg.params.format] One of "ids", "exact", "canonical" (default: "exact")
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (defualt: false)
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
+
+                @param {TinCan.Agent} [cfg.params.actor] (Removed in 1.0.0, use 'agent' instead) Agent matches 'actor'
+                @param {TinCan.Activity|TinCan.Agent|TinCan.Statement} [cfg.params.target] (Removed in 1.0.0, use 'activity' or 'agent' instead) Activity, Agent, or Statement matches 'object'
+                @param {TinCan.Agent} [cfg.params.instructor] (Removed in 1.0.0, use 'agent' + 'related_agents' instead) Agent matches 'context:instructor'
+                @param {Boolean} [cfg.params.context] (Removed in 1.0.0, use 'activity' instead) When filtering on target, include statements with matching context
+                @param {Boolean} [cfg.params.authoritative] (Removed in 1.0.0) Get authoritative results
+                @param {Boolean} [cfg.params.sparse] (Removed in 1.0.0, use 'format' instead) Get sparse results
+
             @param {Function} [cfg.callback] Callback to execute on completion
                 @param {String|null} cfg.callback.err Error status or null if succcess
                 @param {TinCan.StatementsResult|XHR} cfg.callback.response Receives a StatementsResult argument
@@ -617,11 +691,27 @@ TinCan client library
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
-            if (cfg.params.hasOwnProperty("target")) {
-                cfg.params.object = cfg.params.target;
+            //
+            // if they misconfigured (possibly do to version mismatches) the
+            // query then don't try to send a request at all, rather than give
+            // them invalid results
+            //
+            try {
+                requestCfg = this._queryStatementsRequestCfg(cfg);
             }
+            catch (ex) {
+                if (TinCan.environment().isBrowser && this.alertOnRequestFailure) {
+                    alert("[error] Query statements failed - " + ex);
+                }
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(ex, {});
+                }
 
-            requestCfg = this._queryStatementsRequestCfg(cfg);
+                return {
+                    err: ex,
+                    statementsResult: null
+                };
+            }
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
@@ -666,11 +756,15 @@ TinCan client library
                     params: params
                 },
                 jsonProps = [
+                    "agent",
                     "actor",
                     "object",
                     "instructor"
                 ],
-                idProps = ["verb"],
+                idProps = [
+                    "verb",
+                    "activity"
+                ],
                 valProps = [
                     "registration",
                     "context",
@@ -679,9 +773,80 @@ TinCan client library
                     "limit",
                     "authoritative",
                     "sparse",
-                    "ascending"
+                    "ascending",
+                    "related_activities",
+                    "related_agents",
+                    "format",
+                    "attachments"
                 ],
-                i;
+                i,
+                prop,
+                //
+                // list of parameters that are supported in all versions (supported by
+                // this library) of the spec
+                //
+                universal = {
+                    verb: true,
+                    registration: true,
+                    since: true,
+                    until: true,
+                    limit: true,
+                    ascending: true
+                },
+                //
+                // future proofing here, "supported" is an object so that
+                // in the future we can support a "deprecated" list to
+                // throw warnings, hopefully the spec uses deprecation phases
+                // for the removal of these things
+                //
+                compatibility = {
+                    "0.9": {
+                        supported: {
+                            actor: true,
+                            instructor: true,
+                            target: true,
+                            object: true,
+                            context: true,
+                            authoritative: true,
+                            sparse: true
+                        }
+                    },
+                    "1.0.0": {
+                        supported: {
+                            agent: true,
+                            activity: true,
+                            related_activities: true,
+                            related_agents: true,
+                            format: true,
+                            attachments: true
+                        }
+                    }
+                };
+
+            compatibility["0.95"] = compatibility["0.9"];
+
+            if (cfg.params.hasOwnProperty("target")) {
+                cfg.params.object = cfg.params.target;
+            }
+
+            //
+            // check compatibility tables, either the configured parameter is in
+            // the universal list or the specific version, if not then throw an
+            // error which at least for .queryStatements will prevent the request
+            // and potentially alert the user
+            //
+            for (prop in cfg.params) {
+                if (cfg.params.hasOwnProperty(prop)) {
+                    if (typeof universal[prop] === "undefined" && typeof compatibility[this.version].supported[prop] === "undefined") {
+                        throw "Unrecognized query parameter configured: " + prop;
+                    }
+                }
+            }
+
+            //
+            // getting here means that all parameters are valid for this version
+            // to make handling the output formats easier
+            //
 
             for (i = 0; i < jsonProps.length; i += 1) {
                 if (typeof cfg.params[jsonProps[i]] !== "undefined") {
@@ -960,7 +1125,7 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
                 };
             }
 
@@ -1160,7 +1325,12 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
+                };
+            }
+            else {
+                requestCfg.headers = {
+                    "If-None-Match": "*"
                 };
             }
 

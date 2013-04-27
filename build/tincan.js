@@ -32,24 +32,25 @@ var TinCan;
             //
             // these are TC spec reserved words that may end up in queries to the endpoint
             //
-            statementId:   true,
-            verb:          true,
-            object:        true,
-            registration:  true,
-            context:       true,
-            actor:         true,
-            since:         true,
-            until:         true,
-            limit:         true,
-            authoritative: true,
-            sparse:        true,
-            instructor:    true,
-            ascending:     true,
-            continueToken: true,
-            agent:         true,
-            activityId:    true,
-            stateId:       true,
-            profileId:     true,
+            statementId:       true,
+            voidedStatementId: true,
+            verb:              true,
+            object:            true,
+            registration:      true,
+            context:           true,
+            actor:             true,
+            since:             true,
+            until:             true,
+            limit:             true,
+            authoritative:     true,
+            sparse:            true,
+            instructor:        true,
+            ascending:         true,
+            continueToken:     true,
+            agent:             true,
+            activityId:        true,
+            stateId:           true,
+            profileId:         true,
 
             //
             // these are suggested by the LMS launch spec addition that TinCanJS consumes
@@ -127,7 +128,8 @@ var TinCan;
         LOG_SRC: "TinCan",
 
         /**
-        Safe version of logging
+        Safe version of logging, only displays when .DEBUG is true, and console.log
+        is available
 
         @method log
         @param {String} msg Message to output
@@ -172,7 +174,7 @@ var TinCan;
         },
 
         /**
-        @method _handleQueryString
+        @method _initFromQueryString
         @param {String} url
         @private
         */
@@ -480,6 +482,166 @@ var TinCan;
         },
 
         /**
+        Creates a statement used for voiding the passed statement/statement ID and calls
+        send statement with the voiding statement.
+
+        @method voidStatement
+        @param {TinCan.Statement|String} statement Statement or statement ID to void
+        @param {Function} [callback] Callback function to execute on completion
+        @param {Object} [options] Options used to build voiding statement
+            @param {TinCan.Agent} [options.actor] Agent to be used as 'actor' in voiding statement
+        */
+        voidStatement: function (stmt, callback, options) {
+            this.log("voidStatement");
+
+            // would prefer to use .bind instead of 'self'
+            var self = this,
+                lrs,
+                actor,
+                voidingStatement,
+                rsCount = this.recordStores.length,
+                i,
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
+            ;
+
+            if (stmt instanceof TinCan.Statement) {
+                stmt = stmt.id;
+            }
+
+            if (typeof options.actor !== "undefined") {
+                actor = options.actor;
+            }
+            else if (this.actor !== null) {
+                actor = this.actor;
+            }
+
+            voidingStatement = new TinCan.Statement(
+                {
+                    actor: actor,
+                    verb: {
+                       id: "http://adlnet.gov/expapi/verbs/voided"
+                    },
+                    target: {
+                        objectType: "StatementRef",
+                        id: stmt
+                    }
+                }
+            );
+
+            if (rsCount > 0) {
+                /*
+                   if there is a callback that is a function then we need
+                   to wrap that function with a function that becomes
+                   the new callback that reduces a closure count of the
+                   requests that don't have allowFail set to true and
+                   when that number hits zero then the original callback
+                   is executed
+                */
+                if (typeof callback === "function") {
+                    callbackWrapper = function (err, xhr) {
+                        var args;
+
+                        self.log("voidStatement - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                        }
+                        else if (rsCount === 1) {
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                            args = [
+                                callbackResults,
+                                voidingStatement
+                            ];
+                            callback.apply(this, args);
+                        }
+                        else {
+                            self.log("voidStatement - unexpected record store count: " + rsCount);
+                        }
+                    };
+                }
+
+                for (i = 0; i < rsCount; i += 1) {
+                    lrs = this.recordStores[i];
+
+                    results.push(
+                        lrs.saveStatement(voidingStatement, { callback: callbackWrapper })
+                    );
+                }
+            }
+            else {
+                msg = "[warning] voidStatement: No LRSs added yet (statement not sent)";
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + ": " + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, voidingStatement ]);
+                }
+            }
+
+            return {
+                statement: voidingStatement,
+                results: results
+            };
+        },
+
+        /**
+        Calls retrieveVoidedStatement on the first LRS, provide callback to make it asynchronous
+
+        @method getVoidedStatement
+        @param {String} statement Statement ID to get
+        @param {Function} [callback] Callback function to execute on completion
+        @return {Array|Result} Array of results, or single result
+
+        TODO: make TinCan track voided statements it has seen in a local cache to be returned easily
+        */
+        getVoidedStatement: function (stmtId, callback) {
+            this.log("getVoidedStatement");
+
+            var lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for statements (for now) we only need to read from the first LRS
+                // in the future it may make sense to get all from all LRSes and
+                // compare to remove duplicates or allow inspection of them for differences?
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                return lrs.retrieveVoidedStatement(stmtId, { callback: callback });
+            }
+
+            msg = "[warning] getVoidedStatement: No LRSs added yet (statement not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        /**
         Calls saveStatements with list of prepared statements
 
         @method sendStatements
@@ -617,17 +779,24 @@ var TinCan;
                 params = cfg.params || {};
 
                 if (cfg.sendActor && this.actor !== null) {
-                    params.actor = this.actor;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.actor = this.actor;
+                    }
+                    else {
+                        params.agent = this.actor;
+                    }
                 }
                 if (cfg.sendActivity && this.activity !== null) {
-                    params.activity = this.activity;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.target = this.activity;
+                    }
+                    else {
+                        params.activity = this.activity;
+                    }
                 }
                 if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
-
-                // TODO: do we want to hard set this?
-                params.sparse = cfg.sparse || "false";
 
                 queryCfg = {
                     params: params
@@ -717,6 +886,7 @@ var TinCan;
                 defaults to 'activity' property if empty
             @param {Object} [cfg.registration] Registration used in query,
                 defaults to 'registration' property if empty
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {Function} [cfg.callback] Function to run with state
         */
         setState: function (key, val, cfg) {
@@ -748,6 +918,9 @@ var TinCan;
                 }
                 else if (this.registration !== null) {
                     queryCfg.registration = this.registration;
+                }
+                if (typeof cfg.lastSHA1 !== "undefined") {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
                 }
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
@@ -877,6 +1050,7 @@ var TinCan;
         @param {Object} [cfg] Configuration for request
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {Function} [cfg.callback] Function to run with activity profile
         */
         setActivityProfile: function (key, val, cfg) {
@@ -1004,6 +1178,7 @@ var TinCan;
     TinCan.versions = function () {
         // newest first so we can use the first as the default
         return [
+            "1.0.0",
             "0.95",
             "0.9"
         ];
@@ -1728,15 +1903,20 @@ TinCan client library
 
             cfg = cfg || {};
 
-            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
-                method: "PUT",
-                params: {
-                    statementId: stmt.id
-                },
                 data: JSON.stringify(stmt.asVersion( this.version ))
             };
+            if (stmt.id !== null) {
+                requestCfg.method = "PUT";
+                requestCfg.params = {
+                    statementId: stmt.id
+                };
+            }
+            else {
+                requestCfg.method = "POST";
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -1776,6 +1956,67 @@ TinCan client library
                     statementId: stmtId
                 }
             };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.statement = null;
+                if (requestResult.err === null) {
+                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
+        Retrieve a voided statement, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveVoidedStatement
+        @param {String} ID of voided statement to retrieve
+        @param {Object} [cfg] Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+        @return {Object} TinCan.Statement retrieved
+        */
+        retrieveVoidedStatement: function (stmtId, cfg) {
+            this.log("retrieveStatement");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "statements",
+                method: "GET",
+                params: {}
+            };
+            if (this.version === "0.9" || this.version === "0.95") {
+                requestCfg.params.statementId = stmtId;
+            }
+            else {
+                requestCfg.params.voidedStatementId = stmtId;
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
@@ -1858,18 +2099,26 @@ TinCan client library
         @method queryStatements
         @param {Object} [cfg] Configuration used to query
             @param {Object} [cfg.params] Query parameters
-                @param {TinCan.Agent} [cfg.params.actor] Agent matches 'actor'
+                @param {TinCan.Agent|TinCan.Group} [cfg.params.agent] Agent matches 'actor' or 'object'
                 @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity|TinCan.Agent|TinCan.Statement} [cfg.params.target] Activity, Agent, or Statement matches 'object'
-                @param {TinCan.Agent} [cfg.params.instructor] Agent matches 'context:instructor'
+                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
                 @param {String} [cfg.params.registration] Registration UUID
-                @param {Boolean} [cfg.params.context] When filtering on target, include statements with matching context
+                @param {Boolean} [cfg.params.related_activities] Match related activities
+                @param {Boolean} [cfg.params.related_agents] Match related agents
                 @param {String} [cfg.params.since] Match statements stored since specified timestamp
                 @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
-                @param {Boolean} [cfg.params.authoritative] Get authoritative results
-                @param {Boolean} [cfg.params.sparse] Get sparse results
+                @param {String} [cfg.params.format] One of "ids", "exact", "canonical" (default: "exact")
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (defualt: false)
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
+
+                @param {TinCan.Agent} [cfg.params.actor] (Removed in 1.0.0, use 'agent' instead) Agent matches 'actor'
+                @param {TinCan.Activity|TinCan.Agent|TinCan.Statement} [cfg.params.target] (Removed in 1.0.0, use 'activity' or 'agent' instead) Activity, Agent, or Statement matches 'object'
+                @param {TinCan.Agent} [cfg.params.instructor] (Removed in 1.0.0, use 'agent' + 'related_agents' instead) Agent matches 'context:instructor'
+                @param {Boolean} [cfg.params.context] (Removed in 1.0.0, use 'activity' instead) When filtering on target, include statements with matching context
+                @param {Boolean} [cfg.params.authoritative] (Removed in 1.0.0) Get authoritative results
+                @param {Boolean} [cfg.params.sparse] (Removed in 1.0.0, use 'format' instead) Get sparse results
+
             @param {Function} [cfg.callback] Callback to execute on completion
                 @param {String|null} cfg.callback.err Error status or null if succcess
                 @param {TinCan.StatementsResult|XHR} cfg.callback.response Receives a StatementsResult argument
@@ -1892,11 +2141,27 @@ TinCan client library
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
-            if (cfg.params.hasOwnProperty("target")) {
-                cfg.params.object = cfg.params.target;
+            //
+            // if they misconfigured (possibly do to version mismatches) the
+            // query then don't try to send a request at all, rather than give
+            // them invalid results
+            //
+            try {
+                requestCfg = this._queryStatementsRequestCfg(cfg);
             }
+            catch (ex) {
+                if (TinCan.environment().isBrowser && this.alertOnRequestFailure) {
+                    alert("[error] Query statements failed - " + ex);
+                }
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(ex, {});
+                }
 
-            requestCfg = this._queryStatementsRequestCfg(cfg);
+                return {
+                    err: ex,
+                    statementsResult: null
+                };
+            }
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
@@ -1941,11 +2206,15 @@ TinCan client library
                     params: params
                 },
                 jsonProps = [
+                    "agent",
                     "actor",
                     "object",
                     "instructor"
                 ],
-                idProps = ["verb"],
+                idProps = [
+                    "verb",
+                    "activity"
+                ],
                 valProps = [
                     "registration",
                     "context",
@@ -1954,9 +2223,80 @@ TinCan client library
                     "limit",
                     "authoritative",
                     "sparse",
-                    "ascending"
+                    "ascending",
+                    "related_activities",
+                    "related_agents",
+                    "format",
+                    "attachments"
                 ],
-                i;
+                i,
+                prop,
+                //
+                // list of parameters that are supported in all versions (supported by
+                // this library) of the spec
+                //
+                universal = {
+                    verb: true,
+                    registration: true,
+                    since: true,
+                    until: true,
+                    limit: true,
+                    ascending: true
+                },
+                //
+                // future proofing here, "supported" is an object so that
+                // in the future we can support a "deprecated" list to
+                // throw warnings, hopefully the spec uses deprecation phases
+                // for the removal of these things
+                //
+                compatibility = {
+                    "0.9": {
+                        supported: {
+                            actor: true,
+                            instructor: true,
+                            target: true,
+                            object: true,
+                            context: true,
+                            authoritative: true,
+                            sparse: true
+                        }
+                    },
+                    "1.0.0": {
+                        supported: {
+                            agent: true,
+                            activity: true,
+                            related_activities: true,
+                            related_agents: true,
+                            format: true,
+                            attachments: true
+                        }
+                    }
+                };
+
+            compatibility["0.95"] = compatibility["0.9"];
+
+            if (cfg.params.hasOwnProperty("target")) {
+                cfg.params.object = cfg.params.target;
+            }
+
+            //
+            // check compatibility tables, either the configured parameter is in
+            // the universal list or the specific version, if not then throw an
+            // error which at least for .queryStatements will prevent the request
+            // and potentially alert the user
+            //
+            for (prop in cfg.params) {
+                if (cfg.params.hasOwnProperty(prop)) {
+                    if (typeof universal[prop] === "undefined" && typeof compatibility[this.version].supported[prop] === "undefined") {
+                        throw "Unrecognized query parameter configured: " + prop;
+                    }
+                }
+            }
+
+            //
+            // getting here means that all parameters are valid for this version
+            // to make handling the output formats easier
+            //
 
             for (i = 0; i < jsonProps.length; i += 1) {
                 if (typeof cfg.params[jsonProps[i]] !== "undefined") {
@@ -2235,7 +2575,7 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
                 };
             }
 
@@ -2435,7 +2775,12 @@ TinCan client library
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers = {
-                    "If-Matches": cfg.lastSHA1
+                    "If-Match": cfg.lastSHA1
+                };
+            }
+            else {
+                requestCfg.headers = {
+                    "If-None-Match": "*"
                 };
             }
 
@@ -2594,7 +2939,56 @@ TinCan client library
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+            var result = "";
+
+            if (this.name !== null || this.homePage !== null) {
+                result += this.name !== null ? this.name : "-";
+                result += ":";
+                result += this.homePage !== null ? this.homePage : "-";
+            }
+            else {
+                result = "AgentAccount: unidentified";
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result = {};
+
+            version = version || TinCan.versions()[0];
+
+            if (version === "0.9") {
+                result.accountName = this.name;
+                result.accountServiceHomePage = this.homePage;
+            } else {
+                result.name = this.name;
+                result.homePage = this.homePage;
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} AgentAccount
+    @static
+    */
+    AgentAccount.fromJSON = function (acctJSON) {
+        AgentAccount.prototype.log("fromJSON");
+        var _acct = JSON.parse(acctJSON);
+
+        return new AgentAccount(_acct);
     };
 }());
 /*
@@ -2769,7 +3163,7 @@ TinCan client library
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined" && typeof cfg.account.name === "undefined") {
                 if (cfg.account.length === 0) {
                     delete cfg.account;
                 }
@@ -2810,17 +3204,26 @@ TinCan client library
             if (this.mbox !== null) {
                 return this.mbox.replace("mailto:", "");
             }
+            if (this.mbox_sha1sum !== null) {
+                return this.mbox_sha1sum;
+            }
+            if (this.openid !== null) {
+                return this.openid;
+            }
             if (this.account !== null) {
-                return this.account.name;
+                return this.account.toString();
             }
 
-            return "";
+            return this.objectType + ": unidentified";
         },
 
         /**
+        While a TinCan.Agent instance can store more than one reverse functional identifier
+        this method will always only output one to be compliant with the statement sending
+        specification. Order of preference is: mbox, mbox_sha1sum, openid, account
+
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion: " + version);
@@ -2832,24 +3235,37 @@ TinCan client library
 
             if (version === "0.9") {
                 if (this.mbox !== null) {
-                    result.mbox = [
-                        this.mbox
-                    ];
+                    result.mbox = [ this.mbox ];
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = [ this.mbox_sha1sum ];
+                }
+                else if (this.openid !== null) {
+                    result.openid = [ this.openid ];
+                }
+                else if (this.account !== null) {
+                    result.account = [ this.account.asVersion(version) ];
+                }
+
                 if (this.name !== null) {
-                    result.name = [
-                        this.name
-                    ];
+                    result.name = [ this.name ];
                 }
             } else {
                 if (this.mbox !== null) {
                     result.mbox = this.mbox;
                 }
+                else if (this.mbox_sha1sum !== null) {
+                    result.mbox_sha1sum = this.mbox_sha1sum;
+                }
+                else if (this.openid !== null) {
+                    result.openid = this.openid;
+                }
+                else if (this.account !== null) {
+                    result.account = this.account.asVersion(version);
+                }
+
                 if (this.name !== null) {
                     result.name = this.name;
-                }
-                if (this.account !== null) {
-                    result.account = this.account;
                 }
             }
 
@@ -2902,6 +3318,36 @@ TinCan client library
         this.log("constructor");
 
         /**
+        @property name
+        @type String
+        */
+        this.name = null;
+
+        /**
+        @property mbox
+        @type String
+        */
+        this.mbox = null;
+
+        /**
+        @property mbox_sha1sum
+        @type String
+        */
+        this.mbox_sha1sum = null;
+
+        /**
+        @property openid
+        @type String
+        */
+        this.openid = null;
+
+        /**
+        @property account
+        @type TinCan.AgentAccount
+        */
+        this.account = null;
+
+        /**
         @property member
         @type Array
         */
@@ -2921,7 +3367,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Group',
+        LOG_SRC: "Group",
 
         /**
         @method log
@@ -2934,7 +3380,70 @@ TinCan client library
         */
         init: function (cfg) {
             this.log("init");
+            var i;
+
+            cfg = cfg || {};
+
+            TinCan.Agent.prototype.init.call(this, cfg);
+
+            if (typeof cfg.member !== "undefined") {
+                for (i = 0; i < cfg.member.length; i += 1) {
+                    if (cfg.member[i] instanceof TinCan.Agent) {
+                        this.member.push(cfg.member[i]);
+                    }
+                    else {
+                        this.member.push(new TinCan.Agent (cfg.member[i]));
+                    }
+                }
+            }
+        },
+
+        toString: function (lang) {
+            this.log("toString");
+
+            var result = TinCan.Agent.prototype.toString.call(this, lang);
+            if (result !== this.objectType + ": unidentified") {
+                result = this.objectType + ": " + result;
+            }
+
+            return result;
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion: " + version);
+            var result,
+                i
+            ;
+
+            version = version || TinCan.versions()[0];
+
+            result = TinCan.Agent.prototype.asVersion.call(this, version);
+
+            if (this.member.length > 0) {
+                result.member = [];
+                for (i = 0; i < this.member.length; i += 1) {
+                    result.member.push(this.member[i].asVersion(version));
+                }
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Group
+    @static
+    */
+    Group.fromJSON = function (groupJSON) {
+        Group.prototype.log("fromJSON");
+        var _group = JSON.parse(groupJSON);
+
+        return new Group(_group);
     };
 }());
 /*
@@ -3056,6 +3565,12 @@ TinCan client library
                         this[directProps[i]] = cfg[directProps[i]];
                     }
                 }
+
+                if (this.display === null && typeof _downConvertMap[this.id] !== "undefined") {
+                    this.display = {
+                        "und": _downConvertMap[this.id]
+                    };
+                }
             }
         },
 
@@ -3075,8 +3590,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -3243,8 +3757,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -3396,8 +3909,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -3433,394 +3945,6 @@ TinCan client library
         var _score = JSON.parse(scoreJSON);
 
         return new Score(_score);
-    };
-}());
-/*
-    Copyright 2012 Rustici Software
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
-/**
-TinCan client library
-
-@module TinCan
-@submodule TinCan.Context
-**/
-(function () {
-    "use strict";
-
-    /**
-    @class TinCan.Context
-    @constructor
-    */
-    var Context = TinCan.Context = function (cfg) {
-        this.log("constructor");
-
-        /**
-        @property registration
-        @type String|null
-        */
-        this.registration = null;
-
-        /**
-        @property instructor
-        @type TinCan.Agent|TinCan.Group|null
-        */
-        this.instructor = null;
-
-        /**
-        @property team
-        @type TinCan.Agent|TinCan.Group|null
-        */
-        this.team = null;
-
-        /**
-        @property contextActivities
-        @type Object|null
-        */
-        this.contextActivities = null;
-
-        /**
-        @property revision
-        @type Object|null
-        */
-        this.revision = null;
-
-        /**
-        @property platform
-        @type Object|null
-        */
-        this.platform = null;
-
-        /**
-        @property language
-        @type String|null
-        */
-        this.language = null;
-
-        /**
-        TODO: should this be statement ref, statement, substatement? spec is unclear
-        @property statement
-        @type String|null
-        */
-        this.statement = null;
-
-        /**
-        @property extensions
-        @type String
-        */
-        this.extensions = null;
-
-        this.init(cfg);
-    };
-    Context.prototype = {
-        /**
-        @property LOG_SRC
-        */
-        LOG_SRC: 'Context',
-
-        /**
-        @method log
-        */
-        log: TinCan.prototype.log,
-
-        /**
-        @method init
-        @param {Object} [options] Configuration used to initialize
-        */
-        init: function (cfg) {
-            this.log("init");
-
-            var i,
-                directProps = [
-                    "registration",
-                    "revision",
-                    "platform",
-                    "language",
-                    "statement",
-                    "extensions"
-                ],
-                agentGroupProps = [
-                    "instructor",
-                    "team"
-                ],
-                contextActivityProps = [
-                    "parent",
-                    "grouping",
-                    "other"
-                ],
-                prop,
-                val
-            ;
-
-            cfg = cfg || {};
-
-            for (i = 0; i < directProps.length; i += 1) {
-                prop = directProps[i];
-                if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
-                    this[prop] = cfg[prop];
-                }
-            }
-            for (i = 0; i < agentGroupProps.length; i += 1) {
-                prop = agentGroupProps[i];
-                if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
-                    val = cfg[prop];
-
-                    if (typeof val.objectType === "undefined" || val.objectType === "Person") {
-                        val.objectType = "Agent";
-                    }
-
-                    if (val.objectType === "Agent" && ! (val instanceof TinCan.Agent)) {
-                        val = new TinCan.Agent (val);
-                    } else if (val.objectType === "Group" && ! (val instanceof TinCan.Group)) {
-                        val = new TinCan.Group (val);
-                    }
-
-                    this[prop] = val;
-                }
-            }
-
-            if (cfg.hasOwnProperty("contextActivities") && cfg.contextActivities !== null) {
-                this.contextActivities = {};
-
-                for (i = 0; i < contextActivityProps.length; i += 1) {
-                    prop = contextActivityProps[i];
-                    if (cfg.contextActivities.hasOwnProperty(prop) && cfg.contextActivities[prop] !== null) {
-                        val = cfg.contextActivities[prop];
-
-                        if (! (val instanceof TinCan.Activity)) {
-                            val = typeof val === 'string' ? { id: val } : val;
-                            val = new TinCan.Activity (val);
-                        }
-
-                        this.contextActivities[prop] = val;
-                    }
-                }
-            }
-        },
-
-        /**
-        @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
-        */
-        asVersion: function (version) {
-            this.log("asVersion");
-            var result = {},
-                optionalDirectProps = [
-                    "registration",
-                    "revision",
-                    "platform",
-                    "language",
-                    "statement",
-                    "extensions"
-                ],
-                optionalObjProps = [
-                    "instructor",
-                    "team"
-                ],
-                contextActivityProps = [
-                    "parent",
-                    "grouping",
-                    "other"
-                ],
-                i,
-                prop;
-
-            version = version || TinCan.versions()[0];
-
-            for (i = 0; i < optionalDirectProps.length; i += 1) {
-                if (this[optionalDirectProps[i]] !== null) {
-                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
-                }
-            }
-            for (i = 0; i < optionalObjProps.length; i += 1) {
-                if (this[optionalObjProps[i]] !== null) {
-                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
-                }
-            }
-            if (this.contextActivities !== null) {
-                result.contextActivities = {};
-                for (i = 0; i < contextActivityProps.length; i += 1) {
-                    prop = contextActivityProps[i];
-                    if (typeof this.contextActivities[prop] !== "undefined" && this.contextActivities[prop] !== null) {
-                        result.contextActivities[prop] = this.contextActivities[prop].asVersion(version);
-                    }
-                }
-            }
-
-            return result;
-        }
-    };
-
-    /**
-    @method fromJSON
-    @return {Object} Context
-    @static
-    */
-    Context.fromJSON = function (contextJSON) {
-        Context.prototype.log("fromJSON");
-        var _context = JSON.parse(contextJSON);
-
-        return new Context(_context);
-    };
-}());
-/*
-    Copyright 2012 Rustici Software
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
-/**
-TinCan client library
-
-@module TinCan
-@submodule TinCan.Activity
-**/
-(function () {
-    "use strict";
-
-    /**
-    @class TinCan.Activity
-    @constructor
-    */
-    var Activity = TinCan.Activity = function (cfg) {
-        this.log("constructor");
-
-        /**
-        @property objectType
-        @type String
-        @default Activity
-        */
-        this.objectType = "Activity";
-
-        /**
-        @property id
-        @type String
-        */
-        this.id = null;
-
-        /**
-        @property definition
-        @type TinCan.ActivityDefinition
-        */
-        this.definition = null;
-
-        this.init(cfg);
-    };
-    Activity.prototype = {
-        /**
-        @property LOG_SRC
-        */
-        LOG_SRC: 'Activity',
-
-        /**
-        @method log
-        */
-        log: TinCan.prototype.log,
-
-        /**
-        @method init
-        @param {Object} [options] Configuration used to initialize
-        */
-        init: function (cfg) {
-            this.log("init");
-
-            var i,
-                directProps = [
-                    "id"
-                ]
-            ;
-
-            cfg = cfg || {};
-
-            if (cfg.hasOwnProperty("definition")) {
-                // TODO: check to see if already this type
-                this.definition = new TinCan.ActivityDefinition (cfg.definition);
-            }
-
-            for (i = 0; i < directProps.length; i += 1) {
-                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
-                    this[directProps[i]] = cfg[directProps[i]];
-                }
-            }
-        },
-
-        /**
-        @method toString
-        @return {String} String representation of the activity
-        */
-        toString: function (lang) {
-            this.log("toString");
-            var defString = "";
-
-            if (this.definition !== null) {
-                defString = this.definition.toString(lang);
-                if (defString !== "") {
-                    return defString;
-                }
-            }
-
-            if (this.id !== null) {
-                return this.id;
-            }
-
-            return "";
-        },
-
-        /**
-        @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
-        */
-        asVersion: function (version) {
-            this.log("asVersion");
-            var result = {
-                id: this.id,
-                objectType: this.objectType
-            };
-
-            version = version || TinCan.versions()[0];
-
-            if (this.definition !== null) {
-                result.definition = this.definition.asVersion(version);
-            }
-
-            return result;
-        }
-    };
-
-    /**
-    @method fromJSON
-    @return {Object} Activity
-    @static
-    */
-    Activity.fromJSON = function (activityJSON) {
-        Activity.prototype.log("fromJSON");
-        var _activity = JSON.parse(activityJSON);
-
-        return new Activity(_activity);
     };
 }());
 /*
@@ -3904,8 +4028,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -3936,6 +4059,18 @@ TinCan client library
         @method getLangDictionaryValue
         */
         getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} InteractionComponent
+    @static
+    */
+    InteractionComponent.fromJSON = function (icJSON) {
+        InteractionComponent.prototype.log("fromJSON");
+        var _ic = JSON.parse(icJSON);
+
+        return new InteractionComponent(_ic);
     };
 }());
 /*
@@ -4128,12 +4263,15 @@ TinCan client library
                         if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
                             this[prop] = [];
                             for (j = 0; j < cfg[prop].length; j += 1) {
-                                this[prop].push(
-                                    // TODO: check to see if already this type
-                                    new TinCan.InteractionComponent (
-                                        cfg[prop][j]
-                                    )
-                                );
+                                if (cfg[prop][j] instanceof TinCan.InteractionComponent) {
+                                    this[prop].push(cfg[prop][j]);
+                                } else {
+                                    this[prop].push(
+                                        new TinCan.InteractionComponent (
+                                            cfg[prop][j]
+                                        )
+                                    );
+                                }
                             }
                         }
                     }
@@ -4167,8 +4305,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
@@ -4265,6 +4402,546 @@ TinCan client library
 TinCan client library
 
 @module TinCan
+@submodule TinCan.Activity
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.Activity
+    @constructor
+    */
+    var Activity = TinCan.Activity = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property objectType
+        @type String
+        @default Activity
+        */
+        this.objectType = "Activity";
+
+        /**
+        @property id
+        @type String
+        */
+        this.id = null;
+
+        /**
+        @property definition
+        @type TinCan.ActivityDefinition
+        */
+        this.definition = null;
+
+        this.init(cfg);
+    };
+    Activity.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: 'Activity',
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+
+            var i,
+                directProps = [
+                    "id"
+                ]
+            ;
+
+            cfg = cfg || {};
+
+            if (cfg.hasOwnProperty("definition")) {
+                if (cfg.definition instanceof TinCan.ActivityDefinition) {
+                    this.definition = cfg.definition;
+                } else {
+                    this.definition = new TinCan.ActivityDefinition (cfg.definition);
+                }
+            }
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+        },
+
+        /**
+        @method toString
+        @return {String} String representation of the activity
+        */
+        toString: function (lang) {
+            this.log("toString");
+            var defString = "";
+
+            if (this.definition !== null) {
+                defString = this.definition.toString(lang);
+                if (defString !== "") {
+                    return defString;
+                }
+            }
+
+            if (this.id !== null) {
+                return this.id;
+            }
+
+            return "Activity: unidentified";
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result = {
+                id: this.id,
+                objectType: this.objectType
+            };
+
+            version = version || TinCan.versions()[0];
+
+            if (this.definition !== null) {
+                result.definition = this.definition.asVersion(version);
+            }
+
+            return result;
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Activity
+    @static
+    */
+    Activity.fromJSON = function (activityJSON) {
+        Activity.prototype.log("fromJSON");
+        var _activity = JSON.parse(activityJSON);
+
+        return new Activity(_activity);
+    };
+}());
+/*
+    Copyright 2013 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.ContextActivities
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.ContextActivities
+    @constructor
+    */
+    var ContextActivities = TinCan.ContextActivities = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property parent
+        @type Array
+        */
+        this.parent = null;
+
+        /**
+        @property grouping
+        @type Array
+        */
+        this.grouping = null;
+
+        /**
+        @property other
+        @type Array
+        */
+        this.other = null;
+
+        this.init(cfg);
+    };
+    ContextActivities.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: 'ContextActivities',
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+
+            var i,
+                j,
+                objProps = [
+                    "parent",
+                    "grouping",
+                    "other"
+                ],
+                prop,
+                val
+            ;
+
+            cfg = cfg || {};
+
+            for (i = 0; i < objProps.length; i += 1) {
+                prop = objProps[i];
+                if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
+                    if (Object.prototype.toString.call(cfg[prop]) === "[object Array]") {
+                        for (j = 0; j < cfg[prop].length; j += 1) {
+                            this.add(prop, cfg[prop][j]);
+                        }
+                    }
+                    else {
+                        val = cfg[prop];
+
+                        this.add(prop, val);
+                    }
+                }
+            }
+        },
+
+        /**
+        @method add
+        @param String key Property to add value to one of "parent", "grouping", "other"
+        @return Number index where the value was added
+        */
+        add: function (key, val) {
+            if (key !== "parent" && key !== "grouping" && key !== "other") {
+                return;
+            }
+
+            if (this[key] === null) {
+                this[key] = [];
+            }
+
+            if (! (val instanceof TinCan.Activity)) {
+                val = typeof val === 'string' ? { id: val } : val;
+                val = new TinCan.Activity (val);
+            }
+
+            this[key].push(val);
+
+            return this[key].length - 1;
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result = {},
+                optionalObjProps = [
+                    "parent",
+                    "grouping",
+                    "other"
+                ],
+                i,
+                j,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null && this[optionalObjProps[i]].length > 0) {
+                    if (version === "0.9" || version === "0.95") {
+                        if (this[optionalObjProps[i]].length > 1) {
+                            // TODO: exception?
+                            this.log("[WARNING] version does not support multiple values in: " + optionalObjProps[i]);
+                        }
+
+                        result[optionalObjProps[i]] = this[optionalObjProps[i]][0].asVersion(version);
+                    }
+                    else {
+                        result[optionalObjProps[i]] = [];
+                        for (j = 0; j < this[optionalObjProps[i]].length; j += 1) {
+                            result[optionalObjProps[i]].push(
+                                this[optionalObjProps[i]][j].asVersion(version)
+                            );
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} ContextActivities
+    @static
+    */
+    ContextActivities.fromJSON = function (contextActivitiesJSON) {
+        ContextActivities.prototype.log("fromJSON");
+        var _contextActivities = JSON.parse(contextActivitiesJSON);
+
+        return new ContextActivities(_contextActivities);
+    };
+}());
+/*
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.Context
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.Context
+    @constructor
+    */
+    var Context = TinCan.Context = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property registration
+        @type String|null
+        */
+        this.registration = null;
+
+        /**
+        @property instructor
+        @type TinCan.Agent|TinCan.Group|null
+        */
+        this.instructor = null;
+
+        /**
+        @property team
+        @type TinCan.Agent|TinCan.Group|null
+        */
+        this.team = null;
+
+        /**
+        @property contextActivities
+        @type ContextActivities|null
+        */
+        this.contextActivities = null;
+
+        /**
+        @property revision
+        @type String|null
+        */
+        this.revision = null;
+
+        /**
+        @property platform
+        @type Object|null
+        */
+        this.platform = null;
+
+        /**
+        @property language
+        @type String|null
+        */
+        this.language = null;
+
+        /**
+        @property statement
+        @type SubStatement|StatementRef|null
+        */
+        this.statement = null;
+
+        /**
+        @property extensions
+        @type String
+        */
+        this.extensions = null;
+
+        this.init(cfg);
+    };
+    Context.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: 'Context',
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+
+            var i,
+                directProps = [
+                    "registration",
+                    "revision",
+                    "platform",
+                    "language",
+                    "statement",
+                    "extensions"
+                ],
+                agentGroupProps = [
+                    "instructor",
+                    "team"
+                ],
+                prop,
+                val
+            ;
+
+            cfg = cfg || {};
+
+            for (i = 0; i < directProps.length; i += 1) {
+                prop = directProps[i];
+                if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
+                    this[prop] = cfg[prop];
+                }
+            }
+            for (i = 0; i < agentGroupProps.length; i += 1) {
+                prop = agentGroupProps[i];
+                if (cfg.hasOwnProperty(prop) && cfg[prop] !== null) {
+                    val = cfg[prop];
+
+                    if (typeof val.objectType === "undefined" || val.objectType === "Person") {
+                        val.objectType = "Agent";
+                    }
+
+                    if (val.objectType === "Agent" && ! (val instanceof TinCan.Agent)) {
+                        val = new TinCan.Agent (val);
+                    } else if (val.objectType === "Group" && ! (val instanceof TinCan.Group)) {
+                        val = new TinCan.Group (val);
+                    }
+
+                    this[prop] = val;
+                }
+            }
+
+            if (cfg.hasOwnProperty("contextActivities") && cfg.contextActivities !== null) {
+                if (cfg.contextActivities instanceof TinCan.ContextActivities) {
+                    this.contextActivities = cfg.contextActivities;
+                }
+                else {
+                    this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
+                }
+            }
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result = {},
+                optionalDirectProps = [
+                    "registration",
+                    "revision",
+                    "platform",
+                    "language",
+                    "extensions"
+                ],
+                optionalObjProps = [
+                    "instructor",
+                    "team",
+                    "contextActivities",
+                    "statement"
+                ],
+                i,
+                prop;
+
+            version = version || TinCan.versions()[0];
+
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
+            }
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
+
+            return result;
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Context
+    @static
+    */
+    Context.fromJSON = function (contextJSON) {
+        Context.prototype.log("fromJSON");
+        var _context = JSON.parse(contextJSON);
+
+        return new Context(_context);
+    };
+}());
+/*
+    Copyright 2012 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
 @submodule TinCan.StatementRef
 **/
 (function () {
@@ -4339,17 +5016,33 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
-
-            return {
-                objectType: this.prototype.objectType,
+            var result = {
+                objectType: this.objectType,
                 id: this.id
             };
+
+            if (version === "0.9") {
+                result.objectType = "Statement";
+            }
+
+            return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} StatementRef
+    @static
+    */
+    StatementRef.fromJSON = function (stRefJSON) {
+        StatementRef.prototype.log("fromJSON");
+        var _stRef = JSON.parse(stRefJSON);
+
+        return new StatementRef(_stRef);
     };
 }());
 /*
@@ -4468,22 +5161,76 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("actor")) {
-                // TODO: check to see if already this type
-                this.actor = new TinCan.Agent (cfg.actor);
+                if (typeof cfg.actor.objectType === "undefined" || cfg.actor.objectType === "Person") {
+                    cfg.actor.objectType = "Agent";
+                }
+
+                if (cfg.actor.objectType === "Agent") {
+                    if (cfg.actor instanceof TinCan.Agent) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Agent (cfg.actor);
+                    }
+                } else if (cfg.actor.objectType === "Group") {
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Group (cfg.actor);
+                    }
+                }
             }
             if (cfg.hasOwnProperty("verb")) {
-                // TODO: check to see if already this type
-                this.verb = new TinCan.Verb (cfg.verb);
+                if (cfg.verb instanceof TinCan.Verb) {
+                    this.verb = cfg.verb;
+                } else {
+                    this.verb = new TinCan.Verb (cfg.verb);
+                }
             }
             if (cfg.hasOwnProperty("target")) {
-                // TODO: check to see if already this type,
-                //       need to look at object type rather
-                //       than assuming Activity
-                this.target = new TinCan.Activity (cfg.target);
+                if (cfg.target instanceof TinCan.Activity
+                    ||
+                    cfg.target instanceof TinCan.Agent
+                    ||
+                    cfg.target instanceof TinCan.Group
+                    ||
+                    cfg.target instanceof TinCan.SubStatement
+                    ||
+                    cfg.target instanceof TinCan.StatementRef
+                ) {
+                    this.target = cfg.target;
+                } else {
+                    if (typeof cfg.target.objectType === "undefined") {
+                        cfg.target.objectType = "Activity";
+                    }
+
+                    if (cfg.target.objectType === "Activity") {
+                        this.target = new TinCan.Activity (cfg.target);
+                    } else if (cfg.target.objectType === "Agent") {
+                        this.target = new TinCan.Agent (cfg.target);
+                    } else if (cfg.target.objectType === "Group") {
+                        this.target = new TinCan.Group (cfg.target);
+                    } else if (cfg.target.objectType === "SubStatement") {
+                        this.target = new TinCan.SubStatement (cfg.target);
+                    } else if (cfg.target.objectType === "StatementRef") {
+                        this.target = new TinCan.StatementRef (cfg.target);
+                    } else {
+                        this.log("Unrecognized target type: " + cfg.target.objectType);
+                    }
+                }
             }
             if (cfg.hasOwnProperty("result")) {
-                // TODO: check to see if already this type
-                this.result = new TinCan.Result (cfg.result);
+                if (cfg.result instanceof TinCan.Result) {
+                    this.result = cfg.result;
+                } else {
+                    this.result = new TinCan.Result (cfg.result);
+                }
+            }
+            if (cfg.hasOwnProperty("context")) {
+                if (cfg.context instanceof TinCan.Context) {
+                    this.context = cfg.context;
+                } else {
+                    this.context = new TinCan.Context (cfg.context);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -4508,32 +5255,57 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
-            var result;
+            var result,
+                optionalDirectProps = [
+                    "timestamp"
+                ],
+                optionalObjProps = [
+                    "result",
+                    "context"
+                ],
+                i;
 
             version = version || TinCan.versions()[0];
 
             result = {
+                objectType: this.objectType,
                 actor: this.actor.asVersion(version),
                 verb: this.verb.asVersion(version),
                 object: this.target.asVersion(version)
             };
-            if (this.result !== null) {
-                result.result = this.result.asVersion(version);
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
             }
-
-            // TODO: add timestamp
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
 
             return result;
         }
     };
+
+    /**
+    @method fromJSON
+    @return {Object} SubStatement
+    @static
+    */
+    SubStatement.fromJSON = function (subStJSON) {
+        SubStatement.prototype.log("fromJSON");
+        var _subSt = JSON.parse(subStJSON);
+
+        return new SubStatement(_subSt);
+    };
 }());
 /*
-    Copyright 2012 Rustici Software
+    Copyright 2012-3 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -4560,22 +5332,41 @@ TinCan client library
     /**
     @class TinCan.Statement
     @constructor
-    @param {Object} [cfg] Configuration used to initialize.
-        @param {Object} [cfg.id] Statement ID
+    @param {Object} [cfg] Values to set in properties
+        @param {String} [cfg.id] Statement ID (UUID)
         @param {TinCan.Agent} [cfg.actor] Actor of statement
         @param {TinCan.Verb} [cfg.verb] Verb of statement
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
-        @param {TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.object] Alias for 'target'
+        @param {TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement} [cfg.target] Object of statement
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
-        @param {Boolean} [cfg.voided] Whether the statement has been voided
-        @param {Boolean} [cfg.inProgress] Whether the statement is in progress
-    @param {Integer} [storeOriginal] Whether to store a JSON stringified version
-        of the original options object, pass number of spaces used for indent
+        @param {String} [cfg.timestamp] ISO8601 Date/time value
+        @param {String} [cfg.stored] ISO8601 Date/time value
+        @param {String} [cfg.version] Version of the statement (post 0.95)
+    @param {Object} [initCfg] Configuration of initialization process
+        @param {Integer} [storeOriginal] Whether to store a JSON stringified version
+            of the original options object, pass number of spaces used for indent
+        @param {Boolean} [doStamp] Whether to automatically set the 'id' and 'timestamp'
+            properties (default: true)
     **/
-    var Statement = TinCan.Statement = function (cfg, storeOriginal) {
+    var Statement = TinCan.Statement = function (cfg, initCfg) {
         this.log("constructor");
+
+        // check for true value for API backwards compat
+        if (typeof initCfg === "number") {
+            initCfg = {
+                storeOriginal: initCfg
+            };
+        } else {
+            initCfg = initCfg || {};
+        }
+        if (typeof initCfg.storeOriginal === "undefined") {
+            initCfg.storeOriginal = null;
+        }
+        if (typeof initCfg.doStamp === "undefined") {
+            initCfg.doStamp = true;
+        }
 
         /**
         @property id
@@ -4597,7 +5388,7 @@ TinCan client library
 
         /**
         @property target
-        @type TinCan.Activity|TinCan.Agent|TinCan.StatementRef|TinCan.SubStatement|null
+        @type TinCan.Activity|TinCan.Agent|TinCan.Group|TinCan.StatementRef|TinCan.SubStatement|null
         */
         this.target = null;
 
@@ -4632,11 +5423,10 @@ TinCan client library
         this.authority = null;
 
         /**
-        @property voided
-        @type Boolean
-        @default false
+        @property version
+        @type String
         */
-        this.voided = false;
+        this.version = null;
 
         /**
         @property degraded
@@ -4644,6 +5434,14 @@ TinCan client library
         @default false
         */
         this.degraded = false;
+
+        /**
+        @property voided
+        @type Boolean
+        @default null
+        @deprecated
+        */
+        this.voided = null;
 
         /**
         @property inProgress
@@ -4658,11 +5456,7 @@ TinCan client library
         */
         this.originalJSON = null;
 
-        if (storeOriginal) {
-            this.originalJSON = JSON.stringify(cfg, null, storeOriginal);
-        }
-
-        this.init(cfg);
+        this.init(cfg, initCfg);
     };
 
     Statement.prototype = {
@@ -4678,15 +5472,17 @@ TinCan client library
 
         /**
         @method init
-        @param {Object} [options] Configuration used to initialize (see constructor)
+        @param {Object} [properties] Configuration used to set properties (see constructor)
+        @param {Object} [cfg] Configuration used to initialize (see constructor)
         */
-        init: function (cfg) {
+        init: function (cfg, initCfg) {
             this.log("init");
             var i,
                 directProps = [
                     "id",
                     "stored",
                     "timestamp",
+                    "version",
                     "inProgress",
                     "voided"
                 ],
@@ -4694,6 +5490,10 @@ TinCan client library
             ;
 
             cfg = cfg || {};
+
+            if (initCfg.storeOriginal) {
+                this.originalJSON = JSON.stringify(cfg, null, initCfg.storeOriginal);
+            }
 
             if (cfg.hasOwnProperty("object")) {
                 cfg.target = cfg.object;
@@ -4704,11 +5504,18 @@ TinCan client library
                     cfg.actor.objectType = "Agent";
                 }
 
-                // TODO: check to see if already this type
                 if (cfg.actor.objectType === "Agent") {
-                    this.actor = new TinCan.Agent (cfg.actor);
+                    if (cfg.actor instanceof TinCan.Agent) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Agent (cfg.actor);
+                    }
                 } else if (cfg.actor.objectType === "Group") {
-                    this.actor = new TinCan.Group (cfg.actor);
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Group (cfg.actor);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("authority")) {
@@ -4716,42 +5523,72 @@ TinCan client library
                     cfg.authority.objectType = "Agent";
                 }
 
-                // TODO: check to see if already this type
                 if (cfg.authority.objectType === "Agent") {
-                    this.authority = new TinCan.Agent (cfg.authority);
+                    if (cfg.authority instanceof TinCan.Agent) {
+                        this.authority = cfg.authority;
+                    } else {
+                        this.authority = new TinCan.Agent (cfg.authority);
+                    }
                 } else if (cfg.authority.objectType === "Group") {
-                    this.authority = new TinCan.Group (cfg.authority);
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.authority = cfg.authority;
+                    } else {
+                        this.authority = new TinCan.Group (cfg.authority);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("verb")) {
-                // TODO: check to see if already this type
-                this.verb = new TinCan.Verb (cfg.verb);
+                if (cfg.verb instanceof TinCan.Verb) {
+                    this.verb = cfg.verb;
+                } else {
+                    this.verb = new TinCan.Verb (cfg.verb);
+                }
             }
             if (cfg.hasOwnProperty("target")) {
-                // TODO: check to see if already this type
-                if (typeof cfg.target.objectType === "undefined") {
-                    cfg.target.objectType = "Activity";
-                }
-
-                if (cfg.target.objectType === "Activity") {
-                    this.target = new TinCan.Activity (cfg.target);
-                } else if (cfg.target.objectType === "Agent") {
-                    this.target = new TinCan.Agent (cfg.target);
-                } else if (cfg.target.objectType === "SubStatement") {
-                    this.target = new TinCan.SubStatement (cfg.target);
-                } else if (cfg.target.objectType === "StatementRef") {
-                    this.target = new TinCan.StatementRef (cfg.target);
+                if (cfg.target instanceof TinCan.Activity
+                    ||
+                    cfg.target instanceof TinCan.Agent
+                    ||
+                    cfg.target instanceof TinCan.Group
+                    ||
+                    cfg.target instanceof TinCan.SubStatement
+                    ||
+                    cfg.target instanceof TinCan.StatementRef
+                ) {
+                    this.target = cfg.target;
                 } else {
-                    this.log("Unrecognized target type: " + cfg.target.objectType);
+                    if (typeof cfg.target.objectType === "undefined") {
+                        cfg.target.objectType = "Activity";
+                    }
+
+                    if (cfg.target.objectType === "Activity") {
+                        this.target = new TinCan.Activity (cfg.target);
+                    } else if (cfg.target.objectType === "Agent") {
+                        this.target = new TinCan.Agent (cfg.target);
+                    } else if (cfg.target.objectType === "Group") {
+                        this.target = new TinCan.Group (cfg.target);
+                    } else if (cfg.target.objectType === "SubStatement") {
+                        this.target = new TinCan.SubStatement (cfg.target);
+                    } else if (cfg.target.objectType === "StatementRef") {
+                        this.target = new TinCan.StatementRef (cfg.target);
+                    } else {
+                        this.log("Unrecognized target type: " + cfg.target.objectType);
+                    }
                 }
             }
             if (cfg.hasOwnProperty("result")) {
-                // TODO: check to see if already this type
-                this.result = new TinCan.Result (cfg.result);
+                if (cfg.result instanceof TinCan.Result) {
+                    this.result = cfg.result;
+                } else {
+                    this.result = new TinCan.Result (cfg.result);
+                }
             }
             if (cfg.hasOwnProperty("context")) {
-                // TODO: check to see if already this type
-                this.context = new TinCan.Context (cfg.context);
+                if (cfg.context instanceof TinCan.Context) {
+                    this.context = cfg.context;
+                } else {
+                    this.context = new TinCan.Context (cfg.context);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -4760,11 +5597,8 @@ TinCan client library
                 }
             }
 
-            if (this.id === null) {
-                this.id = TinCan.Utils.getUUID();
-            }
-            if (this.timestamp === null) {
-                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            if (initCfg.doStamp) {
+                this.stamp();
             }
         },
 
@@ -4783,19 +5617,18 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
-            var result,
+            var result = {},
                 optionalDirectProps = [
                     "id",
-                    "timestamp",
-                    "stored",
-                    "voided"
+                    "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
                     "result",
                     "context",
                     "authority"
@@ -4804,11 +5637,6 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            result = {
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
@@ -4819,12 +5647,35 @@ TinCan client library
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
                 }
             }
+            if (this.target !== null) {
+                result.object = this.target.asVersion(version);
+            }
 
+            if (version === "0.9" || version === "0.95") {
+                if (this.voided !== null) {
+                    result.voided = this.voided;
+                }
+            }
             if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
 
             return result;
+        },
+
+        /**
+        Sets 'id' and 'timestamp' properties if not already set
+
+        @method stamp
+        */
+        stamp: function () {
+            this.log("stamp");
+            if (this.id === null) {
+                this.id = TinCan.Utils.getUUID();
+            }
+            if (this.timestamp === null) {
+                this.timestamp = TinCan.Utils.getISODateString(new Date());
+            }
         }
     };
 
@@ -5001,7 +5852,7 @@ TinCan client library
 
         /**
         @property updated
-        @type String
+        @type Boolean
         */
         this.updated = null;
 
@@ -5010,6 +5861,12 @@ TinCan client library
         @type String
         */
         this.contents = null;
+
+        /**
+        @property etag
+        @type String
+        */
+        this.etag = null;
 
         this.init(cfg);
     };

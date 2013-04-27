@@ -114,22 +114,76 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("actor")) {
-                // TODO: check to see if already this type
-                this.actor = new TinCan.Agent (cfg.actor);
+                if (typeof cfg.actor.objectType === "undefined" || cfg.actor.objectType === "Person") {
+                    cfg.actor.objectType = "Agent";
+                }
+
+                if (cfg.actor.objectType === "Agent") {
+                    if (cfg.actor instanceof TinCan.Agent) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Agent (cfg.actor);
+                    }
+                } else if (cfg.actor.objectType === "Group") {
+                    if (cfg.actor instanceof TinCan.Group) {
+                        this.actor = cfg.actor;
+                    } else {
+                        this.actor = new TinCan.Group (cfg.actor);
+                    }
+                }
             }
             if (cfg.hasOwnProperty("verb")) {
-                // TODO: check to see if already this type
-                this.verb = new TinCan.Verb (cfg.verb);
+                if (cfg.verb instanceof TinCan.Verb) {
+                    this.verb = cfg.verb;
+                } else {
+                    this.verb = new TinCan.Verb (cfg.verb);
+                }
             }
             if (cfg.hasOwnProperty("target")) {
-                // TODO: check to see if already this type,
-                //       need to look at object type rather
-                //       than assuming Activity
-                this.target = new TinCan.Activity (cfg.target);
+                if (cfg.target instanceof TinCan.Activity
+                    ||
+                    cfg.target instanceof TinCan.Agent
+                    ||
+                    cfg.target instanceof TinCan.Group
+                    ||
+                    cfg.target instanceof TinCan.SubStatement
+                    ||
+                    cfg.target instanceof TinCan.StatementRef
+                ) {
+                    this.target = cfg.target;
+                } else {
+                    if (typeof cfg.target.objectType === "undefined") {
+                        cfg.target.objectType = "Activity";
+                    }
+
+                    if (cfg.target.objectType === "Activity") {
+                        this.target = new TinCan.Activity (cfg.target);
+                    } else if (cfg.target.objectType === "Agent") {
+                        this.target = new TinCan.Agent (cfg.target);
+                    } else if (cfg.target.objectType === "Group") {
+                        this.target = new TinCan.Group (cfg.target);
+                    } else if (cfg.target.objectType === "SubStatement") {
+                        this.target = new TinCan.SubStatement (cfg.target);
+                    } else if (cfg.target.objectType === "StatementRef") {
+                        this.target = new TinCan.StatementRef (cfg.target);
+                    } else {
+                        this.log("Unrecognized target type: " + cfg.target.objectType);
+                    }
+                }
             }
             if (cfg.hasOwnProperty("result")) {
-                // TODO: check to see if already this type
-                this.result = new TinCan.Result (cfg.result);
+                if (cfg.result instanceof TinCan.Result) {
+                    this.result = cfg.result;
+                } else {
+                    this.result = new TinCan.Result (cfg.result);
+                }
+            }
+            if (cfg.hasOwnProperty("context")) {
+                if (cfg.context instanceof TinCan.Context) {
+                    this.context = cfg.context;
+                } else {
+                    this.context = new TinCan.Context (cfg.context);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -154,27 +208,52 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
-            var result;
+            var result,
+                optionalDirectProps = [
+                    "timestamp"
+                ],
+                optionalObjProps = [
+                    "result",
+                    "context"
+                ],
+                i;
 
             version = version || TinCan.versions()[0];
 
             result = {
+                objectType: this.objectType,
                 actor: this.actor.asVersion(version),
                 verb: this.verb.asVersion(version),
                 object: this.target.asVersion(version)
             };
-            if (this.result !== null) {
-                result.result = this.result.asVersion(version);
+            for (i = 0; i < optionalDirectProps.length; i += 1) {
+                if (this[optionalDirectProps[i]] !== null) {
+                    result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
+                }
             }
-
-            // TODO: add timestamp
+            for (i = 0; i < optionalObjProps.length; i += 1) {
+                if (this[optionalObjProps[i]] !== null) {
+                    result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
+                }
+            }
 
             return result;
         }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} SubStatement
+    @static
+    */
+    SubStatement.fromJSON = function (subStJSON) {
+        SubStatement.prototype.log("fromJSON");
+        var _subSt = JSON.parse(subStJSON);
+
+        return new SubStatement(_subSt);
     };
 }());

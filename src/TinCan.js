@@ -32,24 +32,25 @@ var TinCan;
             //
             // these are TC spec reserved words that may end up in queries to the endpoint
             //
-            statementId:   true,
-            verb:          true,
-            object:        true,
-            registration:  true,
-            context:       true,
-            actor:         true,
-            since:         true,
-            until:         true,
-            limit:         true,
-            authoritative: true,
-            sparse:        true,
-            instructor:    true,
-            ascending:     true,
-            continueToken: true,
-            agent:         true,
-            activityId:    true,
-            stateId:       true,
-            profileId:     true,
+            statementId:       true,
+            voidedStatementId: true,
+            verb:              true,
+            object:            true,
+            registration:      true,
+            context:           true,
+            actor:             true,
+            since:             true,
+            until:             true,
+            limit:             true,
+            authoritative:     true,
+            sparse:            true,
+            instructor:        true,
+            ascending:         true,
+            continueToken:     true,
+            agent:             true,
+            activityId:        true,
+            stateId:           true,
+            profileId:         true,
 
             //
             // these are suggested by the LMS launch spec addition that TinCanJS consumes
@@ -127,7 +128,8 @@ var TinCan;
         LOG_SRC: "TinCan",
 
         /**
-        Safe version of logging
+        Safe version of logging, only displays when .DEBUG is true, and console.log
+        is available
 
         @method log
         @param {String} msg Message to output
@@ -172,7 +174,7 @@ var TinCan;
         },
 
         /**
-        @method _handleQueryString
+        @method _initFromQueryString
         @param {String} url
         @private
         */
@@ -480,6 +482,166 @@ var TinCan;
         },
 
         /**
+        Creates a statement used for voiding the passed statement/statement ID and calls
+        send statement with the voiding statement.
+
+        @method voidStatement
+        @param {TinCan.Statement|String} statement Statement or statement ID to void
+        @param {Function} [callback] Callback function to execute on completion
+        @param {Object} [options] Options used to build voiding statement
+            @param {TinCan.Agent} [options.actor] Agent to be used as 'actor' in voiding statement
+        */
+        voidStatement: function (stmt, callback, options) {
+            this.log("voidStatement");
+
+            // would prefer to use .bind instead of 'self'
+            var self = this,
+                lrs,
+                actor,
+                voidingStatement,
+                rsCount = this.recordStores.length,
+                i,
+                msg,
+                results = [],
+                callbackWrapper,
+                callbackResults = []
+            ;
+
+            if (stmt instanceof TinCan.Statement) {
+                stmt = stmt.id;
+            }
+
+            if (typeof options.actor !== "undefined") {
+                actor = options.actor;
+            }
+            else if (this.actor !== null) {
+                actor = this.actor;
+            }
+
+            voidingStatement = new TinCan.Statement(
+                {
+                    actor: actor,
+                    verb: {
+                       id: "http://adlnet.gov/expapi/verbs/voided"
+                    },
+                    target: {
+                        objectType: "StatementRef",
+                        id: stmt
+                    }
+                }
+            );
+
+            if (rsCount > 0) {
+                /*
+                   if there is a callback that is a function then we need
+                   to wrap that function with a function that becomes
+                   the new callback that reduces a closure count of the
+                   requests that don't have allowFail set to true and
+                   when that number hits zero then the original callback
+                   is executed
+                */
+                if (typeof callback === "function") {
+                    callbackWrapper = function (err, xhr) {
+                        var args;
+
+                        self.log("voidStatement - callbackWrapper: " + rsCount);
+                        if (rsCount > 1) {
+                            rsCount -= 1;
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                        }
+                        else if (rsCount === 1) {
+                            callbackResults.push(
+                                {
+                                    err: err,
+                                    xhr: xhr
+                                }
+                            );
+                            args = [
+                                callbackResults,
+                                voidingStatement
+                            ];
+                            callback.apply(this, args);
+                        }
+                        else {
+                            self.log("voidStatement - unexpected record store count: " + rsCount);
+                        }
+                    };
+                }
+
+                for (i = 0; i < rsCount; i += 1) {
+                    lrs = this.recordStores[i];
+
+                    results.push(
+                        lrs.saveStatement(voidingStatement, { callback: callbackWrapper })
+                    );
+                }
+            }
+            else {
+                msg = "[warning] voidStatement: No LRSs added yet (statement not sent)";
+                if (TinCan.environment().isBrowser) {
+                    alert(this.LOG_SRC + ": " + msg);
+                }
+                else {
+                    this.log(msg);
+                }
+                if (typeof callback === "function") {
+                    callback.apply(this, [ null, voidingStatement ]);
+                }
+            }
+
+            return {
+                statement: voidingStatement,
+                results: results
+            };
+        },
+
+        /**
+        Calls retrieveVoidedStatement on the first LRS, provide callback to make it asynchronous
+
+        @method getVoidedStatement
+        @param {String} statement Statement ID to get
+        @param {Function} [callback] Callback function to execute on completion
+        @return {Array|Result} Array of results, or single result
+
+        TODO: make TinCan track voided statements it has seen in a local cache to be returned easily
+        */
+        getVoidedStatement: function (stmtId, callback) {
+            this.log("getVoidedStatement");
+
+            var lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for statements (for now) we only need to read from the first LRS
+                // in the future it may make sense to get all from all LRSes and
+                // compare to remove duplicates or allow inspection of them for differences?
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                return lrs.retrieveVoidedStatement(stmtId, { callback: callback });
+            }
+
+            msg = "[warning] getVoidedStatement: No LRSs added yet (statement not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        /**
         Calls saveStatements with list of prepared statements
 
         @method sendStatements
@@ -617,17 +779,24 @@ var TinCan;
                 params = cfg.params || {};
 
                 if (cfg.sendActor && this.actor !== null) {
-                    params.actor = this.actor;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.actor = this.actor;
+                    }
+                    else {
+                        params.agent = this.actor;
+                    }
                 }
                 if (cfg.sendActivity && this.activity !== null) {
-                    params.activity = this.activity;
+                    if (lrs.version === "0.9" || lrs.version === "0.95") {
+                        params.target = this.activity;
+                    }
+                    else {
+                        params.activity = this.activity;
+                    }
                 }
                 if (typeof params.registration === "undefined" && this.registration !== null) {
                     params.registration = this.registration;
                 }
-
-                // TODO: do we want to hard set this?
-                params.sparse = cfg.sparse || "false";
 
                 queryCfg = {
                     params: params
@@ -717,6 +886,7 @@ var TinCan;
                 defaults to 'activity' property if empty
             @param {Object} [cfg.registration] Registration used in query,
                 defaults to 'registration' property if empty
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {Function} [cfg.callback] Function to run with state
         */
         setState: function (key, val, cfg) {
@@ -748,6 +918,9 @@ var TinCan;
                 }
                 else if (this.registration !== null) {
                     queryCfg.registration = this.registration;
+                }
+                if (typeof cfg.lastSHA1 !== "undefined") {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
                 }
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
@@ -877,6 +1050,7 @@ var TinCan;
         @param {Object} [cfg] Configuration for request
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {Function} [cfg.callback] Function to run with activity profile
         */
         setActivityProfile: function (key, val, cfg) {
@@ -1004,6 +1178,7 @@ var TinCan;
     TinCan.versions = function () {
         // newest first so we can use the first as the default
         return [
+            "1.0.0",
             "0.95",
             "0.9"
         ];

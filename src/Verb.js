@@ -117,6 +117,12 @@ TinCan client library
                         this[directProps[i]] = cfg[directProps[i]];
                     }
                 }
+
+                if (this.display === null && typeof _downConvertMap[this.id] !== "undefined") {
+                    this.display = {
+                        "und": _downConvertMap[this.id]
+                    };
+                }
             }
         },
 
@@ -136,8 +142,7 @@ TinCan client library
 
         /**
         @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
+        @param {String} [version] Version to return (defaults to newest supported)
         */
         asVersion: function (version) {
             this.log("asVersion");
