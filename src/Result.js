@@ -98,7 +98,7 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (cfg.hasOwnProperty("score")) {
+            if (cfg.hasOwnProperty("score") && cfg.score !== null) {
                 if (cfg.score instanceof TinCan.Score) {
                     this.score = cfg.score;
                 }
