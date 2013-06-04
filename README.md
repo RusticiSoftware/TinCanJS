@@ -1,5 +1,7 @@
 A JavaScript library for talking TinCan to the world.
 
+[![Build Status](https://travis-ci.org/RusticiSoftware/TinCanJS.png)](https://travis-ci.org/RusticiSoftware/TinCanJS)
+
 http://tincanapi.com/
 
 Usage
