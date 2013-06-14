@@ -168,7 +168,7 @@
                                 inProgress: true
                             }
                         }
-                    },
+                    }
                 ],
                 versions = TinCan.versions(),
                 i,
