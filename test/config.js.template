@@ -14,6 +14,13 @@
     limitations under the License.
 */
 
+TinCanTestCfg.recordStores["1.0.0"] = {
+    endpoint: "https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/",
+    username: "test",
+    password: "somepass",
+    version:  "1.0.0"
+};
+
 TinCanTestCfg.recordStores["0.95"] = {
     endpoint: "https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/",
     username: "test",
@@ -21,9 +28,9 @@ TinCanTestCfg.recordStores["0.95"] = {
     version:  "0.95"
 };
 
-TinCanTestCfg.recordStores["0.90"] = {
+TinCanTestCfg.recordStores["0.9"] = {
     endpoint: "https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/",
     username: "test",
     password: "somepass",
-    version:  "0.90"
+    version:  "0.9"
 };

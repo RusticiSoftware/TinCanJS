@@ -21,7 +21,7 @@ var TinCanTest,
 ;
 
 log = function () {};
-if (console && console.log) {
+if (typeof console !== "undefined" && console.log) {
     log = function (msg) {
         console.log("Test: " + msg);
     }
