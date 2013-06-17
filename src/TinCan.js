@@ -135,7 +135,7 @@ var TinCan;
         @param {String} msg Message to output
         */
         log: function (msg, src) {
-            if (TinCan.DEBUG && console && console.log) {
+            if (TinCan.DEBUG && typeof console !== "undefined" && console.log) {
                 src = src || this.LOG_SRC || "TinCan";
 
                 console.log("TinCan." + src + ': ' + msg);
@@ -1197,7 +1197,7 @@ var TinCan;
                 _environment.hasCORS = false;
                 _environment.useXDR = false;
 
-                if (typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
+                if (typeof XMLHttpRequest !== "undefined" && typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
                     _environment.hasCORS = true;
                 }
                 else if (typeof XDomainRequest !== "undefined") {

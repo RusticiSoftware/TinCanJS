@@ -135,7 +135,7 @@ var TinCan;
         @param {String} msg Message to output
         */
         log: function (msg, src) {
-            if (TinCan.DEBUG && console && console.log) {
+            if (TinCan.DEBUG && typeof console !== "undefined" && console.log) {
                 src = src || this.LOG_SRC || "TinCan";
 
                 console.log("TinCan." + src + ': ' + msg);
@@ -1197,7 +1197,7 @@ var TinCan;
                 _environment.hasCORS = false;
                 _environment.useXDR = false;
 
-                if (typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
+                if (typeof XMLHttpRequest !== "undefined" && typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
                     _environment.hasCORS = true;
                 }
                 else if (typeof XDomainRequest !== "undefined") {
@@ -1550,6 +1550,7 @@ TinCan client library
 
             var urlParts,
                 schemeMatches,
+                locationPort,
                 isXD,
                 env = TinCan.environment()
             ;
@@ -1593,7 +1594,17 @@ TinCan client library
                 // the schemes match to see if we should be able to talk to
                 // the LRS
                 //
+                locationPort = location.port;
                 schemeMatches = location.protocol.toLowerCase() === urlParts[1];
+
+                //
+                // normalize the location.port cause it appears to be "" when 80/443
+                // but our endpoint may have provided it
+                //
+                if (locationPort === "") {
+                    locationPort = (location.protocol.toLowerCase() === "http:" ? "80" : (location.protocol.toLowerCase() === "https:" ? "443" : ""));
+                }
+
                 isXD = (
                     // is same scheme?
                     ! schemeMatches
@@ -1602,8 +1613,8 @@ TinCan client library
                     || location.hostname.toLowerCase() !== urlParts[2]
 
                     // is same port?
-                    || location.port !== (
-                        urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : "443")
+                    || locationPort !== (
+                        urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
                     )
                 );
                 if (isXD) {
@@ -1846,6 +1857,7 @@ TinCan client library
             }
 
             xhr.onreadystatechange = function () {
+                self.log("xhr.onreadystatechange - xhr.readyState: " + finished + ", xhr.status: " + xhr.status);
                 if (xhr.readyState === 4) {
                     requestComplete();
                 }
@@ -3734,7 +3746,7 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (cfg.hasOwnProperty("score")) {
+            if (cfg.hasOwnProperty("score") && cfg.score !== null) {
                 if (cfg.score instanceof TinCan.Score) {
                     this.score = cfg.score;
                 }

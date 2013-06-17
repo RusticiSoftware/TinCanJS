@@ -189,7 +189,7 @@
                                 }
                             }
                         }
-                    },
+                    }
                 ],
                 versions = TinCan.versions(),
                 i,
