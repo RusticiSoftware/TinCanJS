@@ -102,10 +102,17 @@ TinCan client library
                 schemeMatches,
                 locationPort,
                 isXD,
-                env = TinCan.environment()
+                env = TinCan.environment(),
+                versions = TinCan.versions(),
+                versionMatch = false,
+                i
             ;
 
             cfg = cfg || {};
+
+            if (cfg.hasOwnProperty("alertOnRequestFailure")) {
+                this.alertOnRequestFailure = cfg.alertOnRequestFailure;
+            }
 
             if (! cfg.hasOwnProperty("endpoint")) {
                 if (env.isBrowser && this.alertOnRequestFailure) {
@@ -118,6 +125,10 @@ TinCan client library
             }
 
             this.endpoint = cfg.endpoint;
+            if (this.endpoint.slice(-1) !== "/") {
+                this.log("adding trailing slash to endpoint");
+                this.endpoint += "/";
+            }
 
             if (cfg.hasOwnProperty("allowFail")) {
                 this.allowFail = cfg.allowFail;
@@ -134,9 +145,18 @@ TinCan client library
                 this.extended = cfg.extended;
             }
 
-            urlParts = cfg.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
-
             if (env.isBrowser) {
+                urlParts = this.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
+                if (urlParts === null) {
+                    if (this.alertOnRequestFailure) {
+                        alert("[error] LRS invalid: failed to divide URL parts");
+                    }
+                    throw {
+                        code: 4,
+                        mesg: "LRS invalid: failed to divide URL parts"
+                    };
+                }
+
                 //
                 // determine whether this is a cross domain request,
                 // whether our browser has CORS support at all, and then
@@ -200,7 +220,7 @@ TinCan client library
                                 alert("[error] LRS invalid: cross domain requests not supported in this browser");
                             }
                             throw {
-                                code: 2,
+                                code: 1,
                                 mesg: "LRS invalid: cross domain requests not supported in this browser"
                             };
                         }
@@ -213,6 +233,21 @@ TinCan client library
 
             if (typeof cfg.version !== "undefined") {
                 this.log("version: " + cfg.version);
+                for (i = 0; i < versions.length; i += 1) {
+                    if (versions[i] === cfg.version) {
+                        versionMatch = true;
+                        break;
+                    }
+                }
+                if (! versionMatch) {
+                    if (env.isBrowser && this.alertOnRequestFailure) {
+                        alert("[error] LRS invalid: version not supported (" + cfg.version + ")");
+                    }
+                    throw {
+                        code: 5,
+                        mesg: "LRS invalid: version not supported (" + cfg.version + ")"
+                    };
+                }
                 this.version = cfg.version;
             }
             else {
@@ -220,7 +255,7 @@ TinCan client library
                 // assume max supported when not specified,
                 // TODO: add detection of LRS from call to endpoint
                 //
-                this.version = TinCan.versions()[0];
+                this.version = versions[0];
             }
         },
 
