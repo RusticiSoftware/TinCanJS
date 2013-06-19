@@ -1,5 +1,5 @@
 /*!
-    Copyright 2012 Rustici Software
+    Copyright 2012-2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 (function () {
     var session = null,
         commonType = "http://adlnet.gov/expapi/activities/simulation",
+        commonMoreInfo = "http://tincanapi.com/TinCanJS/Test/ActivityDefinition_moreInfo",
         commonName = { und: "Test Name" },
         commonDesc = { und: "Test Description" };
 
@@ -44,6 +45,7 @@
                     "name",
                     "description",
                     "type",
+                    "moreInfo",
                     "extensions",
                     "interactionType",
                     "correctResponsesPattern",
@@ -75,12 +77,14 @@
                         name: "basic properties",
                         instanceConfig: {
                             type: commonType,
+                            moreInfo: commonMoreInfo,
                             name: commonName,
                             description: commonDesc
                         },
                         toString: "Test Name",
                         checkProps: {
                             type: commonType,
+                            moreInfo: commonMoreInfo,
                             name: commonName,
                             description: commonDesc
                         }
@@ -124,11 +128,18 @@
                         name: "basic properties",
                         instanceConfig: {
                             type: commonType,
+                            moreInfo: commonMoreInfo,
                             name: commonName,
                             description: commonDesc
                         },
                         versions: {
                             latest: {
+                                type: commonType,
+                                moreInfo: commonMoreInfo,
+                                name: commonName,
+                                description: commonDesc
+                            },
+                            "0.95": {
                                 type: commonType,
                                 name: commonName,
                                 description: commonDesc
