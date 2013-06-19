@@ -74,6 +74,12 @@ TinCan client library
         this.type = null;
 
         /**
+        @property moreInfo
+        @type String
+        */
+        this.moreInfo = null;
+
+        /**
         @property extensions
         @type Object
         */
@@ -127,7 +133,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'ActivityDefinition',
+        LOG_SRC: "ActivityDefinition",
 
         /**
         @method log
@@ -147,6 +153,7 @@ TinCan client library
                 directProps = [
                     "name",
                     "description",
+                    "moreInfo",
                     "extensions",
                     "correctResponsesPattern"
                 ],
@@ -281,6 +288,12 @@ TinCan client library
                             this[prop][j].asVersion(version)
                         );
                     }
+                }
+            }
+
+            if (version.indexOf("0.9") !== 0) {
+                if (this.moreInfo !== null) {
+                    result.moreInfo = this.moreInfo;
                 }
             }
 
