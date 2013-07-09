@@ -36,7 +36,12 @@ if (typeof console !== "undefined" && console.log) {
             ok(xhr instanceof XDomainRequest, desc);
         }
         else {
-            ok(xhr instanceof XMLHttpRequest, desc);
+            if (typeof XMLHttpRequest !== "undefined") {
+                ok(xhr instanceof XMLHttpRequest, desc);
+            }
+            else {
+                ok(true, "unplanned for xhr: " + desc);
+            }
         }
     };
 }());

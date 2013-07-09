@@ -209,42 +209,42 @@
                     {
                         name: "2 raw",
                         instanceConfig: {
-                            member: [ raw, raw2 ],
+                            member: [ raw, raw2 ]
                         },
                         checkMember: [ common, common2 ]
                     },
                     {
                         name: "1 precreated",
                         instanceConfig: {
-                            member: [ common ],
+                            member: [ common ]
                         },
                         checkMember: [ common ]
                     },
                     {
                         name: "2 precreated",
                         instanceConfig: {
-                            member: [ common, common2 ],
+                            member: [ common, common2 ]
                         },
                         checkMember: [ common, common2 ]
                     },
                     {
                         name: "2 mixed",
                         instanceConfig: {
-                            member: [ raw, common2 ],
+                            member: [ raw, common2 ]
                         },
                         checkMember: [ common, common2 ]
                     },
                     {
                         name: "2 mixed reversed",
                         instanceConfig: {
-                            member: [ common, raw2 ],
+                            member: [ common, raw2 ]
                         },
                         checkMember: [ common, common2 ]
                     },
                     {
                         name: "4 mixed",
                         instanceConfig: {
-                            member: [ common, raw, common2, raw2 ],
+                            member: [ common, raw, common2, raw2 ]
                         },
                         checkMember: [ common, common, common2, common2 ]
                     }
