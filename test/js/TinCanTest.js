@@ -32,10 +32,12 @@ if (typeof console !== "undefined" && console.log) {
 
     TinCanTest.assertHttpRequestType = function (xhr, name) {
         var desc = "assertHttpRequestType: " + name;
-        if (TinCan.environment().useXDR) {
-            ok(xhr instanceof XDomainRequest, desc);
+        if (typeof XDomainRequest !== "undefined" && xhr instanceof XDomainRequest) {
+            ok(true, desc);
+            return;
         }
-        else {
+
+        if (typeof XMLHttpRequest !== "undefined") {
             //
             // in IE7 at least XMLHttpRequest is an 'object' but it fails
             // the instanceof check because it apparently isn't considered
@@ -50,6 +52,9 @@ if (typeof console !== "undefined" && console.log) {
             else {
                 ok(true, desc + " (unplanned for xhr)");
             }
+            return;
         }
+
+        ok(false, desc + " (unrecognized request environment)");
     };
 }());
