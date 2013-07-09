@@ -36,11 +36,19 @@ if (typeof console !== "undefined" && console.log) {
             ok(xhr instanceof XDomainRequest, desc);
         }
         else {
-            if (typeof XMLHttpRequest !== "undefined") {
+            //
+            // in IE7 at least XMLHttpRequest is an 'object' but it fails
+            // the instanceof check because it apparently isn't considered
+            // a constructor function
+            //
+            if (typeof XMLHttpRequest === "function") {
                 ok(xhr instanceof XMLHttpRequest, desc);
             }
+            else if (typeof XMLHttpRequest === "object") {
+                ok(true, desc + " (XMLHttpRequest found but not constructor)");
+            }
             else {
-                ok(true, "unplanned for xhr: " + desc);
+                ok(true, desc + " (unplanned for xhr)");
             }
         }
     };
