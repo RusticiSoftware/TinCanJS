@@ -1868,7 +1868,7 @@ TinCan client library
                 data = cfg.data;
 
                 xhr.onreadystatechange = function () {
-                    self.log("xhr.onreadystatechange - xhr.readyState: " + finished + ", xhr.status: " + xhr.status);
+                    self.log("xhr.onreadystatechange - xhr.readyState: " + xhr.readyState);
                     if (xhr.readyState === 4) {
                         requestComplete();
                     }
