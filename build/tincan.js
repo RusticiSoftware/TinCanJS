@@ -1634,7 +1634,7 @@ TinCan client library
 
                     // is same port?
                     || locationPort !== (
-                        urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
+                        (urlParts[3] !== null && typeof urlParts[3] !== "undefined" && urlParts[3] !== "") ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
                     )
                 );
                 if (isXD) {
@@ -1727,6 +1727,7 @@ TinCan client library
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
+            /*global ActiveXObject*/
             this.log("sendRequest");
             var xhr,
                 finished = false,
@@ -1789,7 +1790,17 @@ TinCan client library
 
                 this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
 
-                xhr = new XMLHttpRequest();
+                if (typeof XMLHttpRequest !== "undefined") {
+                    xhr = new XMLHttpRequest();
+                }
+                else {
+                    //
+                    // IE6 implements XMLHttpRequest through ActiveX control
+                    // http://blogs.msdn.com/b/ie/archive/2006/01/23/516393.aspx
+                    //
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
                 xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
                 for (prop in headers) {
                     if (headers.hasOwnProperty(prop)) {
@@ -1898,10 +1909,18 @@ TinCan client library
                 }
             };
 
-            xhr.onload = requestComplete;
-            xhr.onerror = requestComplete;
-
-            xhr.send(data);
+            //
+            // research indicates that IE is known to just throw exceptions
+            // on .send and it seems everyone pretty much just ignores them
+            // including jQuery (https://github.com/jquery/jquery/blob/1.10.2/src/ajax.js#L549
+            // https://github.com/jquery/jquery/blob/1.10.2/src/ajax/xhr.js#L97)
+            //
+            try {
+                xhr.send(data);
+            }
+            catch (ex) {
+                this.log("sendRequest caught send exception: " + ex);
+            }
 
             if (! cfg.callback) {
                 // synchronous
