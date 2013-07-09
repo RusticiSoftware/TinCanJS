@@ -1742,6 +1742,60 @@ TinCan client library
                 self = this
             ;
 
+            // Setup request callback
+            function requestComplete () {
+                self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
+                var notFoundOk,
+                    httpStatus;
+
+                //
+                // older versions of IE don't properly handle 204 status codes
+                // so correct when receiving a 1223 to be 204 locally
+                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                //
+                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
+
+                if (! finished) {
+                    // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
+                    // onload or both might fire depending upon browser, just covering all bases with event hooks and
+                    // using 'finished' flag to avoid triggering events multiple times
+                    finished = true;
+
+                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
+                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
+                        if (cfg.callback) {
+                            cfg.callback(null, xhr);
+                        }
+                        else {
+                            requestCompleteResult = {
+                                err: null,
+                                xhr: xhr
+                            };
+                            return requestCompleteResult;
+                        }
+                    }
+                    else {
+                        // Alert all errors except cancelled XHR requests
+                        if (httpStatus > 0) {
+                            requestCompleteResult = {
+                                err: httpStatus,
+                                xhr: xhr
+                            };
+                            if (self.alertOnRequestFailure) {
+                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
+                            }
+                            if (cfg.callback) {
+                                cfg.callback(httpStatus, xhr);
+                            }
+                        }
+                        return requestCompleteResult;
+                    }
+                }
+                else {
+                    return requestCompleteResult;
+                }
+            }
+
             // respect absolute URLs passed in
             if (cfg.url.indexOf("http") === 0) {
                 fullUrl = cfg.url;
@@ -1812,6 +1866,13 @@ TinCan client library
                     cfg.data += "";
                 }
                 data = cfg.data;
+
+                xhr.onreadystatechange = function () {
+                    self.log("xhr.onreadystatechange - xhr.readyState: " + finished + ", xhr.status: " + xhr.status);
+                    if (xhr.readyState === 4) {
+                        requestComplete();
+                    }
+                };
             }
             else if (this._requestMode === XDR) {
                 this.log("sendRequest using XDomainRequest");
@@ -1843,71 +1904,17 @@ TinCan client library
 
                 xhr = new XDomainRequest ();
                 xhr.open("POST", fullUrl);
+
+                xhr.onload = function () {
+                    requestComplete();
+                };
+                xhr.onerror = function () {
+                    requestComplete();
+                };
             }
             else {
                 this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
             }
-
-            // Setup request callback
-            function requestComplete () {
-                self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
-                var notFoundOk,
-                    httpStatus;
-
-                //
-                // older versions of IE don't properly handle 204 status codes
-                // so correct when receiving a 1223 to be 204 locally
-                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-                //
-                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
-
-                if (! finished) {
-                    // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
-                    // onload or both might fire depending upon browser, just covering all bases with event hooks and
-                    // using 'finished' flag to avoid triggering events multiple times
-                    finished = true;
-
-                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
-                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
-                        if (cfg.callback) {
-                            cfg.callback(null, xhr);
-                        }
-                        else {
-                            requestCompleteResult = {
-                                err: null,
-                                xhr: xhr
-                            };
-                            return requestCompleteResult;
-                        }
-                    }
-                    else {
-                        // Alert all errors except cancelled XHR requests
-                        if (httpStatus > 0) {
-                            requestCompleteResult = {
-                                err: httpStatus,
-                                xhr: xhr
-                            };
-                            if (self.alertOnRequestFailure) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
-                            }
-                            if (cfg.callback) {
-                                cfg.callback(httpStatus, xhr);
-                            }
-                        }
-                        return requestCompleteResult;
-                    }
-                }
-                else {
-                    return requestCompleteResult;
-                }
-            }
-
-            xhr.onreadystatechange = function () {
-                self.log("xhr.onreadystatechange - xhr.readyState: " + finished + ", xhr.status: " + xhr.status);
-                if (xhr.readyState === 4) {
-                    requestComplete();
-                }
-            };
 
             //
             // research indicates that IE is known to just throw exceptions
