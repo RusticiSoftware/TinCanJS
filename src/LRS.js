@@ -184,7 +184,7 @@ TinCan client library
 
                     // is same port?
                     || locationPort !== (
-                        urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
+                        (urlParts[3] !== null && typeof urlParts[3] !== "undefined" && urlParts[3] !== "") ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
                     )
                 );
                 if (isXD) {
@@ -277,6 +277,7 @@ TinCan client library
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
+            /*global ActiveXObject*/
             this.log("sendRequest");
             var xhr,
                 finished = false,
@@ -290,102 +291,6 @@ TinCan client library
                 pairs = [],
                 self = this
             ;
-
-            // respect absolute URLs passed in
-            if (cfg.url.indexOf("http") === 0) {
-                fullUrl = cfg.url;
-            }
-
-            // add extended LMS-specified values to the params
-            if (this.extended !== null) {
-                cfg.params = cfg.params || {};
-
-                for (prop in this.extended) {
-                    if (this.extended.hasOwnProperty(prop)) {
-                        // don't overwrite cfg.params values that have already been added to the request with our extended params
-                        if (! cfg.params.hasOwnProperty(prop)) {
-                            if (this.extended[prop] !== null) {
-                                cfg.params[prop] = this.extended[prop];
-                            }
-                        }
-                    }
-                }
-            }
-
-            // consolidate headers
-            headers["Content-Type"] = "application/json";
-            headers.Authorization = this.auth;
-            if (this.version !== "0.9") {
-                headers["X-Experience-API-Version"] = this.version;
-            }
-
-            for (prop in cfg.headers) {
-                if (cfg.headers.hasOwnProperty(prop)) {
-                    headers[prop] = cfg.headers[prop];
-                }
-            }
-
-            if (this._requestMode === NATIVE) {
-                this.log("sendRequest using XMLHttpRequest");
-
-                for (prop in cfg.params) {
-                    if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
-                    }
-                }
-                if (pairs.length > 0) {
-                    fullUrl += "?" + pairs.join("&");
-                }
-
-                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
-
-                xhr = new XMLHttpRequest();
-                xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
-                for (prop in headers) {
-                    if (headers.hasOwnProperty(prop)) {
-                        xhr.setRequestHeader(prop, headers[prop]);
-                    }
-                }
-
-                if (typeof cfg.data !== "undefined") {
-                    cfg.data += "";
-                }
-                data = cfg.data;
-            }
-            else if (this._requestMode === XDR) {
-                this.log("sendRequest using XDomainRequest");
-
-                // method has to go on querystring, and nothing else,
-                // and the actual method is then always POST
-                fullUrl += "?method=" + cfg.method;
-
-                // params end up in the body
-                for (prop in cfg.params) {
-                    if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
-                    }
-                }
-
-                // headers go into form data
-                for (prop in headers) {
-                    if (headers.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
-                    }
-                }
-
-                // the original data is repackaged as "content" form var
-                if (cfg.data !== null) {
-                    pairs.push("content=" + encodeURIComponent(cfg.data));
-                }
-
-                data = pairs.join("&");
-
-                xhr = new XDomainRequest ();
-                xhr.open("POST", fullUrl);
-            }
-            else {
-                this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
-            }
 
             // Setup request callback
             function requestComplete () {
@@ -441,17 +346,138 @@ TinCan client library
                 }
             }
 
-            xhr.onreadystatechange = function () {
-                self.log("xhr.onreadystatechange - xhr.readyState: " + finished + ", xhr.status: " + xhr.status);
-                if (xhr.readyState === 4) {
-                    requestComplete();
+            // respect absolute URLs passed in
+            if (cfg.url.indexOf("http") === 0) {
+                fullUrl = cfg.url;
+            }
+
+            // add extended LMS-specified values to the params
+            if (this.extended !== null) {
+                cfg.params = cfg.params || {};
+
+                for (prop in this.extended) {
+                    if (this.extended.hasOwnProperty(prop)) {
+                        // don't overwrite cfg.params values that have already been added to the request with our extended params
+                        if (! cfg.params.hasOwnProperty(prop)) {
+                            if (this.extended[prop] !== null) {
+                                cfg.params[prop] = this.extended[prop];
+                            }
+                        }
+                    }
                 }
-            };
+            }
 
-            xhr.onload = requestComplete;
-            xhr.onerror = requestComplete;
+            // consolidate headers
+            headers["Content-Type"] = "application/json";
+            headers.Authorization = this.auth;
+            if (this.version !== "0.9") {
+                headers["X-Experience-API-Version"] = this.version;
+            }
 
-            xhr.send(data);
+            for (prop in cfg.headers) {
+                if (cfg.headers.hasOwnProperty(prop)) {
+                    headers[prop] = cfg.headers[prop];
+                }
+            }
+
+            if (this._requestMode === NATIVE) {
+                this.log("sendRequest using XMLHttpRequest");
+
+                for (prop in cfg.params) {
+                    if (cfg.params.hasOwnProperty(prop)) {
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
+                    }
+                }
+                if (pairs.length > 0) {
+                    fullUrl += "?" + pairs.join("&");
+                }
+
+                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
+
+                if (typeof XMLHttpRequest !== "undefined") {
+                    xhr = new XMLHttpRequest();
+                }
+                else {
+                    //
+                    // IE6 implements XMLHttpRequest through ActiveX control
+                    // http://blogs.msdn.com/b/ie/archive/2006/01/23/516393.aspx
+                    //
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
+                for (prop in headers) {
+                    if (headers.hasOwnProperty(prop)) {
+                        xhr.setRequestHeader(prop, headers[prop]);
+                    }
+                }
+
+                if (typeof cfg.data !== "undefined") {
+                    cfg.data += "";
+                }
+                data = cfg.data;
+
+                xhr.onreadystatechange = function () {
+                    self.log("xhr.onreadystatechange - xhr.readyState: " + xhr.readyState);
+                    if (xhr.readyState === 4) {
+                        requestComplete();
+                    }
+                };
+            }
+            else if (this._requestMode === XDR) {
+                this.log("sendRequest using XDomainRequest");
+
+                // method has to go on querystring, and nothing else,
+                // and the actual method is then always POST
+                fullUrl += "?method=" + cfg.method;
+
+                // params end up in the body
+                for (prop in cfg.params) {
+                    if (cfg.params.hasOwnProperty(prop)) {
+                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
+                    }
+                }
+
+                // headers go into form data
+                for (prop in headers) {
+                    if (headers.hasOwnProperty(prop)) {
+                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+                    }
+                }
+
+                // the original data is repackaged as "content" form var
+                if (cfg.data !== null) {
+                    pairs.push("content=" + encodeURIComponent(cfg.data));
+                }
+
+                data = pairs.join("&");
+
+                xhr = new XDomainRequest ();
+                xhr.open("POST", fullUrl);
+
+                xhr.onload = function () {
+                    requestComplete();
+                };
+                xhr.onerror = function () {
+                    requestComplete();
+                };
+            }
+            else {
+                this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
+            }
+
+            //
+            // research indicates that IE is known to just throw exceptions
+            // on .send and it seems everyone pretty much just ignores them
+            // including jQuery (https://github.com/jquery/jquery/blob/1.10.2/src/ajax.js#L549
+            // https://github.com/jquery/jquery/blob/1.10.2/src/ajax/xhr.js#L97)
+            //
+            try {
+                xhr.send(data);
+            }
+            catch (ex) {
+                this.log("sendRequest caught send exception: " + ex);
+            }
 
             if (! cfg.callback) {
                 // synchronous

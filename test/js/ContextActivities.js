@@ -248,7 +248,7 @@
                         versions: {
                             latest: { parent: [ commonRaw ], grouping: [ commonRaw ], other: [ commonRaw ] },
                             "0.95": { parent: commonRaw, grouping: commonRaw, other: commonRaw },
-                            "0.9": { parent: commonRaw , grouping: commonRaw, other: commonRaw },
+                            "0.9": { parent: commonRaw , grouping: commonRaw, other: commonRaw }
                         }
                     },
                     {
@@ -261,7 +261,7 @@
                         versions: {
                             latest: { parent: [ commonRaw, commonRaw2 ], grouping: [ commonRaw, commonRaw2 ], other: [ commonRaw, commonRaw2 ] },
                             "0.95": { parent: commonRaw, grouping: commonRaw, other: commonRaw },
-                            "0.9": { parent: commonRaw , grouping: commonRaw, other: commonRaw },
+                            "0.9": { parent: commonRaw , grouping: commonRaw, other: commonRaw }
                         }
                     }
                 ],
