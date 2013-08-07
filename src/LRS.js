@@ -461,6 +461,16 @@ TinCan client library
                 xhr.onerror = function () {
                     requestComplete();
                 };
+
+                // IE likes to randomly abort requests when some handlers
+                // aren't defined, so define them with no-ops, see:
+                //
+                // http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
+                // http://social.msdn.microsoft.com/Forums/ie/en-US/30ef3add-767c-4436-b8a9-f1ca19b4812e/ie9-rtm-xdomainrequest-issued-requests-may-abort-if-all-event-handlers-not-specified
+                //
+                xhr.ontimeout = function () {};
+                xhr.onprogress = function () {};
+                xhr.timeout = 0;
             }
             else {
                 this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
@@ -472,8 +482,22 @@ TinCan client library
             // including jQuery (https://github.com/jquery/jquery/blob/1.10.2/src/ajax.js#L549
             // https://github.com/jquery/jquery/blob/1.10.2/src/ajax/xhr.js#L97)
             //
+            // I'm wondering if the setTimeout wrapper suggested in the links
+            // above for XDR solves the random exception issue, but don't know
+            // for sure
+            //
             try {
-                xhr.send(data);
+                if (this._requestMode === XDR) {
+                    setTimeout(
+                        function () {
+                            xhr.send(data);
+                        },
+                        0
+                    );
+                }
+                else {
+                    xhr.send(data);
+                }
             }
             catch (ex) {
                 this.log("sendRequest caught send exception: " + ex);
