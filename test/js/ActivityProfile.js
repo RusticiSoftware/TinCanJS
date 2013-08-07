@@ -1,5 +1,5 @@
 /*!
-    Copyright 2012 Rustici Software
+    Copyright 2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,31 +15,31 @@
 */
 (function () {
     var session = null,
-        commonId = "testState",
+        commonId = "testActivityProfile",
         commonContentString = "test content",
         commonContentStringType = "text/plain";
 
-    module("State Statics");
+    module("ActivityProfile Statics");
 
     test(
-        "State.fromJSON",
+        "ActivityProfile.fromJSON",
         function () {
             var raw = {},
                 string,
                 result
             ;
 
-            result = TinCan.State.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.State, "returns TinCan.State");
+            result = TinCan.ActivityProfile.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.ActivityProfile, "returns TinCan.ActivityProfile");
         }
     );
 
-    module("State Instance");
+    module("ActivityProfile Instance");
 
     test(
-        "state Object",
+        "activityProfile Object",
         function () {
-            var obj = new TinCan.State (),
+            var obj = new TinCan.ActivityProfile (),
                 nullProps = [
                     "id",
                     "contents",
@@ -49,7 +49,7 @@
                 i
             ;
 
-            ok(obj instanceof TinCan.State, "object is TinCan.State");
+            ok(obj instanceof TinCan.ActivityProfile, "object is TinCan.ActivityProfile");
 
             for (i = 0; i < nullProps.length; i += 1) {
                 ok(obj.hasOwnProperty(nullProps[i]), "object has property: " + nullProps[i]);
@@ -59,12 +59,12 @@
             ok(obj.hasOwnProperty("updated"), "object has property: updated");
             strictEqual(obj.updated, false, "object property initial value: updated");
 
-            strictEqual(obj.LOG_SRC, "State", "object property LOG_SRC initial value");
+            strictEqual(obj.LOG_SRC, "ActivityProfile", "object property LOG_SRC initial value");
         }
     );
 
     test(
-        "state variants",
+        "activityProfile variants",
         function () {
             var set = [
                     {
@@ -88,9 +88,9 @@
 
             for (i = 0; i < set.length; i += 1) {
                 row = set[i];
-                obj = new TinCan.State (row.instanceConfig);
+                obj = new TinCan.ActivityProfile (row.instanceConfig);
 
-                ok(obj instanceof TinCan.State, "object is TinCan.State (" + row.name + ")");
+                ok(obj instanceof TinCan.ActivityProfile, "object is TinCan.ActivityProfile (" + row.name + ")");
                 if (typeof row.checkProps !== "undefined") {
                     for (key in row.checkProps) {
                         deepEqual(obj[key], row.checkProps[key], "object property initial value: " + key + " (" + row.name + ")");

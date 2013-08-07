@@ -368,7 +368,6 @@ TinCan client library
             }
 
             // consolidate headers
-            headers["Content-Type"] = "application/json";
             headers.Authorization = this.auth;
             if (this.version !== "0.9") {
                 headers["X-Experience-API-Version"] = this.version;
@@ -552,7 +551,10 @@ TinCan client library
 
             requestCfg = {
                 url: "statements",
-                data: JSON.stringify(stmt.asVersion( this.version ))
+                data: JSON.stringify(stmt.asVersion( this.version )),
+                headers: {
+                    "Content-Type": "application/json"
+                }
             };
             if (stmt.id !== null) {
                 requestCfg.method = "PUT";
@@ -730,7 +732,10 @@ TinCan client library
             requestCfg = {
                 url: "statements",
                 method: "POST",
-                data: JSON.stringify(versionedStatements)
+                data: JSON.stringify(versionedStatements),
+                headers: {
+                    "Content-Type": "application/json"
+                }
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
@@ -1126,6 +1131,21 @@ TinCan client library
                                 //
                                 result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
                             }
+
+                            if (typeof xhr.contentType !== "undefined") {
+                                // most likely an XDomainRequest which has .contentType
+                                result.contentType = xhr.contentType;
+                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                                result.contentType = xhr.getResponseHeader("Content-Type");
+                            }
+
+                            if (result.contentType === "application/json") {
+                                try {
+                                    result.contents = JSON.parse(result.contents);
+                                } catch (ex) {
+                                    this.log("retrieveState - failed to deserialize JSON: " + ex);
+                                }
+                            }
                         }
                     }
 
@@ -1154,6 +1174,19 @@ TinCan client library
                         //
                         requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
                     }
+                    if (typeof requestResult.xhr.contentType !== "undefined") {
+                        // most likely an XDomainRequest which has .contentType
+                        requestResult.state.contentType = requestResult.xhr.contentType;
+                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                        requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
+                    }
+                    if (requestResult.state.contentType === "application/json") {
+                        try {
+                            requestResult.state.contents = JSON.parse(requestResult.state.contents);
+                        } catch (ex) {
+                            this.log("retrieveState - failed to deserialize JSON: " + ex);
+                        }
+                    }
                 }
             }
 
@@ -1171,6 +1204,7 @@ TinCan client library
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.registration] Registration
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
+            @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -1188,7 +1222,11 @@ TinCan client library
                 return;
             }
 
-            if (typeof val === "object") {
+            if (typeof cfg.contentType === "undefined") {
+                cfg.contentType = "application/octet-stream";
+            }
+
+            if (typeof val === "object" && cfg.contentType === "application/json") {
                 val = JSON.stringify(val);
             }
 
@@ -1215,15 +1253,16 @@ TinCan client library
                 url: "activities/state",
                 method: "PUT",
                 params: requestParams,
-                data: val
+                data: val,
+                headers: {
+                    "Content-Type": cfg.contentType
+                }
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
-                requestCfg.headers = {
-                    "If-Match": cfg.lastSHA1
-                };
+                requestCfg.headers["If-Match"] = cfg.lastSHA1;
             }
 
             return this.sendRequest(requestCfg);
@@ -1347,6 +1386,19 @@ TinCan client library
                                 //
                                 result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
                             }
+                            if (typeof xhr.contentType !== "undefined") {
+                                // most likely an XDomainRequest which has .contentType
+                                result.contentType = xhr.contentType;
+                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                                result.contentType = xhr.getResponseHeader("Content-Type");
+                            }
+                            if (result.contentType === "application/json") {
+                                try {
+                                    result.contents = JSON.parse(result.contents);
+                                } catch (ex) {
+                                    this.log("retrieveActivityProfile - failed to deserialize JSON: " + ex);
+                                }
+                            }
                         }
                     }
 
@@ -1376,6 +1428,19 @@ TinCan client library
                         //
                         requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
                     }
+                    if (typeof requestResult.xhr.contentType !== "undefined") {
+                        // most likely an XDomainRequest which has .contentType
+                        requestResult.profile.contentType = requestResult.xhr.contentType;
+                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                        requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
+                    }
+                    if (requestResult.profile.contentType === "application/json") {
+                        try {
+                            requestResult.profile.contents = JSON.parse(requestResult.profile.contents);
+                        } catch (ex) {
+                            this.log("retrieveActivityProfile - failed to deserialize JSON: " + ex);
+                        }
+                    }
                 }
             }
 
@@ -1390,6 +1455,7 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
+            @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -1404,7 +1470,11 @@ TinCan client library
                 return;
             }
 
-            if (typeof val === "object") {
+            if (typeof cfg.contentType === "undefined") {
+                cfg.contentType = "application/octet-stream";
+            }
+
+            if (typeof val === "object" && cfg.contentType === "application/json") {
                 val = JSON.stringify(val);
             }
 
@@ -1415,20 +1485,19 @@ TinCan client library
                     profileId: key,
                     activityId: cfg.activity.id
                 },
-                data: val
+                data: val,
+                headers: {
+                    "Content-Type": cfg.contentType
+                }
             };
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
-                requestCfg.headers = {
-                    "If-Match": cfg.lastSHA1
-                };
+                requestCfg.headers["If-Match"] = cfg.lastSHA1;
             }
             else {
-                requestCfg.headers = {
-                    "If-None-Match": "*"
-                };
+                requestCfg.headers["If-None-Match"] = "*";
             }
 
             return this.sendRequest(requestCfg);

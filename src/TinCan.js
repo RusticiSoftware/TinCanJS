@@ -887,6 +887,7 @@ var TinCan;
             @param {Object} [cfg.registration] Registration used in query,
                 defaults to 'registration' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
+            @param {String} [cfg.contentType] Content-Type to specify in headers
             @param {Function} [cfg.callback] Function to run with state
         */
         setState: function (key, val, cfg) {
@@ -921,6 +922,9 @@ var TinCan;
                 }
                 if (typeof cfg.lastSHA1 !== "undefined") {
                     queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
+                if (typeof cfg.contentType !== "undefined") {
+                    queryCfg.contentType = cfg.contentType;
                 }
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
@@ -1051,6 +1055,7 @@ var TinCan;
             @param {Object} [cfg.activity] Activity used in query,
                 defaults to 'activity' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
+            @param {String} [cfg.contentType] Content-Type to specify in headers
             @param {Function} [cfg.callback] Function to run with activity profile
         */
         setActivityProfile: function (key, val, cfg) {
@@ -1081,6 +1086,9 @@ var TinCan;
                 }
                 if (typeof cfg.lastSHA1 !== "undefined") {
                     queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
+                if (typeof cfg.contentType !== "undefined") {
+                    queryCfg.contentType = cfg.contentType;
                 }
 
                 return lrs.saveActivityProfile(key, val, queryCfg);

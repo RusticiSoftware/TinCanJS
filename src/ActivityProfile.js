@@ -63,6 +63,12 @@ TinCan client library
         */
         this.etag = null;
 
+        /**
+        @property contentType
+        @type String
+        */
+        this.contentType = null;
+
         this.init(cfg);
     };
     ActivityProfile.prototype = {
@@ -86,7 +92,8 @@ TinCan client library
                 directProps = [
                     "id",
                     "contents",
-                    "etag"
+                    "etag",
+                    "contentType"
                 ],
                 val
             ;
