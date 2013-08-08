@@ -1,5 +1,5 @@
 /*
-    Copyright 2012 Rustici Software
+    Copyright 2012-2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -1536,6 +1536,240 @@ TinCan client library
                 method: "DELETE",
                 params: requestParams
             };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
+        },
+
+        /**
+        Retrieve an agent profile value, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveAgentProfile
+        @param {String} key Key of agent profile to retrieve
+        @param {Object} cfg Configuration options
+            @param {Object} cfg.agent TinCan.Agent
+            @param {Function} [cfg.callback] Callback to execute on completion
+        @return {Object} Value retrieved
+        */
+        retrieveAgentProfile: function (key, cfg) {
+            this.log("retrieveAgentProfile");
+            var requestCfg = {},
+                requestResult,
+                callbackWrapper
+            ;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            requestCfg = {
+                method: "GET",
+                params: {
+                    profileId: key
+                },
+                ignore404: true
+            };
+            if (this.version === "0.9") {
+                requestCfg.url = "actors/profile";
+                requestCfg.params.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestCfg.url = "agents/profile";
+                requestCfg.params.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        if (xhr.status === 404) {
+                            result = null;
+                        }
+                        else {
+                            result = new TinCan.AgentProfile(
+                                {
+                                    id: key,
+                                    agent: cfg.agent,
+                                    contents: xhr.responseText
+                                }
+                            );
+                            if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
+                                result.etag = xhr.getResponseHeader("ETag");
+                            } else {
+                                //
+                                // either XHR didn't have getResponseHeader (probably cause it is an IE
+                                // XDomainRequest object which doesn't) or not populated by LRS so create
+                                // the hash ourselves
+                                //
+                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                            }
+                            if (typeof xhr.contentType !== "undefined") {
+                                // most likely an XDomainRequest which has .contentType
+                                result.contentType = xhr.contentType;
+                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                                result.contentType = xhr.getResponseHeader("Content-Type");
+                            }
+                            if (result.contentType === "application/json") {
+                                try {
+                                    result.contents = JSON.parse(result.contents);
+                                } catch (ex) {
+                                    this.log("retrieveAgentProfile - failed to deserialize JSON: " + ex);
+                                }
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.profile = null;
+                if (requestResult.err === null && requestResult.xhr.status !== 404) {
+                    requestResult.profile = new TinCan.AgentProfile(
+                        {
+                            id: key,
+                            agent: cfg.agent,
+                            contents: requestResult.xhr.responseText
+                        }
+                    );
+                    if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
+                        requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
+                    } else {
+                        //
+                        // either XHR didn't have getResponseHeader (probably cause it is an IE
+                        // XDomainRequest object which doesn't) or not populated by LRS so create
+                        // the hash ourselves
+                        //
+                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                    }
+                    if (typeof requestResult.xhr.contentType !== "undefined") {
+                        // most likely an XDomainRequest which has .contentType
+                        requestResult.profile.contentType = requestResult.xhr.contentType;
+                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                        requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
+                    }
+                    if (requestResult.profile.contentType === "application/json") {
+                        try {
+                            requestResult.profile.contents = JSON.parse(requestResult.profile.contents);
+                        } catch (ex) {
+                            this.log("retrieveAgentProfile - failed to deserialize JSON: " + ex);
+                        }
+                    }
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
+        Save an agent profile value, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method saveAgentProfile
+        @param {String} key Key of agent profile to retrieve
+        @param {Object} cfg Configuration options
+            @param {Object} cfg.agent TinCan.Agent
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
+            @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {Function} [cfg.callback] Callback to execute on completion
+        */
+        saveAgentProfile: function (key, val, cfg) {
+            this.log("saveAgentProfile");
+            var requestCfg;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            if (typeof cfg.contentType === "undefined") {
+                cfg.contentType = "application/octet-stream";
+            }
+
+            if (typeof val === "object" && cfg.contentType === "application/json") {
+                val = JSON.stringify(val);
+            }
+
+            requestCfg = {
+                method: "PUT",
+                params: {
+                    profileId: key
+                },
+                data: val,
+                headers: {
+                    "Content-Type": cfg.contentType
+                }
+            };
+            if (this.version === "0.9") {
+                requestCfg.url = "actors/profile";
+                requestCfg.params.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestCfg.url = "agents/profile";
+                requestCfg.params.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+            if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
+                requestCfg.headers["If-Match"] = cfg.lastSHA1;
+            }
+            else {
+                requestCfg.headers["If-None-Match"] = "*";
+            }
+
+            return this.sendRequest(requestCfg);
+        },
+
+        /**
+        Drop an agent profile value or all of the agent profile, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method dropAgentProfile
+        @param {String|null} key Key of agent profile to delete, or null for all
+        @param {Object} cfg Configuration options
+            @param {Object} cfg.agent TinCan.Agent
+            @param {Function} [cfg.callback] Callback to execute on completion
+        */
+        dropAgentProfile: function (key, cfg) {
+            this.log("dropAgentProfile");
+            var requestParams,
+                requestCfg
+            ;
+
+            // TODO: it would be better to make a subclass that knows
+            //       its own environment and just implements the protocol
+            //       that it needs to
+            if (! TinCan.environment().isBrowser) {
+                this.log("error: environment not implemented");
+                return;
+            }
+
+            requestParams = {
+                profileId: key
+            };
+            requestCfg = {
+                method: "DELETE",
+                params: requestParams
+            };
+            if (this.version === "0.9") {
+                requestCfg.url = "actors/profile";
+                requestParams.actor = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
+            else {
+                requestCfg.url = "agents/profile";
+                requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
+            }
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }

@@ -31,7 +31,9 @@
         doSendStatementAsyncTest,
         doGetStatementAsyncTest,
         doStateSyncTest,
-        doActivityProfileSyncTest;
+        doStateSyncContentTypeJSONTest,
+        doActivityProfileSyncTest,
+        doActivityProfileSyncContentTypeJSONTest;
 
     module("TinCan Statics");
 
@@ -662,7 +664,7 @@
 
     doActivityProfileSyncContentTypeJSONTest = function (v) {
         test(
-            "tincan activityProfile (sync): " + v,
+            "tincan activityProfile (sync, JSON content type): " + v,
             function () {
                 var setResult,
                     key = "activityProfile (sync)",
@@ -710,6 +712,101 @@
         );
     };
 
+    doAgentProfileSyncTest = function (v) {
+        test(
+            "tincan agentProfile (sync): " + v,
+            function () {
+                var setResult,
+                    key = "agentProfile (sync)",
+                    val = "TinCanJS",
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        )
+                    };
+
+                setResult = session[v].setAgentProfile(key, val, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getAgentProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
+                deepEqual(getResult.profile.contentType, "application/octet-stream", "getResult profile property contentType (" + v + ")");
+
+                // this should "fail"
+                session[v].recordStores[0].alertOnRequestFailure = false;
+                setResult = session[v].setAgentProfile(key, val + 1, options);
+                session[v].recordStores[0].alertOnRequestFailure = true;
+
+                //
+                // reset the profile to make sure we test the concurrency handling
+                //
+                options.lastSHA1 = getResult.profile.etag;
+                setResult = session[v].setAgentProfile(key, val + 2, options);
+                delete options.lastSHA1;
+
+                deleteResult = session[v].deleteAgentProfile(key, options);
+            }
+        );
+    };
+
+    doAgentProfileSyncContentTypeJSONTest = function (v) {
+        test(
+            "tincan agentProfile (sync, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "agentProfile (sync)",
+                    val = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        contentType: "application/json"
+                    };
+
+                setResult = session[v].setAgentProfile(key, val, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getAgentProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
+                deepEqual(getResult.profile.contentType, "application/json", "getResult profile property contentType (" + v + ")");
+
+                // this should "fail"
+                session[v].recordStores[0].alertOnRequestFailure = false;
+                setResult = session[v].setAgentProfile(key, val + 1, options);
+                session[v].recordStores[0].alertOnRequestFailure = true;
+
+                //
+                // reset the profile to make sure we test the concurrency handling
+                //
+                options.lastSHA1 = getResult.profile.etag;
+                setResult = session[v].setAgentProfile(key, val + 2, options);
+                delete options.lastSHA1;
+
+                deleteResult = session[v].deleteAgentProfile(key, options);
+            }
+        );
+    };
+
     for (i = 0; i < versions.length; i += 1) {
         version = versions[i];
         if (TinCanTestCfg.recordStores[version]) {
@@ -722,6 +819,8 @@
             doStateSyncContentTypeJSONTest(version);
             doActivityProfileSyncTest(version);
             doActivityProfileSyncContentTypeJSONTest(version);
+            doAgentProfileSyncTest(version);
+            doAgentProfileSyncContentTypeJSONTest(version);
         }
     }
 }());

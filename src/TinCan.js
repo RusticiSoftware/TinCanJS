@@ -1148,6 +1148,156 @@ var TinCan;
             else {
                 this.log(msg);
             }
+        },
+
+        /**
+        @method getAgentProfile
+        @param {String} key Key to retrieve from the profile
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to 'actor' property if empty
+            @param {Function} [cfg.callback] Function to run with agent profile
+        */
+        getAgentProfile: function (key, cfg) {
+            this.log("getAgentProfile");
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for agent profiles (for now) we are only going to store to the first LRS
+                // so only get from there too
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor)
+                };
+                if (typeof cfg.callback !== "undefined") {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.retrieveAgentProfile(key, queryCfg);
+            }
+
+            msg = "[warning] getAgentProfile: No LRSs added yet (agent profile not retrieved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        /**
+        @method setAgentProfile
+        @param {String} key Key to store into the agent profile
+        @param {String|Object} val Value to store into the agent profile, objects will be stringified to JSON
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to 'actor' property if empty
+            @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
+            @param {String} [cfg.contentType] Content-Type to specify in headers
+            @param {Function} [cfg.callback] Function to run with agent profile
+        */
+        setAgentProfile: function (key, val, cfg) {
+            this.log("setAgentProfile");
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for agent profile (for now) we are only going to store to the first LRS
+                // so only get from there too
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor)
+                };
+                if (typeof cfg.callback !== "undefined") {
+                    queryCfg.callback = cfg.callback;
+                }
+                if (typeof cfg.lastSHA1 !== "undefined") {
+                    queryCfg.lastSHA1 = cfg.lastSHA1;
+                }
+                if (typeof cfg.contentType !== "undefined") {
+                    queryCfg.contentType = cfg.contentType;
+                }
+
+                return lrs.saveAgentProfile(key, val, queryCfg);
+            }
+
+            msg = "[warning] setAgentProfile: No LRSs added yet (agent profile not saved)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
+        },
+
+        /**
+        @method deleteAgentProfile
+        @param {String|null} key Key to remove from the agent profile, or null to clear all
+        @param {Object} [cfg] Configuration for request
+            @param {Object} [cfg.agent] Agent used in query,
+                defaults to 'actor' property if empty
+            @param {Function} [cfg.callback] Function to run with agent profile
+        */
+        deleteAgentProfile: function (key, cfg) {
+            this.log("deleteAgentProfile");
+            var queryCfg,
+                lrs,
+                msg
+            ;
+
+            if (this.recordStores.length > 0) {
+                //
+                // for agent profile (for now) we are only going to store to the first LRS
+                // so only get from there too
+                //
+                // TODO: make this the first non-allowFail LRS but for now it should
+                // be good enough to make it the first since we know the LMS provided
+                // LRS is the first
+                //
+                lrs = this.recordStores[0];
+
+                cfg = cfg || {};
+
+                queryCfg = {
+                    agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor)
+                };
+                if (typeof cfg.callback !== "undefined") {
+                    queryCfg.callback = cfg.callback;
+                }
+
+                return lrs.dropAgentProfile(key, queryCfg);
+            }
+
+            msg = "[warning] deleteAgentProfile: No LRSs added yet (agent profile not deleted)";
+            if (TinCan.environment().isBrowser) {
+                alert(this.LOG_SRC + ": " + msg);
+            }
+            else {
+                this.log(msg);
+            }
         }
     };
 
