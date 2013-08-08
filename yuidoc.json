@@ -1,8 +1,8 @@
 {
-    "version": "0.7.2",
+    "version": "0.8.0",
     "name": "TinCanJS",
-    "description": "Client library for working with TinCan API in JavaScript",
-    "url": "https://github.com/RusticiSoftware/TinCanJS",
+    "description": "Library for working with Tin Can API in JavaScript",
+    "url": "http://rusticisoftware.github.com/TinCanJS/",
     "options": {
         "outdir": "doc/api"
     },
