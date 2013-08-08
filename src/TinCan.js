@@ -67,7 +67,10 @@ var TinCan;
         @param {String} [options.url] URL for determining launch provided
             configuration options
         @param {Array} [options.recordStores] list of pre-configured LRSes
+        @param {Object|TinCan.Agent} [options.actor] default actor
         @param {Object|TinCan.Activity} [options.activity] default activity
+        @param {String} [options.registration] default registration
+        @param {Object|TinCan.Context} [options.context] default context
     **/
     TinCan = function (cfg) {
         this.log("constructor");
@@ -170,6 +173,25 @@ var TinCan;
                 else {
                     this.activity = new TinCan.Activity (cfg.activity);
                 }
+            }
+            if (cfg.hasOwnProperty("actor")) {
+                if (cfg.actor instanceof TinCan.Agent) {
+                    this.actor = cfg.actor;
+                }
+                else {
+                    this.actor = new TinCan.Agent (cfg.actor);
+                }
+            }
+            if (cfg.hasOwnProperty("context")) {
+                if (cfg.context instanceof TinCan.Context) {
+                    this.context = cfg.context;
+                }
+                else {
+                    this.context = new TinCan.Context (cfg.context);
+                }
+            }
+            if (cfg.hasOwnProperty("registration")) {
+                this.registration = cfg.registration;
             }
         },
 
