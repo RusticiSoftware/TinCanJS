@@ -103,7 +103,6 @@
                 mockAlerts = [];
                 alertBuiltin = window.alert;
                 window.alert = alertFunc;
-
             },
             teardown: function () {
                 session = null;

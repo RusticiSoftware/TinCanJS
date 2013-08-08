@@ -263,8 +263,8 @@ TinCan client library
         Method used to send a request via browser objects to the LRS
 
         @method sendRequest
-        @param {Object} [cfg] Configuration for request
-            @param {String} [cfg.url] URL portion to add to endpoint
+        @param {Object} cfg Configuration for request
+            @param {String} cfg.url URL portion to add to endpoint
             @param {String} [cfg.method] GET, PUT, POST, etc.
             @param {Object} [cfg.params] Parameters to set on the querystring
             @param {String} [cfg.data] String of body content
@@ -325,18 +325,20 @@ TinCan client library
                         }
                     }
                     else {
-                        // Alert all errors except cancelled XHR requests
-                        if (httpStatus > 0) {
-                            requestCompleteResult = {
-                                err: httpStatus,
-                                xhr: xhr
-                            };
-                            if (self.alertOnRequestFailure) {
+                        requestCompleteResult = {
+                            err: httpStatus,
+                            xhr: xhr
+                        };
+                        if (self.alertOnRequestFailure) {
+                            if (httpStatus === 0) {
+                                alert("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
+                            }
+                            else {
                                 alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                             }
-                            if (cfg.callback) {
-                                cfg.callback(httpStatus, xhr);
-                            }
+                        }
+                        if (cfg.callback) {
+                            cfg.callback(httpStatus, xhr);
                         }
                         return requestCompleteResult;
                     }
