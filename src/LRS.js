@@ -1281,8 +1281,8 @@ TinCan client library
         */
         dropState: function (key, cfg) {
             this.log("dropState");
-            var requestParams = {},
-                requestCfg = {}
+            var requestParams,
+                requestCfg
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -1514,8 +1514,8 @@ TinCan client library
         */
         dropActivityProfile: function (key, cfg) {
             this.log("dropActivityProfile");
-            var requestParams = {},
-                requestCfg = {}
+            var requestParams,
+                requestCfg
             ;
 
             // TODO: it would be better to make a subclass that knows
@@ -1527,11 +1527,9 @@ TinCan client library
             }
 
             requestParams = {
+                profileId: key,
                 activityId: cfg.activity.id
             };
-            if (key !== null) {
-                requestParams.profileId = key;
-            }
 
             requestCfg = {
                 url: "activities/profile",
