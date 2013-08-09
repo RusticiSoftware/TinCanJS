@@ -112,6 +112,21 @@
         }
     );
     test(
+        "getContentTypeFromHeader",
+        function () {
+            var appJSON = "application/json",
+                strings = {
+                    "application/json": appJSON,
+                    "application/json; charset=UTF-8": appJSON,
+                    "text/plain;charset=UTF-8": "text/plain"
+                },
+                prop;
+            for (prop in strings) {
+                ok(TinCan.Utils.getContentTypeFromHeader(prop) === strings[prop], "'" + prop + "' matches '" + strings[prop]);
+            }
+        }
+    );
+    test(
         "isApplicationJSON",
         function () {
             var okStrings = [

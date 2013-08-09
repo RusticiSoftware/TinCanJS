@@ -185,12 +185,23 @@ TinCan client library
         },
 
         /**
+        @method getContentTypeFromHeader
+        @static
+        @param {String} Content-Type header value
+        @return {String} Primary value from Content-Type
+        */
+        getContentTypeFromHeader: function (header) {
+            return (String(header).split(";"))[0];
+        },
+
+        /**
         @method isApplicationJSON
+        @static
         @param {String} Content-Type header value
         @return {Boolean} whether "application/json" was matched
         */
         isApplicationJSON: function (header) {
-            return (String(header).split(";"))[0].toLowerCase().indexOf("application/json") === 0;
+            return TinCan.Utils.getContentTypeFromHeader(header).toLowerCase().indexOf("application/json") === 0;
         }
     };
 }());

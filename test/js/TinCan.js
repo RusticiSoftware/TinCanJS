@@ -553,7 +553,7 @@
                 ok(getResult.hasOwnProperty("state"), "getResult has property: state (" + v + ")");
                 ok(getResult.state instanceof TinCan.State, "getResult state property is TinCan.State (" + v + ")");
                 deepEqual(getResult.state.contents, val, "getResult state property contents (" + v + ")");
-                deepEqual(getResult.state.contentType, "application/octet-stream", "getResult state property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.state.contentType), "application/octet-stream", "getResult state property contentType (" + v + ")");
 
                 //
                 // reset the state to make sure we test the concurrency handling
@@ -604,7 +604,7 @@
                 ok(getResult.hasOwnProperty("state"), "getResult has property: state (" + v + ")");
                 ok(getResult.state instanceof TinCan.State, "getResult state property is TinCan.State (" + v + ")");
                 deepEqual(getResult.state.contents, val, "getResult state property contents (" + v + ")");
-                deepEqual(getResult.state.contentType, "application/json", "getResult state property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.state.contentType), "application/json", "getResult state property contentType (" + v + ")");
 
                 //
                 // reset the state to make sure we test the concurrency handling
@@ -642,7 +642,7 @@
                 ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
                 ok(getResult.profile instanceof TinCan.ActivityProfile, "getResult profile property is TinCan.ActivityProfile (" + v + ")");
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
-                deepEqual(getResult.profile.contentType, "application/octet-stream", "getResult profile property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/octet-stream", "getResult profile property contentType (" + v + ")");
 
                 // this should "fail"
                 session[v].recordStores[0].alertOnRequestFailure = false;
@@ -692,7 +692,7 @@
                 ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
                 ok(getResult.profile instanceof TinCan.ActivityProfile, "getResult profile property is TinCan.ActivityProfile (" + v + ")");
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
-                deepEqual(getResult.profile.contentType, "application/json", "getResult profile property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
                 // this should "fail"
                 session[v].recordStores[0].alertOnRequestFailure = false;
@@ -736,7 +736,7 @@
                 ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
                 ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
-                deepEqual(getResult.profile.contentType, "application/octet-stream", "getResult profile property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/octet-stream", "getResult profile property contentType (" + v + ")");
 
                 // this should "fail"
                 session[v].recordStores[0].alertOnRequestFailure = false;
@@ -787,7 +787,7 @@
                 ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
                 ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
-                deepEqual(getResult.profile.contentType, "application/json", "getResult profile property contentType (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
                 // this should "fail"
                 session[v].recordStores[0].alertOnRequestFailure = false;
