@@ -1625,6 +1625,26 @@ TinCan client library
         getServerRoot: function (absoluteUrl) {
             var urlParts = absoluteUrl.split("/");
             return urlParts[0] + "//" + urlParts[2];
+        },
+
+        /**
+        @method getContentTypeFromHeader
+        @static
+        @param {String} Content-Type header value
+        @return {String} Primary value from Content-Type
+        */
+        getContentTypeFromHeader: function (header) {
+            return (String(header).split(";"))[0];
+        },
+
+        /**
+        @method isApplicationJSON
+        @static
+        @param {String} Content-Type header value
+        @return {Boolean} whether "application/json" was matched
+        */
+        isApplicationJSON: function (header) {
+            return TinCan.Utils.getContentTypeFromHeader(header).toLowerCase().indexOf("application/json") === 0;
         }
     };
 }());
@@ -2771,7 +2791,7 @@ TinCan client library
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
 
-                            if (result.contentType === "application/json") {
+                            if (TinCan.Utils.isApplicationJSON(result.contentType)) {
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
@@ -2812,7 +2832,7 @@ TinCan client library
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
-                    if (requestResult.state.contentType === "application/json") {
+                    if (TinCan.Utils.isApplicationJSON(requestResult.state.contentType)) {
                         try {
                             requestResult.state.contents = JSON.parse(requestResult.state.contents);
                         } catch (ex) {
@@ -2858,7 +2878,7 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
-            if (typeof val === "object" && cfg.contentType === "application/json") {
+            if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
@@ -3024,7 +3044,7 @@ TinCan client library
                             } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
-                            if (result.contentType === "application/json") {
+                            if (TinCan.Utils.isApplicationJSON(result.contentType)) {
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
@@ -3066,7 +3086,7 @@ TinCan client library
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
-                    if (requestResult.profile.contentType === "application/json") {
+                    if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
                         try {
                             requestResult.profile.contents = JSON.parse(requestResult.profile.contents);
                         } catch (ex) {
@@ -3106,7 +3126,7 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
-            if (typeof val === "object" && cfg.contentType === "application/json") {
+            if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
@@ -3247,7 +3267,7 @@ TinCan client library
                             } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
-                            if (result.contentType === "application/json") {
+                            if (TinCan.Utils.isApplicationJSON(result.contentType)) {
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
@@ -3289,7 +3309,7 @@ TinCan client library
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
-                    if (requestResult.profile.contentType === "application/json") {
+                    if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
                         try {
                             requestResult.profile.contents = JSON.parse(requestResult.profile.contents);
                         } catch (ex) {
@@ -3329,7 +3349,7 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
-            if (typeof val === "object" && cfg.contentType === "application/json") {
+            if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
