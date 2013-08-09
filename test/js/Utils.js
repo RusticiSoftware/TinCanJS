@@ -111,4 +111,27 @@
             ok(result === "http://tincanapi.com:8080", "return value: with port");
         }
     );
+    test(
+        "isApplicationJSON",
+        function () {
+            var okStrings = [
+                    "application/json",
+                    "application/json; charset=UTF-8",
+                    "application/json ",
+                    "Application/JSON",
+                    "Application/JSON   "
+                ],
+                notOkStrings = [
+                    "application/octet-stream",
+                    "text/plain"
+                ],
+                i;
+            for (i = 0; i < okStrings.length; i += 1) {
+                ok(TinCan.Utils.isApplicationJSON(okStrings[i]), "'" + okStrings[i] + "' matched");
+            }
+            for (i = 0; i < notOkStrings.length; i += 1) {
+                ok(! TinCan.Utils.isApplicationJSON(notOkStrings[i]), "'" + notOkStrings[i] + "' not matched");
+            }
+        }
+    );
 }());
