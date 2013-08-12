@@ -1,5 +1,5 @@
 /*
-    Copyright 2012 Rustici Software
+    Copyright 2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@
 TinCan client library
 
 @module TinCan
-@submodule TinCan.ActivityProfile
+@submodule TinCan.AgentProfile
 **/
 (function () {
     "use strict";
 
     /**
-    @class TinCan.ActivityProfile
+    @class TinCan.AgentProfile
     @constructor
     */
-    var ActivityProfile = TinCan.ActivityProfile = function (cfg) {
+    var AgentProfile = TinCan.AgentProfile = function (cfg) {
         this.log("constructor");
 
         /**
@@ -37,10 +37,10 @@ TinCan client library
         this.id = null;
 
         /**
-        @property activity
-        @type TinCan.Activity
+        @property agent
+        @type TinCan.Agent
         */
-        this.activity = null;
+        this.agent = null;
 
         /**
         @property updated
@@ -56,7 +56,7 @@ TinCan client library
 
         /**
         SHA1 of contents as provided by the server during last fetch,
-        this should be passed through to saveActivityProfile
+        this should be passed through to saveAgentProfile
 
         @property etag
         @type String
@@ -71,11 +71,11 @@ TinCan client library
 
         this.init(cfg);
     };
-    ActivityProfile.prototype = {
+    AgentProfile.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'ActivityProfile',
+        LOG_SRC: 'AgentProfile',
 
         /**
         @method log
@@ -100,12 +100,12 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (cfg.hasOwnProperty("activity")) {
-                if (cfg.activity instanceof TinCan.Activity) {
-                    this.activity = cfg.activity;
+            if (cfg.hasOwnProperty("agent")) {
+                if (cfg.agent instanceof TinCan.Agent) {
+                    this.agent = cfg.agent;
                 }
                 else {
-                    this.activity = new TinCan.Activity (cfg.activity);
+                    this.agent = new TinCan.Agent (cfg.agent);
                 }
             }
 
@@ -121,13 +121,13 @@ TinCan client library
 
     /**
     @method fromJSON
-    @return {Object} ActivityProfile
+    @return {Object} AgentProfile
     @static
     */
-    ActivityProfile.fromJSON = function (stateJSON) {
-        ActivityProfile.prototype.log("fromJSON");
+    AgentProfile.fromJSON = function (stateJSON) {
+        AgentProfile.prototype.log("fromJSON");
         var _state = JSON.parse(stateJSON);
 
-        return new ActivityProfile(_state);
+        return new AgentProfile(_state);
     };
 }());

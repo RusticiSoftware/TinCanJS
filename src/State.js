@@ -54,6 +54,12 @@ TinCan client library
         */
         this.etag = null;
 
+        /**
+        @property contentType
+        @type String
+        */
+        this.contentType = null;
+
         this.init(cfg);
     };
     State.prototype = {
@@ -76,7 +82,9 @@ TinCan client library
             var i,
                 directProps = [
                     "id",
-                    "contents"
+                    "contents",
+                    "etag",
+                    "contentType"
                 ],
                 val
             ;
