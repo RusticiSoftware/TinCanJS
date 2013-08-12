@@ -1936,6 +1936,7 @@ TinCan client library
                 headers = {},
                 data,
                 requestCompleteResult,
+                syncFakeStatus,
                 until,
                 prop,
                 pairs = [],
@@ -1943,17 +1944,26 @@ TinCan client library
             ;
 
             // Setup request callback
-            function requestComplete () {
+            function requestComplete (fakeStatus) {
                 self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
                 var notFoundOk,
                     httpStatus;
 
                 //
-                // older versions of IE don't properly handle 204 status codes
-                // so correct when receiving a 1223 to be 204 locally
-                // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                // XDomainRequest doesn't give us a way to get the status,
+                // so allow passing in a forged one
                 //
-                httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
+                if (typeof xhr.status === "undefined") {
+                    httpStatus = fakeStatus;
+                }
+                else {
+                    //
+                    // older versions of IE don't properly handle 204 status codes
+                    // so correct when receiving a 1223 to be 204 locally
+                    // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                    //
+                    httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
+                }
 
                 if (! finished) {
                     // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
@@ -1962,7 +1972,7 @@ TinCan client library
                     finished = true;
 
                     notFoundOk = (cfg.ignore404 && httpStatus === 404);
-                    if (httpStatus === undefined || (httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
+                    if ((httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
                         if (cfg.callback) {
                             cfg.callback(null, xhr);
                         }
@@ -2106,12 +2116,28 @@ TinCan client library
                 xhr = new XDomainRequest ();
                 xhr.open("POST", fullUrl);
 
-                xhr.onload = function () {
-                    requestComplete();
-                };
-                xhr.onerror = function () {
-                    requestComplete();
-                };
+                if (! cfg.callback) {
+                    xhr.onload = function () {
+                        syncFakeStatus = 200;
+                    };
+                    xhr.onerror = function () {
+                        syncFakeStatus = 400;
+                    };
+                    xhr.ontimeout = function () {
+                        syncFakeStatus = 0;
+                    };
+                }
+                else {
+                    xhr.onload = function () {
+                        requestComplete(200);
+                    };
+                    xhr.onerror = function () {
+                        requestComplete(400);
+                    };
+                    xhr.ontimeout = function () {
+                        requestComplete(0);
+                    };
+                }
 
                 // IE likes to randomly abort requests when some handlers
                 // aren't defined, so define them with no-ops, see:
@@ -2119,7 +2145,6 @@ TinCan client library
                 // http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
                 // http://social.msdn.microsoft.com/Forums/ie/en-US/30ef3add-767c-4436-b8a9-f1ca19b4812e/ie9-rtm-xdomainrequest-issued-requests-may-abort-if-all-event-handlers-not-specified
                 //
-                xhr.ontimeout = function () {};
                 xhr.onprogress = function () {};
                 xhr.timeout = 0;
             }
@@ -2133,22 +2158,8 @@ TinCan client library
             // including jQuery (https://github.com/jquery/jquery/blob/1.10.2/src/ajax.js#L549
             // https://github.com/jquery/jquery/blob/1.10.2/src/ajax/xhr.js#L97)
             //
-            // I'm wondering if the setTimeout wrapper suggested in the links
-            // above for XDR solves the random exception issue, but don't know
-            // for sure
-            //
             try {
-                if (this._requestMode === XDR) {
-                    setTimeout(
-                        function () {
-                            xhr.send(data);
-                        },
-                        0
-                    );
-                }
-                else {
-                    xhr.send(data);
-                }
+                xhr.send(data);
             }
             catch (ex) {
                 this.log("sendRequest caught send exception: " + ex);
@@ -2158,13 +2169,14 @@ TinCan client library
                 // synchronous
                 if (this._requestMode === XDR) {
                     // synchronous call in IE, with no synchronous mode available
-                    until = 1000 + Date.now();
+                    until = 10000 + Date.now();
                     this.log("sendRequest - until: " + until + ", finished: " + finished);
 
-                    while (Date.now() < until && ! finished) {
+                    while (Date.now() < until && typeof syncFakeStatus === "undefined") {
                         //this.log("calling __delay");
                         this.__delay();
                     }
+                    return requestComplete(syncFakeStatus);
                 }
                 return requestComplete();
             }
@@ -2785,7 +2797,8 @@ TinCan client library
                             }
 
                             if (typeof xhr.contentType !== "undefined") {
-                                // most likely an XDomainRequest which has .contentType
+                                // most likely an XDomainRequest which has .contentType,
+                                // for the ones that it supports
                                 result.contentType = xhr.contentType;
                             } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
@@ -2828,6 +2841,7 @@ TinCan client library
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
+                        // for the ones that it supports
                         requestResult.state.contentType = requestResult.xhr.contentType;
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
@@ -3040,6 +3054,7 @@ TinCan client library
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
+                                // for the ones that it supports
                                 result.contentType = xhr.contentType;
                             } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
@@ -3082,6 +3097,7 @@ TinCan client library
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
+                        // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
@@ -3263,6 +3279,7 @@ TinCan client library
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
+                                // for the ones that it supports
                                 result.contentType = xhr.contentType;
                             } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
@@ -3305,6 +3322,7 @@ TinCan client library
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
+                        // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
                     } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
