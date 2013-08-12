@@ -677,7 +677,7 @@
                     options = {
                         activity: new TinCan.Activity(
                             {
-                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setActivityProfile/sync/" + v
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setActivityProfile/syncJSON/" + v
                             }
                         ),
                         contentType: "application/json"
