@@ -182,6 +182,26 @@ TinCan client library
         getServerRoot: function (absoluteUrl) {
             var urlParts = absoluteUrl.split("/");
             return urlParts[0] + "//" + urlParts[2];
+        },
+
+        /**
+        @method getContentTypeFromHeader
+        @static
+        @param {String} Content-Type header value
+        @return {String} Primary value from Content-Type
+        */
+        getContentTypeFromHeader: function (header) {
+            return (String(header).split(";"))[0];
+        },
+
+        /**
+        @method isApplicationJSON
+        @static
+        @param {String} Content-Type header value
+        @return {Boolean} whether "application/json" was matched
+        */
+        isApplicationJSON: function (header) {
+            return TinCan.Utils.getContentTypeFromHeader(header).toLowerCase().indexOf("application/json") === 0;
         }
     };
 }());
