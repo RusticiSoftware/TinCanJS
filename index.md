@@ -40,3 +40,28 @@ tincan.sendStatement(
     }
 );
 ```
+
+### Asynchronous Query to Get Latest Statements
+
+(Given a configured `tincan` object like above.)
+
+```javascript
+tincan.getStatements(
+    {
+        // 'params' is passed through to TinCan.LRS.queryStatements
+        params: {
+            since: "2013-08-29 07:42:10CDT"
+        },
+        callback: function (err, result) {
+            // 'err' will be null on success
+            if (err !== null) {
+                // handle error
+                return;
+            }
+
+            // handle success, 'result' is a TinCan.StatementsResult object
+            console.log(result);
+        }
+    }
+);
+```
