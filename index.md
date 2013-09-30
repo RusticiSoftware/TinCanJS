@@ -19,7 +19,7 @@ var tincan = new TinCan (
     {
         recordStores: [
             {
-                endpoint: "https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/",
+                endpoint: "https://cloud.scorm.com/tc/public/",
                 username: "<Test User>",
                 password: "<Test User's Password>"
             }
