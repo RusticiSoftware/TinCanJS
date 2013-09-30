@@ -10,6 +10,8 @@ layout: index
 
 Download the build file(s) and load them on an HTML page. Only one of either 'build/tincan.js' or 'build/tincan-min.js' is needed at a time. You *can* link to the individual source files but this is not usually necessary outside of development on TinCanJS itself. The '-min.js' build file has been minified for performance but makes it slightly harder to debug.
 
+TinCanJS can be included as a dependency when using <a href="http://bower.io">bower</a>. Include 'tincan' as the component name.
+
 ### Basic Usage
 
 The following sample shows the most basic usage of TinCanJS.
