@@ -387,7 +387,6 @@ var TinCan;
                 statement = this.prepareStatement(stmt),
                 rsCount = this.recordStores.length,
                 i,
-                msg,
                 results = [],
                 callbackWrapper,
                 callbackResults = []
@@ -444,13 +443,7 @@ var TinCan;
                 }
             }
             else {
-                msg = "[warning] sendStatement: No LRSs added yet (statement not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
+                this.log("[warning] sendStatement: No LRSs added yet (statement not sent)");
                 if (typeof callback === "function") {
                     callback.apply(this, [ null, statement ]);
                 }
@@ -475,9 +468,7 @@ var TinCan;
         getStatement: function (stmtId, callback) {
             this.log("getStatement");
 
-            var lrs,
-                msg
-            ;
+            var lrs;
 
             if (this.recordStores.length > 0) {
                 //
@@ -494,13 +485,7 @@ var TinCan;
                 return lrs.retrieveStatement(stmtId, { callback: callback });
             }
 
-            msg = "[warning] getStatement: No LRSs added yet (statement not retrieved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getStatement: No LRSs added yet (statement not retrieved)");
         },
 
         /**
@@ -523,7 +508,6 @@ var TinCan;
                 voidingStatement,
                 rsCount = this.recordStores.length,
                 i,
-                msg,
                 results = [],
                 callbackWrapper,
                 callbackResults = []
@@ -604,13 +588,7 @@ var TinCan;
                 }
             }
             else {
-                msg = "[warning] voidStatement: No LRSs added yet (statement not sent)";
-                if (TinCan.environment().isBrowser) {
-                    alert(this.LOG_SRC + ": " + msg);
-                }
-                else {
-                    this.log(msg);
-                }
+                this.log("[warning] voidStatement: No LRSs added yet (statement not sent)");
                 if (typeof callback === "function") {
                     callback.apply(this, [ null, voidingStatement ]);
                 }
@@ -635,9 +613,7 @@ var TinCan;
         getVoidedStatement: function (stmtId, callback) {
             this.log("getVoidedStatement");
 
-            var lrs,
-                msg
-            ;
+            var lrs;
 
             if (this.recordStores.length > 0) {
                 //
@@ -654,13 +630,7 @@ var TinCan;
                 return lrs.retrieveVoidedStatement(stmtId, { callback: callback });
             }
 
-            msg = "[warning] getVoidedStatement: No LRSs added yet (statement not retrieved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getVoidedStatement: No LRSs added yet (statement not retrieved)");
         },
 
         /**
@@ -677,7 +647,6 @@ var TinCan;
                 statements = [],
                 rsCount = this.recordStores.length,
                 i,
-                msg,
                 results = [],
                 callbackWrapper,
                 callbackResults = []
@@ -746,13 +715,7 @@ var TinCan;
                     }
                 }
                 else {
-                    msg = "[warning] sendStatements: No LRSs added yet (statements not sent)";
-                    if (TinCan.environment().isBrowser) {
-                        alert(this.LOG_SRC + ": " + msg);
-                    }
-                    else {
-                        this.log(msg);
-                    }
+                    this.log("[warning] sendStatements: No LRSs added yet (statements not sent)");
                     if (typeof callback === "function") {
                         callback.apply(this, [ null, statements ]);
                     }
@@ -780,8 +743,7 @@ var TinCan;
             this.log("getStatements");
             var queryCfg = {},
                 lrs,
-                params,
-                msg
+                params
             ;
             if (this.recordStores.length > 0) {
                 //
@@ -830,13 +792,7 @@ var TinCan;
                 return lrs.queryStatements(queryCfg);
             }
 
-            msg = "[warning] getStatements: No LRSs added yet (statements not read)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getStatements: No LRSs added yet (statements not read)");
         },
 
         /**
@@ -854,8 +810,7 @@ var TinCan;
         getState: function (key, cfg) {
             this.log("getState");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -888,13 +843,7 @@ var TinCan;
                 return lrs.retrieveState(key, queryCfg);
             }
 
-            msg = "[warning] getState: No LRSs added yet (state not retrieved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getState: No LRSs added yet (state not retrieved)");
         },
 
         /**
@@ -915,8 +864,7 @@ var TinCan;
         setState: function (key, val, cfg) {
             this.log("setState");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -955,13 +903,7 @@ var TinCan;
                 return lrs.saveState(key, val, queryCfg);
             }
 
-            msg = "[warning] setState: No LRSs added yet (state not saved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] setState: No LRSs added yet (state not saved)");
         },
 
         /**
@@ -979,8 +921,7 @@ var TinCan;
         deleteState: function (key, cfg) {
             this.log("deleteState");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1013,13 +954,7 @@ var TinCan;
                 return lrs.dropState(key, queryCfg);
             }
 
-            msg = "[warning] deleteState: No LRSs added yet (state not deleted)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] deleteState: No LRSs added yet (state not deleted)");
         },
 
         /**
@@ -1033,8 +968,7 @@ var TinCan;
         getActivityProfile: function (key, cfg) {
             this.log("getActivityProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1060,13 +994,7 @@ var TinCan;
                 return lrs.retrieveActivityProfile(key, queryCfg);
             }
 
-            msg = "[warning] getActivityProfile: No LRSs added yet (activity profile not retrieved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getActivityProfile: No LRSs added yet (activity profile not retrieved)");
         },
 
         /**
@@ -1083,8 +1011,7 @@ var TinCan;
         setActivityProfile: function (key, val, cfg) {
             this.log("setActivityProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1116,13 +1043,7 @@ var TinCan;
                 return lrs.saveActivityProfile(key, val, queryCfg);
             }
 
-            msg = "[warning] setActivityProfile: No LRSs added yet (activity profile not saved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] setActivityProfile: No LRSs added yet (activity profile not saved)");
         },
 
         /**
@@ -1136,8 +1057,7 @@ var TinCan;
         deleteActivityProfile: function (key, cfg) {
             this.log("deleteActivityProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1163,13 +1083,7 @@ var TinCan;
                 return lrs.dropActivityProfile(key, queryCfg);
             }
 
-            msg = "[warning] deleteActivityProfile: No LRSs added yet (activity profile not deleted)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] deleteActivityProfile: No LRSs added yet (activity profile not deleted)");
         },
 
         /**
@@ -1183,8 +1097,7 @@ var TinCan;
         getAgentProfile: function (key, cfg) {
             this.log("getAgentProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1210,13 +1123,7 @@ var TinCan;
                 return lrs.retrieveAgentProfile(key, queryCfg);
             }
 
-            msg = "[warning] getAgentProfile: No LRSs added yet (agent profile not retrieved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] getAgentProfile: No LRSs added yet (agent profile not retrieved)");
         },
 
         /**
@@ -1233,8 +1140,7 @@ var TinCan;
         setAgentProfile: function (key, val, cfg) {
             this.log("setAgentProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1266,13 +1172,7 @@ var TinCan;
                 return lrs.saveAgentProfile(key, val, queryCfg);
             }
 
-            msg = "[warning] setAgentProfile: No LRSs added yet (agent profile not saved)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] setAgentProfile: No LRSs added yet (agent profile not saved)");
         },
 
         /**
@@ -1286,8 +1186,7 @@ var TinCan;
         deleteAgentProfile: function (key, cfg) {
             this.log("deleteAgentProfile");
             var queryCfg,
-                lrs,
-                msg
+                lrs
             ;
 
             if (this.recordStores.length > 0) {
@@ -1313,13 +1212,7 @@ var TinCan;
                 return lrs.dropAgentProfile(key, queryCfg);
             }
 
-            msg = "[warning] deleteAgentProfile: No LRSs added yet (agent profile not deleted)";
-            if (TinCan.environment().isBrowser) {
-                alert(this.LOG_SRC + ": " + msg);
-            }
-            else {
-                this.log(msg);
-            }
+            this.log("[warning] deleteAgentProfile: No LRSs added yet (agent profile not deleted)");
         }
     };
 
@@ -1709,13 +1602,6 @@ TinCan client library
         this.allowFail = true;
 
         /**
-        @property alertOnRequestFailure
-        @type Boolean
-        @default true
-        */
-        this.alertOnRequestFailure = true;
-
-        /**
         @property extended
         @type Object
         */
@@ -1762,13 +1648,11 @@ TinCan client library
             cfg = cfg || {};
 
             if (cfg.hasOwnProperty("alertOnRequestFailure")) {
-                this.alertOnRequestFailure = cfg.alertOnRequestFailure;
+                this.log("'alertOnRequestFailure' is deprecated (alerts have been removed) no need to set it now");
             }
 
             if (! cfg.hasOwnProperty("endpoint")) {
-                if (env.isBrowser && this.alertOnRequestFailure) {
-                    alert("[error] LRS invalid: no endpoint");
-                }
+                this.log("[error] LRS invalid: no endpoint");
                 throw {
                     code: 3,
                     mesg: "LRS invalid: no endpoint"
@@ -1799,9 +1683,7 @@ TinCan client library
             if (env.isBrowser) {
                 urlParts = this.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
                 if (urlParts === null) {
-                    if (this.alertOnRequestFailure) {
-                        alert("[error] LRS invalid: failed to divide URL parts");
-                    }
+                    this.log("[error] LRS invalid: failed to divide URL parts");
                     throw {
                         code: 4,
                         mesg: "LRS invalid: failed to divide URL parts"
@@ -1845,14 +1727,10 @@ TinCan client library
                         }
                         else if (env.useXDR && ! schemeMatches) {
                             if (cfg.allowFail) {
-                                if (this.alertOnRequestFailure) {
-                                    alert("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR");
-                                }
+                                this.log("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR (allowed to fail)");
                             }
                             else {
-                                if (this.alertOnRequestFailure) {
-                                    alert("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
-                                }
+                                this.log("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
                                 throw {
                                     code: 2,
                                     mesg: "LRS invalid: cross domain request for differing scheme in IE with XDR"
@@ -1862,14 +1740,10 @@ TinCan client library
                     }
                     else {
                         if (cfg.allowFail) {
-                            if (this.alertOnRequestFailure) {
-                                alert("[warning] LRS invalid: cross domain requests not supported in this browser");
-                            }
+                            this.log("[warning] LRS invalid: cross domain requests not supported in this browser (allowed to fail)");
                         }
                         else {
-                            if (this.alertOnRequestFailure) {
-                                alert("[error] LRS invalid: cross domain requests not supported in this browser");
-                            }
+                            this.log("[error] LRS invalid: cross domain requests not supported in this browser");
                             throw {
                                 code: 1,
                                 mesg: "LRS invalid: cross domain requests not supported in this browser"
@@ -1891,9 +1765,7 @@ TinCan client library
                     }
                 }
                 if (! versionMatch) {
-                    if (env.isBrowser && this.alertOnRequestFailure) {
-                        alert("[error] LRS invalid: version not supported (" + cfg.version + ")");
-                    }
+                    this.log("[error] LRS invalid: version not supported (" + cfg.version + ")");
                     throw {
                         code: 5,
                         mesg: "LRS invalid: version not supported (" + cfg.version + ")"
@@ -1990,13 +1862,11 @@ TinCan client library
                             err: httpStatus,
                             xhr: xhr
                         };
-                        if (self.alertOnRequestFailure) {
-                            if (httpStatus === 0) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
-                            }
-                            else {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
-                            }
+                        if (httpStatus === 0) {
+                            self.log("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
+                        }
+                        else {
+                            self.log("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                         }
                         if (cfg.callback) {
                             cfg.callback(httpStatus, xhr);
@@ -2467,9 +2337,7 @@ TinCan client library
                 requestCfg = this._queryStatementsRequestCfg(cfg);
             }
             catch (ex) {
-                if (TinCan.environment().isBrowser && this.alertOnRequestFailure) {
-                    alert("[error] Query statements failed - " + ex);
-                }
+                this.log("[error] Query statements failed - " + ex);
                 if (typeof cfg.callback !== "undefined") {
                     cfg.callback(ex, {});
                 }
