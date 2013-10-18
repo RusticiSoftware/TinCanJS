@@ -58,13 +58,6 @@ TinCan client library
         this.allowFail = true;
 
         /**
-        @property alertOnRequestFailure
-        @type Boolean
-        @default true
-        */
-        this.alertOnRequestFailure = true;
-
-        /**
         @property extended
         @type Object
         */
@@ -111,13 +104,11 @@ TinCan client library
             cfg = cfg || {};
 
             if (cfg.hasOwnProperty("alertOnRequestFailure")) {
-                this.alertOnRequestFailure = cfg.alertOnRequestFailure;
+                this.log("'alertOnRequestFailure' is deprecated (alerts have been removed) no need to set it now");
             }
 
             if (! cfg.hasOwnProperty("endpoint")) {
-                if (env.isBrowser && this.alertOnRequestFailure) {
-                    alert("[error] LRS invalid: no endpoint");
-                }
+                this.log("[error] LRS invalid: no endpoint");
                 throw {
                     code: 3,
                     mesg: "LRS invalid: no endpoint"
@@ -148,9 +139,7 @@ TinCan client library
             if (env.isBrowser) {
                 urlParts = this.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
                 if (urlParts === null) {
-                    if (this.alertOnRequestFailure) {
-                        alert("[error] LRS invalid: failed to divide URL parts");
-                    }
+                    this.log("[error] LRS invalid: failed to divide URL parts");
                     throw {
                         code: 4,
                         mesg: "LRS invalid: failed to divide URL parts"
@@ -194,14 +183,10 @@ TinCan client library
                         }
                         else if (env.useXDR && ! schemeMatches) {
                             if (cfg.allowFail) {
-                                if (this.alertOnRequestFailure) {
-                                    alert("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR");
-                                }
+                                this.log("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR (allowed to fail)");
                             }
                             else {
-                                if (this.alertOnRequestFailure) {
-                                    alert("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
-                                }
+                                this.log("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
                                 throw {
                                     code: 2,
                                     mesg: "LRS invalid: cross domain request for differing scheme in IE with XDR"
@@ -211,14 +196,10 @@ TinCan client library
                     }
                     else {
                         if (cfg.allowFail) {
-                            if (this.alertOnRequestFailure) {
-                                alert("[warning] LRS invalid: cross domain requests not supported in this browser");
-                            }
+                            this.log("[warning] LRS invalid: cross domain requests not supported in this browser (allowed to fail)");
                         }
                         else {
-                            if (this.alertOnRequestFailure) {
-                                alert("[error] LRS invalid: cross domain requests not supported in this browser");
-                            }
+                            this.log("[error] LRS invalid: cross domain requests not supported in this browser");
                             throw {
                                 code: 1,
                                 mesg: "LRS invalid: cross domain requests not supported in this browser"
@@ -240,9 +221,7 @@ TinCan client library
                     }
                 }
                 if (! versionMatch) {
-                    if (env.isBrowser && this.alertOnRequestFailure) {
-                        alert("[error] LRS invalid: version not supported (" + cfg.version + ")");
-                    }
+                    this.log("[error] LRS invalid: version not supported (" + cfg.version + ")");
                     throw {
                         code: 5,
                         mesg: "LRS invalid: version not supported (" + cfg.version + ")"
@@ -339,13 +318,11 @@ TinCan client library
                             err: httpStatus,
                             xhr: xhr
                         };
-                        if (self.alertOnRequestFailure) {
-                            if (httpStatus === 0) {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
-                            }
-                            else {
-                                alert("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
-                            }
+                        if (httpStatus === 0) {
+                            self.log("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
+                        }
+                        else {
+                            self.log("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
                         }
                         if (cfg.callback) {
                             cfg.callback(httpStatus, xhr);
@@ -816,9 +793,7 @@ TinCan client library
                 requestCfg = this._queryStatementsRequestCfg(cfg);
             }
             catch (ex) {
-                if (TinCan.environment().isBrowser && this.alertOnRequestFailure) {
-                    alert("[error] Query statements failed - " + ex);
-                }
+                this.log("[error] Query statements failed - " + ex);
                 if (typeof cfg.callback !== "undefined") {
                     cfg.callback(ex, {});
                 }
