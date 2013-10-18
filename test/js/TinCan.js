@@ -53,7 +53,7 @@
     test(
         "TinCan.versions",
         function () {
-            deepEqual(TinCan.versions(), ["1.0.0", "0.95", "0.9"], "Supported spec versions");
+            deepEqual(TinCan.versions(), ["1.0.1", "1.0.0", "0.95", "0.9"], "Supported spec versions");
         }
     );
     test(
