@@ -17,11 +17,6 @@
     // TODO: figure out how to handle dynamic configuration of LRSes
 
     var session = null,
-        mockAlerts = null,
-        alertFunc = function (msg) {
-            mockAlerts.push(msg);
-        },
-        alertBuiltin,
         versions = TinCan.versions(),
         i,
         version,
@@ -100,14 +95,9 @@
         {
             setup: function () {
                 session = new TinCan ();
-                mockAlerts = [];
-                alertBuiltin = window.alert;
-                window.alert = alertFunc;
             },
             teardown: function () {
                 session = null;
-                mockAlerts = null;
-                window.alert = alertBuiltin;
             }
         }
     );
@@ -146,7 +136,6 @@
 
             ok(sendResult.hasOwnProperty("results"), "sendResult has property: results");
             ok(sendResult.results.length === 0, "sendResult results property: length");
-            deepEqual(mockAlerts, ["TinCan: [warning] sendStatement: No LRSs added yet (statement not sent)"], "caught alert: statement not sent");
         }
     );
 
@@ -192,7 +181,6 @@
 
             ok(sendResult.hasOwnProperty("results"), "sendResult has property: results");
             ok(sendResult.results.length === 0, "sendResult results property: length");
-            deepEqual(mockAlerts, ["TinCan: [warning] sendStatement: No LRSs added yet (statement not sent)"], "caught alert: statement not sent");
         }
     );
 
@@ -644,10 +632,7 @@
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
                 deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/octet-stream", "getResult profile property contentType (" + v + ")");
 
-                // this should "fail"
-                session[v].recordStores[0].alertOnRequestFailure = false;
                 setResult = session[v].setActivityProfile(key, val + 1, options);
-                session[v].recordStores[0].alertOnRequestFailure = true;
 
                 //
                 // reset the profile to make sure we test the concurrency handling
@@ -694,10 +679,7 @@
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
                 deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
-                // this should "fail"
-                session[v].recordStores[0].alertOnRequestFailure = false;
                 setResult = session[v].setActivityProfile(key, val + 1, options);
-                session[v].recordStores[0].alertOnRequestFailure = true;
 
                 //
                 // reset the profile to make sure we test the concurrency handling
@@ -738,10 +720,7 @@
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
                 deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/octet-stream", "getResult profile property contentType (" + v + ")");
 
-                // this should "fail"
-                session[v].recordStores[0].alertOnRequestFailure = false;
                 setResult = session[v].setAgentProfile(key, val + 1, options);
-                session[v].recordStores[0].alertOnRequestFailure = true;
 
                 //
                 // reset the profile to make sure we test the concurrency handling
@@ -789,10 +768,7 @@
                 deepEqual(getResult.profile.contents, val, "getResult profile property contents (" + v + ")");
                 deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
-                // this should "fail"
-                session[v].recordStores[0].alertOnRequestFailure = false;
                 setResult = session[v].setAgentProfile(key, val + 1, options);
-                session[v].recordStores[0].alertOnRequestFailure = true;
 
                 //
                 // reset the profile to make sure we test the concurrency handling
