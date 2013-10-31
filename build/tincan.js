@@ -2174,7 +2174,7 @@ TinCan client library
         @return {Object} TinCan.Statement retrieved
         */
         retrieveVoidedStatement: function (stmtId, cfg) {
-            this.log("retrieveStatement");
+            this.log("retrieveVoidedStatement");
             var requestCfg,
                 requestResult,
                 callbackWrapper;
