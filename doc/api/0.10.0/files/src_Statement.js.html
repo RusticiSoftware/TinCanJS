@@ -209,9 +209,9 @@ TinCan client library
         @param {String} [cfg.stored] ISO8601 Date/time value
         @param {String} [cfg.version] Version of the statement (post 0.95)
     @param {Object} [initCfg] Configuration of initialization process
-        @param {Integer} [storeOriginal] Whether to store a JSON stringified version
+        @param {Integer} [initCfg.storeOriginal] Whether to store a JSON stringified version
             of the original options object, pass number of spaces used for indent
-        @param {Boolean} [doStamp] Whether to automatically set the &#x27;id&#x27; and &#x27;timestamp&#x27;
+        @param {Boolean} [initCfg.doStamp] Whether to automatically set the &#x27;id&#x27; and &#x27;timestamp&#x27;
             properties (default: true)
     **/
     var Statement = TinCan.Statement = function (cfg, initCfg) {

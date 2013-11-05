@@ -899,19 +899,21 @@
                     "name": "initCfg",
                     "description": "Configuration of initialization process",
                     "type": "Object",
-                    "optional": true
-                },
-                {
-                    "name": "storeOriginal",
-                    "description": "Whether to store a JSON stringified version\n        of the original options object, pass number of spaces used for indent",
-                    "type": "Integer",
-                    "optional": true
-                },
-                {
-                    "name": "doStamp",
-                    "description": "Whether to automatically set the 'id' and 'timestamp'\n        properties (default: true)",
-                    "type": "Boolean",
-                    "optional": true
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "storeOriginal",
+                            "description": "Whether to store a JSON stringified version\n        of the original options object, pass number of spaces used for indent",
+                            "type": "Integer",
+                            "optional": true
+                        },
+                        {
+                            "name": "doStamp",
+                            "description": "Whether to automatically set the 'id' and 'timestamp'\n        properties (default: true)",
+                            "type": "Boolean",
+                            "optional": true
+                        }
+                    ]
                 }
             ]
         },
