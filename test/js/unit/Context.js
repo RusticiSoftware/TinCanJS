@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("Context Statics");
+    QUnit.module("Context Statics");
 
     test(
         "Context.fromJSON",
@@ -31,7 +31,7 @@
         }
     );
 
-    module("Context Instance");
+    QUnit.module("Context Instance");
 
     test(
         "object prototype",

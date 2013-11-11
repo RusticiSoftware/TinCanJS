@@ -23,75 +23,13 @@
         doSendStatementSyncTest,
         doGetStatementSyncTest,
         doVoidStatementSyncTest,
-        doSendStatementAsyncTest,
-        doGetStatementAsyncTest,
         doStateSyncTest,
         doStateSyncContentTypeJSONTest,
         doActivityProfileSyncTest,
         doActivityProfileSyncContentTypeJSONTest;
 
-    module("TinCan Statics");
-
-    test(
-        "TinCan debugging",
-        function () {
-            ok(TinCan.hasOwnProperty("DEBUG"), "TinCan has property: DEBUG");
-            ok(!TinCan.DEBUG, "TinCan.DEBUG initial value");
-
-            TinCan.enableDebug()
-            ok(TinCan.DEBUG, "TinCan.enableDebug()");
-
-            TinCan.disableDebug()
-            ok(!TinCan.DEBUG, "TinCan.disableDebug()");
-        }
-    );
-    test(
-        "TinCan.versions",
-        function () {
-            deepEqual(TinCan.versions(), ["1.0.1", "1.0.0", "0.95", "0.9"], "Supported spec versions");
-        }
-    );
-    test(
-        "TinCan.environment",
-        function () {
-            var env = TinCan.environment();
-            ok(typeof env === "object", "TinCan.environment returns object");
-            ok(env.isBrowser, "TinCan.environment property: isBrowser");
-            ok(env.hasOwnProperty("hasCORS"), "TinCan.environment has property: hasCORS");
-            ok(env.hasOwnProperty("useXDR"), "TinCan.environment has property: useXDR");
-        }
-    );
-
-    module("TinCan Instance");
-
-    test(
-        "tincan Object",
-        function () {
-            var tincan = new TinCan ();
-
-            ok(tincan instanceof TinCan, "tincan is TinCan");
-
-            // test direct properties from construction
-            ok(tincan.hasOwnProperty("environment"), "tincan has property: environment");
-            strictEqual(tincan.environment, null, "tincan.environment property initial value");
-            ok(tincan.hasOwnProperty("recordStores"), "tincan has property: recordStores");
-            deepEqual(tincan.recordStores, [], "tincan.recordStores property initial value");
-            ok(tincan.hasOwnProperty("actor"), "tincan has property: actor");
-            strictEqual(tincan.actor, null, "tincan.actor property initial value");
-            ok(tincan.hasOwnProperty("activity"), "tincan has property: activity");
-            strictEqual(tincan.activity, null, "tincan.activity property initial value");
-            ok(tincan.hasOwnProperty("registration"), "tincan has property: registration");
-            strictEqual(tincan.registration, null, "tincan.registration property initial value");
-            ok(tincan.hasOwnProperty("context"), "tincan has property: context");
-            strictEqual(tincan.context, null, "tincan.context property initial value");
-
-            // test properties from prototype
-            strictEqual(tincan.LOG_SRC, "TinCan", "tincan property LOG_SRC initial value");
-        }
-    );
-
-    module(
-        "TinCan No LRS",
+    QUnit.module(
+        "TinCan-sync No LRS",
         {
             setup: function () {
                 session = new TinCan ();
@@ -139,53 +77,8 @@
         }
     );
 
-    // even though this is an async test in so far as sendStatement receives a callback
-    // because no request will get fired it ends up appearing as if it was sync cause
-    // the callback is called right away
-    test(
-        "tincan.sendStatement (prepared, async)",
-        function () {
-            var preparedStmt,
-                sendResult,
-                //
-                // Cloud is lowercasing the mbox value so just use a lowercase one
-                // and make sure it is unique to prevent merging that was previously
-                // possible, but leaving the commented version as a marker for something
-                // that ought to be tested against a 1.0.0 spec
-                //
-                //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
-                actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
-
-            preparedStmt = session.prepareStatement(
-                {
-                    actor: {
-                        mbox: actorMbox
-                    },
-                    verb: {
-                        id: "http://adlnet.gov/expapi/verbs/attempted"
-                    },
-                    target: {
-                        id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/sync"
-                    }
-                }
-            );
-            sendResult = session.sendStatement(
-                preparedStmt,
-                function (results, statement) {
-                    deepEqual(results, null, "callback results argument: length");
-                    deepEqual(preparedStmt, statement, "callback: statement matches");
-                }
-            );
-            ok(sendResult.hasOwnProperty("statement"), "sendResult has property: statement");
-            deepEqual(sendResult.statement, preparedStmt, "sendResult property value: statement");
-
-            ok(sendResult.hasOwnProperty("results"), "sendResult has property: results");
-            ok(sendResult.results.length === 0, "sendResult results property: length");
-        }
-    );
-
-    module(
-        "TinCan Single LRS",
+    QUnit.module(
+        "TinCan-sync Single LRS",
         {
             setup: function () {
                 session = {};
@@ -399,114 +292,6 @@
                     sendResult.statement.version = v;
                 }
                 deepEqual(getVoidedResult.statement, sendResult.statement, "getVoidedResult property value: statement (" + v + ")");
-            }
-        );
-    };
-
-    doSendStatementAsyncTest = function (v) {
-        asyncTest(
-            "sendStatement (prepared, async): " + v,
-            function () {
-                var preparedStmt,
-                    sendResult,
-                    //
-                    // Cloud is lowercasing the mbox value so just use a lowercase one
-                    // and make sure it is unique to prevent merging that was previously
-                    // possible, but leaving the commented version as a marker for something
-                    // that ought to be tested against a 1.0.0 spec
-                    //
-                    //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
-                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
-
-                preparedStmt = session[v].prepareStatement(
-                    {
-                        actor: {
-                            mbox: actorMbox
-                        },
-                        verb: {
-                            id: "http://adlnet.gov/expapi/verbs/attempted"
-                        },
-                        target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/sync/" + v
-                        }
-                    }
-                );
-                sendResult = session[v].sendStatement(
-                    preparedStmt,
-                    function (results, statement) {
-                        start();
-                        ok(results.length === 1, "callback results argument: length (" + v + ")");
-                        ok(results[0].hasOwnProperty("err"), "callback results argument 0 has property: err (" + v + ")");
-                        deepEqual(results[0].err, null, "callback results argument 0 property value: err (" + v + ")");
-                        ok(results[0].hasOwnProperty("xhr"), "callback results argument 0 has property: xhr (" + v + ")");
-                        TinCanTest.assertHttpRequestType(results[0].xhr, "callback results argument 0 property value: xhr (" + v + ")");
-                        deepEqual(statement, preparedStmt, "callback: statement matches (" + v + ")");
-                    }
-                );
-                start();
-                ok(sendResult.hasOwnProperty("statement"), "sendResult has property: statement (" + v + ")");
-                deepEqual(preparedStmt, sendResult.statement, "sendResult property value: statement (" + v + ")");
-
-                ok(sendResult.hasOwnProperty("results"), "sendResult has property: results (" + v + ")");
-                strictEqual(sendResult.results.length, 1, "sendResult results property: length (" + v + ")");
-                TinCanTest.assertHttpRequestType(sendResult.results[0], "sendResult results 0 value is: xhr (" + v + ")");
-                stop();
-            }
-        );
-    };
-
-    doGetStatementAsyncTest = function (v) {
-        asyncTest(
-            "getStatement (async): " + v,
-            function () {
-                var sendResult,
-                    getResult,
-                    //
-                    // Cloud is lowercasing the mbox value so just use a lowercase one
-                    // and make sure it is unique to prevent merging that was previously
-                    // possible, but leaving the commented version as a marker for something
-                    // that ought to be tested against a 1.0.0 spec
-                    //
-                    //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
-                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
-
-                sendResult = session[v].sendStatement(
-                    {
-                        actor: {
-                            mbox: actorMbox
-                        },
-                        verb: {
-                            id: "http://adlnet.gov/expapi/verbs/attempted"
-                        },
-                        target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/sync/" + v
-                        }
-                    }
-                );
-
-                getResult = session[v].getStatement(
-                    sendResult.statement.id,
-                    function (err, statement) {
-                        start();
-                        deepEqual(err, null, "callback: err argument (" + v + ")");
-
-                        // clear the "stored" and "authority" properties since we couldn't have known them ahead of time
-                        // TODO: should we check the authority?
-                        statement.stored = null;
-                        statement.authority = null;
-
-                        // at 1.0.0 and after the version returned should be the version we are sending under
-                        // for this statement since we know we are generating it
-                        if (v !== "0.9" && v !== "0.95") {
-                            sendResult.statement.version = v;
-                        }
-                        if (v === "0.9") {
-                            sendResult.statement.inProgress = false;
-                        }
-                        deepEqual(sendResult.statement, statement, "callback: statement matches (" + v + ")");
-                    }
-                );
-                // TODO: check getResult is an XHR?
             }
         );
     };
@@ -788,8 +573,6 @@
             doSendStatementSyncTest(version);
             doGetStatementSyncTest(version);
             doVoidStatementSyncTest(version);
-            doSendStatementAsyncTest(version);
-            doGetStatementAsyncTest(version);
             doStateSyncTest(version);
             doStateSyncContentTypeJSONTest(version);
             doActivityProfileSyncTest(version);

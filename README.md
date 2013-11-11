@@ -4,41 +4,40 @@ A JavaScript library for talking Tin Can to the world.
 
 http://tincanapi.com/
 
-Usage
------
+Browser Usage
+-------------
 
-Pre-built instructions
-======================
+TinCanJS is available via Bower.
+
+The browser environment is well tested and supports two kinds of Cross Origin requests which
+is sufficient to cover most versions of Chrome, FireFox, Safari as well as IE 8+. IE 6+ are
+supported for non-CORS (because they don't support it).
 
 Include *one* of build/tincan-min.js or build/tincan.js as follows:
 
     <script src="build/tincan-min.js"></script>
 
-Source instructions
-===================
+Node.js Usage
+-------------
 
-Alternatively you can just link to the individual files themselves like so:
+TinCanJS is available via `npm`.
 
-    <script type="text/javascript" src="vendor/cryptojs-v3.0.2/rollups/sha1.js"></script>
-    <script type="text/javascript" src="vendor/cryptojs-v3.0.2/components/enc-base64.js"></script>
-    <script type="text/javascript" src="src/TinCan.js"></script>
-    <script type="text/javascript" src="src/Utils.js"></script>
-    <script type="text/javascript" src="src/LRS.js"></script>
-    <script type="text/javascript" src="src/AgentAccount.js"></script>
-    <script type="text/javascript" src="src/Agent.js"></script>
-    <script type="text/javascript" src="src/Group.js"></script>
-    <script type="text/javascript" src="src/Verb.js"></script>
-    <script type="text/javascript" src="src/Result.js"></script>
-    <script type="text/javascript" src="src/Score.js"></script>
-    <script type="text/javascript" src="src/InteractionComponent.js"></script>
-    <script type="text/javascript" src="src/ActivityDefinition.js"></script>
-    <script type="text/javascript" src="src/Activity.js"></script>
-    <script type="text/javascript" src="src/ContextActivities.js"></script>
-    <script type="text/javascript" src="src/Context.js"></script>
-    <script type="text/javascript" src="src/StatementRef.js"></script>
-    <script type="text/javascript" src="src/SubStatement.js"></script>
-    <script type="text/javascript" src="src/Statement.js"></script>
-    <script type="text/javascript" src="src/StatementsResult.js"></script>
-    <script type="text/javascript" src="src/State.js"></script>
-    <script type="text/javascript" src="src/ActivityProfile.js"></script>
-    <script type="text/javascript" src="src/AgentProfile.js"></script>
+The `Environment/Node.js` wrapper used in this version has a dependency on the 'xhr2' module
+which is also available via `npm`. It is used to allow the interfaces to the underlying LRS
+requests to have the same API. As such currently there is no support for synchronous requests
+when using this environment.
+
+Install via:
+
+    npm install tincan
+
+And within code:
+
+    var TinCan = require('tincan');
+
+Environments
+------------
+
+Implementing a new Environment should be straightforward and requires overloading a couple
+of methods on the `TinCan.LRS` prototype. There are currently two examples, `Environment/Browser`
+and `Environment/Node`.

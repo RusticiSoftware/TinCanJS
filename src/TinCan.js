@@ -27,38 +27,37 @@ var TinCan;
 
 (function () {
     "use strict";
-    var _environment = null,
-        _reservedQSParams = {
-            //
-            // these are TC spec reserved words that may end up in queries to the endpoint
-            //
-            statementId:       true,
-            voidedStatementId: true,
-            verb:              true,
-            object:            true,
-            registration:      true,
-            context:           true,
-            actor:             true,
-            since:             true,
-            until:             true,
-            limit:             true,
-            authoritative:     true,
-            sparse:            true,
-            instructor:        true,
-            ascending:         true,
-            continueToken:     true,
-            agent:             true,
-            activityId:        true,
-            stateId:           true,
-            profileId:         true,
+    var _reservedQSParams = {
+        //
+        // these are TC spec reserved words that may end up in queries to the endpoint
+        //
+        statementId:       true,
+        voidedStatementId: true,
+        verb:              true,
+        object:            true,
+        registration:      true,
+        context:           true,
+        actor:             true,
+        since:             true,
+        until:             true,
+        limit:             true,
+        authoritative:     true,
+        sparse:            true,
+        instructor:        true,
+        ascending:         true,
+        continueToken:     true,
+        agent:             true,
+        activityId:        true,
+        stateId:           true,
+        profileId:         true,
 
-            //
-            // these are suggested by the LMS launch spec addition that TinCanJS consumes
-            //
-            activity_platform: true,
-            grouping:          true,
-            "Accept-Language": true
-        };
+        //
+        // these are suggested by the LMS launch spec addition that TinCanJS consumes
+        //
+        activity_platform: true,
+        grouping:          true,
+        "Accept-Language": true
+    };
 
     /**
     @class TinCan
@@ -74,12 +73,6 @@ var TinCan;
     **/
     TinCan = function (cfg) {
         this.log("constructor");
-
-        /**
-        @property environment
-        @type String
-        */
-        this.environment = null;
 
         /**
         @property recordStores
@@ -154,8 +147,6 @@ var TinCan;
             var i;
 
             cfg = cfg || {};
-
-            // TODO: check for environment and when in browser get location ourselves?
 
             if (cfg.hasOwnProperty("url") && cfg.url !== "") {
                 this._initFromQueryString(cfg.url);
@@ -1258,80 +1249,9 @@ var TinCan;
         ];
     };
 
-    /**
-    @method environment
-    @return {Object} Object with properties depending on execution environment
-    @static
-    */
-    TinCan.environment = function () {
-        if (_environment === null) {
-            _environment = {};
-            if (typeof window !== "undefined") {
-                _environment.isBrowser = true;
-                _environment.hasCORS = false;
-                _environment.useXDR = false;
-
-                if (typeof XMLHttpRequest !== "undefined" && typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
-                    _environment.hasCORS = true;
-                }
-                else if (typeof XDomainRequest !== "undefined") {
-                    _environment.hasCORS = true;
-                    _environment.useXDR = true;
-                }
-            }
-            else {
-                _environment.isBrowser = false;
-            }
-        }
-
-        return _environment;
-    };
-
-    // Shims for browsers not supporting our needs, mainly IE
-    if (TinCan.environment().isBrowser) {
-        /*
-         * Make JSON safe for IE6
-         * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON#Browser_compatibility
-        */
-        if (!window.JSON) {
-            window.JSON = {
-                parse: function (sJSON) {
-                    /*jslint evil: true */
-                    return eval("(" + sJSON + ")");
-                },
-                stringify: function (vContent) {
-                    var sOutput = "",
-                        nId,
-                        sProp
-                    ;
-                    if (vContent instanceof Object) {
-                        if (vContent.constructor === Array) {
-                            for (nId = 0; nId < vContent.length; nId += 1) {
-                                sOutput += this.stringify(vContent[nId]) + ",";
-                            }
-                            return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
-                        }
-                        if (vContent.toString !== Object.prototype.toString) { return "\"" + vContent.toString().replace(/"/g, "\\$&") + "\""; }
-                        for (sProp in vContent) {
-                            if (vContent.hasOwnProperty(sProp)) {
-                                sOutput += "\"" + sProp.replace(/"/g, "\\$&") + "\":" + this.stringify(vContent[sProp]) + ",";
-                            }
-                        }
-                        return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
-                    }
-                    return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
-                }
-            };
-        }
-
-        /*
-         * Make Date.now safe for IE < 9
-         * https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/now
-        */
-        if (!Date.now) {
-            Date.now = function () {
-                return +(new Date ());
-            };
-        }
+    /*global exports*/
+    // Support the CommonJS method for exporting our single global
+    if (typeof module === "object") {
+        module.exports = TinCan;
     }
 }());

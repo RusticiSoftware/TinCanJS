@@ -1,0 +1,10 @@
+*.tgz
+src
+test
+doc
+vendor
+build.js
+build/.empty
+.travis.yml
+yuidoc.json
+bower.json

@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("Agent Statics");
+    QUnit.module("Agent Statics");
 
     test(
         "Agent.fromJSON",
@@ -33,7 +33,7 @@
         }
     );
 
-    module("Agent Instance");
+    QUnit.module("Agent Instance");
 
     test(
         "agent Object",

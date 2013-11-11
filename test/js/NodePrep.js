@@ -1,5 +1,5 @@
 /*!
-    Copyright 2012 Rustici Software
+    Copyright 2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,20 +14,10 @@
     limitations under the License.
 */
 (function () {
-    var session = null;
-
-    module("Score Statics");
-
-    test(
-        "Score.fromJSON",
-        function () {
-            var raw = {},
-                string,
-                result
-            ;
-
-            result = TinCan.Score.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.Score, "returns TinCan.Score");
+    module.exports = {
+        assertHttpRequestType: function (xhr, name) {
+            var desc = "(not implemented) assertHttpRequestType: " + name;
+            ok(true, desc);
         }
-    );
+    };
 }());

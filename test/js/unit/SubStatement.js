@@ -16,18 +16,18 @@
 (function () {
     var session = null;
 
-    module("StatementRef Statics");
+    QUnit.module("SubStatement Statics");
 
     test(
-        "StatementRef.fromJSON",
+        "SubStatement.fromJSON",
         function () {
             var raw = {},
                 string,
                 result
             ;
 
-            result = TinCan.StatementRef.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.StatementRef, "returns TinCan.StatementRef");
+            result = TinCan.SubStatement.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.SubStatement, "returns TinCan.SubStatement");
         }
     );
 }());

@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("AgentAccount Statics");
+    QUnit.module("AgentAccount Statics");
 
     test(
         "AgentAccount.fromJSON",
@@ -31,7 +31,7 @@
         }
     );
 
-    module("AgentAccount Instance");
+    QUnit.module("AgentAccount Instance");
 
     test(
         "object prototype",

@@ -16,18 +16,20 @@
 (function () {
     var session = null;
 
-    module("Result Statics");
+    QUnit.module("Activity Statics");
 
     test(
-        "Result.fromJSON",
+        "Activity.fromJSON",
         function () {
-            var raw = {},
+            var raw = {
+                    id: "http://tincanapi.com/TinCanJS/Test/Activity_fromJSON"
+                },
                 string,
                 result
             ;
 
-            result = TinCan.Result.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.Result, "returns TinCan.Result");
+            result = TinCan.Activity.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.Activity, "returns TinCan.Activity");
         }
     );
 }());

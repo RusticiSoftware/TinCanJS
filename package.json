@@ -1,24 +1,34 @@
 {
     "name": "tincan",
-    "description": "TinCan Library",
-    "version": "0.0.1",
+    "description": "Tin Can API Library",
+    "version": "0.20.0",
     "private": false,
-    "main": "build/tincan.js",
+    "main": "build/tincan-node.js",
+    "directories": {
+        "src": "src",
+        "doc": "doc"
+    },
     "dependencies": {
+        "xhr2": "0.0.7"
     },
     "author": "Rustici Software <support@tincanapi.com>",
     "contributors": [
         {
             "name": "Brian J. Miller",
-            "email": "brian.miller@scorm.com"
+            "email": "brian.miller@tincanapi.com"
         }
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/RusticiSoftware/TinCanJS.git"
+    },
     "keywords": [
         "tincan",
         "e-learning"
     ],
     "devDependencies": {
         "gear": "0.8.x",
-        "gear-lib": "0.8.x"
+        "gear-lib": "0.8.x",
+        "qunit": "0.5.16"
     }
 }
