@@ -29,11 +29,11 @@ when using this environment.
 
 Install via:
 
-    npm install tincan
+    npm install tincanjs
 
 And within code:
 
-    var TinCan = require('tincan');
+    var TinCan = require('tincanjs');
 
 Environments
 ------------
