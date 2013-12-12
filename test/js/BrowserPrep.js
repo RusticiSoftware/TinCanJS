@@ -13,13 +13,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-var TinCanTest,
-    TinCanTestCfg = {
-        recordStores: {}
-    },
-    log
-;
-
 log = function () {};
 if (typeof console !== "undefined" && console.log) {
     log = function (msg) {
@@ -27,8 +20,11 @@ if (typeof console !== "undefined" && console.log) {
     }
 }
 
+var TinCanTest,
+    TinCanTestCfg;
+
 (function () {
-    TinCanTest = {};
+    TinCanTest = TinCanTest || {};
 
     TinCanTest.assertHttpRequestType = function (xhr, name) {
         var desc = "assertHttpRequestType: " + name;

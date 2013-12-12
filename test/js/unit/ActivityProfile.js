@@ -19,7 +19,7 @@
         commonContentString = "test content",
         commonContentStringType = "text/plain";
 
-    module("ActivityProfile Statics");
+    QUnit.module("ActivityProfile Statics");
 
     test(
         "ActivityProfile.fromJSON",
@@ -34,7 +34,7 @@
         }
     );
 
-    module("ActivityProfile Instance");
+    QUnit.module("ActivityProfile Instance");
 
     test(
         "activityProfile Object",

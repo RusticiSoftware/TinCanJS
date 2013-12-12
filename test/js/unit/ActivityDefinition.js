@@ -20,7 +20,7 @@
         commonName = { und: "Test Name" },
         commonDesc = { und: "Test Description" };
 
-    module("ActivityDefinition Statics");
+    QUnit.module("ActivityDefinition Statics");
 
     test(
         "ActivityDefinition.fromJSON",
@@ -35,7 +35,7 @@
         }
     );
 
-    module("ActivityDefinition Instance");
+    QUnit.module("ActivityDefinition Instance");
 
     test(
         "activity definition Object",

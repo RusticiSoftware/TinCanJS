@@ -22,14 +22,11 @@ TinCan client library
 **/
 (function () {
     "use strict";
-    var XDR = "xdr",
-        NATIVE = "native",
-
     /**
     @class TinCan.LRS
     @constructor
     */
-    LRS = TinCan.LRS = function (cfg) {
+    var LRS = TinCan.LRS = function (cfg) {
         this.log("constructor");
 
         /**
@@ -63,14 +60,6 @@ TinCan client library
         */
         this.extended = null;
 
-        /**
-        @property _requestMode
-        @type String
-        @default "native"
-        @private
-        */
-        this._requestMode = NATIVE;
-
         this.init(cfg);
     };
     LRS.prototype = {
@@ -88,15 +77,9 @@ TinCan client library
         @method init
         */
         init: function (cfg) {
-            /*jslint regexp: true */
             this.log("init");
 
-            var urlParts,
-                schemeMatches,
-                locationPort,
-                isXD,
-                env = TinCan.environment(),
-                versions = TinCan.versions(),
+            var versions = TinCan.versions(),
                 versionMatch = false,
                 i
             ;
@@ -107,7 +90,7 @@ TinCan client library
                 this.log("'alertOnRequestFailure' is deprecated (alerts have been removed) no need to set it now");
             }
 
-            if (! cfg.hasOwnProperty("endpoint")) {
+            if (! cfg.hasOwnProperty("endpoint") || cfg.endpoint === null || cfg.endpoint === "") {
                 this.log("[error] LRS invalid: no endpoint");
                 throw {
                     code: 3,
@@ -115,7 +98,7 @@ TinCan client library
                 };
             }
 
-            this.endpoint = cfg.endpoint;
+            this.endpoint = String(cfg.endpoint);
             if (this.endpoint.slice(-1) !== "/") {
                 this.log("adding trailing slash to endpoint");
                 this.endpoint += "/";
@@ -136,81 +119,17 @@ TinCan client library
                 this.extended = cfg.extended;
             }
 
-            if (env.isBrowser) {
-                urlParts = this.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
-                if (urlParts === null) {
-                    this.log("[error] LRS invalid: failed to divide URL parts");
-                    throw {
-                        code: 4,
-                        mesg: "LRS invalid: failed to divide URL parts"
-                    };
-                }
-
-                //
-                // determine whether this is a cross domain request,
-                // whether our browser has CORS support at all, and then
-                // if it does then if we are in IE with XDR only check that
-                // the schemes match to see if we should be able to talk to
-                // the LRS
-                //
-                locationPort = location.port;
-                schemeMatches = location.protocol.toLowerCase() === urlParts[1];
-
-                //
-                // normalize the location.port cause it appears to be "" when 80/443
-                // but our endpoint may have provided it
-                //
-                if (locationPort === "") {
-                    locationPort = (location.protocol.toLowerCase() === "http:" ? "80" : (location.protocol.toLowerCase() === "https:" ? "443" : ""));
-                }
-
-                isXD = (
-                    // is same scheme?
-                    ! schemeMatches
-
-                    // is same host?
-                    || location.hostname.toLowerCase() !== urlParts[2]
-
-                    // is same port?
-                    || locationPort !== (
-                        (urlParts[3] !== null && typeof urlParts[3] !== "undefined" && urlParts[3] !== "") ? urlParts[3] : (urlParts[1] === "http:" ? "80" : (urlParts[1] === "https:" ? "443" : ""))
-                    )
-                );
-                if (isXD) {
-                    if (env.hasCORS) {
-                        if (env.useXDR && schemeMatches) {
-                            this._requestMode = XDR;
-                        }
-                        else if (env.useXDR && ! schemeMatches) {
-                            if (cfg.allowFail) {
-                                this.log("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR (allowed to fail)");
-                            }
-                            else {
-                                this.log("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
-                                throw {
-                                    code: 2,
-                                    mesg: "LRS invalid: cross domain request for differing scheme in IE with XDR"
-                                };
-                            }
-                        }
-                    }
-                    else {
-                        if (cfg.allowFail) {
-                            this.log("[warning] LRS invalid: cross domain requests not supported in this browser (allowed to fail)");
-                        }
-                        else {
-                            this.log("[error] LRS invalid: cross domain requests not supported in this browser");
-                            throw {
-                                code: 1,
-                                mesg: "LRS invalid: cross domain requests not supported in this browser"
-                            };
-                        }
-                    }
-                }
-            }
-            else {
-                this.log("Unrecognized environment not supported: " + env);
-            }
+            //
+            // provide a hook method that environments can override
+            // to handle anything necessary in the initialization
+            // process that is customized to them, such as cross domain
+            // setup in browsers, default implementation is empty
+            //
+            // this hook must run prior to version detection so that
+            // request handling can be set up before requesting the
+            // LRS version via the /about resource
+            //
+            this._initByEnvironment(cfg);
 
             if (typeof cfg.version !== "undefined") {
                 this.log("version: " + cfg.version);
@@ -239,6 +158,29 @@ TinCan client library
         },
 
         /**
+        Method should be overloaded by an environment to do per
+        environment specifics such that the LRS can make a call
+        to set the version if not provided
+
+        @method _initByEnvironment
+        @private
+        */
+        _initByEnvironment: function () {
+            this.log("_initByEnvironment not overloaded - no environment loaded?");
+        },
+
+        /**
+        Method should be overloaded by an environment to do per
+        environment specifics for sending requests to the LRS
+
+        @method _makeRequest
+        @private
+        */
+        _makeRequest: function () {
+            this.log("_makeRequest not overloaded - no environment loaded?");
+        },
+
+        /**
         Method used to send a request via browser objects to the LRS
 
         @method sendRequest
@@ -256,84 +198,11 @@ TinCan client library
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
-            /*global ActiveXObject*/
             this.log("sendRequest");
-            var xhr,
-                finished = false,
-                location = window.location,
-                fullUrl = this.endpoint + cfg.url,
+            var fullUrl = this.endpoint + cfg.url,
                 headers = {},
-                data,
-                requestCompleteResult,
-                syncFakeStatus,
-                until,
-                prop,
-                pairs = [],
-                self = this
+                prop
             ;
-
-            // Setup request callback
-            function requestComplete (fakeStatus) {
-                self.log("requestComplete: " + finished + ", xhr.status: " + xhr.status);
-                var notFoundOk,
-                    httpStatus;
-
-                //
-                // XDomainRequest doesn't give us a way to get the status,
-                // so allow passing in a forged one
-                //
-                if (typeof xhr.status === "undefined") {
-                    httpStatus = fakeStatus;
-                }
-                else {
-                    //
-                    // older versions of IE don't properly handle 204 status codes
-                    // so correct when receiving a 1223 to be 204 locally
-                    // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-                    //
-                    httpStatus = (xhr.status === 1223) ? 204 : xhr.status;
-                }
-
-                if (! finished) {
-                    // may be in sync or async mode, using XMLHttpRequest or IE XDomainRequest, onreadystatechange or
-                    // onload or both might fire depending upon browser, just covering all bases with event hooks and
-                    // using 'finished' flag to avoid triggering events multiple times
-                    finished = true;
-
-                    notFoundOk = (cfg.ignore404 && httpStatus === 404);
-                    if ((httpStatus >= 200 && httpStatus < 400) || notFoundOk) {
-                        if (cfg.callback) {
-                            cfg.callback(null, xhr);
-                        }
-                        else {
-                            requestCompleteResult = {
-                                err: null,
-                                xhr: xhr
-                            };
-                            return requestCompleteResult;
-                        }
-                    }
-                    else {
-                        requestCompleteResult = {
-                            err: httpStatus,
-                            xhr: xhr
-                        };
-                        if (httpStatus === 0) {
-                            self.log("[warning] There was a problem communicating with the Learning Record Store. Aborted, offline, or invalid CORS endpoint (" + httpStatus + ")");
-                        }
-                        else {
-                            self.log("[warning] There was a problem communicating with the Learning Record Store. (" + httpStatus + " | " + xhr.responseText+ ")");
-                        }
-                        if (cfg.callback) {
-                            cfg.callback(httpStatus, xhr);
-                        }
-                        return requestCompleteResult;
-                    }
-                }
-                else {
-                    return requestCompleteResult;
-                }
-            }
 
             // respect absolute URLs passed in
             if (cfg.url.indexOf("http") === 0) {
@@ -368,153 +237,7 @@ TinCan client library
                 }
             }
 
-            if (this._requestMode === NATIVE) {
-                this.log("sendRequest using XMLHttpRequest");
-
-                for (prop in cfg.params) {
-                    if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
-                    }
-                }
-                if (pairs.length > 0) {
-                    fullUrl += "?" + pairs.join("&");
-                }
-
-                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
-
-                if (typeof XMLHttpRequest !== "undefined") {
-                    xhr = new XMLHttpRequest();
-                }
-                else {
-                    //
-                    // IE6 implements XMLHttpRequest through ActiveX control
-                    // http://blogs.msdn.com/b/ie/archive/2006/01/23/516393.aspx
-                    //
-                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-
-                xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
-                for (prop in headers) {
-                    if (headers.hasOwnProperty(prop)) {
-                        xhr.setRequestHeader(prop, headers[prop]);
-                    }
-                }
-
-                if (typeof cfg.data !== "undefined") {
-                    cfg.data += "";
-                }
-                data = cfg.data;
-
-                xhr.onreadystatechange = function () {
-                    self.log("xhr.onreadystatechange - xhr.readyState: " + xhr.readyState);
-                    if (xhr.readyState === 4) {
-                        requestComplete();
-                    }
-                };
-            }
-            else if (this._requestMode === XDR) {
-                this.log("sendRequest using XDomainRequest");
-
-                // method has to go on querystring, and nothing else,
-                // and the actual method is then always POST
-                fullUrl += "?method=" + cfg.method;
-
-                // params end up in the body
-                for (prop in cfg.params) {
-                    if (cfg.params.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
-                    }
-                }
-
-                // headers go into form data
-                for (prop in headers) {
-                    if (headers.hasOwnProperty(prop)) {
-                        pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
-                    }
-                }
-
-                // the original data is repackaged as "content" form var
-                if (cfg.data !== null) {
-                    pairs.push("content=" + encodeURIComponent(cfg.data));
-                }
-
-                data = pairs.join("&");
-
-                xhr = new XDomainRequest ();
-                xhr.open("POST", fullUrl);
-
-                if (! cfg.callback) {
-                    xhr.onload = function () {
-                        syncFakeStatus = 200;
-                    };
-                    xhr.onerror = function () {
-                        syncFakeStatus = 400;
-                    };
-                    xhr.ontimeout = function () {
-                        syncFakeStatus = 0;
-                    };
-                }
-                else {
-                    xhr.onload = function () {
-                        requestComplete(200);
-                    };
-                    xhr.onerror = function () {
-                        requestComplete(400);
-                    };
-                    xhr.ontimeout = function () {
-                        requestComplete(0);
-                    };
-                }
-
-                // IE likes to randomly abort requests when some handlers
-                // aren't defined, so define them with no-ops, see:
-                //
-                // http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
-                // http://social.msdn.microsoft.com/Forums/ie/en-US/30ef3add-767c-4436-b8a9-f1ca19b4812e/ie9-rtm-xdomainrequest-issued-requests-may-abort-if-all-event-handlers-not-specified
-                //
-                xhr.onprogress = function () {};
-                xhr.timeout = 0;
-            }
-            else {
-                this.log("sendRequest unrecognized _requestMode: " + this._requestMode);
-            }
-
-            //
-            // research indicates that IE is known to just throw exceptions
-            // on .send and it seems everyone pretty much just ignores them
-            // including jQuery (https://github.com/jquery/jquery/blob/1.10.2/src/ajax.js#L549
-            // https://github.com/jquery/jquery/blob/1.10.2/src/ajax/xhr.js#L97)
-            //
-            try {
-                xhr.send(data);
-            }
-            catch (ex) {
-                this.log("sendRequest caught send exception: " + ex);
-            }
-
-            if (! cfg.callback) {
-                // synchronous
-                if (this._requestMode === XDR) {
-                    // synchronous call in IE, with no synchronous mode available
-                    until = 10000 + Date.now();
-                    this.log("sendRequest - until: " + until + ", finished: " + finished);
-
-                    while (Date.now() < until && typeof syncFakeStatus === "undefined") {
-                        //this.log("calling __delay");
-                        this.__delay();
-                    }
-                    return requestComplete(syncFakeStatus);
-                }
-                return requestComplete();
-            }
-
-            //
-            // for async requests give them the XHR object directly
-            // as the return value, the actual stuff they should be
-            // caring about is params to the callback, for sync
-            // requests they got the return value above
-            //
-            return xhr;
+            return this._makeRequest(fullUrl, headers, cfg);
         },
 
         /**
@@ -529,14 +252,6 @@ TinCan client library
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
             var requestCfg;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             cfg = cfg || {};
 
@@ -578,14 +293,6 @@ TinCan client library
             var requestCfg,
                 requestResult,
                 callbackWrapper;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             cfg = cfg || {};
 
@@ -630,18 +337,10 @@ TinCan client library
         @return {Object} TinCan.Statement retrieved
         */
         retrieveVoidedStatement: function (stmtId, cfg) {
-            this.log("retrieveStatement");
+            this.log("retrieveVoidedStatement");
             var requestCfg,
                 requestResult,
                 callbackWrapper;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             cfg = cfg || {};
 
@@ -696,14 +395,6 @@ TinCan client library
                 versionedStatements = [],
                 i
             ;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             cfg = cfg || {};
 
@@ -772,14 +463,6 @@ TinCan client library
             var requestCfg,
                 requestResult,
                 callbackWrapper;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
@@ -980,14 +663,6 @@ TinCan client library
                 parsedURL,
                 serverRoot;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             cfg = cfg || {};
 
             // to support our interface (to support IE) we need to break apart
@@ -1061,14 +736,6 @@ TinCan client library
                 requestResult,
                 callbackWrapper
             ;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             requestParams = {
                 stateId: key,
@@ -1205,14 +872,6 @@ TinCan client library
                 requestResult
             ;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
@@ -1276,14 +935,6 @@ TinCan client library
                 requestCfg
             ;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             requestParams = {
                 activityId: cfg.activity.id
             };
@@ -1333,14 +984,6 @@ TinCan client library
                 requestResult,
                 callbackWrapper
             ;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             requestCfg = {
                 url: "activities/profile",
@@ -1455,14 +1098,6 @@ TinCan client library
             this.log("saveActivityProfile");
             var requestCfg;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
@@ -1511,14 +1146,6 @@ TinCan client library
                 requestCfg
             ;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             requestParams = {
                 profileId: key,
                 activityId: cfg.activity.id
@@ -1552,14 +1179,6 @@ TinCan client library
                 requestResult,
                 callbackWrapper
             ;
-
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
 
             requestCfg = {
                 method: "GET",
@@ -1680,14 +1299,6 @@ TinCan client library
             this.log("saveAgentProfile");
             var requestCfg;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
@@ -1742,14 +1353,6 @@ TinCan client library
                 requestCfg
             ;
 
-            // TODO: it would be better to make a subclass that knows
-            //       its own environment and just implements the protocol
-            //       that it needs to
-            if (! TinCan.environment().isBrowser) {
-                this.log("error: environment not implemented");
-                return;
-            }
-
             requestParams = {
                 profileId: key
             };
@@ -1770,29 +1373,6 @@ TinCan client library
             }
 
             return this.sendRequest(requestCfg);
-        },
-
-        /**
-        Non-environment safe method used to create a delay to give impression
-        of synchronous response
-
-        @method __delay
-        @private
-        */
-        __delay: function () {
-            //
-            // use a synchronous request to the current location to allow the browser
-            // to yield to the asynchronous request's events but still block in the
-            // outer loop to make it seem synchronous to the end user
-            //
-            // removing this made the while loop too tight to allow the asynchronous
-            // events through to get handled so that the response was correctly handled
-            //
-            var xhr = new XMLHttpRequest (),
-                url = window.location + "?forcenocache=" + TinCan.Utils.getUUID()
-            ;
-            xhr.open("GET", url, false);
-            xhr.send(null);
         }
     };
 }());

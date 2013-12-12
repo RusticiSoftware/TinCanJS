@@ -21,7 +21,7 @@
         },
         alertBuiltin;
 
-    module(
+    QUnit.module(
         "LRS .sendRequest to CORS denied server or offline",
         {
             setup: function () {

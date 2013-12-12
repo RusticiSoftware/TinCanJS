@@ -17,7 +17,7 @@
     var session = null,
         endpoint = "https://cloud.scorm.com/tc/public/";
 
-    module("LRS Instance");
+    QUnit.module("LRS Instance");
     test(
         "LRS init failure: no endpoint",
         function () {
@@ -38,6 +38,16 @@
                     var obj = new TinCan.LRS (
                         {
                             endpoint: ""
+                        }
+                    );
+                },
+                "exception"
+            );
+            throws(
+                function () {
+                    var obj = new TinCan.LRS (
+                        {
+                            endpoint: null
                         }
                     );
                 },

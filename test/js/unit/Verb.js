@@ -16,20 +16,20 @@
 (function () {
     var session = null;
 
-    module("Activity Statics");
+    QUnit.module("Verb Statics");
 
     test(
-        "Activity.fromJSON",
+        "Verb.fromJSON",
         function () {
             var raw = {
-                    id: "http://tincanapi.com/TinCanJS/Test/Activity_fromJSON"
+                    id: "http://tincanapi.com/TinCanJS/Test/Verb_fromJSON"
                 },
                 string,
                 result
             ;
 
-            result = TinCan.Activity.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.Activity, "returns TinCan.Activity");
+            result = TinCan.Verb.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.Verb, "returns TinCan.Verb");
         }
     );
 }());

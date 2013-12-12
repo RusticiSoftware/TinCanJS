@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("Statement Statics");
+    QUnit.module("Statement Statics");
 
     test(
         "Statement.fromJSON",
@@ -31,7 +31,7 @@
         }
     );
 
-    module("Statement Instance");
+    QUnit.module("Statement Instance");
 
     test(
         "object prototype",

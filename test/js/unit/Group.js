@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("Group Statics");
+    QUnit.module("Group Statics");
 
     test(
         "Group.fromJSON",
@@ -37,7 +37,7 @@
         }
     );
 
-    module("Group Instance");
+    QUnit.module("Group Instance");
 
     test(
         "group Object",

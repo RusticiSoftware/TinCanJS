@@ -21,7 +21,7 @@
         },
         alertBuiltin;
 
-    module("Utils Statics");
+    QUnit.module("Utils Statics");
 
     test(
         "getUUID",

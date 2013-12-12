@@ -16,7 +16,7 @@
 (function () {
     var session = null;
 
-    module("InteractionComponent Statics");
+    QUnit.module("InteractionComponent Statics");
 
     test(
         "InteractionComponent.fromJSON",
