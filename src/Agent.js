@@ -225,7 +225,7 @@ TinCan client library
         },
 
         /**
-        While a TinCan.Agent instance can store more than one reverse functional identifier
+        While a TinCan.Agent instance can store more than one inverse functional identifier
         this method will always only output one to be compliant with the statement sending
         specification. Order of preference is: mbox, mbox_sha1sum, openid, account
 

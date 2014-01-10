@@ -856,7 +856,7 @@ TinCan client library
 
         @method saveState
         @param {String} key Key of state to save
-        @param {String} val Value of state to save
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {Object} cfg.agent TinCan.Agent
@@ -1088,6 +1088,7 @@ TinCan client library
 
         @method saveActivityProfile
         @param {String} key Key of activity profile to retrieve
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
@@ -1289,6 +1290,7 @@ TinCan client library
 
         @method saveAgentProfile
         @param {String} key Key of agent profile to retrieve
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
