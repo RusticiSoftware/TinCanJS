@@ -2320,7 +2320,7 @@ TinCan client library
 
         @method saveState
         @param {String} key Key of state to save
-        @param {String} val Value of state to save
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {Object} cfg.agent TinCan.Agent
@@ -2552,6 +2552,7 @@ TinCan client library
 
         @method saveActivityProfile
         @param {String} key Key of activity profile to retrieve
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
@@ -2753,6 +2754,7 @@ TinCan client library
 
         @method saveAgentProfile
         @param {String} key Key of agent profile to retrieve
+        @param val Value to be stored
         @param {Object} cfg Configuration options
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
@@ -3205,7 +3207,7 @@ TinCan client library
         },
 
         /**
-        While a TinCan.Agent instance can store more than one reverse functional identifier
+        While a TinCan.Agent instance can store more than one inverse functional identifier
         this method will always only output one to be compliant with the statement sending
         specification. Order of preference is: mbox, mbox_sha1sum, openid, account
 
