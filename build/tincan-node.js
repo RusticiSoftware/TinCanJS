@@ -4566,6 +4566,12 @@ TinCan client library
         this.log("constructor");
 
         /**
+        @property category
+        @type Array
+        */
+        this.category = null;
+
+        /**
         @property parent
         @type Array
         */
@@ -4606,6 +4612,7 @@ TinCan client library
             var i,
                 j,
                 objProps = [
+                    "category",
                     "parent",
                     "grouping",
                     "other"
@@ -4635,11 +4642,11 @@ TinCan client library
 
         /**
         @method add
-        @param String key Property to add value to one of "parent", "grouping", "other"
+        @param String key Property to add value to one of "category", "parent", "grouping", "other"
         @return Number index where the value was added
         */
         add: function (key, val) {
-            if (key !== "parent" && key !== "grouping" && key !== "other") {
+            if (key !== "category" && key !== "parent" && key !== "grouping" && key !== "other") {
                 return;
             }
 
@@ -4692,6 +4699,17 @@ TinCan client library
                                 this[optionalObjProps[i]][j].asVersion(version)
                             );
                         }
+                    }
+                }
+            }
+            if (this.category !== null && this.category.length > 0) {
+                if (version === "0.9" || version === "0.95") {
+                    this.log("[WARNING] version does not support the 'category' property");
+                }
+                else {
+                    result.category = [];
+                    for (i = 0; i < this.category.length; i += 1) {
+                        result.category.push(this.category[i].asVersion(version));
                     }
                 }
             }
