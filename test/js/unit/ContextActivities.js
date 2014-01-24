@@ -38,6 +38,7 @@
         function () {
             var obj = new TinCan.ContextActivities (),
                 nullProps = [
+                    "category",
                     "parent",
                     "grouping",
                     "other"
@@ -121,7 +122,7 @@
                         ]
                     }
                 ],
-                props = [ "parent", "other", "grouping" ],
+                props = [ "category", "parent", "other", "grouping" ],
                 i,
                 j,
                 instanceConfig,
@@ -161,6 +162,31 @@
                         instanceConfig: {},
                         versions: {
                             latest: {}
+                        }
+                    },
+                    {
+                        name: "category 1",
+                        instanceConfig: {
+                            category: commonActivity
+                        },
+                        versions: {
+                            latest: { category: [ commonRaw ] },
+                            "0.95": {},
+                            "0.9":  {}
+                        }
+                    },
+                    {
+                        name: "category 2",
+                        instanceConfig: {
+                            category: [
+                                commonActivity,
+                                commonActivity2
+                            ]
+                        },
+                        versions: {
+                            latest: { category: [ commonRaw, commonRaw2 ] },
+                            "0.95": {},
+                            "0.9":  {}
                         }
                     },
                     {
