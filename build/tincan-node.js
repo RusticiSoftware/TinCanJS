@@ -1715,13 +1715,41 @@ TinCan client library
         */
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
-            var requestCfg;
+            var requestCfg,
+                versionedStatement;
 
             cfg = cfg || {};
 
+            try {
+                versionedStatement = stmt.asVersion( this.version );
+            }
+            catch (ex) {
+                if (this.allowFail) {
+                    this.log("[warning] statement could not be serialized in version (" + this.version + "): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(null, null);
+                        return;
+                    }
+                    return {
+                        err: null,
+                        xhr: null
+                    };
+                }
+
+                this.log("[error] statement could not be serialized in version (" + this.version + "): " + ex);
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(ex, null);
+                    return;
+                }
+                return {
+                    err: ex,
+                    xhr: null
+                };
+            }
+
             requestCfg = {
                 url: "statements",
-                data: JSON.stringify(stmt.asVersion( this.version )),
+                data: JSON.stringify(versionedStatement),
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -1856,6 +1884,7 @@ TinCan client library
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
             var requestCfg,
+                versionedStatement,
                 versionedStatements = [],
                 i
             ;
@@ -1864,15 +1893,43 @@ TinCan client library
 
             if (stmts.length === 0) {
                 if (typeof cfg.callback !== "undefined") {
-                    cfg.callback.apply(this, ["no statements"]);
+                    cfg.callback(new Error("no statements"), null);
+                    return;
                 }
-                return;
+                return {
+                    err: new Error("no statements"),
+                    xhr: null
+                };
             }
 
             for (i = 0; i < stmts.length; i += 1) {
-                versionedStatements.push(
-                    stmts[i].asVersion( this.version )
-                );
+                try {
+                    versionedStatement = stmts[i].asVersion( this.version );
+                }
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] statement could not be serialized in version (" + this.version + "): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] statement could not be serialized in version (" + this.version + "): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+                versionedStatements.push(versionedStatement);
             }
 
             requestCfg = {
@@ -4566,6 +4623,12 @@ TinCan client library
         this.log("constructor");
 
         /**
+        @property category
+        @type Array
+        */
+        this.category = null;
+
+        /**
         @property parent
         @type Array
         */
@@ -4606,6 +4669,7 @@ TinCan client library
             var i,
                 j,
                 objProps = [
+                    "category",
                     "parent",
                     "grouping",
                     "other"
@@ -4635,11 +4699,11 @@ TinCan client library
 
         /**
         @method add
-        @param String key Property to add value to one of "parent", "grouping", "other"
+        @param String key Property to add value to one of "category", "parent", "grouping", "other"
         @return Number index where the value was added
         */
         add: function (key, val) {
-            if (key !== "parent" && key !== "grouping" && key !== "other") {
+            if (key !== "category" && key !== "parent" && key !== "grouping" && key !== "other") {
                 return;
             }
 
@@ -4680,7 +4744,7 @@ TinCan client library
                     if (version === "0.9" || version === "0.95") {
                         if (this[optionalObjProps[i]].length > 1) {
                             // TODO: exception?
-                            this.log("[WARNING] version does not support multiple values in: " + optionalObjProps[i]);
+                            this.log("[warning] version does not support multiple values in: " + optionalObjProps[i]);
                         }
 
                         result[optionalObjProps[i]] = this[optionalObjProps[i]][0].asVersion(version);
@@ -4692,6 +4756,18 @@ TinCan client library
                                 this[optionalObjProps[i]][j].asVersion(version)
                             );
                         }
+                    }
+                }
+            }
+            if (this.category !== null && this.category.length > 0) {
+                if (version === "0.9" || version === "0.95") {
+                    this.log("[error] version does not support the 'category' property: " + version);
+                    throw new Error(version + " does not support the 'category' property");
+                }
+                else {
+                    result.category = [];
+                    for (i = 0; i < this.category.length; i += 1) {
+                        result.category.push(this.category[i].asVersion(version));
                     }
                 }
             }

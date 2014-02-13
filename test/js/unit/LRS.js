@@ -185,4 +185,215 @@
             }
         }
     );
+
+    (function () {
+        var versions = [
+                "0.95",
+                "0.9"
+            ],
+            stCfg = {
+                actor: {
+                    mbox: "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com"
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/experienced"
+                },
+                target: {
+                    id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS_saveStatement/exception-sync"
+                },
+                context: {
+                    contextActivities: {
+                        category: [
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS_saveStatement/exception-sync/cat"
+                            }
+                        ]
+                    }
+                }
+            },
+            doAllowFailFalseSaveStatementExceptionAsyncTest,
+            doAllowFailTrueSaveStatementExceptionAsyncTest,
+            doAllowFailFalseSaveStatementExceptionSyncTest,
+            doAllowFailTrueSaveStatementExceptionSyncTest,
+            doAllowFailFalseSaveStatementsExceptionAsyncTest,
+            doAllowFailTrueSaveStatementsExceptionAsyncTest,
+            doAllowFailFalseSaveStatementsExceptionSyncTest,
+            doAllowFailTrueSaveStatementsExceptionSyncTest,
+            i,
+            lrs_true,
+            lrs_false;
+
+        /* .saveStatement */
+        doAllowFailFalseSaveStatementExceptionAsyncTest = function (lrs, st) {
+            lrs.allowFail = false;
+
+            asyncTest(
+                "LRS saveStatement async exception: allowFail false (" + lrs.version + ")",
+                function () {
+                    var result = lrs.saveStatement(
+                        st,
+                        {
+                            callback: function (err, xhr) {
+                                start();
+                                ok(typeof err !== "undefined", "callback: has err argument");
+                                ok(typeof xhr !== "undefined", "callback: has xhr argument");
+
+                                if (typeof err !== "undefined") {
+                                    ok(err instanceof Error, "callback err: is Error");
+                                }
+                                if (typeof err !== "undefined") {
+                                    ok(xhr === null, "callback xhr is null");
+                                }
+                            }
+                        }
+                    );
+                    ok(typeof result === "undefined", "result is undefined");
+                }
+            );
+        };
+
+        doAllowFailTrueSaveStatementExceptionAsyncTest = function (lrs, st) {
+            asyncTest(
+                "LRS saveStatement async exception: allowFail true (" + lrs.version + ")",
+                function () {
+                    var result = lrs.saveStatement(
+                        st,
+                        {
+                            callback: function (err, xhr) {
+                                start();
+                                ok(err === null, "callback err argument is null");
+                                ok(xhr === null, "callback xhr argument is null");
+                            }
+                        }
+                    );
+                    ok(typeof result === "undefined", "result is undefined");
+                }
+            );
+        };
+
+        doAllowFailFalseSaveStatementExceptionSyncTest = function (lrs, st) {
+            lrs.allowFail = false;
+
+            var result = lrs.saveStatement(st);
+
+            ok(result instanceof Object, "allowFail false result: is an object (" + lrs.version + ")");
+            ok(typeof result.err !== "undefined", "allowFail false result: has err property (" + lrs.version + ")");
+            ok(typeof result.xhr !== "undefined", "allowFail false result: has xhr property (" + lrs.version + ")");
+
+            if (typeof result.err !== "undefined") {
+                ok(result.err instanceof Error, "allowFail false result.err: is Error (" + lrs.version + ")");
+            }
+            if (typeof result.err !== "undefined") {
+                ok(result.xhr === null, "allowFail false result.xhr is null (" + lrs.version + ")");
+            }
+        };
+
+        doAllowFailTrueSaveStatementExceptionSyncTest = function (lrs, st) {
+            var result = lrs.saveStatement(st);
+            deepEqual(result, { err: null, xhr: null }, "allowFail true result: matches deeply (" + lrs.version + ")");
+        };
+
+        /* .saveStatements */
+        doAllowFailFalseSaveStatementsExceptionAsyncTest = function (lrs, sts) {
+            lrs.allowFail = false;
+
+            asyncTest(
+                "LRS saveStatements async exception: allowFail false (" + lrs.version + ")",
+                function () {
+                    var result = lrs.saveStatements(
+                        sts,
+                        {
+                            callback: function (err, xhr) {
+                                start();
+                                ok(typeof err !== "undefined", "callback: has err argument");
+                                ok(typeof xhr !== "undefined", "callback: has xhr argument");
+
+                                if (typeof err !== "undefined") {
+                                    ok(err instanceof Error, "callback err: is Error");
+                                }
+                                if (typeof err !== "undefined") {
+                                    ok(xhr === null, "callback xhr is null");
+                                }
+                            }
+                        }
+                    );
+                    ok(typeof result === "undefined", "result is undefined");
+                }
+            );
+        };
+
+        doAllowFailTrueSaveStatementsExceptionAsyncTest = function (lrs, sts) {
+            asyncTest(
+                "LRS saveStatements async exception: allowFail true (" + lrs.version + ")",
+                function () {
+                    var result = lrs.saveStatements(
+                        sts,
+                        {
+                            callback: function (err, xhr) {
+                                start();
+                                ok(err === null, "callback err argument is null");
+                                ok(xhr === null, "callback xhr argument is null");
+                            }
+                        }
+                    );
+                    ok(typeof result === "undefined", "result is undefined");
+                }
+            );
+        };
+
+        doAllowFailFalseSaveStatementsExceptionSyncTest = function (lrs, sts) {
+            lrs.allowFail = false;
+
+            var result = lrs.saveStatements(sts);
+
+            ok(result instanceof Object, "allowFail false result: is an object (" + lrs.version + ")");
+            ok(typeof result.err !== "undefined", "allowFail false result: has err property (" + lrs.version + ")");
+            ok(typeof result.xhr !== "undefined", "allowFail false result: has xhr property (" + lrs.version + ")");
+
+            if (typeof result.err !== "undefined") {
+                ok(result.err instanceof Error, "allowFail false result.err: is Error (" + lrs.version + ")");
+            }
+            if (typeof result.err !== "undefined") {
+                ok(result.xhr === null, "allowFail false result.xhr is null (" + lrs.version + ")");
+            }
+        };
+
+        doAllowFailTrueSaveStatementsExceptionSyncTest = function (lrs, sts) {
+            var result = lrs.saveStatements(sts);
+            deepEqual(result, { err: null, xhr: null }, "allowFail true result: matches deeply (" + lrs.version + ")");
+        };
+
+        test(
+            "LRS saveStatement/saveStatements sync exception",
+            function () {
+                var i,
+                    lrs_true,
+                    lrs_false;
+
+                for (i = 0; i < versions.length; i += 1) {
+                    if (TinCanTestCfg.recordStores[versions[i]]) {
+                        lrs_true = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                        doAllowFailTrueSaveStatementExceptionSyncTest(lrs_true, new TinCan.Statement(stCfg));
+                        doAllowFailTrueSaveStatementsExceptionSyncTest(lrs_true, [ new TinCan.Statement(stCfg) ]);
+
+                        lrs_false = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                        doAllowFailFalseSaveStatementExceptionSyncTest(lrs_false, new TinCan.Statement(stCfg));
+                        doAllowFailFalseSaveStatementsExceptionSyncTest(lrs_false, [ new TinCan.Statement(stCfg) ]);
+                    }
+                }
+            }
+        );
+
+        for (i = 0; i < versions.length; i += 1) {
+            if (TinCanTestCfg.recordStores[versions[i]]) {
+                lrs_true = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                doAllowFailFalseSaveStatementExceptionAsyncTest(lrs_true, new TinCan.Statement(stCfg));
+                doAllowFailFalseSaveStatementsExceptionAsyncTest(lrs_true, [ new TinCan.Statement(stCfg) ]);
+
+                lrs_false = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                doAllowFailTrueSaveStatementExceptionAsyncTest(lrs_false, new TinCan.Statement(stCfg));
+                doAllowFailTrueSaveStatementsExceptionAsyncTest(lrs_false, [ new TinCan.Statement(stCfg) ]);
+            }
+        }
+    }());
 }());
