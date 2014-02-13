@@ -1715,13 +1715,41 @@ TinCan client library
         */
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
-            var requestCfg;
+            var requestCfg,
+                versionedStatement;
 
             cfg = cfg || {};
 
+            try {
+                versionedStatement = stmt.asVersion( this.version );
+            }
+            catch (ex) {
+                if (this.allowFail) {
+                    this.log("[warning] statement could not be serialized in version (" + this.version + "): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(null, null);
+                        return;
+                    }
+                    return {
+                        err: null,
+                        xhr: null
+                    };
+                }
+
+                this.log("[error] statement could not be serialized in version (" + this.version + "): " + ex);
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(ex, null);
+                    return;
+                }
+                return {
+                    err: ex,
+                    xhr: null
+                };
+            }
+
             requestCfg = {
                 url: "statements",
-                data: JSON.stringify(stmt.asVersion( this.version )),
+                data: JSON.stringify(versionedStatement),
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -1856,6 +1884,7 @@ TinCan client library
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
             var requestCfg,
+                versionedStatement,
                 versionedStatements = [],
                 i
             ;
@@ -1864,15 +1893,43 @@ TinCan client library
 
             if (stmts.length === 0) {
                 if (typeof cfg.callback !== "undefined") {
-                    cfg.callback.apply(this, ["no statements"]);
+                    cfg.callback(new Error("no statements"), null);
+                    return;
                 }
-                return;
+                return {
+                    err: new Error("no statements"),
+                    xhr: null
+                };
             }
 
             for (i = 0; i < stmts.length; i += 1) {
-                versionedStatements.push(
-                    stmts[i].asVersion( this.version )
-                );
+                try {
+                    versionedStatement = stmts[i].asVersion( this.version );
+                }
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] statement could not be serialized in version (" + this.version + "): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] statement could not be serialized in version (" + this.version + "): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+                versionedStatements.push(versionedStatement);
             }
 
             requestCfg = {
@@ -4687,7 +4744,7 @@ TinCan client library
                     if (version === "0.9" || version === "0.95") {
                         if (this[optionalObjProps[i]].length > 1) {
                             // TODO: exception?
-                            this.log("[WARNING] version does not support multiple values in: " + optionalObjProps[i]);
+                            this.log("[warning] version does not support multiple values in: " + optionalObjProps[i]);
                         }
 
                         result[optionalObjProps[i]] = this[optionalObjProps[i]][0].asVersion(version);
@@ -4704,7 +4761,8 @@ TinCan client library
             }
             if (this.category !== null && this.category.length > 0) {
                 if (version === "0.9" || version === "0.95") {
-                    this.log("[WARNING] version does not support the 'category' property");
+                    this.log("[error] version does not support the 'category' property: " + version);
+                    throw new Error(version + " does not support the 'category' property");
                 }
                 else {
                     result.category = [];
