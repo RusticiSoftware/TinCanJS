@@ -152,7 +152,7 @@ TinCan client library
                     if (version === "0.9" || version === "0.95") {
                         if (this[optionalObjProps[i]].length > 1) {
                             // TODO: exception?
-                            this.log("[WARNING] version does not support multiple values in: " + optionalObjProps[i]);
+                            this.log("[warning] version does not support multiple values in: " + optionalObjProps[i]);
                         }
 
                         result[optionalObjProps[i]] = this[optionalObjProps[i]][0].asVersion(version);
@@ -169,7 +169,8 @@ TinCan client library
             }
             if (this.category !== null && this.category.length > 0) {
                 if (version === "0.9" || version === "0.95") {
-                    this.log("[WARNING] version does not support the 'category' property");
+                    this.log("[error] version does not support the 'category' property: " + version);
+                    throw new Error(version + " does not support the 'category' property");
                 }
                 else {
                     result.category = [];

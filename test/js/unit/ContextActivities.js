@@ -171,8 +171,8 @@
                         },
                         versions: {
                             latest: { category: [ commonRaw ] },
-                            "0.95": {},
-                            "0.9":  {}
+                            "0.95": { exception: "0.95 does not support the 'category' property" },
+                            "0.9":  { exception: "0.9 does not support the 'category' property" }
                         }
                     },
                     {
@@ -185,8 +185,8 @@
                         },
                         versions: {
                             latest: { category: [ commonRaw, commonRaw2 ] },
-                            "0.95": {},
-                            "0.9":  {}
+                            "0.95": { exception: "0.95 does not support the 'category' property" },
+                            "0.9":  { exception: "0.9 does not support the 'category' property" }
                         }
                     },
                     {
@@ -295,7 +295,8 @@
                 i,
                 v,
                 obj,
-                result
+                result,
+                versionCfg
             ;
 
             for (i = 0; i < set.length; i += 1) {
@@ -306,8 +307,22 @@
                 deepEqual(result, row.versions.latest, "object.asVersion() latest: " + row.name);
 
                 for (v = 0; v < versions.length; v += 1) {
+                    message = "object.asVersion() " + versions[v] + " : " + row.name;
+                    versionCfg = row.versions.hasOwnProperty(versions[v]) ? row.versions[versions[v]] : row.versions.latest;
+                    if (typeof versionCfg.exception !== "undefined") {
+                        throws(
+                            function () {
+                                result = obj.asVersion(versions[v]);
+                            },
+                            Error,
+                            message + " (exception)"
+                        );
+                        continue;
+                    }
+
                     result = obj.asVersion(versions[v]);
-                    deepEqual(result, (row.versions.hasOwnProperty(versions[v]) ? row.versions[versions[v]] : row.versions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
+
+                    deepEqual(result, versionCfg, message + " (deepEqual)");
                 }
             }
         }
