@@ -74,7 +74,7 @@ TinCan client library
 
         /**
         @property statement
-        @type SubStatement|StatementRef|null
+        @type StatementRef|null
         */
         this.statement = null;
 
