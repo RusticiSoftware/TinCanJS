@@ -1,7 +1,7 @@
 {
     "name": "tincanjs",
     "description": "Tin Can API Library",
-    "version": "0.22.1",
+    "version": "0.22.2",
     "private": false,
     "main": "build/tincan-node.js",
     "directories": {
