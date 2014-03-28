@@ -60,7 +60,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Score',
+        LOG_SRC: "Score",
 
         /**
         @method log
@@ -105,8 +105,7 @@ TinCan client library
                     "min",
                     "max"
                 ],
-                i,
-                prop;
+                i;
 
             version = version || TinCan.versions()[0];
 

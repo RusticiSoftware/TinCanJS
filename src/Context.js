@@ -90,7 +90,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Context',
+        LOG_SRC: "Context",
 
         /**
         @method log
@@ -178,8 +178,7 @@ TinCan client library
                     "contextActivities",
                     "statement"
                 ],
-                i,
-                prop;
+                i;
 
             version = version || TinCan.versions()[0];
 

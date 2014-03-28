@@ -60,7 +60,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'ContextActivities',
+        LOG_SRC: "ContextActivities",
 
         /**
         @method log
@@ -120,7 +120,7 @@ TinCan client library
             }
 
             if (! (val instanceof TinCan.Activity)) {
-                val = typeof val === 'string' ? { id: val } : val;
+                val = typeof val === "string" ? { id: val } : val;
                 val = new TinCan.Activity (val);
             }
 
@@ -142,8 +142,7 @@ TinCan client library
                     "other"
                 ],
                 i,
-                j,
-                prop;
+                j;
 
             version = version || TinCan.versions()[0];
 

@@ -202,7 +202,7 @@ TinCan client library
             }
         },
 
-        toString: function (lang) {
+        toString: function () {
             this.log("toString");
 
             if (this.name !== null) {

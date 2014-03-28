@@ -3,8 +3,7 @@ src
 test
 doc
 vendor
-build.js
-build/.empty
+build/tincan-min.map
 .travis.yml
 yuidoc.json
 bower.json

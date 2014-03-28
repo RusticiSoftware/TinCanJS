@@ -68,9 +68,7 @@ TinCan client library
             var i,
                 directProps = [
                     "id"
-                ],
-                val
-            ;
+                ];
 
             cfg = cfg || {};
 
@@ -85,7 +83,7 @@ TinCan client library
         @method toString
         @return {String} String representation of the statement
         */
-        toString: function (lang) {
+        toString: function () {
             this.log("toString");
             return this.id;
         },

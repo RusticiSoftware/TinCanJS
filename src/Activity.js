@@ -55,7 +55,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Activity',
+        LOG_SRC: "Activity",
 
         /**
         @method log

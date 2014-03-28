@@ -52,7 +52,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'StatementsResult',
+        LOG_SRC: "StatementsResult",
 
         /**
         @method log

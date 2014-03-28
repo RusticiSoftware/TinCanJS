@@ -21,6 +21,7 @@ TinCan client library
 @submodule TinCan.Environment.Browser
 **/
 (function () {
+    /* globals window, XMLHttpRequest, XDomainRequest */
     "use strict";
     var LOG_SRC = "Environment.Browser",
         nativeRequest,
@@ -364,7 +365,8 @@ TinCan client library
     // capabilities
     //
     TinCan.LRS.prototype._initByEnvironment = function (cfg) {
-        /*jslint regexp: true */
+        /*jslint regexp: true, laxbreak: true */
+        /* globals location */
         log("_initByEnvironment", LOG_SRC);
         var urlParts,
             schemeMatches,

@@ -103,9 +103,7 @@ TinCan client library
             var i,
                 directProps = [
                     "timestamp"
-                ],
-                val
-            ;
+                ];
 
             cfg = cfg || {};
 
@@ -140,14 +138,10 @@ TinCan client library
                 }
             }
             if (cfg.hasOwnProperty("target")) {
-                if (cfg.target instanceof TinCan.Activity
-                    ||
-                    cfg.target instanceof TinCan.Agent
-                    ||
-                    cfg.target instanceof TinCan.Group
-                    ||
-                    cfg.target instanceof TinCan.SubStatement
-                    ||
+                if (cfg.target instanceof TinCan.Activity ||
+                    cfg.target instanceof TinCan.Agent ||
+                    cfg.target instanceof TinCan.Group ||
+                    cfg.target instanceof TinCan.SubStatement ||
                     cfg.target instanceof TinCan.StatementRef
                 ) {
                     this.target = cfg.target;
