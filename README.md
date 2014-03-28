@@ -1,6 +1,12 @@
-A JavaScript library for talking Tin Can to the world.
+A JavaScript library for implementing Tin Can API.
 
 [![Build Status](https://travis-ci.org/RusticiSoftware/TinCanJS.png)](https://travis-ci.org/RusticiSoftware/TinCanJS)
+
+For hosted API documentation, basic usage instructions, supported version listing, etc. visit the main project website at:
+
+http://rusticisoftware.github.io/TinCanJS/
+
+For more information about the Tin Can API visit:
 
 http://tincanapi.com/
 
