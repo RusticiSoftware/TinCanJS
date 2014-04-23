@@ -731,7 +731,7 @@ TinCan client library
             //or endpoint (though only the former is allowed in the spec)
             serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
             if (parsedURL.path.indexOf("/statements") === 0){
-                parsedURL.path = this.endpoint.replace(serverRoot, '') + parsedURL.path;
+                parsedURL.path = this.endpoint.replace(serverRoot, "") + parsedURL.path;
                 this.log("converting non-standard more URL to " + parsedURL.path);
             }
 
@@ -926,9 +926,7 @@ TinCan client library
         saveState: function (key, val, cfg) {
             this.log("saveState");
             var requestParams,
-                requestCfg,
-                requestResult
-            ;
+                requestCfg;
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";

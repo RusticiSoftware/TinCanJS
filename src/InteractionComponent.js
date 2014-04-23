@@ -48,7 +48,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'InteractionComponent',
+        LOG_SRC: "InteractionComponent",
 
         /**
         @method log

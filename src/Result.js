@@ -72,7 +72,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'Result',
+        LOG_SRC: "Result",
 
         /**
         @method log
@@ -135,8 +135,7 @@ TinCan client library
                 optionalObjProps = [
                     "score"
                 ],
-                i,
-                prop;
+                i;
 
             version = version || TinCan.versions()[0];
 

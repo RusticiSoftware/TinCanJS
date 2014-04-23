@@ -131,10 +131,11 @@ var TinCan;
         @param {String} msg Message to output
         */
         log: function (msg, src) {
+            /* globals console */
             if (TinCan.DEBUG && typeof console !== "undefined" && console.log) {
                 src = src || this.LOG_SRC || "TinCan";
 
-                console.log("TinCan." + src + ': ' + msg);
+                console.log("TinCan." + src + ": " + msg);
             }
         },
 
@@ -199,7 +200,6 @@ var TinCan;
                 qsParams = TinCan.Utils.parseURL(url).params,
                 lrsProps = ["endpoint", "auth"],
                 lrsCfg = {},
-                activityCfg,
                 contextCfg,
                 extended = null
             ;
@@ -225,10 +225,8 @@ var TinCan;
             }
 
             if (
-                qsParams.hasOwnProperty("activity_platform")
-                ||
-                qsParams.hasOwnProperty("registration")
-                ||
+                qsParams.hasOwnProperty("activity_platform") ||
+                qsParams.hasOwnProperty("registration") ||
                 qsParams.hasOwnProperty("grouping")
             ) {
                 contextCfg = {};
@@ -519,7 +517,7 @@ var TinCan;
                 {
                     actor: actor,
                     verb: {
-                       id: "http://adlnet.gov/expapi/verbs/voided"
+                        id: "http://adlnet.gov/expapi/verbs/voided"
                     },
                     target: {
                         objectType: "StatementRef",
@@ -1249,7 +1247,7 @@ var TinCan;
         ];
     };
 
-    /*global exports*/
+    /*global module*/
     // Support the CommonJS method for exporting our single global
     if (typeof module === "object") {
         module.exports = TinCan;

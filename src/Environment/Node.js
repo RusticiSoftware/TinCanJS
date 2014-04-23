@@ -21,6 +21,7 @@ TinCan client library
 @submodule TinCan.Environment.Node
 **/
 (function () {
+    /* globals require */
     "use strict";
     var LOG_SRC = "Environment.Node",
         log = TinCan.prototype.log,
@@ -89,7 +90,7 @@ TinCan client library
             prop
         ;
         if (Object.keys(cfg.params).length > 0) {
-            url += '?' + querystring.stringify(cfg.params);
+            url += "?" + querystring.stringify(cfg.params);
         }
 
         xhr = new XMLHttpRequest();

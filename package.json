@@ -1,7 +1,7 @@
 {
     "name": "tincanjs",
     "description": "Tin Can API Library",
-    "version": "0.22.2",
+    "version": "0.30.0",
     "private": false,
     "main": "build/tincan-node.js",
     "directories": {
@@ -27,8 +27,11 @@
         "e-learning"
     ],
     "devDependencies": {
-        "gear": "0.8.x",
-        "gear-lib": "0.8.x",
+        "grunt": "0.4.4",
+        "grunt-contrib-jshint": "0.9.2",
+        "grunt-contrib-watch": "0.6.1",
+        "grunt-contrib-concat": "0.3.0",
+        "grunt-contrib-uglify": "0.4.0",
         "qunit": "0.5.16"
     }
 }

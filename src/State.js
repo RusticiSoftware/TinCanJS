@@ -66,7 +66,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'State',
+        LOG_SRC: "State",
 
         /**
         @method log
@@ -85,9 +85,7 @@ TinCan client library
                     "contents",
                     "etag",
                     "contentType"
-                ],
-                val
-            ;
+                ];
 
             cfg = cfg || {};
 

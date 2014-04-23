@@ -41,11 +41,11 @@ TinCan client library
         Dual licensed under the MIT and GPL licenses.
         */
         getUUID: function () {
-            /*jslint bitwise: true eqeq: true */
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+            /*jslint bitwise: true, eqeq: true */
+            return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
                 /[xy]/g,
                 function (c) {
-                    var r = Math.random() * 16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                    var r = Math.random() * 16|0, v = c == "x" ? r : (r&0x3|0x8);
                     return v.toString(16);
                 }
             );
@@ -71,20 +71,20 @@ TinCan client library
                 tempVal = val.toString();
 
                 while (val < padder && padder > 1) {
-                    tempVal = '0' + tempVal;
+                    tempVal = "0" + tempVal;
                     padder = padder / 10;
                 }
 
                 return tempVal;
             }
 
-            return d.getUTCFullYear() + '-'
-                + pad(d.getUTCMonth() + 1) + '-'
-                + pad(d.getUTCDate()) + 'T'
-                + pad(d.getUTCHours()) + ':'
-                + pad(d.getUTCMinutes()) + ':'
-                + pad(d.getUTCSeconds()) + '.'
-                + pad(d.getUTCMilliseconds(), 3) + 'Z';
+            return d.getUTCFullYear() + "-" +
+                pad(d.getUTCMonth() + 1) + "-" +
+                pad(d.getUTCDate()) + "T" +
+                pad(d.getUTCHours()) + ":" +
+                pad(d.getUTCMinutes()) + ":" +
+                pad(d.getUTCSeconds()) + "." +
+                pad(d.getUTCMilliseconds(), 3) + "Z";
         },
 
         /**
@@ -151,16 +151,16 @@ TinCan client library
         @private
         */
         parseURL: function (url) {
-            var parts = String(url).split('?'),
+            var parts = String(url).split("?"),
                 pairs,
                 pair,
                 i,
                 params = {}
             ;
             if (parts.length === 2) {
-                pairs = parts[1].split('&');
+                pairs = parts[1].split("&");
                 for (i = 0; i < pairs.length; i += 1) {
-                    pair = pairs[i].split('=');
+                    pair = pairs[i].split("=");
                     if (pair.length === 2 && pair[0]) {
                         params[pair[0]] = decodeURIComponent(pair[1]);
                     }

@@ -48,7 +48,7 @@ TinCan client library
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'AgentAccount',
+        LOG_SRC: "AgentAccount",
 
         /**
         @method log
@@ -65,9 +65,7 @@ TinCan client library
                 directProps = [
                     "name",
                     "homePage"
-                ],
-                val
-            ;
+                ];
 
             cfg = cfg || {};
 
@@ -86,7 +84,7 @@ TinCan client library
             }
         },
 
-        toString: function (lang) {
+        toString: function () {
             this.log("toString");
             var result = "";
 
