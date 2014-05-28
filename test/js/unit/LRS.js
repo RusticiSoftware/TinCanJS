@@ -186,6 +186,13 @@
         }
     );
 
+    //
+    // this block specifically tests that the 'contextActivities.category' property
+    // causes statement asVersion to throw an exception and therefore fail under
+    // the two versions specified, the assertions in these tests will fail under
+    // 1.x LRS versions because 'category' is an acceptable property so the asVersion
+    // method won't throw an exception
+    //
     (function () {
         var versions = [
                 "0.95",
