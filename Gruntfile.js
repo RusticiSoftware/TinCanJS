@@ -24,7 +24,8 @@ module.exports = function(grunt) {
         "src/StatementsResult.js",
         "src/State.js",
         "src/ActivityProfile.js",
-        "src/AgentProfile.js"
+        "src/AgentProfile.js",
+        "src/About.js"
     ],
     browserFileList = coreFileList.slice(),
     nodeFileList = coreFileList.slice();

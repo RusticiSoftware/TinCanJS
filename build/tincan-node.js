@@ -1833,6 +1833,53 @@ TinCan client library
         },
 
         /**
+        Method used to determine the LRS version
+
+        @method about
+        @param {Object} cfg Configuration object for the about request
+            @param {Function} [cfg.callback] Callback to execute upon receiving a response
+            @param {Object} [cfg.params] this is needed, but can be empty
+        @return {Object} About which holds the version, or asyncrhonously calls a specified callback
+        */
+        about: function (cfg) {
+            this.log("about");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "about",
+                method: "GET",
+                params: {}
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.About.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+
+            if (callbackWrapper) {
+                return;
+            }
+
+            if (requestResult.err === null) {
+                requestResult.xhr = TinCan.About.fromJSON(requestResult.xhr.responseText);
+            }
+            return requestResult;
+        },
+
+        /**
         Save a statement, when used from a browser sends to the endpoint using the RESTful interface.
         Use a callback to make the call asynchronous.
 
@@ -3025,6 +3072,12 @@ TinCan client library
             return this.sendRequest(requestCfg);
         }
     };
+
+    /**
+    Allows client code to determine whether their environment supports synchronous xhr handling
+    @static this is a static property, set by the environment
+    */
+    LRS.syncEnabled = null;
 }());
 
 /*
@@ -6392,6 +6445,91 @@ TinCan client library
 }());
 
 /*
+    Copyright 2014 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.About
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.About
+    @constructor
+    */
+    var About = TinCan.About = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property version
+        @type {String[]}
+        */
+        this.version = null;
+
+        this.init(cfg);
+    };
+    About.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: "About",
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+            var i,
+                directProps = [
+                    "version"
+                ];
+
+            cfg = cfg || {};
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} About
+    @static
+    */
+    About.fromJSON = function (aboutJSON) {
+        About.prototype.log("fromJSON");
+        var _about = JSON.parse(aboutJSON);
+
+        return new About(_about);
+    };
+}());
+
+/*
     Copyright 2012-2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -6515,4 +6653,9 @@ TinCan client library
 
         return requestComplete(xhr, cfg);
     };
+
+    //
+    // Synchronos xhr handling is unsupported in node
+    //
+    TinCan.LRS.syncEnabled = false;
 }());

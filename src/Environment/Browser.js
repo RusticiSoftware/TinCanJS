@@ -361,6 +361,11 @@ TinCan client library
     };
 
     //
+    // Synchronous xhr handling is accepted in the browser environment
+    //
+    TinCan.LRS.syncEnabled = true;
+
+    //
     // Override LRS' init method to set up our request handling
     // capabilities
     //

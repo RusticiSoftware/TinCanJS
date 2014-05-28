@@ -122,4 +122,9 @@ TinCan client library
 
         return requestComplete(xhr, cfg);
     };
+
+    //
+    // Synchronos xhr handling is unsupported in node
+    //
+    TinCan.LRS.syncEnabled = false;
 }());

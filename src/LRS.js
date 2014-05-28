@@ -241,6 +241,53 @@ TinCan client library
         },
 
         /**
+        Method used to determine the LRS version
+
+        @method about
+        @param {Object} cfg Configuration object for the about request
+            @param {Function} [cfg.callback] Callback to execute upon receiving a response
+            @param {Object} [cfg.params] this is needed, but can be empty
+        @return {Object} About which holds the version, or asyncrhonously calls a specified callback
+        */
+        about: function (cfg) {
+            this.log("about");
+            var requestCfg,
+                requestResult,
+                callbackWrapper;
+
+            cfg = cfg || {};
+
+            requestCfg = {
+                url: "about",
+                method: "GET",
+                params: {}
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        result = TinCan.About.fromJSON(xhr.responseText);
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+
+            if (callbackWrapper) {
+                return;
+            }
+
+            if (requestResult.err === null) {
+                requestResult.xhr = TinCan.About.fromJSON(requestResult.xhr.responseText);
+            }
+            return requestResult;
+        },
+
+        /**
         Save a statement, when used from a browser sends to the endpoint using the RESTful interface.
         Use a callback to make the call asynchronous.
 
@@ -1433,4 +1480,10 @@ TinCan client library
             return this.sendRequest(requestCfg);
         }
     };
+
+    /**
+    Allows client code to determine whether their environment supports synchronous xhr handling
+    @static this is a static property, set by the environment
+    */
+    LRS.syncEnabled = null;
 }());
