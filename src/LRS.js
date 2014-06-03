@@ -181,6 +181,17 @@ TinCan client library
         },
 
         /**
+        Method is overloaded by the browser environment in order to test converting an
+        HTTP request that is greater than a defined length
+
+        @method _IEModeConversion
+        @private
+        */
+        _IEModeConversion: function () {
+            this.log("_IEModeConversion not overloaded - browser environment not loaded.");
+        },
+
+        /**
         Method used to send a request via browser objects to the LRS
 
         @method sendRequest
