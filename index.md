@@ -23,7 +23,8 @@ var tincan = new TinCan (
             {
                 endpoint: "https://cloud.scorm.com/tc/public/",
                 username: "<Test User>",
-                password: "<Test User's Password>"
+                password: "<Test User's Password>",
+                allowFail: false
             }
         ]
     }
