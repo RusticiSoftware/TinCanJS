@@ -81,6 +81,9 @@ module.exports = function(grunt) {
         },
 
         concat: {
+            options: {
+                banner: "\"<%= pkg.version %>\";\n"
+            },
             dist: {
                 files: {
                     "build/tincan.js": browserFileList,
