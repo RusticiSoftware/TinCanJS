@@ -221,11 +221,17 @@
                                 ok(xhr instanceof TinCan.About, "callback: xhr is TinCan.About");
                                 ok(xhr.hasOwnProperty("version"), "callback: xhr has field 'version'");
 
-                                // Will break if suite is ran against a version not
-                                // supported by this library
-                                for (i = 0; i < xhr.version.length; i += 1) {
-                                    ok(TinCan.versions().indexOf(xhr.version[i]) !== -1,
-                                        "callback: xhr.version has valid version (" + xhr.version[i] + ")");
+                                //
+                                // IE8 didn't support .indexOf, so we are just skipping this test in that browser
+                                // or any that doesn't have .indexOf
+                                //
+                                if (typeof Array.prototype.indexOf !== "undefined") {
+                                    // Will break if suite is ran against a version not
+                                    // supported by this library
+                                    for (i = 0; i < xhr.version.length; i += 1) {
+                                        ok(TinCan.versions().indexOf(xhr.version[i]) !== -1,
+                                            "callback: xhr.version has valid version (" + xhr.version[i] + ")");
+                                    }
                                 }
                             }
                         }
@@ -269,11 +275,18 @@
             ok(result.xhr.hasOwnProperty("version"), "about allowFail false: result.xhr has 'version' (" + lrs.version + ")");
 
             xhrversion = result.xhr.version;
-            // Will break if suite is ran against a version not
-            // supported by this library
-            for (i = 0; i < xhrversion.length; i += 1) {
-                ok(TinCan.versions().indexOf(xhrversion[i]) !== -1,
-                    "about allowFail false: result.xhr.version has valid version [" + xhrversion[i] + "]");
+
+            //
+            // IE8 didn't support .indexOf, so we are just skipping this test in that browser
+            // or any that doesn't have .indexOf
+            //
+            if (typeof Array.prototype.indexOf !== "undefined") {
+                // Will break if suite is ran against a version not
+                // supported by this library
+                for (i = 0; i < xhrversion.length; i += 1) {
+                    ok(TinCan.versions().indexOf(xhrversion[i]) !== -1,
+                        "about allowFail false: result.xhr.version has valid version [" + xhrversion[i] + "]");
+                }
             }
         };
 
