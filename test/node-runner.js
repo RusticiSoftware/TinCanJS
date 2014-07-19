@@ -53,6 +53,7 @@ testRunner.run(
             ,"js/unit/TinCan.js"
             ,"js/unit/TinCan-async.js"
             ,"js/unit/LRS.js"
+            ,"js/unit/About.js"
         ]
     },
     function (err, report) {
