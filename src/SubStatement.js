@@ -220,9 +220,9 @@ TinCan client library
 
             result = {
                 objectType: this.objectType,
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
+                actor: (this.actor !== null ? this.actor.asVersion(version) : null),
+                verb: (this.verb !== null ? this.verb.asVersion(version) : null),
+                object: (this.target !== null ? this.target.asVersion(version) : null)
             };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
