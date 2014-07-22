@@ -30,4 +30,17 @@
             ok(result instanceof TinCan.SubStatement, "returns TinCan.SubStatement");
         }
     );
+    test(
+        "SubStatement.asVersion empty",
+        function () {
+            var raw = {},
+                string,
+                result
+            ;
+
+            result = TinCan.SubStatement.fromJSON(JSON.stringify(raw));
+            result.asVersion();
+            ok(result instanceof TinCan.SubStatement, "returns TinCan.SubStatement");
+        }
+    );
 }());
