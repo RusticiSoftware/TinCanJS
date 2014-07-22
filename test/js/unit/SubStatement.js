@@ -27,7 +27,29 @@
             ;
 
             result = TinCan.SubStatement.fromJSON(JSON.stringify(raw));
+            console.log(result);
             ok(result instanceof TinCan.SubStatement, "returns TinCan.SubStatement");
+        }
+    );
+    test(
+        "SubStatement.asVersion empty",
+        function () {
+            var raw = {},
+                string,
+                result,
+                key,
+                checkProps = {
+                    objectType: "SubStatement",
+                    actor: undefined,
+                    verb: undefined,
+                    target: undefined
+                }
+            ;
+
+            result = TinCan.SubStatement.fromJSON(JSON.stringify(raw)).asVersion();
+            for (key in checkProps){
+                deepEqual(result[key], checkProps[key], "object property initial value: " + key);
+            }
         }
     );
 }());

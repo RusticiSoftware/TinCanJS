@@ -5418,6 +5418,8 @@ TinCan client library
 
             cfg = cfg || {};
 
+            this.objectType = "SubStatement";
+
             if (cfg.hasOwnProperty("object")) {
                 cfg.target = cfg.object;
             }
@@ -5522,19 +5524,19 @@ TinCan client library
                     "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
+                    "target",
                     "result",
                     "context"
                 ],
                 i;
 
+            result = {
+                objectType: this.objectType
+            };
             version = version || TinCan.versions()[0];
 
-            result = {
-                objectType: this.objectType,
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
