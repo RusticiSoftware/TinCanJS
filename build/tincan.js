@@ -5418,6 +5418,8 @@ TinCan client library
 
             cfg = cfg || {};
 
+            this.objectType = "SubStatement";
+
             if (cfg.hasOwnProperty("object")) {
                 cfg.target = cfg.object;
             }
