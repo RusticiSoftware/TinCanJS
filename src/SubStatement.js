@@ -211,19 +211,18 @@ TinCan client library
                     "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
                     "result",
                     "context"
                 ],
                 i;
 
+            result = {
+                objectType: this.objectType
+            };
             version = version || TinCan.versions()[0];
 
-            result = {
-                objectType: this.objectType,
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
@@ -233,6 +232,9 @@ TinCan client library
                 if (this[optionalObjProps[i]] !== null) {
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
                 }
+            }
+            if (this.target !== null) {
+                result.object = this.target.asVersion(version);
             }
 
             return result;
