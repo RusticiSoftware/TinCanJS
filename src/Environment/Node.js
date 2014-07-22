@@ -89,7 +89,7 @@ TinCan client library
             async = typeof cfg.callback !== "undefined",
             prop
         ;
-        if (Object.keys(cfg.params).length > 0) {
+        if (typeof cfg.params !== "undefined" && Object.keys(cfg.params).length > 0) {
             url += "?" + querystring.stringify(cfg.params);
         }
 
