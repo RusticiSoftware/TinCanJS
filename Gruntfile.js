@@ -81,6 +81,9 @@ module.exports = function(grunt) {
         },
 
         concat: {
+            options: {
+                banner: "\"<%= pkg.version %>\";\n"
+            },
             dist: {
                 files: {
                     "build/tincan.js": browserFileList,
@@ -99,6 +102,20 @@ module.exports = function(grunt) {
                     sourceMap: true
                 }
             }
+        },
+
+        yuidoc: {
+            compile: {
+                version: "<%= pkg.version %>",
+                name: "TinCanJS",
+                description: "Library for working with Tin Can API in JavaScript",
+                url: "http://rusticisoftware.github.com/TinCanJS/",
+                options: {
+                    paths: "src/",
+                    outdir: "doc/api/"
+                },
+                logo: "http://cdn4.tincanapi.com/wp-content/themes/tincanapi/images/logo.png"
+            }
         }
     });
 
@@ -107,6 +124,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-yuidoc");
 
     // Define tasks
     grunt.registerTask("build", ["jshint", "concat", "uglify"]);

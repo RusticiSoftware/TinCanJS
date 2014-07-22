@@ -1,37 +1,44 @@
 {
-    "name": "tincanjs",
-    "description": "Tin Can API Library",
-    "version": "0.30.0",
-    "private": false,
-    "main": "build/tincan-node.js",
-    "directories": {
-        "src": "src",
-        "doc": "doc"
-    },
-    "dependencies": {
-        "xhr2": "0.0.7"
-    },
-    "author": "Rustici Software <support@tincanapi.com>",
-    "contributors": [
-        {
-            "name": "Brian J. Miller",
-            "email": "brian.miller@tincanapi.com"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/RusticiSoftware/TinCanJS.git"
-    },
-    "keywords": [
-        "tincan",
-        "e-learning"
-    ],
-    "devDependencies": {
-        "grunt": "0.4.4",
-        "grunt-contrib-jshint": "0.9.2",
-        "grunt-contrib-watch": "0.6.1",
-        "grunt-contrib-concat": "0.3.0",
-        "grunt-contrib-uglify": "0.4.0",
-        "qunit": "0.5.16"
+  "name": "tincanjs",
+  "description": "Tin Can API Library",
+  "version": "0.30.0",
+  "private": false,
+  "main": "build/tincan-node.js",
+  "directories": {
+    "src": "src",
+    "doc": "doc"
+  },
+  "dependencies": {
+    "xhr2": "0.0.7"
+  },
+  "author": "Rustici Software <support@tincanapi.com>",
+  "contributors": [
+    {
+      "name": "Brian J. Miller",
+      "email": "brian.miller@tincanapi.com"
     }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RusticiSoftware/TinCanJS.git"
+  },
+  "keywords": [
+    "tincan",
+    "tin can",
+    "e-learning",
+    "scorm",
+    "lrs",
+    "experienceapi",
+    "experience api",
+    "xapi"
+  ],
+  "devDependencies": {
+    "grunt": "0.4.4",
+    "grunt-contrib-concat": "0.3.0",
+    "grunt-contrib-jshint": "0.9.2",
+    "grunt-contrib-uglify": "0.4.0",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-contrib-yuidoc": "^0.5.2",
+    "qunit": "0.5.16"
+  }
 }
