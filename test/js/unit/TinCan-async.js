@@ -61,7 +61,7 @@
                         id: "http://adlnet.gov/expapi/verbs/attempted"
                     },
                     target: {
-                        id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/sync"
+                        id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/async"
                     }
                 }
             );
@@ -197,10 +197,14 @@
                                 statement.stored = null;
                                 statement.authority = null;
 
-                                // at 1.0.0 and after the version returned should be the version we are sending under
-                                // for this statement since we know we are generating it
                                 if (v !== "0.9" && v !== "0.95") {
-                                    sentStatement.version = v;
+                                    //
+                                    // in 1.0.0 the version should be 1.0.0, in 1.0.1 it was supposed to be
+                                    // returned as 1.0.1 but the spec still said 1.0.0, in the future it is
+                                    // expected that if the LRS supports a particular version that is what
+                                    // it returns
+                                    //
+                                    sentStatement.version = "1.0.0";
                                 }
                                 if (v === "0.9") {
                                     sentStatement.inProgress = false;
