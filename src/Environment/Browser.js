@@ -231,7 +231,7 @@ TinCan client library
 
         if (fullRequest.length >= MAX_REQUEST_LENGTH) {
             // This may change based upon what content is supported in IE Mode
-            if (headers["Content-Type"] !== "application/json") {
+            if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
                 err = new Error("Unsupported content type for IE Mode request");
                 if (typeof cfg.callback !== "undefined") {
                     cfg.callback(err, null);
@@ -327,7 +327,20 @@ TinCan client library
             control = {
                 finished: false,
                 fakeStatus: null
+            },
+            err;
+
+        if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
+            err = new Error("Unsupported content type for IE Mode request");
+            if (cfg.callback) {
+                cfg.callback(err, null);
+                return null;
+            }
+            return {
+                err: err,
+                xhr: null
             };
+        }
 
         // method has to go on querystring, and nothing else,
         // and the actual method is then always POST

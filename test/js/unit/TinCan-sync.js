@@ -26,7 +26,12 @@
         doStateSyncTest,
         doStateSyncContentTypeJSONTest,
         doActivityProfileSyncTest,
-        doActivityProfileSyncContentTypeJSONTest;
+        doActivityProfileSyncContentTypeJSONTest,
+        NATIVE_CORS = false;
+
+    if (typeof XMLHttpRequest !== "undefined" && typeof (new XMLHttpRequest()).withCredentials !== "undefined") {
+        NATIVE_CORS = true;
+    }
 
     QUnit.module(
         "TinCan-sync No LRS",
@@ -187,10 +192,14 @@
                 if (v === "0.9") {
                     sendResult.statement.inProgress = false;
                 }
-                // at 1.0.0 and after the version returned should be the version we are sending under
-                // for this statement since we know we are generating it
                 if (v !== "0.9" && v !== "0.95") {
-                    sendResult.statement.version = v;
+                    //
+                    // in 1.0.0 the version should be 1.0.0, in 1.0.1 it was supposed to be
+                    // returned as 1.0.1 but the spec still said 1.0.0, in the future it is
+                    // expected that if the LRS supports a particular version that is what
+                    // it returns
+                    //
+                    sendResult.statement.version = "1.0.0";
                 }
                 deepEqual(getResult.statement, sendResult.statement, "getResult property value: statement (" + v + ")");
             }
@@ -286,10 +295,14 @@
                 if (v === "0.9" || v === "0.95") {
                     sendResult.statement.voided = true;
                 }
-                // at 1.0.0 and after the version returned should be the version we are sending under
-                // for this statement since we know we are generating it
                 if (v !== "0.9" && v !== "0.95") {
-                    sendResult.statement.version = v;
+                    //
+                    // in 1.0.0 the version should be 1.0.0, in 1.0.1 it was supposed to be
+                    // returned as 1.0.1 but the spec still said 1.0.0, in the future it is
+                    // expected that if the LRS supports a particular version that is what
+                    // it returns
+                    //
+                    sendResult.statement.version = "1.0.0";
                 }
                 deepEqual(getVoidedResult.statement, sendResult.statement, "getVoidedResult property value: statement (" + v + ")");
             }
@@ -319,8 +332,22 @@
 
                 setResult = session[v].setState(key, val, options);
 
+                if (! NATIVE_CORS) {
+                    deepEqual(
+                        setResult,
+                        {
+                            xhr: null,
+                            err: new Error("Unsupported content type for IE Mode request")
+                        },
+                        "setResult when using XDomainRequest"
+                    );
+
+                    return;
+                }
+
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+                ok(setResult.err === null, "setResult.err is null");
 
                 getResult = session[v].getState(key, options);
                 ok(getResult.hasOwnProperty("state"), "getResult has property: state (" + v + ")");
@@ -342,7 +369,7 @@
 
     doStateSyncContentTypeJSONTest = function (v) {
         test(
-            "tincan state (sync): " + v,
+            "tincan state (sync, JSON content type): " + v,
             function () {
                 var setResult,
                     key = "setState (sync, json content)",
@@ -407,6 +434,18 @@
                     };
 
                 setResult = session[v].setActivityProfile(key, val, options);
+                if (! NATIVE_CORS) {
+                    deepEqual(
+                        setResult,
+                        {
+                            xhr: null,
+                            err: new Error("Unsupported content type for IE Mode request")
+                        },
+                        "setResult when using XDomainRequest"
+                    );
+
+                    return;
+                }
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
@@ -495,6 +534,18 @@
                     };
 
                 setResult = session[v].setAgentProfile(key, val, options);
+                if (! NATIVE_CORS) {
+                    deepEqual(
+                        setResult,
+                        {
+                            xhr: null,
+                            err: new Error("Unsupported content type for IE Mode request")
+                        },
+                        "setResult when using XDomainRequest"
+                    );
+
+                    return;
+                }
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
