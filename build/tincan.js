@@ -1,4 +1,4 @@
-"0.30.0";
+"0.31.0";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -1771,6 +1771,17 @@ TinCan client library
         */
         _makeRequest: function () {
             this.log("_makeRequest not overloaded - no environment loaded?");
+        },
+
+        /**
+        Method is overloaded by the browser environment in order to test converting an
+        HTTP request that is greater than a defined length
+
+        @method _IEModeConversion
+        @private
+        */
+        _IEModeConversion: function () {
+            this.log("_IEModeConversion not overloaded - browser environment not loaded.");
         },
 
         /**
@@ -5522,19 +5533,18 @@ TinCan client library
                     "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
                     "result",
                     "context"
                 ],
                 i;
 
+            result = {
+                objectType: this.objectType
+            };
             version = version || TinCan.versions()[0];
 
-            result = {
-                objectType: this.objectType,
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
@@ -5544,6 +5554,9 @@ TinCan client library
                 if (this[optionalObjProps[i]] !== null) {
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
                 }
+            }
+            if (this.target !== null) {
+                result.object = this.target.asVersion(version);
             }
 
             return result;
@@ -6560,6 +6573,7 @@ TinCan client library
         xdrRequest,
         requestComplete,
         __delay,
+        __IEModeConversion,
         env = {},
         log = TinCan.prototype.log;
 
@@ -6697,6 +6711,37 @@ TinCan client library
     };
 
     //
+    // Converts an HTTP request cfg of above a set length (//MAX_REQUEST_LENGTH) to a post
+    // request cfg, with the original request as the form data.
+    //
+    __IEModeConversion = function (fullUrl, headers, pairs, cfg) {
+        var prop;
+
+        // 'pairs' already holds the original cfg params, now needs headers and data
+        // from the original cfg to add as the form data to the POST request
+        for (prop in headers) {
+            if (headers.hasOwnProperty(prop)) {
+                pairs.push(prop + "=" + encodeURIComponent(headers[prop]));
+            }
+        }
+
+        if (typeof cfg.data !== "undefined") {
+            pairs.push("content=" + encodeURIComponent(cfg.data));
+        }
+
+        // the Authorization and xAPI version headers need to still be present, but
+        // the content type must exist and be of type application/x-www-form-urlencoded
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        fullUrl += "?method=" + cfg.method;
+        cfg.method = "POST";
+        cfg.params = {};
+        if (pairs.length > 0) {
+            cfg.data = pairs.join("&");
+        }
+        return fullUrl;
+    };
+
+    //
     // one of the two of these is stuffed into the LRS' instance
     // as ._makeRequest
     //
@@ -6712,7 +6757,10 @@ TinCan client library
                 finished: false,
                 fakeStatus: null
             },
-            async = typeof cfg.callback !== "undefined"
+            async = typeof cfg.callback !== "undefined",
+            fullRequest = fullUrl,
+            err,
+            MAX_REQUEST_LENGTH = 2048
         ;
         log("sendRequest using XMLHttpRequest - async: " + async, LOG_SRC);
 
@@ -6721,8 +6769,39 @@ TinCan client library
                 pairs.push(prop + "=" + encodeURIComponent(cfg.params[prop]));
             }
         }
+
         if (pairs.length > 0) {
-            fullUrl += "?" + pairs.join("&");
+            fullRequest += "?" + pairs.join("&");
+        }
+
+        if (fullRequest.length >= MAX_REQUEST_LENGTH) {
+            // This may change based upon what content is supported in IE Mode
+            if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
+                err = new Error("Unsupported content type for IE Mode request");
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(err, null);
+                }
+                return {
+                    err: err,
+                    xhr: null
+                };
+            }
+
+            if (typeof cfg.method === "undefined") {
+                err = new Error("method must not be undefined for an IE Mode Request conversion");
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(err, null);
+                }
+                return {
+                    err: err,
+                    xhr: null
+                };
+            }
+
+            fullUrl = __IEModeConversion(fullUrl, headers, pairs, cfg);
+        }
+        else {
+            fullUrl = fullRequest;
         }
 
         if (typeof XMLHttpRequest !== "undefined") {
@@ -6793,7 +6872,20 @@ TinCan client library
             control = {
                 finished: false,
                 fakeStatus: null
+            },
+            err;
+
+        if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
+            err = new Error("Unsupported content type for IE Mode request");
+            if (cfg.callback) {
+                cfg.callback(err, null);
+                return null;
+            }
+            return {
+                err: err,
+                xhr: null
             };
+        }
 
         // method has to go on querystring, and nothing else,
         // and the actual method is then always POST
@@ -6893,11 +6985,6 @@ TinCan client library
     };
 
     //
-    // Synchronous xhr handling is accepted in the browser environment
-    //
-    TinCan.LRS.syncEnabled = true;
-
-    //
     // Override LRS' init method to set up our request handling
     // capabilities
     //
@@ -6917,6 +7004,12 @@ TinCan client library
         // default to native request mode
         //
         this._makeRequest = nativeRequest;
+
+        //
+        // overload LRS ._IEModeConversion to be able to test this method,
+        // which only applies in a browser setting
+        //
+        this._IEModeConversion = __IEModeConversion;
 
         urlParts = this.endpoint.toLowerCase().match(/([A-Za-z]+:)\/\/([^:\/]+):?(\d+)?(\/.*)?$/);
         if (urlParts === null) {
@@ -7012,4 +7105,9 @@ TinCan client library
         xhr.open("GET", url, false);
         xhr.send(null);
     };
+
+    //
+    // Synchronous xhr handling is accepted in the browser environment
+    //
+    TinCan.LRS.syncEnabled = true;
 }());

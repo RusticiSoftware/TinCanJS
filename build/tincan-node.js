@@ -1,4 +1,4 @@
-"0.30.0";
+"0.31.0";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -1771,6 +1771,17 @@ TinCan client library
         */
         _makeRequest: function () {
             this.log("_makeRequest not overloaded - no environment loaded?");
+        },
+
+        /**
+        Method is overloaded by the browser environment in order to test converting an
+        HTTP request that is greater than a defined length
+
+        @method _IEModeConversion
+        @private
+        */
+        _IEModeConversion: function () {
+            this.log("_IEModeConversion not overloaded - browser environment not loaded.");
         },
 
         /**
@@ -5522,19 +5533,18 @@ TinCan client library
                     "timestamp"
                 ],
                 optionalObjProps = [
+                    "actor",
+                    "verb",
                     "result",
                     "context"
                 ],
                 i;
 
+            result = {
+                objectType: this.objectType
+            };
             version = version || TinCan.versions()[0];
 
-            result = {
-                objectType: this.objectType,
-                actor: this.actor.asVersion(version),
-                verb: this.verb.asVersion(version),
-                object: this.target.asVersion(version)
-            };
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
                     result[optionalDirectProps[i]] = this[optionalDirectProps[i]];
@@ -5544,6 +5554,9 @@ TinCan client library
                 if (this[optionalObjProps[i]] !== null) {
                     result[optionalObjProps[i]] = this[optionalObjProps[i]].asVersion(version);
                 }
+            }
+            if (this.target !== null) {
+                result.object = this.target.asVersion(version);
             }
 
             return result;
@@ -6621,7 +6634,7 @@ TinCan client library
             async = typeof cfg.callback !== "undefined",
             prop
         ;
-        if (Object.keys(cfg.params).length > 0) {
+        if (typeof cfg.params !== "undefined" && Object.keys(cfg.params).length > 0) {
             url += "?" + querystring.stringify(cfg.params);
         }
 
