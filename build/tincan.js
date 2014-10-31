@@ -2195,12 +2195,18 @@ TinCan client library
                 };
             }
 
+            // modify the callback function for one that checks whether the
+            // returned values are legit, and store the original callback in
+            // a new variable
+
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
                         result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                    } else {
+                        result = this._ensureStatementsReturned(result);
                     }
 
                     cfg.callback(err, result);
@@ -2212,6 +2218,18 @@ TinCan client library
             requestResult.config = requestCfg;
 
             if (! callbackWrapper) {
+                //
+                // if there are fewer statements than expected (zero if no limit was
+                // specified or less than the limit if a limit was specified) and
+                // there's a more link, continue paging through the more links until
+                // a statement is returned or the limit was reached and no more 'more'
+                // links were returned.
+                //
+
+                // export all these checks and the loop to another function, the
+                // same function as the temporary callback function
+                requestResult = this._ensureStatementsReturned(requestResult.xhr);
+
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
@@ -2353,6 +2371,53 @@ TinCan client library
         },
 
         /**
+
+
+        @method _ensureStatementsReturned
+        @private
+        @param {Object} [initialResult] xhr object
+        @return {Object} result
+        */
+        _ensureStatementsReturned: function (initialResult) {
+            var requestResult = initialResult,
+                parsedURL,
+                limit,
+                cfg = {},
+                requestMore = {};
+
+            if (requestResult.more === null ) {
+                return requestResult;
+            }
+
+            // check if there was a limit specified
+            // get the limit from the more url
+            parsedURL = TinCan.Utils.parseURL(requestResult.more);
+            limit = typeof parsedURL.params.limit !== "undefined"? parsedURL.params.limit: null;
+
+
+            // loop through the pages until we get the expected statements
+            if (limit === null) {
+                while(requestResult.statements.length === 0 && requestResult.more !== null) {
+                    cfg.url = requestResult.more;
+                    requestMore = this.moreStatements(cfg);
+
+                    requestResult.statements = requestMore.statements;
+                    requestResult.more = requestMore.more;
+                }
+            } else if (limit > 0) {
+                while(requestResult.statements.length < limit && requestResult.more !== null) {
+                    cfg.url = requestResult.more;
+                    requestMore = this.moreStatements(cfg);
+
+                    requestResult.statements.concat(requestMore.statements);
+                    requestResult.more = requestMore.more;
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
         Fetch more statements from a previous query, when used from a browser sends to the endpoint using the
         RESTful interface.  Use a callback to make the call asynchronous.
 
@@ -2378,7 +2443,7 @@ TinCan client library
             // the more URL query params so that the request can be made properly later
             parsedURL = TinCan.Utils.parseURL(cfg.url);
 
-            //Respect a more URL that is relative to either the server root 
+            //Respect a more URL that is relative to either the server root
             //or endpoint (though only the former is allowed in the spec)
             serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
             if (parsedURL.path.indexOf("/statements") === 0){
@@ -2393,7 +2458,7 @@ TinCan client library
 
             requestCfg = {
                 method: "GET",
-                //For arbitrary more URLs to work, 
+                //For arbitrary more URLs to work,
                 //we need to make the URL absolute here
                 url: serverRoot + parsedURL.path,
                 params: parsedURL.params
