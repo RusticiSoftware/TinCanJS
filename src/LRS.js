@@ -812,12 +812,27 @@ TinCan client library
                     requestResult.more = requestMore.more;
                 }
             } else if (limit > 0) {
-                while(requestResult.statements.length < limit && requestResult.more !== null) {
+                // strip the limit parameter for the first more URL
+                delete parsedURL.params.limit;
+                // assemble the more URL
+                requestResult.more = parsedURL.path + "?";
+                for (var param in parsedURL.params) {
+                  if (param === 'length' || !parsedURL.params.hasOwnProperty(key)) continue;
+                  requestResult.more += encodeURIComponent(param) + "=" + encodeURIComponent(parsedURL.params[param]);
+                }
+
+                while(requestResult.statements.length <= limit && requestResult.more !== null) {
                     cfg.url = requestResult.more;
                     requestMore = this.moreStatements(cfg);
 
                     requestResult.statements.concat(requestMore.statements);
                     requestResult.more = requestMore.more;
+                }
+
+                // discard the statements over the limit
+                while(requestResult.statements.length > limit) {
+                    // remove a statement from the end of the array
+                    requestResult.statements.pop();
                 }
             }
 
