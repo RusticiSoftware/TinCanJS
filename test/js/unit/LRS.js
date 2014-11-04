@@ -605,19 +605,27 @@
         test(
             "LRS queryStatements with combinations of agent, verb, object, limit filters",
             function ( assert ) {
-                // No limits, no callback, agent + verb
-                var result = lrs.queryStatements({
-                    params: {
-                        agent: new TinCan.Agent({
-                            mbox: actors[0]
-                        }),
-                        verb: new TinCan.Verb({
-                            id: verbs[0]
-                        })
-                    }
-                });
 
-                strictEqual(result.statementsResult.statements.length, activities.length, "The agent, verb query returned the expected amount of statements");
+                QUnit.assert.equalsStatementCount = function(query, expectedCount, message) {
+                    var result = lrs.queryStatements(query);
+
+                    QUnit.push(result.statementsResult.statements.length === expectedCount, result.statementsResult.statements.length, expectedCount, message);
+                }
+
+                // agent + verb
+                assert.equalsStatementCount({
+                        params: {
+                            agent: new TinCan.Agent({
+                                mbox: actors[0]
+                            }),
+                            verb: new TinCan.Verb({
+                                id: verbs[0]
+                            })
+                        }
+                    },
+                    activities.length,
+                    "The agent, verb query returned the expected amount of statements"
+                );
             }
         );
 
