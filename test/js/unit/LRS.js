@@ -545,4 +545,87 @@
             }
         }
     }());
+
+
+    QUnit.module("LRS queryStatements");
+
+    (function () {
+        var version = "1.0.1",
+            domain = "tincanjs-test-tincan-" + Date.now() + ".test",
+            actors = [
+                "mailto:actor.one@" + domain,
+                "mailto:actor.two@" + domain,
+                "mailto:actor.three@" + domain
+            ],
+            verbs = [
+                "http://" + domain + "/expapi/verbs/attempted",
+                "http://" + domain + "/expapi/verbs/completed",
+                "http://" + domain + "/expapi/verbs/passed",
+                "http://" + domain + "/expapi/verbs/failed"
+            ],
+            activities = [
+                "http://" + domain + "/activities/one",
+                "http://" + domain + "/activities/two",
+                "http://" + domain + "/activities/three"
+            ],
+            i,
+            j,
+            k,
+            stCfg;
+
+        // save test statements to the LRS
+
+
+        if (TinCanTestCfg.recordStores[version]) {
+            lrs = new TinCan.LRS(TinCanTestCfg.recordStores[version]);
+        }
+
+        for (        i = 0; i < actors.length; i += 1) {
+            for (    j = 0; j < verbs.length; j += 1) {
+                for (k = 0; k < activities.length; k += 1) {
+                    stCfg = {
+                        actor: {
+                            mbox: actors[i]
+                        },
+                        verb: {
+                            id: verbs[j]
+                        },
+                        target: {
+                            id: activities[k]
+                        }
+                    };
+
+                    var result = lrs.saveStatement(new TinCan.Statement(stCfg));
+                }
+            }
+        }
+
+        // test querying for the statements in each API version
+
+        test(
+            "LRS queryStatements with combinations of agent, verb, object, limit filters",
+            function ( assert ) {
+                // No limits, no callback, agent + verb
+                var result = lrs.queryStatements({
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        })
+                    }
+                });
+
+                strictEqual(result.statementsResult.statements.length, activities.length, "The agent, verb query returned the expected amount of statements");
+            }
+        );
+
+        // test async querying for the statements in each API version
+
+
+    }());
+
+
+
 }());
