@@ -603,17 +603,23 @@
         // test querying for the statements in each API version
 
         test(
-            "LRS queryStatements with combinations of agent, verb, object, limit filters",
+            "LRS queryStatements with combinations of agent, verb, object filters",
             function ( assert ) {
 
-                QUnit.assert.equalsStatementCount = function(query, expectedCountIfNoLimit, message) {
+                QUnit.assert.equalStatementCount = function(query, expectedCountIfNoLimit, message) {
                     var result = lrs.queryStatements(query);
 
                     QUnit.push(result.statementsResult.statements.length === expectedCountIfNoLimit, result.statementsResult.statements.length, expectedCountIfNoLimit, message);
+                    stop();
+                    query.callback = function(err, result) {
+                        start();
+                        equal(result.statements.length, expectedCountIfNoLimit, message + " (async)");
+                    };
+                    var asyncresult = lrs.queryStatements(query);
                 }
 
                 // agent + verb
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             agent: new TinCan.Agent({
                                 mbox: actors[0]
@@ -628,7 +634,7 @@
                 );
 
                 // verb + object
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             verb: new TinCan.Verb({
                                 id: verbs[0]
@@ -643,7 +649,7 @@
                 );
 
                 // agent + object
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             agent: new TinCan.Agent({
                                 mbox: actors[0]
@@ -658,7 +664,7 @@
                 );
 
                 // object only
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             activity: new TinCan.Activity({
                                 id: activities[0]
@@ -670,7 +676,7 @@
                 );
 
                 // agent only
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             agent: new TinCan.Agent({
                                 mbox: actors[0]
@@ -682,7 +688,7 @@
                 );
 
                 // verb only
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             verb: new TinCan.Verb({
                                 id: verbs[0]
@@ -694,7 +700,7 @@
                 );
 
                 // agent + verb + activity
-                assert.equalsStatementCount({
+                assert.equalStatementCount({
                         params: {
                             agent: new TinCan.Agent({
                                 mbox: actors[0]
