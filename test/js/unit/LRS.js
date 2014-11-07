@@ -595,28 +595,30 @@
                         }
                     };
 
-                    var result = lrs.saveStatement(new TinCan.Statement(stCfg));
+                    var result = lrs.saveStatement(
+                        new TinCan.Statement(stCfg),
+                        {
+                            callback: function(err, xhr) {
+                                // do nothing
+                            }
+                        }
+                    );
                 }
             }
         }
 
         doStatementCountTest = function (name, query, expectedCount) {
-            test(
+            asyncTest(
                 name,
                 function ( assert ) {
 
                     messageExpectedCount = "query returned the expected amount of statements";
                     messageNoMoreURL = "no more URL returned";
 
-                    var result = lrs.queryStatements(query);
-                    equal(result.statementsResult.statements.length, expectedCount, messageExpectedCount);
-                    ok(result.statementsResult.more === null, messageNoMoreURL);
-
-                    stop();
                     query.callback = function(err, result) {
                         start();
-                        equal(result.statements.length, expectedCount, messageExpectedCount + " (async)");
-                        ok(result.more === null, messageNoMoreURL + " (async)");
+                        equal(result.statements.length, expectedCount, messageExpectedCount);
+                        ok(result.more === null, messageNoMoreURL);
                     };
                     var asyncresult = lrs.queryStatements(query);
                 }
