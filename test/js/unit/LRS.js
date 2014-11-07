@@ -550,7 +550,7 @@
     QUnit.module("LRS queryStatements");
 
     (function () {
-        var version = "1.0.1",
+        var version = "1.0.0",
             domain = "tincanjs-test-tincan-" + Date.now() + ".test",
             actors = [
                 "mailto:actor.one@" + domain,
@@ -600,126 +600,127 @@
             }
         }
 
-        // test querying for the statements in each API version
+        doStatementCountTest = function (name, query, expectedCount) {
+            test(
+                name,
+                function ( assert ) {
 
-        test(
-            "LRS queryStatements with combinations of agent, verb, object filters",
-            function ( assert ) {
+                    messageExpectedCount = "query returned the expected amount of statements";
+                    messageNoMoreURL = "no more URL returned";
 
-                QUnit.assert.equalStatementCount = function(query, expectedCountIfNoLimit, message) {
                     var result = lrs.queryStatements(query);
+                    equal(result.statementsResult.statements.length, expectedCount, messageExpectedCount);
+                    ok(result.statementsResult.more === null, messageNoMoreURL);
 
-                    QUnit.push(result.statementsResult.statements.length === expectedCountIfNoLimit, result.statementsResult.statements.length, expectedCountIfNoLimit, message);
                     stop();
                     query.callback = function(err, result) {
                         start();
-                        equal(result.statements.length, expectedCountIfNoLimit, message + " (async)");
+                        equal(result.statements.length, expectedCount, messageExpectedCount + " (async)");
+                        ok(result.more === null, messageNoMoreURL + " (async)");
                     };
                     var asyncresult = lrs.queryStatements(query);
                 }
+            );
+        }
 
-                // agent + verb
-                assert.equalStatementCount({
-                        params: {
-                            agent: new TinCan.Agent({
-                                mbox: actors[0]
-                            }),
-                            verb: new TinCan.Verb({
-                                id: verbs[0]
-                            })
-                        }
-                    },
-                    activities.length,
-                    "The agent, verb query returned the expected amount of statements"
-                );
-
-                // verb + object
-                assert.equalStatementCount({
-                        params: {
-                            verb: new TinCan.Verb({
-                                id: verbs[0]
-                            }),
-                            activity: new TinCan.Activity({
-                                id: activities[0]
-                            })
-                        }
-                    },
-                    actors.length,
-                    "The verb, object query returned the expected amount of statements"
-                );
-
-                // agent + object
-                assert.equalStatementCount({
-                        params: {
-                            agent: new TinCan.Agent({
-                                mbox: actors[0]
-                            }),
-                            activity: new TinCan.Activity({
-                                id: activities[0]
-                            })
-                        }
-                    },
-                    verbs.length,
-                    "The agent, object query returned the expected amount of statements"
-                );
-
-                // object only
-                assert.equalStatementCount({
-                        params: {
-                            activity: new TinCan.Activity({
-                                id: activities[0]
-                            })
-                        }
-                    },
-                    actors.length * verbs.length,
-                    "The object only query returned the expected amount of statements"
-                );
-
-                // agent only
-                assert.equalStatementCount({
-                        params: {
-                            agent: new TinCan.Agent({
-                                mbox: actors[0]
-                            })
-                        }
-                    },
-                    verbs.length * activities.length,
-                    "The agent only query returned the expected amount of statements"
-                );
-
-                // verb only
-                assert.equalStatementCount({
-                        params: {
-                            verb: new TinCan.Verb({
-                                id: verbs[0]
-                            })
-                        }
-                    },
-                    actors.length * activities.length,
-                    "The verb only query returned the expected amount of statements"
-                );
-
-                // agent + verb + activity
-                assert.equalStatementCount({
-                        params: {
-                            agent: new TinCan.Agent({
-                                mbox: actors[0]
-                            }),
-                            verb: new TinCan.Verb({
-                                id: verbs[0]
-                            }),
-                            activity: new TinCan.Activity({
-                                id: activities[0]
-                            })
-                        }
-                    },
-                    1,
-                    "The agent + verb + activity query returned the expected amount of statements"
-                );
-            }
+        doStatementCountTest(
+            "LRS queryStatements with agent + verb filters",
+            {
+                params: {
+                    agent: new TinCan.Agent({
+                        mbox: actors[0]
+                    }),
+                    verb: new TinCan.Verb({
+                        id: verbs[0]
+                    })
+                }
+            },
+            activities.length
         );
 
-        // test async querying for the statements in each API version
+        doStatementCountTest(
+            "LRS queryStatements with verb + activity filters",
+            {
+                params: {
+                    verb: new TinCan.Verb({
+                        id: verbs[0]
+                    }),
+                    activity: new TinCan.Activity({
+                        id: activities[0]
+                    })
+                }
+            },
+            actors.length
+        );
+
+        doStatementCountTest(
+            "LRS queryStatements with agent + object filters",
+            {
+                params: {
+                    agent: new TinCan.Agent({
+                        mbox: actors[0]
+                    }),
+                    activity: new TinCan.Activity({
+                        id: activities[0]
+                    })
+                }
+            },
+            verbs.length
+        );
+
+        doStatementCountTest(
+            "LRS queryStatements with acitivity filter only",
+            {
+                params: {
+                    activity: new TinCan.Activity({
+                        id: activities[0]
+                    })
+                }
+            },
+            actors.length * verbs.length
+        );
+
+        doStatementCountTest(
+            "LRS queryStatements with agent filter only",
+            {
+                params: {
+                    agent: new TinCan.Agent({
+                        mbox: actors[0]
+                    })
+                }
+            },
+            verbs.length * activities.length
+        );
+
+        doStatementCountTest(
+            "LRS queryStatements with verb filter only",
+            {
+                params: {
+                    verb: new TinCan.Verb({
+                        id: verbs[0]
+                    })
+                }
+            },
+            actors.length * activities.length
+        );
+
+        doStatementCountTest(
+            "LRS queryStatements with agent + verb + activity filters",
+            {
+                params: {
+                    agent: new TinCan.Agent({
+                        mbox: actors[0]
+                    }),
+                    verb: new TinCan.Verb({
+                        id: verbs[0]
+                    }),
+                    activity: new TinCan.Activity({
+                        id: activities[0]
+                    })
+                }
+            },
+            1
+        );
 
 
     }());
