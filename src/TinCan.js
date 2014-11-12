@@ -722,11 +722,15 @@ var TinCan;
         @param {Object} [cfg] Configuration for request
             @param {Boolean} [cfg.sendActor] Include default actor in query params
             @param {Boolean} [cfg.sendActivity] Include default activity in query params
-            @param {Object} [cfg.params] Parameters used to filter
+            @param {Object} [cfg.params] Parameters used to filter. 
+                            These are the same those accepted by the
+                            <a href="TinCan.LRS.html#method_queryStatements">LRS.queryStatements</a>
+                            method.
 
             @param {Function} [cfg.callback] Function to run at completion
 
         TODO: support multiple LRSs and flag to use single
+        
         */
         getStatements: function (cfg) {
             this.log("getStatements");
