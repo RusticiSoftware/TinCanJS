@@ -577,7 +577,8 @@ TinCan client library
             this.log("queryStatements");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                _this;
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
@@ -607,13 +608,13 @@ TinCan client library
             // a new variable
 
             if (typeof cfg.callback !== "undefined") {
+                _this = this;
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
-                    } else {
-                        result = this._ensureStatementsReturned(result, requestCfg);
+                        result = TinCan.StatementsResult.fromJSON(result.responseText);
+                        result = _this._ensureStatementsReturned(result, requestCfg);
                     }
 
                     cfg.callback(err, result);
@@ -781,7 +782,6 @@ TinCan client library
 
 
         @method _ensureStatementsReturned
-        @private
         @param {Object} [initialResult] xhr object
         @return {Object} result
         */
@@ -789,9 +789,13 @@ TinCan client library
             var requestResult = initialResult,
                 originalLimit,
                 cfg = {},
-                requestMore = {};
+                requestMore = {},
+                numCalls = 1;
+
+            this.log("_ensureStatementsReturned");
 
             if (requestResult.more === null ) {
+                this.log("number of calls made in _ensureStatementsReturned: " + numCalls + "(no more link returned)");
                 return requestResult;
             }
 
@@ -800,10 +804,11 @@ TinCan client library
             // loop through the pages until we get the expected statements
             if (originalLimit === null) {
                 while(requestResult.statements.length === 0 && requestResult.more !== null) {
+                    numCalls += 1;
                     cfg.url = requestResult.more;
                     requestMore = this.moreStatements(cfg);
 
-                    requestResult.statements = requestMore.statements;
+                    requestResult.statements = requestMore.statementsResult.statements;
                     requestResult.more = requestMore.more;
                 }
             } else if (originalLimit > 0) {
@@ -813,7 +818,12 @@ TinCan client library
 
                 requestResult = this.sendRequest(cfg);
 
+                cfg = {};
+
+                numCalls += 1;
+
                 while(requestResult.statements.length <= originalLimit && requestResult.more !== null) {
+                    numCalls += 1;
                     cfg.url = requestResult.more;
                     requestMore = this.moreStatements(cfg);
 
@@ -827,6 +837,8 @@ TinCan client library
                     requestResult.statements.pop();
                 }
             }
+
+            this.log("number of calls made in _ensureStatementReturned: " + numCalls);
 
             return requestResult;
         },
@@ -877,6 +889,7 @@ TinCan client library
                 url: serverRoot + parsedURL.path,
                 params: parsedURL.params
             };
+
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;

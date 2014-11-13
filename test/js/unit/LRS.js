@@ -727,6 +727,53 @@
 
     }());
 
+    QUnit.module("LRS _ensureStatementsReturned");
 
+    (function () {
+        if (TinCanTestCfg.firstFound.recordStore) {
+            lrs = new TinCan.LRS(TinCanTestCfg.firstFound.recordStore);
+        }
+
+        // load the list of firstFound samples
+
+        prepareSampleQueryParams = function (params) {
+            if (params.hasOwnProperty('agent')) {
+                params.agent = new TinCan.Agent(params.agent);
+            }
+            if (params.hasOwnProperty('verb')) {
+                params.verb = new TinCan.Verb(params.verb);
+            }
+            if (params.hasOwnProperty('activity')) {
+                params.activity = new TinCan.Activity(params.activity);
+            }
+            return params;
+        }
+
+        doFirstFoundTest = function (query, expectedStatementId) {
+            asyncTest(
+                "First statement found (" + expectedStatementId + ")",
+                function ( assert ) {
+
+                    query.params = prepareSampleQueryParams(query.params);
+
+                    query.callback = function(err, result) {
+                        start();
+                        ok(err === null, "No error returned (" + expectedStatementId + ")");
+                        notStrictEqual(0, result.statements.length, "At least one statement found (" + expectedStatementId + ")");
+                        equal(result.statements[0].id, expectedStatementId, "Matching statement found (" + expectedStatementId + ")");
+                    };
+                    var asyncresult = lrs.queryStatements(query);
+                }
+            );
+        }
+
+        // perform the firstFound test, with each firstFound sample being an assertion
+
+        for (i = 0; i < TinCanTestCfg.firstFound.samples.length; i += 1) {
+            var sample = TinCanTestCfg.firstFound.samples[i];
+            doFirstFoundTest(sample.query, sample.expectedStatementId);
+        }
+
+    }());
 
 }());

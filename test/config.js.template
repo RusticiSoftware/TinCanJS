@@ -41,6 +41,31 @@
                 password: "somepass",
                 version:  "0.9"
             }
+        },
+        firstFound: {
+            recordStore: {
+                endpoint: "http://cloud.scorm.com/tc/public/",
+                username: "test",
+                password: "somepass",
+                version:  "1.0.0"
+            },
+            samples: [
+                // {
+                //     query: {
+                //         ascending: true,
+                //         verb: {
+                //             id: ''
+                //         },
+                //         agent: {
+                //             mbox: ''
+                //         },
+                //         activity: {
+                //             id: ''
+                //         }
+                //     },
+                //     expectedStatementId: ''
+                // }
+            ]
         }
     };
 
