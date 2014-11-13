@@ -760,6 +760,9 @@
                         start();
                         ok(err === null, "No error returned (" + expectedStatementId + ")");
                         notStrictEqual(0, result.statements.length, "At least one statement found (" + expectedStatementId + ")");
+                        if (query.params.hasOwnProperty("limit")) {
+                            ok(result.statements.length <= query.params.limit, "There are fewer or equal statements than the requested limit");
+                        }
                         equal(result.statements[0].id, expectedStatementId, "Matching statement found (" + expectedStatementId + ")");
                     };
                     var asyncresult = lrs.queryStatements(query);

@@ -2219,21 +2219,20 @@ TinCan client library
             requestResult.config = requestCfg;
 
             if (! callbackWrapper) {
-                //
-                // if there are fewer statements than expected (zero if no limit was
-                // specified or less than the limit if a limit was specified) and
-                // there's a more link, continue paging through the more links until
-                // a statement is returned or the limit was reached and no more 'more'
-                // links were returned.
-                //
-
-                // export all these checks and the loop to another function, the
-                // same function as the temporary callback function
-                requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
-
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    //
+                    // if there are fewer statements than expected (zero if no limit was
+                    // specified or less than the limit if a limit was specified) and
+                    // there's a more link, continue paging through the more links until
+                    // a statement is returned or the limit was reached and no more 'more'
+                    // links were returned.
+                    //
+                    // export all these checks and the loop to another function, the
+                    // same function as the temporary callback function
+                    requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
+
                 }
             }
 
@@ -2392,7 +2391,7 @@ TinCan client library
                 return requestResult;
             }
 
-            originalLimit = requestCfg.hasOwnProperty("limit")? requestCfg.limit : null;
+            originalLimit = requestCfg.params.hasOwnProperty("limit")? requestCfg.params.limit : null;
 
             // loop through the pages until we get the expected statements
             if (originalLimit === null) {
@@ -2401,33 +2400,52 @@ TinCan client library
                     cfg.url = requestResult.more;
                     requestMore = this.moreStatements(cfg);
 
-                    requestResult.statements = requestMore.statementsResult.statements;
-                    requestResult.more = requestMore.more;
+                    if (requestMore.err === null) {
+                        requestResult.statements = requestMore.statementsResult.statements;
+                        requestResult.more = requestMore.more || null;
+                    } else {
+                        requestResult.err = requestMore.err;
+                        break;
+                    }
                 }
-            } else if (originalLimit > 0) {
+            } else if (originalLimit > 0 && requestResult.statements.length <= originalLimit && requestResult.more !== null) {
                 // reissue the original request without the limit filter
                 cfg = requestCfg;
-                delete cfg.limit;
+                delete cfg.params.limit;
+                if (typeof cfg.callback !== "undefined") {
+                    delete cfg.callback;
+                }
 
                 requestResult = this.sendRequest(cfg);
 
-                cfg = {};
+                if (requestResult.err === null) {
 
-                numCalls += 1;
+                    requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statements = requestResult.statementsResult.statements;
+                    requestResult.more = requestResult.statementsResult.more;
 
-                while(requestResult.statements.length <= originalLimit && requestResult.more !== null) {
+                    cfg = {};
+
                     numCalls += 1;
-                    cfg.url = requestResult.more;
-                    requestMore = this.moreStatements(cfg);
 
-                    requestResult.statements.concat(requestMore.statements);
-                    requestResult.more = requestMore.more;
-                }
+                    while(requestResult.statements.length <= originalLimit && requestResult.more !== null) {
+                        numCalls += 1;
+                        cfg.url = requestResult.more;
+                        requestMore = this.moreStatements(cfg);
 
-                // discard the statements over the limit
-                while(requestResult.statements.length > originalLimit) {
-                    // remove a statement from the end of the array
-                    requestResult.statements.pop();
+                        requestResult.statements = requestResult.statements.concat(requestMore.statementsResult.statements);
+                        requestResult.more = requestMore.statementsResult.more || null;
+                    }
+
+                    if (requestResult.statements.length > originalLimit) {
+                        this.log("Amount of statements returned exceeds the original limit (" + requestResult.statements.length + " > " + originalLimit + ")");
+                    }
+
+                    // discard the statements over the limit
+                    while(requestResult.statements.length > originalLimit) {
+                        // remove a statement from the end of the array
+                        requestResult.statements.pop();
+                    }
                 }
             }
 
