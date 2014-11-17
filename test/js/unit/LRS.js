@@ -625,104 +625,107 @@
             );
         }
 
-        doStatementCountTest(
-            "LRS queryStatements with agent + verb filters",
-            {
-                params: {
-                    agent: new TinCan.Agent({
-                        mbox: actors[0]
-                    }),
-                    verb: new TinCan.Verb({
-                        id: verbs[0]
-                    })
-                }
-            },
-            activities.length
-        );
+        window.setTimeout(function() {
 
-        doStatementCountTest(
-            "LRS queryStatements with verb + activity filters",
-            {
-                params: {
-                    verb: new TinCan.Verb({
-                        id: verbs[0]
-                    }),
-                    activity: new TinCan.Activity({
-                        id: activities[0]
-                    })
-                }
-            },
-            actors.length
-        );
+            doStatementCountTest(
+                "LRS queryStatements with agent + verb filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        })
+                    }
+                },
+                activities.length
+            );
 
-        doStatementCountTest(
-            "LRS queryStatements with agent + object filters",
-            {
-                params: {
-                    agent: new TinCan.Agent({
-                        mbox: actors[0]
-                    }),
-                    activity: new TinCan.Activity({
-                        id: activities[0]
-                    })
-                }
-            },
-            verbs.length
-        );
+            doStatementCountTest(
+                "LRS queryStatements with verb + activity filters",
+                {
+                    params: {
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                actors.length
+            );
 
-        doStatementCountTest(
-            "LRS queryStatements with acitivity filter only",
-            {
-                params: {
-                    activity: new TinCan.Activity({
-                        id: activities[0]
-                    })
-                }
-            },
-            actors.length * verbs.length
-        );
+            doStatementCountTest(
+                "LRS queryStatements with agent + object filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                verbs.length
+            );
 
-        doStatementCountTest(
-            "LRS queryStatements with agent filter only",
-            {
-                params: {
-                    agent: new TinCan.Agent({
-                        mbox: actors[0]
-                    })
-                }
-            },
-            verbs.length * activities.length
-        );
+            doStatementCountTest(
+                "LRS queryStatements with acitivity filter only",
+                {
+                    params: {
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                actors.length * verbs.length
+            );
 
-        doStatementCountTest(
-            "LRS queryStatements with verb filter only",
-            {
-                params: {
-                    verb: new TinCan.Verb({
-                        id: verbs[0]
-                    })
-                }
-            },
-            actors.length * activities.length
-        );
+            doStatementCountTest(
+                "LRS queryStatements with agent filter only",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        })
+                    }
+                },
+                verbs.length * activities.length
+            );
 
-        doStatementCountTest(
-            "LRS queryStatements with agent + verb + activity filters",
-            {
-                params: {
-                    agent: new TinCan.Agent({
-                        mbox: actors[0]
-                    }),
-                    verb: new TinCan.Verb({
-                        id: verbs[0]
-                    }),
-                    activity: new TinCan.Activity({
-                        id: activities[0]
-                    })
-                }
-            },
-            1
-        );
+            doStatementCountTest(
+                "LRS queryStatements with verb filter only",
+                {
+                    params: {
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        })
+                    }
+                },
+                actors.length * activities.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with agent + verb + activity filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                1
+            );
+        }, TinCanTestCfg.statementCountTestDelay || 0);
 
 
     }());

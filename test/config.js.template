@@ -66,7 +66,8 @@
                 //     expectedStatementId: ''
                 // }
             ]
-        }
+        },
+        statementCountTestDelay: 0 // number of milliseconds; some LRSes take minutes to have new statements indexed and ready for a query (240000 = 4 minutes)
     };
 
     module.exports = TinCanTestCfg;
