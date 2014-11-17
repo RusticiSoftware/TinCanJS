@@ -752,11 +752,26 @@
         }
 
         doFirstFoundTest = function (query, expectedStatementId) {
-            asyncTest(
-                "First statement found (" + expectedStatementId + ")",
+
+            query.params = prepareSampleQueryParams(query.params);
+
+            test(
+                "First statement found - sync (" + expectedStatementId + ")",
                 function ( assert ) {
 
-                    query.params = prepareSampleQueryParams(query.params);
+                    var result = lrs.queryStatements(query);
+
+                    ok(!result.hasOwnProperty('err'), "No error returned (" + expectedStatementId + ")");
+                    notStrictEqual(0, result.statements.length, "At least one statement found (" + expectedStatementId + ")");
+                    if (query.params.hasOwnProperty("limit")) {
+                        ok(result.statements.length <= query.params.limit, "There are fewer or equal statements than the requested limit");
+                    }
+                    equal(result.statements[0].id, expectedStatementId, "Matching statement found (" + expectedStatementId + ")");
+                }
+            );
+            asyncTest(
+                "First statement found - async (" + expectedStatementId + ")",
+                function ( assert ) {
 
                     query.callback = function(err, result) {
                         start();

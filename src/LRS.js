@@ -853,6 +853,14 @@ TinCan client library
                         // remove a statement from the end of the array
                         requestResult.statements.pop();
                     }
+
+                    // clean up the results
+                    if (requestResult.hasOwnProperty("xhr")) {
+                        delete requestResult.xhr;
+                    }
+                    if (requestResult.hasOwnProperty("err") && requestResult.err === null) {
+                        delete requestResult.err;
+                    }
                 }
             }
 
