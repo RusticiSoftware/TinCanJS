@@ -2441,12 +2441,6 @@ TinCan client library
                         this.log("Amount of statements returned exceeds the original limit (" + requestResult.statements.length + " > " + originalLimit + ")");
                     }
 
-                    // discard the statements over the limit
-                    while(requestResult.statements.length > originalLimit) {
-                        // remove a statement from the end of the array
-                        requestResult.statements.pop();
-                    }
-
                     // clean up the results
                     if (requestResult.hasOwnProperty("xhr")) {
                         delete requestResult.xhr;
