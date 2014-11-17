@@ -725,8 +725,7 @@
                 },
                 1
             );
-        }, TinCanTestCfg.statementCountTestDelay || 0);
-
+        }, TinCanTestCfg.statementCountTestDelay * 1000 || 0);
 
     }());
 
