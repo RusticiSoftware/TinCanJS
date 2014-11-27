@@ -979,7 +979,7 @@ TinCan client library
             @param {String} [cfg.registration] Registration
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
-			@param {String} [cfg.method] Method to use. Default: PUT
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -995,7 +995,7 @@ TinCan client library
                 val = JSON.stringify(val);
             }
 			
-			if (typeof cfg.method === "undefined" || cfg.method != "POST") {
+            if (typeof cfg.method === "undefined" || cfg.method != "POST") {
                cfg.method = "PUT";
             }
 
