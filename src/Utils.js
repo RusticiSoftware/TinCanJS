@@ -92,7 +92,7 @@ TinCan client library
 		@static
 		@param {String} ISO8601Duration Duration in ISO8601 format
 		@return {Int} Duration in milliseconds
-        */
+		*/
 		//Note: does not handle years, months and days
 		convertISO8601DurationToMilliseconds: function (ISO8601Duration)
 		{
@@ -137,11 +137,11 @@ TinCan client library
 		},
 		
 		/**
-        @method convertMillisecondsToISO8601Duration
-        @static
-        @param {Int} inputMilliseconds Duration in milliseconds
-        @return {String} Duration in ISO8601 format
-        */
+		@method convertMillisecondsToISO8601Duration
+		@static
+		@param {Int} inputMilliseconds Duration in milliseconds
+		@return {String} Duration in ISO8601 format
+		*/
 		convertMillisecondsToISO8601Duration: function (inputMilliseconds)
 		{
 			var hours, minutes, seconds,
