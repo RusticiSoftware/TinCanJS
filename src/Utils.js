@@ -88,10 +88,10 @@ TinCan client library
         },
 		
 		/**
-        @method convertISO8601DurationToMilliseconds
-        @static
-        @param {String} ISO8601Duration Duration in ISO8601 format
-        @return {Int} Duration in milliseconds
+		@method convertISO8601DurationToMilliseconds
+		@static
+		@param {String} ISO8601Duration Duration in ISO8601 format
+		@return {Int} Duration in milliseconds
         */
 		//Note: does not handle years, months and days
 		convertISO8601DurationToMilliseconds: function (ISO8601Duration)
