@@ -848,6 +848,7 @@ var TinCan;
                 defaults to 'registration' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers
+            @param {Boolean} [cfg.overwriteJSON] If the Content-Type is JSON, should a PUT be used? 
             @param {Function} [cfg.callback] Function to run with state
         */
         setState: function (key, val, cfg) {
@@ -874,7 +875,9 @@ var TinCan;
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
                 if (typeof cfg.registration !== "undefined") {
-                    queryCfg.registration = cfg.registration;
+                    if (cfg.registration !== null) {
+                        queryCfg.registration = cfg.registration;
+                    }
                 }
                 else if (this.registration !== null) {
                     queryCfg.registration = this.registration;
@@ -884,6 +887,9 @@ var TinCan;
                 }
                 if (typeof cfg.contentType !== "undefined") {
                     queryCfg.contentType = cfg.contentType;
+                    if ((typeof cfg.overwriteJSON !== "undefined") && (!cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
+                        queryCfg.method = "POST";
+                    }
                 }
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
