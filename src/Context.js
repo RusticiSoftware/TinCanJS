@@ -110,7 +110,6 @@ TinCan client library
                     "revision",
                     "platform",
                     "language",
-                    "statement",
                     "extensions"
                 ],
                 agentGroupProps = [
@@ -154,6 +153,15 @@ TinCan client library
                 }
                 else {
                     this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
+                }
+            }
+			
+			if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
+                if (cfg.statement instanceof TinCan.statement) {
+                    this.statement = cfg.statement;
+                }
+                else {
+                    this.statement = new TinCan.statementRef(cfg.statement);
                 }
             }
         },
