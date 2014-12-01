@@ -161,7 +161,7 @@ TinCan client library
                     this.statement = cfg.statement;
                 }
                 else {
-                    this.statement = new TinCan.statementRef(cfg.statement);
+                    this.statement = new TinCan.StatementRef(cfg.statement);
                 }
             }
         },
