@@ -157,7 +157,7 @@ TinCan client library
             }
 			
             if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
-                if (cfg.statement instanceof TinCan.statement) {
+                if (cfg.statement instanceof TinCan.Statement) {
                     this.statement = cfg.statement;
                 }
                 else {
