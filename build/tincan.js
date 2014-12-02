@@ -2398,6 +2398,7 @@ TinCan client library
                 while(requestResult.statements.length === 0 && requestResult.more !== null) {
                     numCalls += 1;
                     cfg.url = requestResult.more;
+                    cfg.is_ensureStatementsReturned_called = true;
                     requestMore = this.moreStatements(cfg);
 
                     if (requestMore.err === null) {
@@ -2431,6 +2432,7 @@ TinCan client library
                     while(requestResult.statements.length <= originalLimit && requestResult.more !== null) {
                         numCalls += 1;
                         cfg.url = requestResult.more;
+                        cfg.is_ensureStatementsReturned_called = true;
                         requestMore = this.moreStatements(cfg);
 
                         requestResult.statements = requestResult.statements.concat(requestMore.statementsResult.statements);
@@ -2474,7 +2476,8 @@ TinCan client library
                 requestResult,
                 callbackWrapper,
                 parsedURL,
-                serverRoot;
+                serverRoot,
+                _this;
 
             cfg = cfg || {};
 
@@ -2504,11 +2507,13 @@ TinCan client library
             };
 
             if (typeof cfg.callback !== "undefined") {
+                _this = this;
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
                         result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        result = _this._ensureStatementsReturned(result, requestCfg);
                     }
 
                     cfg.callback(err, result);
@@ -2523,6 +2528,9 @@ TinCan client library
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    if (!cfg.hasOwnProperty("is_ensureStatementsReturned_called")) {
+                        requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
+                    }
                 }
             }
 
