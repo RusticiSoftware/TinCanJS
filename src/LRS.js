@@ -603,10 +603,6 @@ TinCan client library
                 };
             }
 
-            // modify the callback function for one that checks whether the
-            // returned values are legit, and store the original callback in
-            // a new variable
-
             if (typeof cfg.callback !== "undefined") {
                 _this = this;
                 callbackWrapper = function (err, xhr) {
@@ -629,15 +625,6 @@ TinCan client library
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
-                    //
-                    // if there are fewer statements than expected (zero if no limit was
-                    // specified or less than the limit if a limit was specified) and
-                    // there's a more link, continue paging through the more links until
-                    // a statement is returned or the limit was reached and no more 'more'
-                    // links were returned.
-                    //
-                    // export all these checks and the loop to another function, the
-                    // same function as the temporary callback function
                     requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
 
                 }
@@ -778,10 +765,23 @@ TinCan client library
         },
 
         /**
+        Ensures that statements are returned if the original queryStatements
+        call contains a more URL but fewer statements than expected: if zero
+        statements are returned when no limit is provided, or if fewer
+        statements than the limit are returned and a limit was provided.
 
+        Continues paging through more URLs until statements are returned, and
+        returns the adequate statements list and more URL for the next set of
+        results.
+
+        This edge case was added to handle LRS implementations that use this
+        idiosyncratic way of returning results to optimize against having too
+        many indexes to update upon new statements being added to the LRS
+        (indexes on multiple combinations of query filters).
 
         @method _ensureStatementsReturned
-        @param {Object} [initialResult] xhr object
+        @param {TinCan.StatementsResult} [initialResult] Request result from original query. See {{#crossLink "TinCan.LRS/queryStatements"}}{{/crossLink}}
+        @param {Object} [requestCfg] Configuration used for original query. See configuration for {{#crossLink "TinCan.LRS/queryStatements"}}{{/crossLink}}
         @return {Object} result
         */
         _ensureStatementsReturned: function (initialResult, requestCfg) {
