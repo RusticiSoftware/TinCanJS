@@ -103,7 +103,8 @@ TinCan client library
 			indexOfS = ISO8601Duration.indexOf("S"),
 			hours,
 			minutes,
-			seconds;
+			seconds,
+            durationInMilliseconds;
 			
 			if (indexOfH === -1) {
 				indexOfH = indexOfT;
@@ -119,12 +120,12 @@ TinCan client library
 			}
 			else
 			{
-				minutes = parseInt(ISO8601Duration.slice(indexOfH + 1, indexOfM));
+				minutes = parseInt(ISO8601Duration.slice(indexOfH + 1, indexOfM),10);
 			}
 			
 			seconds = parseFloat(ISO8601Duration.slice(indexOfM + 1, indexOfS));
 			
-			var durationInMilliseconds = parseInt(((((hours * 60) + minutes) * 60) + seconds) * 1000);
+			durationInMilliseconds = parseInt((((((hours * 60) + minutes) * 60) + seconds) * 1000),10);
 			if (isNaN(durationInMilliseconds)){
 				durationInMilliseconds=0;
 			}
