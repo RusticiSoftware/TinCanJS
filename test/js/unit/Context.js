@@ -238,11 +238,6 @@
                 if (typeof row.checkAsVersions !== "undefined") {
                     if (typeof row.checkAsVersions.latest !== "undefined") {
                         result = obj.asVersion();
-                        /*if (row.name =="statement property"){
-                            console.log (result);
-                            console.log (row.checkAsVersions.latest);
-                            console.log ("object.asVersion() latest: " + row.name);
-                        }*/
                         deepEqual(result, row.checkAsVersions.latest, "object.asVersion() latest: " + row.name);
                         for (v = 0; v < versions.length; v += 1) {
                             result = obj.asVersion(versions[v]);
