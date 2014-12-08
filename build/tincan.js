@@ -1,4 +1,4 @@
-"0.31.0";
+"0.32.0";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -977,6 +977,7 @@ var TinCan;
                 defaults to 'registration' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers
+            @param {Boolean} [cfg.overwriteJSON] If the Content-Type is JSON, should a PUT be used? 
             @param {Function} [cfg.callback] Function to run with state
         */
         setState: function (key, val, cfg) {
@@ -1003,7 +1004,9 @@ var TinCan;
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
                 if (typeof cfg.registration !== "undefined") {
-                    queryCfg.registration = cfg.registration;
+                    if (cfg.registration !== null) {
+                        queryCfg.registration = cfg.registration;
+                    }
                 }
                 else if (this.registration !== null) {
                     queryCfg.registration = this.registration;
@@ -1013,6 +1016,9 @@ var TinCan;
                 }
                 if (typeof cfg.contentType !== "undefined") {
                     queryCfg.contentType = cfg.contentType;
+                    if ((typeof cfg.overwriteJSON !== "undefined") && (!cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
+                        queryCfg.method = "POST";
+                    }
                 }
                 if (typeof cfg.callback !== "undefined") {
                     queryCfg.callback = cfg.callback;
@@ -1471,6 +1477,94 @@ TinCan client library
                 pad(d.getUTCSeconds()) + "." +
                 pad(d.getUTCMilliseconds(), 3) + "Z";
         },
+		
+		/**
+		@method convertISO8601DurationToMilliseconds
+		@static
+		@param {String} ISO8601Duration Duration in ISO8601 format
+		@return {Int} Duration in milliseconds
+		*/
+		//Note: does not handle years, months and days
+		convertISO8601DurationToMilliseconds: function (ISO8601Duration)
+		{
+			var isValueNegative = (ISO8601Duration.indexOf("-") >= 0),
+			indexOfT = ISO8601Duration.indexOf("T"),
+			indexOfH = ISO8601Duration.indexOf("H"),
+			indexOfM = ISO8601Duration.indexOf("M"),
+			indexOfS = ISO8601Duration.indexOf("S"),
+			hours,
+			minutes,
+			seconds,
+            durationInMilliseconds;
+			
+			if (indexOfH === -1) {
+				indexOfH = indexOfT;
+				hours = 0;
+			}
+			else {
+				hours = parseInt(ISO8601Duration.slice(indexOfT + 1, indexOfH),10);
+			}
+				
+			if (indexOfM === -1) {
+				indexOfM = indexOfT;
+				minutes = 0;
+			}
+			else
+			{
+				minutes = parseInt(ISO8601Duration.slice(indexOfH + 1, indexOfM),10);
+			}
+			
+			seconds = parseFloat(ISO8601Duration.slice(indexOfM + 1, indexOfS));
+			
+			durationInMilliseconds = parseInt((((((hours * 60) + minutes) * 60) + seconds) * 1000),10);
+			if (isNaN(durationInMilliseconds)){
+				durationInMilliseconds=0;
+			}
+			if (isValueNegative) {
+				durationInMilliseconds = durationInMilliseconds * -1;
+			}
+			
+			return durationInMilliseconds;
+		},
+		
+		/**
+		@method convertMillisecondsToISO8601Duration
+		@static
+		@param {Int} inputMilliseconds Duration in milliseconds
+		@return {String} Duration in ISO8601 format
+		*/
+		convertMillisecondsToISO8601Duration: function (inputMilliseconds)
+		{
+			var hours, minutes, seconds,
+			i_inputMilliseconds = parseInt(inputMilliseconds,10),
+			inputIsNegative = "",
+            rtnStr ="";
+
+			if (i_inputMilliseconds < 0)
+			{
+				inputIsNegative = "-";
+				i_inputMilliseconds = i_inputMilliseconds * -1;
+			}
+			
+			hours = parseInt(((i_inputMilliseconds) / 3600000),10);
+			minutes = parseInt((((i_inputMilliseconds) % 3600000) / 60000),10);
+			seconds =(((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+			
+			rtnStr = inputIsNegative + "PT";
+			if (hours > 0)
+			{
+				rtnStr += hours +"H";
+			}
+			
+			if (minutes > 0)
+			{
+				rtnStr += minutes +"M";
+			}
+			
+			rtnStr += seconds +"S";
+			
+			return rtnStr;
+		},
 
         /**
         @method getSHA1String
@@ -2572,6 +2666,7 @@ TinCan client library
             @param {String} [cfg.registration] Registration
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -2585,6 +2680,10 @@ TinCan client library
 
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
+            }
+			
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
             }
 
             requestParams = {
@@ -2608,7 +2707,7 @@ TinCan client library
 
             requestCfg = {
                 url: "activities/state",
-                method: "PUT",
+                method: cfg.method,
                 params: requestParams,
                 data: val,
                 headers: {
@@ -5098,7 +5197,6 @@ TinCan client library
                     "revision",
                     "platform",
                     "language",
-                    "statement",
                     "extensions"
                 ],
                 agentGroupProps = [
@@ -5144,6 +5242,21 @@ TinCan client library
                     this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
                 }
             }
+			
+            if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
+                if (cfg.statement instanceof TinCan.StatementRef) {
+                    this.statement = cfg.statement;
+                }
+                else if (cfg.statement.objectType === "StatementRef") {
+                    this.statement = new TinCan.StatementRef(cfg.statement);
+                }
+                else if (cfg.statement.objectType === "SubStatement") {
+                    this.statement = new TinCan.SubStatement(cfg.statement);
+                }
+                else {
+                    this.log ("Unable to parse statement.context.statement property.");
+                }
+            }
         },
 
         /**
@@ -5181,6 +5294,10 @@ TinCan client library
                 }
             }
 
+            if (result.hasOwnProperty("statement") && result.statement !== null && result.statement.objectType !== "StatementRef" && version !== "0.9" && version !== "0.95"){
+                this.log ("StatementRef is the only valid objectType for context.statement in this version.");
+                delete result.statement;
+            }
             return result;
         }
     };
@@ -5301,6 +5418,8 @@ TinCan client library
 
             if (version === "0.9") {
                 result.objectType = "Statement";
+            } else if (version !== "0.95") {
+                result.objectType = "StatementRef";
             }
 
             return result;
@@ -6906,7 +7025,7 @@ TinCan client library
         }
 
         // the original data is repackaged as "content" form var
-        if (cfg.data !== null) {
+        if (typeof cfg.data !== "undefined") {
             pairs.push("content=" + encodeURIComponent(cfg.data));
         }
 
