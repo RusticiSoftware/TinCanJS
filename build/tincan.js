@@ -1,4 +1,4 @@
-"0.31.0";
+"0.32.0";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -1471,6 +1471,94 @@ TinCan client library
                 pad(d.getUTCSeconds()) + "." +
                 pad(d.getUTCMilliseconds(), 3) + "Z";
         },
+		
+		/**
+		@method convertISO8601DurationToMilliseconds
+		@static
+		@param {String} ISO8601Duration Duration in ISO8601 format
+		@return {Int} Duration in milliseconds
+		*/
+		//Note: does not handle years, months and days
+		convertISO8601DurationToMilliseconds: function (ISO8601Duration)
+		{
+			var isValueNegative = (ISO8601Duration.indexOf("-") >= 0),
+			indexOfT = ISO8601Duration.indexOf("T"),
+			indexOfH = ISO8601Duration.indexOf("H"),
+			indexOfM = ISO8601Duration.indexOf("M"),
+			indexOfS = ISO8601Duration.indexOf("S"),
+			hours,
+			minutes,
+			seconds,
+            durationInMilliseconds;
+			
+			if (indexOfH === -1) {
+				indexOfH = indexOfT;
+				hours = 0;
+			}
+			else {
+				hours = parseInt(ISO8601Duration.slice(indexOfT + 1, indexOfH),10);
+			}
+				
+			if (indexOfM === -1) {
+				indexOfM = indexOfT;
+				minutes = 0;
+			}
+			else
+			{
+				minutes = parseInt(ISO8601Duration.slice(indexOfH + 1, indexOfM),10);
+			}
+			
+			seconds = parseFloat(ISO8601Duration.slice(indexOfM + 1, indexOfS));
+			
+			durationInMilliseconds = parseInt((((((hours * 60) + minutes) * 60) + seconds) * 1000),10);
+			if (isNaN(durationInMilliseconds)){
+				durationInMilliseconds=0;
+			}
+			if (isValueNegative) {
+				durationInMilliseconds = durationInMilliseconds * -1;
+			}
+			
+			return durationInMilliseconds;
+		},
+		
+		/**
+		@method convertMillisecondsToISO8601Duration
+		@static
+		@param {Int} inputMilliseconds Duration in milliseconds
+		@return {String} Duration in ISO8601 format
+		*/
+		convertMillisecondsToISO8601Duration: function (inputMilliseconds)
+		{
+			var hours, minutes, seconds,
+			i_inputMilliseconds = parseInt(inputMilliseconds,10),
+			inputIsNegative = "",
+            rtnStr ="";
+
+			if (i_inputMilliseconds < 0)
+			{
+				inputIsNegative = "-";
+				i_inputMilliseconds = i_inputMilliseconds * -1;
+			}
+			
+			hours = parseInt(((i_inputMilliseconds) / 3600000),10);
+			minutes = parseInt((((i_inputMilliseconds) % 3600000) / 60000),10);
+			seconds =(((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+			
+			rtnStr = inputIsNegative + "PT";
+			if (hours > 0)
+			{
+				rtnStr += hours +"H";
+			}
+			
+			if (minutes > 0)
+			{
+				rtnStr += minutes +"M";
+			}
+			
+			rtnStr += seconds +"S";
+			
+			return rtnStr;
+		},
 
         /**
         @method getSHA1String
@@ -6906,7 +6994,7 @@ TinCan client library
         }
 
         // the original data is repackaged as "content" form var
-        if (cfg.data !== null) {
+        if (typeof cfg.data !== "undefined") {
             pairs.push("content=" + encodeURIComponent(cfg.data));
         }
 

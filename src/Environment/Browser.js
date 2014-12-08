@@ -361,7 +361,7 @@ TinCan client library
         }
 
         // the original data is repackaged as "content" form var
-        if (cfg.data !== null) {
+        if (typeof cfg.data !== "undefined") {
             pairs.push("content=" + encodeURIComponent(cfg.data));
         }
 
