@@ -157,11 +157,17 @@ TinCan client library
             }
 			
             if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
-                if (cfg.statement instanceof TinCan.Statement) {
+                if (cfg.statement instanceof TinCan.StatementRef) {
                     this.statement = cfg.statement;
                 }
-                else {
+                else if (cfg.statement.objectType === "StatementRef") {
                     this.statement = new TinCan.StatementRef(cfg.statement);
+                }
+                else if (cfg.statement.objectType === "SubStatement") {
+                    this.statement = new TinCan.SubStatement(cfg.statement);
+                }
+                else {
+                    this.log ("Unable to parse statement.context.statement property.");
                 }
             }
         },
@@ -201,6 +207,10 @@ TinCan client library
                 }
             }
 
+            if (result.hasOwnProperty("statement") && result.statement !== null && result.statement.objectType !== "StatementRef" && version !== "0.9" && version !== "0.95"){
+                this.log ("StatementRef is the only valid objectType for context.statement in this version.");
+                delete result.statement;
+            }
             return result;
         }
     };
