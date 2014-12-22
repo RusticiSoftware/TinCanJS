@@ -27,33 +27,33 @@ testRunner.setup(
 testRunner.run(
     {
         deps: [
-            { path: "js/NodePrep.js", namespace: "TinCanTest" },
-            { path: "config.js", namespace: "TinCanTestCfg" }
+            { path: __dirname + "/js/NodePrep.js", namespace: "TinCanTest" },
+            { path: __dirname + "/config.js", namespace: "TinCanTestCfg" }
         ],
-        code: { path: "../build/tincan-node.js", namespace: "TinCan" },
+        code: { path: __dirname + "/../build/tincan-node.js", namespace: "TinCan" },
         tests: [
-            "js/unit/State.js"
-            ,"js/unit/ActivityProfile.js"
-            ,"js/unit/AgentProfile.js"
-            ,"js/unit/StatementsResult.js"
-            ,"js/unit/Agent.js"
-            ,"js/unit/Group.js"
-            ,"js/unit/Activity.js"
-            ,"js/unit/ActivityDefinition.js"
-            ,"js/unit/ContextActivities.js"
-            ,"js/unit/Context.js"
-            ,"js/unit/InteractionComponent.js"
-            ,"js/unit/Result.js"
-            ,"js/unit/Score.js"
-            ,"js/unit/Statement.js"
-            ,"js/unit/StatementRef.js"
-            ,"js/unit/SubStatement.js"
-            ,"js/unit/Verb.js"
-            ,"js/unit/Utils.js"
-            ,"js/unit/TinCan.js"
-            ,"js/unit/TinCan-async.js"
-            ,"js/unit/LRS.js"
-            ,"js/unit/About.js"
+            __dirname + "/js/unit/State.js"
+            , __dirname + "/js/unit/ActivityProfile.js"
+            , __dirname + "/js/unit/AgentProfile.js"
+            , __dirname + "/js/unit/StatementsResult.js"
+            , __dirname + "/js/unit/Agent.js"
+            , __dirname + "/js/unit/Group.js"
+            , __dirname + "/js/unit/Activity.js"
+            , __dirname + "/js/unit/ActivityDefinition.js"
+            , __dirname + "/js/unit/ContextActivities.js"
+            , __dirname + "/js/unit/Context.js"
+            , __dirname + "/js/unit/InteractionComponent.js"
+            , __dirname + "/js/unit/Result.js"
+            , __dirname + "/js/unit/Score.js"
+            , __dirname + "/js/unit/Statement.js"
+            , __dirname + "/js/unit/StatementRef.js"
+            , __dirname + "/js/unit/SubStatement.js"
+            , __dirname + "/js/unit/Verb.js"
+            , __dirname + "/js/unit/Utils.js"
+            , __dirname + "/js/unit/TinCan.js"
+            , __dirname + "/js/unit/TinCan-async.js"
+            , __dirname + "/js/unit/LRS.js"
+            , __dirname + "/js/unit/About.js"
         ]
     },
     function (err, report) {
