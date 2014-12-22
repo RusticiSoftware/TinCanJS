@@ -796,6 +796,9 @@ extend( QUnit, {
 		if ( !result ) {
 			expected = escapeInnerText( QUnit.jsDump.parse(expected) );
 			actual = escapeInnerText( QUnit.jsDump.parse(actual) );
+
+			console.log(message);console.log(actual);
+
 			output += "<table><tr class='test-expected'><th>Expected: </th><td><pre>" + expected + "</pre></td></tr>";
 
 			if ( actual != expected ) {
