@@ -545,4 +545,251 @@
             }
         }
     }());
+
+
+    QUnit.module("LRS queryStatements");
+
+    (function () {
+        var version = "1.0.0",
+            domain = "tincanjs-test-tincan-" + Date.now() + ".test",
+            actors = [
+                "mailto:actor.one@" + domain,
+                "mailto:actor.two@" + domain,
+                "mailto:actor.three@" + domain
+            ],
+            verbs = [
+                "http://" + domain + "/expapi/verbs/attempted",
+                "http://" + domain + "/expapi/verbs/completed",
+                "http://" + domain + "/expapi/verbs/passed",
+                "http://" + domain + "/expapi/verbs/failed"
+            ],
+            activities = [
+                "http://" + domain + "/activities/one",
+                "http://" + domain + "/activities/two",
+                "http://" + domain + "/activities/three"
+            ],
+            i,
+            j,
+            k,
+            stCfg;
+
+        // save test statements to the LRS
+
+
+        if (TinCanTestCfg.recordStores[version]) {
+            lrs = new TinCan.LRS(TinCanTestCfg.recordStores[version]);
+        }
+
+        for (        i = 0; i < actors.length; i += 1) {
+            for (    j = 0; j < verbs.length; j += 1) {
+                for (k = 0; k < activities.length; k += 1) {
+                    stCfg = {
+                        actor: {
+                            mbox: actors[i]
+                        },
+                        verb: {
+                            id: verbs[j]
+                        },
+                        target: {
+                            id: activities[k]
+                        }
+                    };
+
+                    var result = lrs.saveStatement(
+                        new TinCan.Statement(stCfg),
+                        {
+                            callback: function(err, xhr) {
+                                // do nothing
+                            }
+                        }
+                    );
+                }
+            }
+        }
+
+        doStatementCountTest = function (name, query, expectedCount) {
+            asyncTest(
+                name,
+                function ( assert ) {
+
+                    messageExpectedCount = "query returned the expected amount of statements";
+                    messageNoMoreURL = "no more URL returned";
+
+                    query.callback = function(err, result) {
+                        start();
+                        equal(result.statements.length, expectedCount, messageExpectedCount);
+                        ok(result.more === null, messageNoMoreURL);
+                    };
+                    var asyncresult = lrs.queryStatements(query);
+                }
+            );
+        }
+
+        setTimeout(function() {
+
+            doStatementCountTest(
+                "LRS queryStatements with agent + verb filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        })
+                    }
+                },
+                activities.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with verb + activity filters",
+                {
+                    params: {
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                actors.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with agent + object filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                verbs.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with acitivity filter only",
+                {
+                    params: {
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                actors.length * verbs.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with agent filter only",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        })
+                    }
+                },
+                verbs.length * activities.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with verb filter only",
+                {
+                    params: {
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        })
+                    }
+                },
+                actors.length * activities.length
+            );
+
+            doStatementCountTest(
+                "LRS queryStatements with agent + verb + activity filters",
+                {
+                    params: {
+                        agent: new TinCan.Agent({
+                            mbox: actors[0]
+                        }),
+                        verb: new TinCan.Verb({
+                            id: verbs[0]
+                        }),
+                        activity: new TinCan.Activity({
+                            id: activities[0]
+                        })
+                    }
+                },
+                1
+            );
+        }, TinCanTestCfg.statementCountTestDelay * 1000 || 0);
+
+    }());
+
+    QUnit.module("LRS _ensureStatementsReturned");
+
+    (function () {
+        if (TinCanTestCfg.firstFound.recordStore) {
+            lrs = new TinCan.LRS(TinCanTestCfg.firstFound.recordStore);
+        }
+
+        // load the list of firstFound samples
+
+        prepareSampleQueryParams = function (params) {
+            if (params.hasOwnProperty('agent')) {
+                params.agent = new TinCan.Agent(params.agent);
+            }
+            if (params.hasOwnProperty('verb')) {
+                params.verb = new TinCan.Verb(params.verb);
+            }
+            if (params.hasOwnProperty('activity')) {
+                params.activity = new TinCan.Activity(params.activity);
+            }
+            return params;
+        }
+
+        doFirstFoundTest = function (query, expectedStatementId) {
+
+            query.params = prepareSampleQueryParams(query.params);
+
+            if(TinCan.LRS.syncEnabled) {
+                test(
+                    "First statement found - sync (" + expectedStatementId + ")",
+                    function ( assert ) {
+
+                        var result = lrs.queryStatements(query);
+
+                        ok(!result.hasOwnProperty('err'), "No error returned (" + expectedStatementId + ")");
+                        notStrictEqual(0, result.statements.length, "At least one statement found (" + expectedStatementId + ")");
+                        equal(result.statements[0].id, expectedStatementId, "Matching statement found (" + expectedStatementId + ")");
+                    }
+                );
+            }
+            asyncTest(
+                "First statement found - async (" + expectedStatementId + ")",
+                function ( assert ) {
+
+                    query.callback = function(err, result) {
+                        start();
+                        ok(err === null, "No error returned (" + expectedStatementId + ")");
+                        notStrictEqual(0, result.statements.length, "At least one statement found (" + expectedStatementId + ")");
+                        equal(result.statements[0].id, expectedStatementId, "Matching statement found (" + expectedStatementId + ")");
+                    };
+                    var asyncresult = lrs.queryStatements(query);
+                }
+            );
+        }
+
+        // perform the firstFound test, with each firstFound sample being an assertion
+
+        for (i = 0; i < TinCanTestCfg.firstFound.samples.length; i += 1) {
+            var sample = TinCanTestCfg.firstFound.samples[i];
+            doFirstFoundTest(sample.query, sample.expectedStatementId);
+        }
+
+    }());
+
 }());

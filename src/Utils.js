@@ -162,7 +162,7 @@ TinCan client library
                 for (i = 0; i < pairs.length; i += 1) {
                     pair = pairs[i].split("=");
                     if (pair.length === 2 && pair[0]) {
-                        params[pair[0]] = decodeURIComponent(pair[1]);
+                        params[pair[0]] = decodeURIComponent(pair[1].replace(/\+/g,"%20"));
                     }
                 }
             }

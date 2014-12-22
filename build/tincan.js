@@ -1547,7 +1547,7 @@ TinCan client library
                 for (i = 0; i < pairs.length; i += 1) {
                     pair = pairs[i].split("=");
                     if (pair.length === 2 && pair[0]) {
-                        params[pair[0]] = decodeURIComponent(pair[1]);
+                        params[pair[0]] = decodeURIComponent(pair[1].replace(/\+/g,"%20"));
                     }
                 }
             }
@@ -2170,7 +2170,8 @@ TinCan client library
             this.log("queryStatements");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                _this;
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
@@ -2196,11 +2197,13 @@ TinCan client library
             }
 
             if (typeof cfg.callback !== "undefined") {
+                _this = this;
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        result = TinCan.StatementsResult.fromJSON(result.responseText);
+                        result = _this._ensureStatementsReturned(result, requestCfg);
                     }
 
                     cfg.callback(err, result);
@@ -2215,6 +2218,8 @@ TinCan client library
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
+
                 }
             }
 
@@ -2353,6 +2358,107 @@ TinCan client library
         },
 
         /**
+        Ensures that statements are returned if the original queryStatements
+        call contains a more URL but fewer statements than expected: if zero
+        statements are returned when no limit is provided, or if fewer
+        statements than the limit are returned and a limit was provided.
+
+        Continues paging through more URLs until statements are returned, and
+        returns the adequate statements list and more URL for the next set of
+        results.
+
+        This edge case was added to handle LRS implementations that use this
+        idiosyncratic way of returning results to optimize against having too
+        many indexes to update upon new statements being added to the LRS
+        (indexes on multiple combinations of query filters).
+
+        @method _ensureStatementsReturned
+        @param {TinCan.StatementsResult} [initialResult] Request result from original query. See {{#crossLink "TinCan.LRS/queryStatements"}}{{/crossLink}}
+        @param {Object} [requestCfg] Configuration used for original query. See configuration for {{#crossLink "TinCan.LRS/queryStatements"}}{{/crossLink}}
+        @return {Object} result
+        */
+        _ensureStatementsReturned: function (initialResult, requestCfg) {
+            var requestResult = initialResult,
+                originalLimit,
+                cfg = {},
+                requestMore = {},
+                numCalls = 1;
+
+            this.log("_ensureStatementsReturned");
+
+            if (requestResult.more === null ) {
+                this.log("number of calls made in _ensureStatementsReturned: " + numCalls + "(no more link returned)");
+                return requestResult;
+            }
+
+            originalLimit = requestCfg.params.hasOwnProperty("limit")? requestCfg.params.limit : null;
+
+            // loop through the pages until we get the expected statements
+            if (originalLimit === null) {
+                while(requestResult.statements.length === 0 && requestResult.more !== null) {
+                    numCalls += 1;
+                    cfg.url = requestResult.more;
+                    cfg.is_ensureStatementsReturned_called = true;
+                    requestMore = this.moreStatements(cfg);
+
+                    if (requestMore.err === null) {
+                        requestResult.statements = requestMore.statementsResult.statements;
+                        requestResult.more = requestMore.more || null;
+                    } else {
+                        requestResult.err = requestMore.err;
+                        break;
+                    }
+                }
+            } else if (originalLimit > 0 && requestResult.statements.length <= originalLimit && requestResult.more !== null) {
+                // reissue the original request without the limit filter
+                cfg = requestCfg;
+                delete cfg.params.limit;
+                if (typeof cfg.callback !== "undefined") {
+                    delete cfg.callback;
+                }
+
+                requestResult = this.sendRequest(cfg);
+
+                if (requestResult.err === null) {
+
+                    requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statements = requestResult.statementsResult.statements;
+                    requestResult.more = requestResult.statementsResult.more;
+
+                    cfg = {};
+
+                    numCalls += 1;
+
+                    while(requestResult.statements.length <= originalLimit && requestResult.more !== null) {
+                        numCalls += 1;
+                        cfg.url = requestResult.more;
+                        cfg.is_ensureStatementsReturned_called = true;
+                        requestMore = this.moreStatements(cfg);
+
+                        requestResult.statements = requestResult.statements.concat(requestMore.statementsResult.statements);
+                        requestResult.more = requestMore.statementsResult.more || null;
+                    }
+
+                    if (requestResult.statements.length > originalLimit) {
+                        this.log("Amount of statements returned exceeds the original limit (" + requestResult.statements.length + " > " + originalLimit + ")");
+                    }
+
+                    // clean up the results
+                    if (requestResult.hasOwnProperty("xhr")) {
+                        delete requestResult.xhr;
+                    }
+                    if (requestResult.hasOwnProperty("err") && requestResult.err === null) {
+                        delete requestResult.err;
+                    }
+                }
+            }
+
+            this.log("number of calls made in _ensureStatementReturned: " + numCalls);
+
+            return requestResult;
+        },
+
+        /**
         Fetch more statements from a previous query, when used from a browser sends to the endpoint using the
         RESTful interface.  Use a callback to make the call asynchronous.
 
@@ -2370,7 +2476,8 @@ TinCan client library
                 requestResult,
                 callbackWrapper,
                 parsedURL,
-                serverRoot;
+                serverRoot,
+                _this;
 
             cfg = cfg || {};
 
@@ -2378,7 +2485,7 @@ TinCan client library
             // the more URL query params so that the request can be made properly later
             parsedURL = TinCan.Utils.parseURL(cfg.url);
 
-            //Respect a more URL that is relative to either the server root 
+            //Respect a more URL that is relative to either the server root
             //or endpoint (though only the former is allowed in the spec)
             serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
             if (parsedURL.path.indexOf("/statements") === 0){
@@ -2393,17 +2500,20 @@ TinCan client library
 
             requestCfg = {
                 method: "GET",
-                //For arbitrary more URLs to work, 
+                //For arbitrary more URLs to work,
                 //we need to make the URL absolute here
                 url: serverRoot + parsedURL.path,
                 params: parsedURL.params
             };
+
             if (typeof cfg.callback !== "undefined") {
+                _this = this;
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
                         result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        result = _this._ensureStatementsReturned(result, requestCfg);
                     }
 
                     cfg.callback(err, result);
@@ -2418,6 +2528,9 @@ TinCan client library
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
+                    if (!cfg.hasOwnProperty("is_ensureStatementsReturned_called")) {
+                        requestResult = this._ensureStatementsReturned(requestResult.statementsResult, requestCfg);
+                    }
                 }
             }
 
