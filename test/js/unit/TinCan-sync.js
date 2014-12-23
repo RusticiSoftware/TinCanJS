@@ -418,6 +418,122 @@
         );
     };
 
+    doStateUpdateContentTest = function (v) {
+        test(
+            "tincan state (update, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setState (update, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valUpdate = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    valResult = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        contentType: "application/json",
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setState/syncContentType/" + v
+                            }
+                        ),
+                        overwriteJSON: false
+                    };
+
+                session[v].setState(key, valFirst, options);
+                setResult = session[v].setState(key, valUpdate, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getState(key, options);
+                ok(getResult.hasOwnProperty("state"), "getResult has property: state (" + v + ")");
+                ok(getResult.state instanceof TinCan.State, "getResult state property is TinCan.State (" + v + ")");
+                deepEqual(getResult.state.contents, valResult, "getResult state property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.state.contentType), "application/json", "getResult state property contentType (" + v + ")");
+
+                deleteResult = session[v].deleteState(key, options);
+            }
+        );
+    };
+
+        doStateOverwriteContentTest = function (v) {
+        test(
+            "tincan state (overwrite, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setState (overwrite, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valOverwrite = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    }
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        contentType: "application/json",
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setState/syncContentType/" + v
+                            }
+                        ),
+                        overwriteJSON: true
+                    };
+
+                session[v].setState(key, valFirst, options);
+                setResult = session[v].setState(key, valOverwrite, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getState(key, options);
+                ok(getResult.hasOwnProperty("state"), "getResult has property: state (" + v + ")");
+                ok(getResult.state instanceof TinCan.State, "getResult state property is TinCan.State (" + v + ")");
+                deepEqual(getResult.state.contents, valOverwrite, "getResult state property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.state.contentType), "application/json", "getResult state property contentType (" + v + ")");
+
+                deleteResult = session[v].deleteState(key, options);
+            }
+        );
+    };
+
     doActivityProfileSyncTest = function (v) {
         test(
             "tincan activityProfile (sync): " + v,
@@ -511,6 +627,110 @@
                 options.lastSHA1 = getResult.profile.etag;
                 setResult = session[v].setActivityProfile(key, val + 2, options);
                 delete options.lastSHA1;
+
+                deleteResult = session[v].deleteActivityProfile(key, options);
+            }
+        );
+    };
+
+    doActivityProfileUpdateContentTest = function (v) {
+        test(
+            "tincan activityProfile (update, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setActivityProfile (update, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valUpdate = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    valResult = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    options = {
+                        contentType: "application/json",
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setState/syncContentType/" + v
+                            }
+                        ),
+                        overwriteJSON: false
+                    };
+
+                session[v].setActivityProfile(key, valFirst, options);
+                setResult = session[v].setActivityProfile(key, valUpdate, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getActivityProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.ActivityProfile, "getResult profile property is TinCan.ActivityProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, valResult, "getResult profile property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
+
+                deleteResult = session[v].deleteActivityProfile(key, options);
+            }
+        );
+    };
+
+    doActivityProfileOverwriteContentTest = function (v) {
+        test(
+            "tincan activityProfile (overwrite, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setActivityProfile (overwrite, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valOverwrite = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    }
+                    options = {
+                        contentType: "application/json",
+                        activity: new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan_setState/syncContentType/" + v
+                            }
+                        ),
+                        overwriteJSON: true
+                    };
+
+                session[v].setActivityProfile(key, valFirst, options);
+                setResult = session[v].setActivityProfile(key, valOverwrite, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getActivityProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.ActivityProfile, "getResult profile property is TinCan.ActivityProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, valOverwrite, "getResult profile property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
                 deleteResult = session[v].deleteActivityProfile(key, options);
             }
@@ -618,6 +838,112 @@
         );
     };
 
+    doAgentProfileUpdateContentTest = function (v) {
+        test(
+            "tincan agentProfile (update, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setAgentProfile (update, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valUpdate = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    valResult = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    },
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        contentType: "application/json",
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        overwriteJSON: false
+                    };
+
+                session[v].setAgentProfile(key, valFirst, options);
+                setResult = session[v].setAgentProfile(key, valUpdate, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getAgentProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, valResult, "getResult profile property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
+
+                deleteResult = session[v].deleteAgentProfile(key, options);
+            }
+        );
+    };
+
+    doAgentProfileOverwriteContentTest = function (v) {
+        test(
+            "tincan agentProfile (overwrite, JSON content type): " + v,
+            function () {
+                var setResult,
+                    key = "setAgentProfile (overwrite, json content)",
+                    valFirst = {
+                        testObj: {
+                            key1: "val1"
+                        },
+                        testBool: true,
+                        testNum: 1
+                    },
+                    valOverwrite = {
+                        testNewObj: {
+                            key1: "val1"
+                        },
+                        testBool: false,
+                        testNum: 0
+                    }
+                    mbox ="mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    options = {
+                        contentType: "application/json",
+                        agent: new TinCan.Agent(
+                            {
+                                mbox: mbox
+                            }
+                        ),
+                        overwriteJSON: true
+                    };
+
+                session[v].setAgentProfile(key, valFirst, options);
+                setResult = session[v].setAgentProfile(key, valOverwrite, options);
+
+                ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
+                ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
+
+                getResult = session[v].getAgentProfile(key, options);
+                ok(getResult.hasOwnProperty("profile"), "getResult has property: profile (" + v + ")");
+                ok(getResult.profile instanceof TinCan.AgentProfile, "getResult profile property is TinCan.AgentProfile (" + v + ")");
+                deepEqual(getResult.profile.contents, valOverwrite, "getResult profile property contents (" + v + ")");
+                deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
+
+                deleteResult = session[v].deleteAAgentProfile(key, options);
+            }
+        );
+    };
+
     for (i = 0; i < versions.length; i += 1) {
         version = versions[i];
         if (TinCanTestCfg.recordStores[version]) {
@@ -630,6 +956,14 @@
             doActivityProfileSyncContentTypeJSONTest(version);
             doAgentProfileSyncTest(version);
             doAgentProfileSyncContentTypeJSONTest(version);
+            if ((version ==! "0.95") && (version ==! "0.9")) {
+                doStateUpdateContentTest(version);
+                doStateOverwriteContentTest(version);
+                doActivityProfileUpdateContentTest(version);
+                doActivityProfileOverwriteContentTest(version);
+                doAgentProfileUpdateContentTest(version);
+                doAgentProfileOverwriteContentTest(version);
+            }
         }
     }
 }());

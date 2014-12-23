@@ -874,10 +874,8 @@ var TinCan;
                     agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
-                if (typeof cfg.registration !== "undefined") {
-                    if (cfg.registration !== null) {
-                        queryCfg.registration = cfg.registration;
-                    }
+                if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
+                    queryCfg.registration = cfg.registration;
                 }
                 else if (this.registration !== null) {
                     queryCfg.registration = this.registration;
@@ -936,7 +934,7 @@ var TinCan;
                     agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
-                if (typeof cfg.registration !== "undefined") {
+                if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                     queryCfg.registration = cfg.registration;
                 }
                 else if (this.registration !== null) {
@@ -1001,6 +999,7 @@ var TinCan;
                 defaults to 'activity' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers
+            @param {Boolean} [cfg.overwriteJSON] If the Content-Type is JSON, should a PUT be used?
             @param {Function} [cfg.callback] Function to run with activity profile
         */
         setActivityProfile: function (key, val, cfg) {
@@ -1033,6 +1032,9 @@ var TinCan;
                 }
                 if (typeof cfg.contentType !== "undefined") {
                     queryCfg.contentType = cfg.contentType;
+                    if ((typeof cfg.overwriteJSON !== "undefined") && (! cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
+                        queryCfg.method = "POST";
+                    }
                 }
 
                 return lrs.saveActivityProfile(key, val, queryCfg);
@@ -1130,6 +1132,7 @@ var TinCan;
                 defaults to 'actor' property if empty
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers
+            @param {Boolean} [cfg.overwriteJSON] If the Content-Type is JSON, should a PUT be used?
             @param {Function} [cfg.callback] Function to run with agent profile
         */
         setAgentProfile: function (key, val, cfg) {
@@ -1162,6 +1165,9 @@ var TinCan;
                 }
                 if (typeof cfg.contentType !== "undefined") {
                     queryCfg.contentType = cfg.contentType;
+                    if ((typeof cfg.overwriteJSON !== "undefined") && (! cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
+                        queryCfg.method = "POST";
+                    }
                 }
 
                 return lrs.saveAgentProfile(key, val, queryCfg);

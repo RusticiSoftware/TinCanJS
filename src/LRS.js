@@ -1212,6 +1212,7 @@ TinCan client library
             @param {Object} cfg.activity TinCan.Activity
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -1222,13 +1223,17 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
+            }
+
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
             requestCfg = {
                 url: "activities/profile",
-                method: "PUT",
+                method: cfg.method,
                 params: {
                     profileId: key,
                     activityId: cfg.activity.id
@@ -1414,6 +1419,7 @@ TinCan client library
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveAgentProfile: function (key, val, cfg) {
@@ -1424,12 +1430,16 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
+            }
+
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
             requestCfg = {
-                method: "PUT",
+                method: cfg.method,
                 params: {
                     profileId: key
                 },
