@@ -994,7 +994,7 @@ TinCan client library
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
-			
+
             if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
                 cfg.method = "PUT";
             }

@@ -887,7 +887,7 @@ var TinCan;
                 }
                 if (typeof cfg.contentType !== "undefined") {
                     queryCfg.contentType = cfg.contentType;
-                    if ((typeof cfg.overwriteJSON !== "undefined") && (!cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
+                    if ((typeof cfg.overwriteJSON !== "undefined") && (! cfg.overwriteJSON) && (TinCan.Utils.isApplicationJSON(cfg.contentType))) {
                         queryCfg.method = "POST";
                     }
                 }
