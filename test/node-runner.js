@@ -58,7 +58,10 @@ testRunner.run(
     },
     function (err, report) {
         if (err) {
-            console.log("Error occurred: " + err);
+            throw new Error(err);
+        }
+        if (report.failed > 0) {
+            throw new Error("Tests had failures: " + report.failed);
         }
     }
 );
