@@ -86,27 +86,28 @@ TinCan client library
                 pad(d.getUTCSeconds()) + "." +
                 pad(d.getUTCMilliseconds(), 3) + "Z";
         },
-        
+
         /**
         @method convertISO8601DurationToMilliseconds
         @static
         @param {String} ISO8601Duration Duration in ISO8601 format
         @return {Int} Duration in milliseconds
+
+        Note: does not handle input strings with years, months and days
         */
-        //Note: does not handle years, months and days
         convertISO8601DurationToMilliseconds: function (ISO8601Duration) {
             var isValueNegative = (ISO8601Duration.indexOf("-") >= 0),
-            indexOfT = ISO8601Duration.indexOf("T"),
-            indexOfH = ISO8601Duration.indexOf("H"),
-            indexOfM = ISO8601Duration.indexOf("M"),
-            indexOfS = ISO8601Duration.indexOf("S"),
-            hours,
-            minutes,
-            seconds,
-            durationInMilliseconds;
+                indexOfT = ISO8601Duration.indexOf("T"),
+                indexOfH = ISO8601Duration.indexOf("H"),
+                indexOfM = ISO8601Duration.indexOf("M"),
+                indexOfS = ISO8601Duration.indexOf("S"),
+                hours,
+                minutes,
+                seconds,
+                durationInMilliseconds;
 
             if ((indexOfT === -1) || ((indexOfM !== -1) && (indexOfM < indexOfT)) || (ISO8601Duration.indexOf("D") !== -1) || (ISO8601Duration.indexOf("Y") !== -1)) {
-                throw new Error("ISO 8601 timestamps including years, months and/or days are not supported by this function. Pull Requests are accepted.");
+                throw new Error("ISO 8601 timestamps including years, months and/or days are not currently supported");
             }
 
             if (indexOfH === -1) {
@@ -126,7 +127,7 @@ TinCan client library
             }
 
             seconds = parseFloat(ISO8601Duration.slice(indexOfM + 1, indexOfS));
-            
+
             durationInMilliseconds = parseInt((((((hours * 60) + minutes) * 60) + seconds) * 1000), 10);
             if (isNaN(durationInMilliseconds)){
                 durationInMilliseconds = 0;
@@ -146,11 +147,11 @@ TinCan client library
         */
         convertMillisecondsToISO8601Duration: function (inputMilliseconds) {
             var hours,
-            minutes,
-            seconds,
-            i_inputMilliseconds = parseInt(inputMilliseconds, 10),
-            inputIsNegative = "",
-            rtnStr ="";
+                minutes,
+                seconds,
+                i_inputMilliseconds = parseInt(inputMilliseconds, 10),
+                inputIsNegative = "",
+                rtnStr = "";
 
             if (i_inputMilliseconds < 0) {
                 inputIsNegative = "-";
@@ -159,8 +160,8 @@ TinCan client library
 
             hours = parseInt(((i_inputMilliseconds) / 3600000), 10);
             minutes = parseInt((((i_inputMilliseconds) % 3600000) / 60000), 10);
-            seconds =(((i_inputMilliseconds) % 3600000) % 60000) / 1000;
-            
+            seconds = (((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+
             rtnStr = inputIsNegative + "PT";
             if (hours > 0) {
                 rtnStr += hours + "H";
