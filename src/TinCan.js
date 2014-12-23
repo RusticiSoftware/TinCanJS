@@ -819,7 +819,7 @@ var TinCan;
                     agent: (typeof cfg.agent !== "undefined" ? cfg.agent : this.actor),
                     activity: (typeof cfg.activity !== "undefined" ? cfg.activity : this.activity)
                 };
-                if (typeof cfg.registration !== "undefined") {
+                if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                     queryCfg.registration = cfg.registration;
                 }
                 else if (this.registration !== null) {
