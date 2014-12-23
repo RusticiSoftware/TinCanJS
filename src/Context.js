@@ -155,7 +155,7 @@ TinCan client library
                     this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
                 }
             }
-			
+
             if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
                 if (cfg.statement instanceof TinCan.StatementRef) {
                     this.statement = cfg.statement;
