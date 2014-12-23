@@ -105,9 +105,8 @@ TinCan client library
             seconds,
             durationInMilliseconds;
 
-            if ((indexOfT === -1) || ((indexOfM != -1) && (indexOfM < indexOfT)) || (ISO8601Duration.indexOf("D") != -1) || (ISO8601Duration.indexOf("Y") != -1)) {
+            if ((indexOfT === -1) || ((indexOfM !== -1) && (indexOfM < indexOfT)) || (ISO8601Duration.indexOf("D") !== -1) || (ISO8601Duration.indexOf("Y") !== -1)) {
                 throw new Error("ISO 8601 timestamps including years, months and/or days are not supported by this function. Pull Requests are accepted.");
-                return null;
             }
 
             if (indexOfH === -1) {
@@ -146,8 +145,8 @@ TinCan client library
         @return {String} Duration in ISO8601 format
         */
         convertMillisecondsToISO8601Duration: function (inputMilliseconds) {
-            var hours, 
-            minutes, 
+            var hours,
+            minutes,
             seconds,
             i_inputMilliseconds = parseInt(inputMilliseconds, 10),
             inputIsNegative = "",
