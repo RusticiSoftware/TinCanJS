@@ -237,6 +237,10 @@ TinCan client library
                 result.object = this.target.asVersion(version);
             }
 
+            if (version === "0.9") {
+                result.objectType = "Statement";
+            }
+
             return result;
         }
     };

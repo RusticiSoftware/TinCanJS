@@ -101,8 +101,6 @@ TinCan client library
 
             if (version === "0.9") {
                 result.objectType = "Statement";
-            } else if (version !== "0.95") {
-                result.objectType = "StatementRef";
             }
 
             return result;
