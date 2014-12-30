@@ -481,7 +481,7 @@
         );
     };
 
-        doStateOverwriteContentTest = function (v) {
+    doStateOverwriteContentTest = function (v) {
         test(
             "tincan state (overwrite, JSON content type): " + v,
             function () {
@@ -674,7 +674,10 @@
                     };
 
                 session[v].setActivityProfile(key, valFirst, options);
+                getResult = session[v].getActivityProfile(key, options);
+                options.lastSHA1 = getResult.profile.etag;
                 setResult = session[v].setActivityProfile(key, valUpdate, options);
+                delete options.lastSHA1;
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
@@ -721,7 +724,10 @@
                     };
 
                 session[v].setActivityProfile(key, valFirst, options);
+                getResult = session[v].getActivityProfile(key, options);
+                options.lastSHA1 = getResult.profile.etag;
                 setResult = session[v].setActivityProfile(key, valOverwrite, options);
+                delete options.lastSHA1;
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
@@ -880,7 +886,10 @@
                     };
 
                 session[v].setAgentProfile(key, valFirst, options);
+                getResult = session[v].getAgentProfile(key, options);
+                options.lastSHA1 = getResult.profile.etag;
                 setResult = session[v].setAgentProfile(key, valUpdate, options);
+                delete options.lastSHA1;
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
@@ -928,7 +937,10 @@
                     };
 
                 session[v].setAgentProfile(key, valFirst, options);
+                getResult = session[v].getAgentProfile(key, options);
+                options.lastSHA1 = getResult.profile.etag;
                 setResult = session[v].setAgentProfile(key, valOverwrite, options);
+                delete options.lastSHA1;
 
                 ok(setResult.hasOwnProperty("err"), "setResult has property: err (" + v + ")");
                 ok(setResult.hasOwnProperty("xhr"), "setResult has property: xhr (" + v + ")");
@@ -939,7 +951,7 @@
                 deepEqual(getResult.profile.contents, valOverwrite, "getResult profile property contents (" + v + ")");
                 deepEqual(TinCan.Utils.getContentTypeFromHeader(getResult.profile.contentType), "application/json", "getResult profile property contentType (" + v + ")");
 
-                deleteResult = session[v].deleteAAgentProfile(key, options);
+                deleteResult = session[v].deleteAgentProfile(key, options);
             }
         );
     };
@@ -956,7 +968,7 @@
             doActivityProfileSyncContentTypeJSONTest(version);
             doAgentProfileSyncTest(version);
             doAgentProfileSyncContentTypeJSONTest(version);
-            if ((version ==! "0.95") && (version ==! "0.9")) {
+            if ((version !== "0.95") && (version !== "0.9")) {
                 doStateUpdateContentTest(version);
                 doStateOverwriteContentTest(version);
                 doActivityProfileUpdateContentTest(version);

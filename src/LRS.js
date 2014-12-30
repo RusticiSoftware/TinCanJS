@@ -863,7 +863,7 @@ TinCan client library
             else {
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
@@ -1009,7 +1009,7 @@ TinCan client library
             else {
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
@@ -1066,7 +1066,7 @@ TinCan client library
             if (key !== null) {
                 requestParams.stateId = key;
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
