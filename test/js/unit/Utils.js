@@ -59,6 +59,18 @@
         }
     );
     test(
+        "convertISO8601DurationToMilliseconds",
+        function () {
+            ok(TinCan.Utils.convertISO8601DurationToMilliseconds("PT1H34M42.475S") === 5682475, "return value");
+        }
+    );
+    test(
+        "convertMillisecondsToISO8601Duration",
+        function () {
+            ok(TinCan.Utils.convertMillisecondsToISO8601Duration(5682475) === "PT1H34M42.475S", "return value");
+        }
+    );
+    test(
         "getSHA1String",
         function () {
             ok(TinCan.Utils.getSHA1String("test") === "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", "return value");
