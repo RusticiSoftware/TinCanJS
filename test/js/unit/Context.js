@@ -164,15 +164,82 @@
                         }
                     },
                     {
-                        name: "substatement property",
+                        name: "statement property StatementRef",
                         instanceConfig: {
-                            statement: subSt
+                            statement: stRef
                         },
                         checkProps: {
-                            statement: subSt
+                            statement: stRef
                         },
                         checkAsVersions: {
                             latest: {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "StatementRef"
+                                }
+                            },
+                            "0.95": {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "StatementRef"
+                                }
+                            },
+                            "0.9": {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "Statement"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: "statement property transform",
+                        instanceConfig: {
+                            statement: {
+                                id: stRefId,
+                                objectType: "StatementRef"
+                            }
+                        },
+                        checkPropIsInstance: {
+                            statement: {
+                                kind: TinCan.StatementRef,
+                                name: "TinCan.StatementRef"
+                            }
+                        },
+                        checkAsVersions: {
+                            latest: {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "StatementRef"
+                                }
+                            },
+                            "0.95": {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "StatementRef"
+                                }
+                            },
+                            "0.9": {
+                                statement: {
+                                    id: stRefId,
+                                    objectType: "Statement"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: "statement substatement transform",
+                        instanceConfig: {
+                            statement: {
+                                objectType: "SubStatement",
+                                actor: { objectType: "Agent", mbox: "mailto:tincanjs-test-actor@tincanapi.com" },
+                                verb: { id: verbId, display: { und: "interacted" } },
+                                object: { objectType: "Activity", id: activityId }
+                            }
+                        },
+                        checkAsVersions: {
+                            latest: { exception: "1.01 does not support SubStatements in the 'statement' property" },
+                            "0.95": {
                                 statement: {
                                     objectType: "SubStatement",
                                     actor: { objectType: "Agent", mbox: "mailto:tincanjs-test-actor@tincanapi.com" },
@@ -182,8 +249,8 @@
                             },
                             "0.9": {
                                 statement: {
-                                    objectType: "SubStatement",
-                                    actor: { objectType: "Agent", mbox: [ "mailto:tincanjs-test-actor@tincanapi.com" ] },
+                                    objectType: "Statement",
+                                    actor: { objectType: "Agent", mbox: ["mailto:tincanjs-test-actor@tincanapi.com"] },
                                     verb: "interacted",
                                     object: { objectType: "Activity", id: activityId }
                                 }
@@ -208,13 +275,32 @@
                         deepEqual(obj[key], row.checkProps[key], "object property initial value: " + key + " (" + row.name + ")");
                     }
                 }
+                if (typeof row.checkPropIsInstance !== "undefined") {
+                    for (key in row.checkPropIsInstance) {
+                        ok(obj[key] instanceof row.checkPropIsInstance[key].kind, "object property initial value is instance of " + row.checkPropIsInstance[key].name + ": " + key + " (" + row.name + ")");
+                    }
+                }
                 if (typeof row.checkAsVersions !== "undefined") {
-                    result = obj.asVersion();
-                    deepEqual(result, row.checkAsVersions.latest, "object.asVersion() latest: " + row.name);
+                    if (typeof row.checkAsVersions.latest !== "undefined") {
+                        if (typeof row.checkAsVersions.latest.exception !== "undefined") {
+                            throws(
+                                function () {
+                                    result = obj.asVersion();
+                                },
+                                Error,
+                                message + " (exception)"
+                            );
+                            continue;
+                        }
 
+                        result = obj.asVersion();
+                        deepEqual(result, row.checkAsVersions.latest, "object.asVersion() latest: " + row.name);
+                    }
                     for (v = 0; v < versions.length; v += 1) {
-                        result = obj.asVersion(versions[v]);
-                        deepEqual(result, (row.checkAsVersions.hasOwnProperty(versions[v]) ? row.checkAsVersions[versions[v]] : row.checkAsVersions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
+                        if (typeof row.checkAsVersions[versions[v]] !== "undefined") {
+                            result = obj.asVersion(versions[v]);
+                            deepEqual(result, (row.checkAsVersions.hasOwnProperty(versions[v]) ? row.checkAsVersions[versions[v]] : row.checkAsVersions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
+                        }
                     }
                 }
             }

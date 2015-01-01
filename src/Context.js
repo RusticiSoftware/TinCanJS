@@ -110,7 +110,6 @@ TinCan client library
                     "revision",
                     "platform",
                     "language",
-                    "statement",
                     "extensions"
                 ],
                 agentGroupProps = [
@@ -156,6 +155,24 @@ TinCan client library
                     this.contextActivities = new TinCan.ContextActivities(cfg.contextActivities);
                 }
             }
+
+            if (cfg.hasOwnProperty("statement") && cfg.statement !== null) {
+                if (cfg.statement instanceof TinCan.StatementRef) {
+                    this.statement = cfg.statement;
+                }
+                else if (cfg.statement instanceof TinCan.SubStatement) {
+                    this.statement = cfg.statement;
+                }
+                else if (cfg.statement.objectType === "StatementRef") {
+                    this.statement = new TinCan.StatementRef(cfg.statement);
+                }
+                else if (cfg.statement.objectType === "SubStatement") {
+                    this.statement = new TinCan.SubStatement(cfg.statement);
+                }
+                else {
+                    this.log("Unable to parse statement.context.statement property.");
+                }
+            }
         },
 
         /**
@@ -181,6 +198,11 @@ TinCan client library
                 i;
 
             version = version || TinCan.versions()[0];
+
+            if (this.statement instanceof TinCan.SubStatement && version !== "0.9" && version !== "0.95") {
+                this.log("[error] version does not support SubStatements in the 'statement' property: " + version);
+                throw new Error(version + " does not support SubStatements in the 'statement' property");
+            }
 
             for (i = 0; i < optionalDirectProps.length; i += 1) {
                 if (this[optionalDirectProps[i]] !== null) {
