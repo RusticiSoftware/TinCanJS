@@ -863,7 +863,7 @@ TinCan client library
             else {
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
@@ -979,6 +979,7 @@ TinCan client library
             @param {String} [cfg.registration] Registration
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveState: function (key, val, cfg) {
@@ -994,6 +995,10 @@ TinCan client library
                 val = JSON.stringify(val);
             }
 
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
+            }
+
             requestParams = {
                 stateId: key,
                 activityId: cfg.activity.id
@@ -1004,7 +1009,7 @@ TinCan client library
             else {
                 requestParams.agent = JSON.stringify(cfg.agent.asVersion(this.version));
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
@@ -1015,7 +1020,7 @@ TinCan client library
 
             requestCfg = {
                 url: "activities/state",
-                method: "PUT",
+                method: cfg.method,
                 params: requestParams,
                 data: val,
                 headers: {
@@ -1061,7 +1066,7 @@ TinCan client library
             if (key !== null) {
                 requestParams.stateId = key;
             }
-            if (typeof cfg.registration !== "undefined") {
+            if ((typeof cfg.registration !== "undefined") && (cfg.registration !== null)) {
                 if (this.version === "0.9") {
                     requestParams.registrationId = cfg.registration;
                 }
@@ -1207,6 +1212,7 @@ TinCan client library
             @param {Object} cfg.activity TinCan.Activity
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveActivityProfile: function (key, val, cfg) {
@@ -1217,13 +1223,17 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
+            }
+
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
             requestCfg = {
                 url: "activities/profile",
-                method: "PUT",
+                method: cfg.method,
                 params: {
                     profileId: key,
                     activityId: cfg.activity.id
@@ -1409,6 +1419,7 @@ TinCan client library
             @param {Object} cfg.agent TinCan.Agent
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
+            @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
         */
         saveAgentProfile: function (key, val, cfg) {
@@ -1419,12 +1430,16 @@ TinCan client library
                 cfg.contentType = "application/octet-stream";
             }
 
+            if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
+                cfg.method = "PUT";
+            }
+
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
 
             requestCfg = {
-                method: "PUT",
+                method: cfg.method,
                 params: {
                     profileId: key
                 },
