@@ -144,6 +144,27 @@
                 },
                 "return value: with odd params, https no port, and hash"
             );
+
+            result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test?paramA=1&paramB=2&paramC=%23isahashsymbol#theRealHash");
+            deepEqual(
+                result,
+                {
+                    protocol: "http:",
+                    host: "tincanapi.com:8080",
+                    hostname: "tincanapi.com",
+                    port: "8080",
+                    pathname: "/TinCanJS/Test/TinCan.Utils_parseURL/test",
+                    search: "?paramA=1&paramB=2&paramC=%23isahashsymbol",
+                    hash: "#theRealHash",
+                    params: {
+                        paramA: "1",
+                        paramB: "2",
+                        paramC: "#isahashsymbol"
+                    },
+                    path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
+                },
+                "return value: with params"
+            );
         }
     );
     test(
