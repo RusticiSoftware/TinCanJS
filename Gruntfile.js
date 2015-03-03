@@ -28,7 +28,9 @@ module.exports = function(grunt) {
         "src/About.js"
     ],
     browserFileList = coreFileList.slice(),
-    nodeFileList = coreFileList.slice();
+    nodeFileList = coreFileList.slice(),
+    pkg,
+    bower;
 
     browserFileList.push(
         "src/Environment/Browser.js"
@@ -37,9 +39,16 @@ module.exports = function(grunt) {
         "src/Environment/Node.js"
     );
 
+    pkg = grunt.file.readJSON("package.json");
+    bower = grunt.file.readJSON("bower.json");
+
+    if (pkg.version !== bower.version) {
+        grunt.fail.fatal("package.json and bower.json versions do not match");
+    }
+
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+        pkg: pkg,
 
         watch: {
             files: ["src/**/*.js"],

@@ -240,26 +240,50 @@ TinCan client library
         @private
         */
         parseURL: function (url) {
-            var parts = String(url).split("?"),
-                pairs,
-                pair,
-                i,
-                params = {}
-            ;
-            if (parts.length === 2) {
-                pairs = parts[1].split("&");
-                for (i = 0; i < pairs.length; i += 1) {
-                    pair = pairs[i].split("=");
-                    if (pair.length === 2 && pair[0]) {
-                        params[pair[0]] = decodeURIComponent(pair[1]);
-                    }
+            //
+            // see http://stackoverflow.com/a/21553982
+            // and http://stackoverflow.com/a/2880929
+            //
+            var reURLInformation,
+                match,
+                result,
+                paramMatch,
+                pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g,
+                decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+            reURLInformation = new RegExp(
+                [
+                    "^(https?:)//", // protocol
+                    "(([^:/?#]*)(?::([0-9]+))?)", // host (hostname and port)
+                    "(/[^?#]*)", // pathname
+                    "(\\?[^#]*|)", // search
+                    "(#.*|)$" // hash
+                ].join("")
+            );
+            match = url.match(reURLInformation);
+            result = {
+                protocol: match[1],
+                host: match[2],
+                hostname: match[3],
+                port: match[4],
+                pathname: match[5],
+                search: match[6],
+                hash: match[7],
+                params: {}
+            };
+
+            // 'path' is for backwards compatibility
+            result.path = result.protocol + "//" + result.host + result.pathname;
+
+            if (result.search !== "") {
+                // extra parens to let jshint know this is an expression
+                while ((paramMatch = search.exec(result.search.substring(1)))) {
+                    result.params[decode(paramMatch[1])] = decode(paramMatch[2]);
                 }
             }
 
-            return {
-                path: parts[0],
-                params: params
-            };
+            return result;
         },
 
         /**
