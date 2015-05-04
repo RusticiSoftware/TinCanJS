@@ -150,17 +150,21 @@ TinCan client library
                 minutes,
                 seconds,
                 i_inputMilliseconds = parseInt(inputMilliseconds, 10),
+                i_inputCentiseconds,
                 inputIsNegative = "",
                 rtnStr = "";
 
-            if (i_inputMilliseconds < 0) {
+            //round to nearest 0.01 seconds
+            i_inputCentiseconds = Math.round(i_inputMilliseconds / 10);
+
+            if (i_inputCentiseconds < 0) {
                 inputIsNegative = "-";
-                i_inputMilliseconds = i_inputMilliseconds * -1;
+                i_inputCentiseconds = i_inputCentiseconds * -1;
             }
 
-            hours = parseInt(((i_inputMilliseconds) / 3600000), 10);
-            minutes = parseInt((((i_inputMilliseconds) % 3600000) / 60000), 10);
-            seconds = (((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+            hours = parseInt(((i_inputCentiseconds) / 360000), 10);
+            minutes = parseInt((((i_inputCentiseconds) % 360000) / 6000), 10);
+            seconds = (((i_inputCentiseconds) % 360000) % 6000) / 100;
 
             rtnStr = inputIsNegative + "PT";
             if (hours > 0) {
