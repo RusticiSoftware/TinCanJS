@@ -137,7 +137,7 @@
                             latest: {
                                 id: uuid,
                                 actor: { objectType: "Agent", mbox: "mailto:tincanjs-test-actor@tincanapi.com" },
-                                verb: { id: verbId, display: { und: "interacted" } },
+                                verb: { id: verbId, display: { en: "interacted" } },
                                 object: { objectType: "Activity", id: activityId },
                                 result: {},
                                 context: {},
@@ -147,7 +147,7 @@
                             "0.95": {
                                 id: uuid,
                                 actor: { objectType: "Agent", mbox: "mailto:tincanjs-test-actor@tincanapi.com" },
-                                verb: { id: verbId, display: { und: "interacted" } },
+                                verb: { id: verbId, display: { en: "interacted" } },
                                 object: { objectType: "Activity", id: activityId },
                                 result: {},
                                 context: {},
