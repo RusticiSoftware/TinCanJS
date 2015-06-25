@@ -87,6 +87,108 @@
         function () {
             var result;
 
+            result = TinCan.Utils.parseURL("http://tincanapi.com");
+            deepEqual(
+                result,
+                {
+                    protocol: "http:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "http://tincanapi.com/"
+                },
+                "return value: basic URL no path"
+            );
+
+            result = TinCan.Utils.parseURL("https://tincanapi.com");
+            deepEqual(
+                result,
+                {
+                    protocol: "https:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "https://tincanapi.com/"
+                },
+                "return value: basic https URL no path"
+            );
+
+            result = TinCan.Utils.parseURL("http://tincanapi.com/");
+            deepEqual(
+                result,
+                {
+                    protocol: "http:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "http://tincanapi.com/"
+                },
+                "return value: basic URL empty path"
+            );
+
+            result = TinCan.Utils.parseURL("https://tincanapi.com/");
+            deepEqual(
+                result,
+                {
+                    protocol: "https:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "https://tincanapi.com/"
+                },
+                "return value: basic https URL empty path"
+            );
+
+            result = TinCan.Utils.parseURL("https://tincanapi.com/TinCanJS");
+            deepEqual(
+                result,
+                {
+                    protocol: "https:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/TinCanJS",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "https://tincanapi.com/TinCanJS"
+                },
+                "return value: basic https URL simple path"
+            );
+
+            result = TinCan.Utils.parseURL("https://tincanapi.com/TinCanJS/");
+            deepEqual(
+                result,
+                {
+                    protocol: "https:",
+                    host: "tincanapi.com",
+                    hostname: "tincanapi.com",
+                    port: undefined,
+                    pathname: "/TinCanJS/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "https://tincanapi.com/TinCanJS/"
+                },
+                "return value: basic https URL simple path with trailing slash"
+            );
+
             result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test");
             deepEqual(
                 result,
@@ -164,6 +266,36 @@
                     path: "http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test"
                 },
                 "return value: with params"
+            );
+
+            throws(
+                function () {
+                    result = TinCan.Utils.parseURL("/RelativeNotAllowed");
+                },
+                Error,
+                "relative without option"
+            );
+
+            result = TinCan.Utils.parseURL(
+                "/TinCanJS/Test/TinCan.Utils_parseURL/testRelative?paramA=1",
+                { allowRelative: true }
+            );
+            deepEqual(
+                result,
+                {
+                    protocol: null,
+                    host: null,
+                    hostname: null,
+                    port: null,
+                    pathname: "/TinCanJS/Test/TinCan.Utils_parseURL/testRelative",
+                    search: "?paramA=1",
+                    hash: "",
+                    params: {
+                        paramA: "1"
+                    },
+                    path: "/TinCanJS/Test/TinCan.Utils_parseURL/testRelative"
+                },
+                "return value: relative with params"
             );
         }
     );
