@@ -189,6 +189,40 @@
                 "return value: basic https URL simple path with trailing slash"
             );
 
+            result = TinCan.Utils.parseURL("http://localhost");
+            deepEqual(
+                result,
+                {
+                    protocol: "http:",
+                    host: "localhost",
+                    hostname: "localhost",
+                    port: undefined,
+                    pathname: "/",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "http://localhost/"
+                },
+                "return value: localhost URL no path"
+            );
+
+            result = TinCan.Utils.parseURL("http://localhost/TinCanJS/Test");
+            deepEqual(
+                result,
+                {
+                    protocol: "http:",
+                    host: "localhost",
+                    hostname: "localhost",
+                    port: undefined,
+                    pathname: "/TinCanJS/Test",
+                    search: "",
+                    hash: "",
+                    params: {},
+                    path: "http://localhost/TinCanJS/Test"
+                },
+                "return value: localhost URL"
+            );
+
             result = TinCan.Utils.parseURL("http://tincanapi.com:8080/TinCanJS/Test/TinCan.Utils_parseURL/test");
             deepEqual(
                 result,
