@@ -104,7 +104,7 @@ TinCan client library
                         this.id = prop;
                         this.display = {
                             en: cfg
-                        }
+                        };
                         break;
                     }
                 }
