@@ -34,6 +34,18 @@
 
             result = TinCan.Group.fromJSON(JSON.stringify(raw));
             ok(result instanceof TinCan.Group, "returns TinCan.Group");
+
+            raw.objectType = 'Group';
+            result = TinCan.Group.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.Group, "returns TinCan.Group (objectType set explicitly)");
+
+            raw.objectType = 'invalid';
+            throws(
+                function () {
+                    TinCan.Group.fromJSON(JSON.stringify(raw));
+                },
+                "exception on invalid objectType"
+            );
         }
     );
 

@@ -211,7 +211,13 @@ var TinCan;
                     delete qsParams.actor;
                 }
                 catch (ex) {
-                    this.log("_initFromQueryString - failed to set actor: " + ex);
+                    try {
+                        this.actor = TinCan.Group.fromJSON(qsParams.actor);
+                        delete qsParams.actor;
+                    }
+                    catch (ex2) {
+                        this.log("_initFromQueryString - failed to set actor: " + ", ".join([ex, ex2]));
+                    }
                 }
             }
 

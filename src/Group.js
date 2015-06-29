@@ -156,6 +156,10 @@ TinCan client library
         Group.prototype.log("fromJSON");
         var _group = JSON.parse(groupJSON);
 
+        if (_group.hasOwnProperty("objectType") && _group.objectType !== Group.prototype.objectType) {
+            throw "Unexpected object type for group: " + _group.objectType;
+        }
+
         return new Group(_group);
     };
 }());

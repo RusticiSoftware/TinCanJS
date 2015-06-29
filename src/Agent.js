@@ -289,6 +289,10 @@ TinCan client library
         Agent.prototype.log("fromJSON");
         var _agent = JSON.parse(agentJSON);
 
+        if (_agent.hasOwnProperty("objectType") && _agent.objectType !== Agent.prototype.objectType) {
+            throw "Unexpected object type for agent: " + _agent.objectType;
+        }
+
         return new Agent(_agent);
     };
 }());
