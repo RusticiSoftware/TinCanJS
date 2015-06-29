@@ -241,7 +241,7 @@ TinCan client library
         @return {Object} Object of values
         @private
         */
-        parseURL: function (url, options) {
+        parseURL: function (url, cfg) {
             //
             // see http://stackoverflow.com/a/21553982
             // and http://stackoverflow.com/a/2880929
@@ -260,7 +260,7 @@ TinCan client library
                 search = /([^&=]+)=?([^&]*)/g,
                 decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
 
-            options = options || {};
+            cfg = cfg || {};
 
             //
             // this method in an earlier version supported relative URLs, mostly to provide
@@ -293,7 +293,7 @@ TinCan client library
                 //
                 // relative so make sure they allow that explicitly
                 //
-                if (typeof options.allowRelative === "undefined" || ! options.allowRelative) {
+                if (typeof cfg.allowRelative === "undefined" || ! cfg.allowRelative) {
                     throw new Error("Refusing to parse relative URL without 'allowRelative' option");
                 }
             }
