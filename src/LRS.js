@@ -783,25 +783,24 @@ TinCan client library
 
             // to support our interface (to support IE) we need to break apart
             // the more URL query params so that the request can be made properly later
-            parsedURL = TinCan.Utils.parseURL(cfg.url);
+            parsedURL = TinCan.Utils.parseURL(cfg.url, { allowRelative: true });
 
-            //Respect a more URL that is relative to either the server root 
-            //or endpoint (though only the former is allowed in the spec)
+            // Respect a more URL that is relative to either the server root
+            // or endpoint (though only the former is allowed in the spec)
             serverRoot = TinCan.Utils.getServerRoot(this.endpoint);
             if (parsedURL.path.indexOf("/statements") === 0){
                 parsedURL.path = this.endpoint.replace(serverRoot, "") + parsedURL.path;
                 this.log("converting non-standard more URL to " + parsedURL.path);
             }
 
-            //The more relative URL might not start with a slash, add it if not
+            // The more relative URL might not start with a slash, add it if not
             if (parsedURL.path.indexOf("/") !== 0) {
                 parsedURL.path = "/" + parsedURL.path;
             }
 
             requestCfg = {
                 method: "GET",
-                //For arbitrary more URLs to work, 
-                //we need to make the URL absolute here
+                // For arbitrary more URLs to work, we need to make the URL absolute here
                 url: serverRoot + parsedURL.path,
                 params: parsedURL.params
             };
