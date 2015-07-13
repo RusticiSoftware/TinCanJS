@@ -851,6 +851,7 @@ TinCan client library
                 requestCfg = {},
                 requestResult,
                 callbackWrapper,
+                optHeaders,
                 prop
             ;
 
@@ -998,6 +999,7 @@ TinCan client library
             this.log("saveState");
             var requestParams,
                 requestCfg,
+                optHeaders,
                 prop;
 
             optHeaders = cfg.optHeaders || {};
@@ -1075,6 +1077,7 @@ TinCan client library
             this.log("dropState");
             var requestParams,
                 requestCfg,
+                optHeaders,
                 prop
             ;
 
@@ -1136,6 +1139,7 @@ TinCan client library
             var requestCfg = {},
                 requestResult,
                 callbackWrapper,
+                optHeaders,
                 prop
             ;
 
@@ -1264,6 +1268,7 @@ TinCan client library
         saveActivityProfile: function (key, val, cfg) {
             this.log("saveActivityProfile");
             var requestCfg,
+                optHeaders,
                 prop;
 
             optHeaders = cfg.optHeaders || {};
@@ -1326,6 +1331,7 @@ TinCan client library
             this.log("dropActivityProfile");
             var requestParams,
                 requestCfg,
+                optHeaders,
                 prop
             ;
 
@@ -1372,6 +1378,7 @@ TinCan client library
             var requestCfg = {},
                 requestResult,
                 callbackWrapper,
+                optHeaders,
                 prop
             ;
 
@@ -1506,6 +1513,7 @@ TinCan client library
         saveAgentProfile: function (key, val, cfg) {
             this.log("saveAgentProfile");
             var requestCfg,
+                optHeaders,
                 prop;
 
             optHeaders = cfg.optHeaders || {};
@@ -1574,6 +1582,7 @@ TinCan client library
             this.log("dropAgentProfile");
             var requestParams,
                 requestCfg,
+                optHeaders,
                 prop
             ;
 
