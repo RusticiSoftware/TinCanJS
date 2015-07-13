@@ -842,10 +842,10 @@ TinCan client library
             @param {Function} [cfg.callback] Callback to execute on completion
                 @param {Object|Null} cfg.callback.error
                 @param {TinCan.State|null} cfg.callback.result null if state is 404
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         @return {Object} TinCan.State retrieved when synchronous, or result from sendRequest
         */
-        retrieveState: function (key, cfg, optHeaders) {
+        retrieveState: function (key, cfg) {
             this.log("retrieveState");
             var requestParams = {},
                 requestCfg = {},
@@ -854,7 +854,7 @@ TinCan client library
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestParams = {
                 stateId: key,
@@ -992,15 +992,15 @@ TinCan client library
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        saveState: function (key, val, cfg, optHeaders) {
+        saveState: function (key, val, cfg) {
             this.log("saveState");
             var requestParams,
                 requestCfg,
                 prop;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
@@ -1069,16 +1069,16 @@ TinCan client library
             @param {Object} [cfg.agent] TinCan.Agent
             @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        dropState: function (key, cfg, optHeaders) {
+        dropState: function (key, cfg) {
             this.log("dropState");
             var requestParams,
                 requestCfg,
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestParams = {
                 activityId: cfg.activity.id
@@ -1128,10 +1128,10 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         @return {Object} Value retrieved
         */
-        retrieveActivityProfile: function (key, cfg, optHeaders) {
+        retrieveActivityProfile: function (key, cfg) {
             this.log("retrieveActivityProfile");
             var requestCfg = {},
                 requestResult,
@@ -1139,7 +1139,7 @@ TinCan client library
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestCfg = {
                 url: "activities/profile",
@@ -1259,14 +1259,14 @@ TinCan client library
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        saveActivityProfile: function (key, val, cfg, optHeaders) {
+        saveActivityProfile: function (key, val, cfg) {
             this.log("saveActivityProfile");
             var requestCfg,
                 prop;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
@@ -1320,16 +1320,16 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Object} cfg.activity TinCan.Activity
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        dropActivityProfile: function (key, cfg, optHeaders) {
+        dropActivityProfile: function (key, cfg) {
             this.log("dropActivityProfile");
             var requestParams,
                 requestCfg,
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestParams = {
                 profileId: key,
@@ -1364,10 +1364,10 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Object} cfg.agent TinCan.Agent
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         @return {Object} Value retrieved
         */
-        retrieveAgentProfile: function (key, cfg, optHeaders) {
+        retrieveAgentProfile: function (key, cfg) {
             this.log("retrieveAgentProfile");
             var requestCfg = {},
                 requestResult,
@@ -1375,7 +1375,7 @@ TinCan client library
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestCfg = {
                 method: "GET",
@@ -1501,14 +1501,14 @@ TinCan client library
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {String} [cfg.method] Method to use. Default: PUT
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        saveAgentProfile: function (key, val, cfg, optHeaders) {
+        saveAgentProfile: function (key, val, cfg) {
             this.log("saveAgentProfile");
             var requestCfg,
                 prop;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
@@ -1568,16 +1568,16 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Object} cfg.agent TinCan.Agent
             @param {Function} [cfg.callback] Callback to execute on completion
-        @param {Object} optHeaders optional object containing additional headers to add to request
+            @param {Object} [cfg.optHeaders] Optional object containing additional headers to add to request
         */
-        dropAgentProfile: function (key, cfg, optHeaders) {
+        dropAgentProfile: function (key, cfg) {
             this.log("dropAgentProfile");
             var requestParams,
                 requestCfg,
                 prop
             ;
 
-            optHeaders = optHeaders || {};
+            optHeaders = cfg.optHeaders || {};
 
             requestParams = {
                 profileId: key
