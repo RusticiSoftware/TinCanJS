@@ -882,7 +882,6 @@ TinCan client library
                 headers: requestHeaders
             };
 
-
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
@@ -1036,7 +1035,6 @@ TinCan client library
                 headers: requestHeaders
             };
 
-
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -1132,7 +1130,6 @@ TinCan client library
                 ignore404: true,
                 headers: requestHeaders
             };
-
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
@@ -1268,7 +1265,6 @@ TinCan client library
                 headers: requestHeaders
             };
 
-
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -1312,7 +1308,6 @@ TinCan client library
                 headers: requestHeaders
             };
 
-
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -1348,7 +1343,6 @@ TinCan client library
                 ignore404: true,
                 headers: requestHeaders
             };
-
 
             if (this.version === "0.9") {
                 requestCfg.url = "actors/profile";
@@ -1490,7 +1484,6 @@ TinCan client library
                 headers: requestHeaders
             };
 
-
             if (this.version === "0.9") {
                 requestCfg.url = "actors/profile";
                 requestCfg.params.actor = JSON.stringify(cfg.agent.asVersion(this.version));
@@ -1538,7 +1531,6 @@ TinCan client library
                 params: requestParams,
                 headers: requestHeaders
             };
-
 
             if (this.version === "0.9") {
                 requestCfg.url = "actors/profile";
