@@ -972,6 +972,39 @@ TinCan client library
         },
 
         /**
+        Retrieve the list of IDs for a state, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveStateIds
+        @param {String} activityId ID of Activity for this state
+        @param {Object} agent JSON of Agent object for this state
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+        @return {Array} List of IDs for this Activity ID and Agent
+
+        */
+        retrieveStateIds: function (activityId, agent, cfg) {
+            this.log("retrieveStateIds");
+            var requestCfg;
+
+            requestCfg = {
+                url: "activities/state",
+                method: "GET",
+                params: {
+                    activityId: activityId,
+                    agent: agent,
+                    since: cfg.since
+                },
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
+        },
+
+        /**
         Save a state value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method saveState
@@ -1221,6 +1254,37 @@ TinCan client library
         },
 
         /**
+        Retrieve the list of profileIds for an activity profile, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveActivityProfileIds
+        @param {String} activityId Activity ID of which the profileIds will be retrieved
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+        @return {Array} List of profileIds for this Activity ID
+
+        */
+        retrieveActivityProfileIds: function (activityId, cfg) {
+            this.log("retrieveActivityProfileIds");
+            var requestCfg;
+
+            requestCfg = {
+                url: "activities/profile",
+                method: "GET",
+                params: {
+                    activityId: activityId,
+                    since: cfg.since
+                },
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
+        },
+
+        /**
         Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method saveActivityProfile
@@ -1439,6 +1503,37 @@ TinCan client library
             }
 
             return requestResult;
+        },
+
+        /**
+        Retrieve the list of profileIds for an agent profile, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveAgentProfileIds
+        @param {Object} agent JSON of Agent object of which the profileIds will be retrieved
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+        @return {Array} List of profileIds for this Agent
+
+        */
+        retrieveAgentProfileIds: function (agent, cfg) {
+            this.log("retrieveAgentProfileIds");
+            var requestCfg;
+
+            requestCfg = {
+                url: "agents/profile",
+                method: "GET",
+                params: {
+                    agent: agent,
+                    since: cfg.since
+                },
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         /**
