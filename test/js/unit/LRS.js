@@ -186,6 +186,26 @@
         }
     );
 
+    test(
+        "Retrieve activity profile ids",
+        function () {
+            var raw = {
+                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds"
+                },
+                obj = new TinCan.LRS({
+                    endpoint: endpoint
+                }),
+                result
+            ;
+
+            result = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
+            ok(result instanceof LRSResponse, "result is LRSResponse, given activity");
+
+            result = obj.retrieveActivityProfileIds(raw);
+            ok(result instanceof LRSResponse, "result is LRSResponse, given raw json");
+        }
+    );
+
     (function () {
         var versions = [
                 "1.0.1",
