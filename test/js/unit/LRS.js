@@ -190,19 +190,43 @@
         "Retrieve activity profile ids",
         function () {
             var raw = {
-                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds"
+                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
                 },
                 obj = new TinCan.LRS({
                     endpoint: endpoint
                 }),
-                result
+                dummy = {
+                    d1: raw,
+                    d2: {
+                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/1"
+                    },
+                    d3: raw
+                },
+                results = {},
+                key
             ;
 
-            result = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
-            ok(result instanceof LRSResponse, "result is LRSResponse, given activity");
+            for (key in dummy) {
+                obj.saveActivityProfile(key, dummy[key], { activity: dummy[key] });
+            }
 
-            result = obj.retrieveActivityProfileIds(raw);
-            ok(result instanceof LRSResponse, "result is LRSResponse, given raw json");
+            results[activity] = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
+            results[raw_JSON] = obj.retrieveActivityProfileIds(raw);
+            results[not_found] = {
+                id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
+            };
+
+            for (key in results) {
+                ok(results[key] instanceof Array, "result is Array, given " + key);
+
+                if (key !== "not_found") {
+                    ok(results[key].length === 2, "correct number of results: " + key);
+                    ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
+                }
+                else {
+                    ok(results[key].length === 0, "correct number of results");
+                }
+            }
         }
     );
 
