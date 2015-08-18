@@ -187,14 +187,41 @@
     );
 
     test(
+        "Save activity",
+        function () {
+            var obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
+                activity = new TinCan.Activity(
+                    {
+                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
+                    }
+                )
+            ;
+            console.log("Save activity test");
+            expect(0);
+            obj.saveActivityProfile(
+                "SaveActivityTest",
+                "TinCanJS",
+                {
+                    activity: activity,
+                    callback: function (err, xhr) {
+                        console.log("\nSave - error: ", err);
+                        console.log("Save - xhr: ", xhr, "\n");
+                    }
+                }
+            );
+            console.log("pass");
+        }
+    )
+
+    test(
         "Retrieve activity profile ids",
         function () {
+            console.log("\n");
+            TinCan.enableDebug();
             var raw = {
                     id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
                 },
-                obj = new TinCan.LRS({
-                    endpoint: endpoint
-                }),
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
                 dummy = {
                     d1: raw,
                     d2: {
@@ -206,15 +233,29 @@
                 key
             ;
 
+            console.log("LRS: ", obj);
+
             for (key in dummy) {
+                console.log("\nKey: " + key);
                 if (dummy.hasOwnProperty(key)) {
-                    obj.saveActivityProfile(key, "TinCanJS", { activity: new TinCan.Activity(dummy[key]) });
+                    obj.saveActivityProfile(
+                        key,
+                        "TinCanJS",
+                        {
+                            activity: new TinCan.Activity(dummy[key]),
+                            callback: function (err, xhr) {
+                                console.log("\nSave activity ", key, " - error: ", err, "\n");
+                                // console.log("Save activity ", key, " - xhr: ", xhr, "\n");
+                            }
+                        }
+                    );
                 }
+                console.log("\nDone: " + key + "\n");
             }
 
-            results[activity] = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
-            results[raw_JSON] = obj.retrieveActivityProfileIds(raw);
-            results[not_found] = obj.retrieveActivityProfileIds({
+            results.basic = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
+            results.raw_JSON = obj.retrieveActivityProfileIds(raw);
+            results.not_found = obj.retrieveActivityProfileIds({
                 id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
             });
 
@@ -240,9 +281,7 @@
             var raw = {
                     mbox: "mailto:RetrieveAgentProfileIds@test.com"
                 },
-                obj = new TinCan.LRS({
-                    endpoint: endpoint
-                }),
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
                 dummy = {
                     d1: { mbox: "mailto:test@test.com" },
                     d2: raw,
@@ -253,14 +292,25 @@
             ;
 
             for (key in dummy) {
+                console.log("\nKey: " + key + "\n");
                 if (dummy.hasOwnProperty(key)) {
-                    obj.saveAgentProfile(key, "TinCanJS", { agent: new TinCan.Agent(dummy[key]) });
+                    obj.saveAgentProfile(
+                        key,
+                        "TinCanJS",
+                        {
+                            agent: new TinCan.Agent(dummy[key]),
+                            callback: function (err, xhr) {
+                                console.log("\nSave agent ", key, " - error: ", err, "\n");
+                                // console.log("Save agent ", key, " - xhr: ", xhr, "\n");
+                            }
+                        });
                 }
+                console.log("\nDone: " + key + "\n");
             }
 
-            results[agent] = obj.retrieveAgentProfileIds(new TinCan.Agent(raw));
-            results[raw_JSON] = obj.retrieveAgentProfileIds(raw);
-            results[not_found] = obj.retrieveAgentProfileIds({
+            results.basic = obj.retrieveAgentProfileIds(new TinCan.Agent(raw));
+            results.raw_JSON = obj.retrieveAgentProfileIds(raw);
+            results.not_found = obj.retrieveAgentProfileIds({
                 mbox: "mailto:RetrieveAgentProfileIds@notFound.com"
             });
 
@@ -289,9 +339,7 @@
                 raw_activity = {
                     id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/0"
                 },
-                obj = new TinCan.LRS({
-                    endpoint: endpoint
-                }),
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
                 dummy = {
                     d1: {
                         activity: raw_activity,
@@ -319,19 +367,25 @@
             ;
 
             for (key in dummy) {
+                console.log("\nKey: " + key + "\n");
                 if (dummy.hasOwnProperty(key)) {
                     obj.saveState(key, "TinCanJS",
                         {
                             activity: new TinCan.Activity(dummy[key].activity),
-                            agent: dummy[key].agent
+                            agent: dummy[key].agent,
+                            callback: function (err, xhr) {
+                                console.log("\nSave state ", key, " - error: ", err, "\n");
+                                // console.log("Save state ", key, " - xhr: ", xhr, "\n");
+                            }
                         }
                     );
                 }
+                console.log("\nDone: " + key + "\n");
             }
 
-            results[state] = obj.retrieveStateIds(new TinCan.Activity(raw_activity), new TinCan.Agent(raw_agent));
-            results[raw_JSON] = obj.retrieveStateIds(raw_activity, raw_agent);
-            results[not_found] = obj.retrieveStateIds(
+            results.basic = obj.retrieveStateIds(new TinCan.Activity(raw_activity), new TinCan.Agent(raw_agent));
+            results.raw_JSON = obj.retrieveStateIds(raw_activity, raw_agent);
+            results.not_found = obj.retrieveStateIds(
                 {
                     id: "http://LRS_RetrieveStateIds/not_found"
                 },
