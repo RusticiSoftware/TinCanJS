@@ -212,15 +212,129 @@
 
             results[activity] = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
             results[raw_JSON] = obj.retrieveActivityProfileIds(raw);
-            results[not_found] = {
+            results[not_found] = obj.retrieveActivityProfileIds({
                 id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
-            };
+            });
 
             for (key in results) {
                 ok(results[key] instanceof Array, "result is Array, given " + key);
 
                 if (key !== "not_found") {
-                    ok(results[key].length === 2, "correct number of results: " + key);
+                    ok(results[key].length === 2, "correct number of results");
+                    ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
+                }
+                else {
+                    ok(results[key].length === 0, "correct number of results");
+                }
+            }
+        }
+    );
+
+    test(
+        "Retrieve agent profile ids",
+        function () {
+            var raw = {
+                    mbox: "mailto:RetrieveAgentProfileIds@test.com"
+                },
+                obj = new TinCan.LRS({
+                    endpoint: endpoint
+                }),
+                dummy = {
+                    d1: { mbox: "mailto:test@test.com" },
+                    d2: raw,
+                    d3: raw
+                },
+                results = {},
+                key
+            ;
+
+            for (key in dummy) {
+                obj.saveAgentProfile(key, dummy[key], { agent: new TinCan.Agent(dummy[key]) });
+            }
+
+            results[agent] = obj.retrieveAgentProfileIds(new TinCan.Agent(raw));
+            results[raw_JSON] = obj.retrieveAgentProfileIds(raw);
+            results[not_found] = obj.retrieveAgentProfileIds({
+                mbox: "mailto:RetrieveAgentProfileIds@notFound.com"
+            });
+
+            for (key in results) {
+                ok(results[key] instanceof Array, "result is Array, given " + key);
+
+                if (key !== "not_found") {
+                    ok(results[key].length === 2, "correct number of results");
+                    ok(((results[key][0] === "d2" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d2")), "correct results");
+                }
+                else {
+                    ok(results[key].length === 0, "correct number of results");
+                }
+            }
+        }
+    );
+
+    test(
+        "Retrieve state ids",
+        function () {
+            var raw_agent = {
+                    mbox: "RetrieveStateIds@test.com"
+                },
+                raw_activity = {
+                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/0"
+                },
+                obj = new TinCan.LRS({
+                    endpoint: endpoint
+                }),
+                dummy = {
+                    d1: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d2: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
+                    },
+                    d3: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d4: {
+                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d5: {
+                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
+                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
+                    }
+                },
+                results = {},
+                key
+            ;
+
+            for (key in dummy) {
+                obj.saveState(key, dummy[key],
+                    {
+                        activity: dummy[key].activity,
+                        agent: new TinCan.Agent(dummy[key].agent)
+                    }
+                );
+            }
+
+            results[state] = obj.retrieveStateIds(new TinCan.Activity(raw_activity), new TinCan.Agent(raw_agent));
+            results[raw_JSON] = obj.retrieveStateIds(raw_activity, raw_agent);
+            results[not_found] = obj.retrieveStateIds(
+                {
+                    id: "http://LRS_RetrieveStateIds/not_found"
+                },
+                {
+                    mbox: "mailto:RetrieveStateIds@notFound.com"
+                }
+            );
+
+            for (key in results) {
+                ok(results[key] instanceof Array, "result is Array, given " + key);
+
+                if (key !== "not_found") {
+                    ok(results[key].length === 2, "correct number of results");
                     ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
                 }
                 else {
