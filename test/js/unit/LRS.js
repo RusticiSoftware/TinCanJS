@@ -207,7 +207,9 @@
             ;
 
             for (key in dummy) {
-                obj.saveActivityProfile(key, dummy[key], { activity: dummy[key] });
+                if (dummy.hasOwnProperty(key)) {
+                    obj.saveActivityProfile(key, "TinCanJS", { activity: new TinCan.Activity(dummy[key]) });
+                }
             }
 
             results[activity] = obj.retrieveActivityProfileIds(new TinCan.Activity(raw));
@@ -217,14 +219,16 @@
             });
 
             for (key in results) {
-                ok(results[key] instanceof Array, "result is Array, given " + key);
+                if (results.hasOwnProperty(key)) {
+                    ok(results[key] instanceof Array, "result is Array, given " + key);
 
-                if (key !== "not_found") {
-                    ok(results[key].length === 2, "correct number of results");
-                    ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
-                }
-                else {
-                    ok(results[key].length === 0, "correct number of results");
+                    if (key !== "not_found") {
+                        ok(results[key].length === 2, "correct number of results");
+                        ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
+                    }
+                    else {
+                        ok(results[key].length === 0, "correct number of results");
+                    }
                 }
             }
         }
@@ -249,7 +253,9 @@
             ;
 
             for (key in dummy) {
-                obj.saveAgentProfile(key, dummy[key], { agent: new TinCan.Agent(dummy[key]) });
+                if (dummy.hasOwnProperty(key)) {
+                    obj.saveAgentProfile(key, "TinCanJS", { agent: new TinCan.Agent(dummy[key]) });
+                }
             }
 
             results[agent] = obj.retrieveAgentProfileIds(new TinCan.Agent(raw));
@@ -259,14 +265,16 @@
             });
 
             for (key in results) {
-                ok(results[key] instanceof Array, "result is Array, given " + key);
+                if (results.hasOwnProperty(key)) {
+                    ok(results[key] instanceof Array, "result is Array, given " + key);
 
-                if (key !== "not_found") {
-                    ok(results[key].length === 2, "correct number of results");
-                    ok(((results[key][0] === "d2" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d2")), "correct results");
-                }
-                else {
-                    ok(results[key].length === 0, "correct number of results");
+                    if (key !== "not_found") {
+                        ok(results[key].length === 2, "correct number of results");
+                        ok(((results[key][0] === "d2" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d2")), "correct results");
+                    }
+                    else {
+                        ok(results[key].length === 0, "correct number of results");
+                    }
                 }
             }
         }
@@ -311,12 +319,14 @@
             ;
 
             for (key in dummy) {
-                obj.saveState(key, dummy[key],
-                    {
-                        activity: dummy[key].activity,
-                        agent: new TinCan.Agent(dummy[key].agent)
-                    }
-                );
+                if (dummy.hasOwnProperty(key)) {
+                    obj.saveState(key, "TinCanJS",
+                        {
+                            activity: new TinCan.Activity(dummy[key].activity),
+                            agent: dummy[key].agent
+                        }
+                    );
+                }
             }
 
             results[state] = obj.retrieveStateIds(new TinCan.Activity(raw_activity), new TinCan.Agent(raw_agent));
@@ -331,14 +341,16 @@
             );
 
             for (key in results) {
-                ok(results[key] instanceof Array, "result is Array, given " + key);
+                if (results.hasOwnProperty(key)) {
+                    ok(results[key] instanceof Array, "result is Array, given " + key);
 
-                if (key !== "not_found") {
-                    ok(results[key].length === 2, "correct number of results");
-                    ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
-                }
-                else {
-                    ok(results[key].length === 0, "correct number of results");
+                    if (key !== "not_found") {
+                        ok(results[key].length === 2, "correct number of results");
+                        ok(((results[key][0] === "d1" && results[key][1] === "d3") || (results[key][0] === "d3" && results[key][1] === "d1")), "correct results");
+                    }
+                    else {
+                        ok(results[key].length === 0, "correct number of results");
+                    }
                 }
             }
         }
