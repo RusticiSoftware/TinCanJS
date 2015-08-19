@@ -1,4 +1,4 @@
-"0.34.0";
+"0.34.1";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -2778,11 +2778,11 @@ TinCan client library
                 requestHeaders;
 
             requestHeaders = cfg.requestHeaders || {};
-            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
+            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
@@ -3024,11 +3024,11 @@ TinCan client library
                 requestHeaders;
 
             requestHeaders = cfg.requestHeaders || {};
-            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
+            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
                 cfg.method = "PUT";
@@ -3245,11 +3245,11 @@ TinCan client library
                 requestHeaders;
 
             requestHeaders = cfg.requestHeaders || {};
-            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof cfg.contentType === "undefined") {
                 cfg.contentType = "application/octet-stream";
             }
+            requestHeaders["Content-Type"] = cfg.contentType;
 
             if (typeof cfg.method === "undefined" || cfg.method !== "POST") {
                 cfg.method = "PUT";
