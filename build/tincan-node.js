@@ -2764,18 +2764,28 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         @return {Array} List of profileIds for this State
 
         */
         retrieveStateIds: function (activity, agent, cfg) {
             this.log("retrieveStateIds");
             var requestCfg,
+                requestHeaders,
                 callbackWrapper,
                 requestResult,
                 profileIds = [],
                 i;
 
             cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (! activity instanceof TinCan.Activity) {
+                activity = TinCan.Activity(activity);
+            }
+            if (! agent instanceof TinCan.Agent) {
+                agent = TinCan.Agent(agent);
+            }
 
             requestCfg = {
                 url: "activities/state",
@@ -2784,6 +2794,7 @@ TinCan client library
                     activityId: activity.id,
                     agent: agent
                 },
+                headers: requestHeaders,
                 ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
@@ -3085,18 +3096,25 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         @return {Array} List of profileIds for this Activity
 
         */
         retrieveActivityProfileIds: function (activity, cfg) {
             this.log("retrieveActivityProfileIds");
             var requestCfg,
+                requestHeaders,
                 requestResult,
                 callbackWrapper,
                 profileIds = [],
                 i;
 
             cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (! activity instanceof TinCan.Activity) {
+                activity = TinCan.Activity(activity);
+            }
 
             requestCfg = {
                 url: "activities/profile",
@@ -3104,6 +3122,7 @@ TinCan client library
                 params: {
                     activityId: activity.id
                 },
+                headers: requestHeaders,
                 ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
@@ -3377,18 +3396,25 @@ TinCan client library
         @param {Object} cfg Configuration options
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         @return {Array} List of profileIds for this Agent
 
         */
         retrieveAgentProfileIds: function (agent, cfg) {
             this.log("retrieveAgentProfileIds");
             var requestCfg,
+                requestHeaders,
                 requestResult,
                 callbackWrapper,
                 profileIds = [],
                 i;
 
             cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (! agent instanceof TinCan.Agent) {
+                agent = TinCan.Agent(agent);
+            }
 
             requestCfg = {
                 url: "agents/profile",
@@ -3396,6 +3422,7 @@ TinCan client library
                 params: {
                     agent: agent
                 },
+                headers: requestHeaders,
                 ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
