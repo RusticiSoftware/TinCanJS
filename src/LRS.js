@@ -988,19 +988,19 @@ TinCan client library
             this.log("retrieveStateIds");
             var requestCfg,
                 requestHeaders,
-                callbackWrapper,
                 requestResult,
+                callbackWrapper,
                 profileIds = [],
                 i;
 
             cfg = cfg || {};
             requestHeaders = cfg.requestHeaders || {};
 
-            if (! activity instanceof TinCan.Activity) {
-                activity = TinCan.Activity(activity);
+            if (!(activity instanceof TinCan.Activity)) {
+                activity = new TinCan.Activity(activity);
             }
-            if (! agent instanceof TinCan.Agent) {
-                agent = TinCan.Agent(agent);
+            if (!(agent instanceof TinCan.Agent)) {
+                agent = new TinCan.Agent(agent);
             }
 
             requestCfg = {
@@ -1008,14 +1008,15 @@ TinCan client library
                 method: "GET",
                 params: {
                     activityId: activity.id,
-                    agent: agent
+                    agent: JSON.stringify(agent.asVersion(this.version))
                 },
                 headers: requestHeaders,
                 ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        i;
 
                     if (err === null) {
                         try {
@@ -1024,8 +1025,10 @@ TinCan client library
                         catch (parseError) {
                             LRS.prototype.log("retrieveStateProfileIds - JSON parse error: " + parseError);
                         }
-                        for (i = 0; i < result.content.length; i += 1) {
-                            profileIds.push(result.content[i]);
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
                         }
                     }
 
@@ -1038,19 +1041,23 @@ TinCan client library
             }
 
             requestResult = this.sendRequest(requestCfg);
-            if (requestResult.err === null && requestResult.xhr.status !== "404") {
-                try {
-                    requestResult.content = JSON.parse(requestResult.xhr.responseText);
+            if (! callbackWrapper) {
+                if (requestResult.err === null && requestResult.xhr.status !== "404") {
+                    try {
+                        requestResult.content = JSON.parse(requestResult.xhr.responseText);
+                    }
+                    catch (parseError) {
+                        LRS.prototype.log("retrieveStateProfileIds - JSON parse error: " + parseError);
+                    }
+                    for (i in requestResult.content) {
+                        if (requestResult.content.hasOwnProperty(i)) {
+                            profileIds.push(requestResult.content[i]);
+                        }
+                    }
                 }
-                catch (parseError) {
-                    LRS.prototype.log("retrieveStateProfileIds - JSON parse error: " + parseError);
+                else {
+                    requestResult.content = "retrieveStateProfileIds - request failed: " + requestResult.err;
                 }
-                for (i = 0; i < requestResult.content.length; i += 1) {
-                    profileIds.push(requestResult.content[i]);
-                }
-            }
-            else {
-                requestResult.results = "retrieveStateProfileIds - request failed: " + requestResult.err;
             }
             return profileIds;
         },
@@ -1328,8 +1335,8 @@ TinCan client library
             cfg = cfg || {};
             requestHeaders = cfg.requestHeaders || {};
 
-            if (! activity instanceof TinCan.Activity) {
-                activity = TinCan.Activity(activity);
+            if (!(activity instanceof TinCan.Activity)) {
+                activity = new TinCan.Activity(activity);
             }
 
             requestCfg = {
@@ -1343,7 +1350,8 @@ TinCan client library
             };
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        i;
 
                     if (err === null) {
                         try {
@@ -1352,8 +1360,10 @@ TinCan client library
                         catch (parseError) {
                             LRS.prototype.log("retrieveActivityProfileIds - JSON parse error: " + parseError);
                         }
-                        for (i = 0; i < result.content.length; i += 1) {
-                            profileIds.push(result.content[i]);
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
                         }
                     }
 
@@ -1366,19 +1376,23 @@ TinCan client library
             }
 
             requestResult = this.sendRequest(requestCfg);
-            if (requestResult.err === null && requestResult.xhr.status !== "404") {
-                try {
-                    requestResult.content = JSON.parse(requestResult.xhr.responseText);
+            if (! callbackWrapper) {
+                if (requestResult.err === null && requestResult.xhr.status !== "404") {
+                    try {
+                        requestResult.content = JSON.parse(requestResult.xhr.responseText);
+                    }
+                    catch (parseError) {
+                        LRS.prototype.log("retrieveActivityProfileIds - JSON parse error: " + parseError);
+                    }
+                    for (i in requestResult.content) {
+                        if (requestResult.content.hasOwnProperty(i)) {
+                            profileIds.push(requestResult.content[i]);
+                        }
+                    }
                 }
-                catch (parseError) {
-                    LRS.prototype.log("retrieveActivityProfileIds - JSON parse error: " + parseError);
+                else {
+                    requestResult.content = "retrieveStateProfileIds - request failed: " + requestResult.err;
                 }
-                for (i = 0; i < requestResult.content.length; i += 1) {
-                    profileIds.push(requestResult.content[i]);
-                }
-            }
-            else {
-                requestResult.content = "retrieveStateProfileIds - request failed: " + requestResult.err;
             }
             return profileIds;
         },
@@ -1628,22 +1642,23 @@ TinCan client library
             cfg = cfg || {};
             requestHeaders = cfg.requestHeaders || {};
 
-            if (! agent instanceof TinCan.Agent) {
-                agent = TinCan.Agent(agent);
+            if (!(agent instanceof TinCan.Agent)) {
+                agent = new TinCan.Agent(agent);
             }
 
             requestCfg = {
                 url: "agents/profile",
                 method: "GET",
                 params: {
-                    agent: agent
+                    agent: JSON.stringify(agent.asVersion(this.version))
                 },
                 headers: requestHeaders,
                 ignore404: true
             };
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        i;
 
                     if (err === null) {
                         try {
@@ -1652,8 +1667,10 @@ TinCan client library
                         catch (parseError) {
                             LRS.prototype.log("retrieveAgentProfileIds - JSON parse error: " + parseError);
                         }
-                        for (i = 0; i < result.content.length; i += 1) {
-                            profileIds.push(result.content[i]);
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
                         }
                     }
 
