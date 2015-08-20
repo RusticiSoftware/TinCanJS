@@ -189,7 +189,6 @@
     asyncTest(
         "Retrieve activity profile ids",
         function () {
-            TinCan.enableDebug();
             var raw = {
                     id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
                 },
