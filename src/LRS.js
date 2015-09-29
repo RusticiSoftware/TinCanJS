@@ -751,7 +751,7 @@ TinCan client library
             }
 
             for (i = 0; i < valProps.length; i += 1) {
-                if (typeof cfg.params[valProps[i]] !== "undefined") {
+                if (typeof cfg.params[valProps[i]] !== "undefined" && cfg.params[valProps[i]] !== null) {
                     params[valProps[i]] = cfg.params[valProps[i]];
                 }
             }
