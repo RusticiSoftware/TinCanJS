@@ -150,17 +150,21 @@ TinCan client library
                 minutes,
                 seconds,
                 i_inputMilliseconds = parseInt(inputMilliseconds, 10),
+                i_inputCentiseconds,
                 inputIsNegative = "",
                 rtnStr = "";
 
-            if (i_inputMilliseconds < 0) {
+            //round to nearest 0.01 seconds
+            i_inputCentiseconds = Math.round(i_inputMilliseconds / 10);
+
+            if (i_inputCentiseconds < 0) {
                 inputIsNegative = "-";
-                i_inputMilliseconds = i_inputMilliseconds * -1;
+                i_inputCentiseconds = i_inputCentiseconds * -1;
             }
 
-            hours = parseInt(((i_inputMilliseconds) / 3600000), 10);
-            minutes = parseInt((((i_inputMilliseconds) % 3600000) / 60000), 10);
-            seconds = (((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+            hours = parseInt(((i_inputCentiseconds) / 360000), 10);
+            minutes = parseInt((((i_inputCentiseconds) % 360000) / 6000), 10);
+            seconds = (((i_inputCentiseconds) % 360000) % 6000) / 100;
 
             rtnStr = inputIsNegative + "PT";
             if (hours > 0) {
@@ -236,30 +240,113 @@ TinCan client library
         /**
         @method parseURL
         @param {String} url
+        @param {Object} [options]
+            @param {Boolean} [options.allowRelative] Option to allow relative URLs
         @return {Object} Object of values
         @private
         */
-        parseURL: function (url) {
-            var parts = String(url).split("?"),
-                pairs,
-                pair,
-                i,
-                params = {}
-            ;
-            if (parts.length === 2) {
-                pairs = parts[1].split("&");
-                for (i = 0; i < pairs.length; i += 1) {
-                    pair = pairs[i].split("=");
-                    if (pair.length === 2 && pair[0]) {
-                        params[pair[0]] = decodeURIComponent(pair[1]);
-                    }
+        parseURL: function (url, cfg) {
+            //
+            // see http://stackoverflow.com/a/21553982
+            // and http://stackoverflow.com/a/2880929
+            //
+            var isRelative = url.charAt(0) === "/",
+                _reURLInformation = [
+                    "(/[^?#]*)", // pathname
+                    "(\\?[^#]*|)", // search
+                    "(#.*|)$" // hash
+                ],
+                reURLInformation,
+                match,
+                result,
+                paramMatch,
+                pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g,
+                decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+            cfg = cfg || {};
+
+            //
+            // this method in an earlier version supported relative URLs, mostly to provide
+            // support to the `LRS.moreStatements` method, that functionality was removed and
+            // subsequently restored but with the addition of the option for allowing relative
+            // URLs to be accepted which is the reason for the "helpful" exception message here
+            //
+            if (! isRelative) {
+                //
+                // not relative so make sure they have a scheme, host, etc.
+                //
+                _reURLInformation.unshift(
+                    "^(https?:)//", // scheme
+                    "(([^:/?#]*)(?::([0-9]+))?)" // host (hostname and port)
+                );
+
+                //
+                // our regex requires there to be a '/' for the detection of the start
+                // of the path, we can detect a '/' using indexOf beyond the part of the
+                // scheme, since we've restricted scheme to 'http' or 'https' and because
+                // a hostname is guaranteed to be there we can detect beyond the '://'
+                // based on position, then tack on a trailing '/' because it can't be
+                // part of the path
+                //
+                if (url.indexOf("/", 8) === -1) {
+                    url = url + "/";
+                }
+            }
+            else {
+                //
+                // relative so make sure they allow that explicitly
+                //
+                if (typeof cfg.allowRelative === "undefined" || ! cfg.allowRelative) {
+                    throw new Error("Refusing to parse relative URL without 'allowRelative' option");
                 }
             }
 
-            return {
-                path: parts[0],
-                params: params
-            };
+            reURLInformation = new RegExp(_reURLInformation.join(""));
+            match = url.match(reURLInformation);
+            if (match === null) {
+                throw new Error("Unable to parse URL regular expression did not match: '" + url + "'");
+            }
+
+            // 'path' is for backwards compatibility
+            if (isRelative) {
+                result = {
+                    protocol: null,
+                    host: null,
+                    hostname: null,
+                    port: null,
+                    path: null,
+                    pathname: match[1],
+                    search: match[2],
+                    hash: match[3],
+                    params: {}
+                };
+
+                result.path = result.pathname;
+            }
+            else {
+                result = {
+                    protocol: match[1],
+                    host: match[2],
+                    hostname: match[3],
+                    port: match[4],
+                    pathname: match[5],
+                    search: match[6],
+                    hash: match[7],
+                    params: {}
+                };
+
+                result.path = result.protocol + "//" + result.host + result.pathname;
+            }
+
+            if (result.search !== "") {
+                // extra parens to let jshint know this is an expression
+                while ((paramMatch = search.exec(result.search.substring(1)))) {
+                    result.params[decode(paramMatch[1])] = decode(paramMatch[2]);
+                }
+            }
+
+            return result;
         },
 
         /**
