@@ -187,12 +187,7 @@
     );
 
     (function () {
-        var versions = [
-                "1.0.1",
-                "1.0.0",
-                "0.95",
-                "0.9"
-            ],
+        var versions = TinCan.versions(),
             doAllowFailFalseAboutAsyncTest,
             doAllowFailTrueAboutAsyncTest,
             doAllowFailFalseAboutSyncTest,
@@ -229,7 +224,7 @@
                                     // Will break if suite is ran against a version not
                                     // supported by this library
                                     for (i = 0; i < xhr.version.length; i += 1) {
-                                        ok(TinCan.versions().indexOf(xhr.version[i]) !== -1,
+                                        ok(versions.indexOf(xhr.version[i]) !== -1,
                                             "callback: xhr.version has valid version (" + xhr.version[i] + ")");
                                     }
                                 }
@@ -284,7 +279,7 @@
                 // Will break if suite is ran against a version not
                 // supported by this library
                 for (i = 0; i < xhrversion.length; i += 1) {
-                    ok(TinCan.versions().indexOf(xhrversion[i]) !== -1,
+                    ok(versions.indexOf(xhrversion[i]) !== -1,
                         "about allowFail false: result.xhr.version has valid version [" + xhrversion[i] + "]");
                 }
             }
