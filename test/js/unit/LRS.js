@@ -186,6 +186,316 @@
         }
     );
 
+    asyncTest(
+        "Retrieve activity profile ids",
+        function () {
+            var raw = {
+                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
+                },
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
+                dummy = {
+                    d1: raw,
+                    d2: {
+                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/1"
+                    },
+                    d3: raw
+                },
+                results = {};
+
+            obj.saveActivityProfile(
+                "basic",
+                "TinCanJS",
+                {
+                    activity: new TinCan.Activity(dummy.d1),
+                    callback: function () {
+                        obj.saveActivityProfile(
+                            "rawJSON",
+                            "TinCanJS",
+                            {
+                                activity: new TinCan.Activity(dummy.d3),
+                                callback: function () {
+                                    obj.saveActivityProfile(
+                                        "notFound",
+                                        "TinCanJS",
+                                        {
+                                            activity: new TinCan.Activity(dummy.d2),
+                                            callback: function () {
+                                                obj.retrieveActivityProfileIds(
+                                                    new TinCan.Activity(raw),
+                                                    {
+                                                        callback: function (err, xhr) {
+                                                            if (err === null) {
+                                                                results.basic = xhr;
+                                                                obj.retrieveActivityProfileIds(
+                                                                    raw,
+                                                                    {
+                                                                        callback: function (err, xhr) {
+                                                                            if (err === null) {
+                                                                                results.rawJSON = xhr;
+                                                                                obj.retrieveActivityProfileIds(
+                                                                                    {
+                                                                                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
+                                                                                    },
+                                                                                    {
+                                                                                        callback: function (err, xhr) {
+                                                                                            if (err === null) {
+                                                                                                results.notFound = xhr;
+
+                                                                                                start();
+                                                                                                ok(Array.isArray(results.basic), "result is Array, given basic");
+                                                                                                ok(results.basic.length === 2, "correct number of results");
+                                                                                                ok(((results.basic[0] === "basic" && results.basic[1] === "rawJSON") || (results.basic[0] === "rawJSON" && results.basic[1] === "basic")), "correct results");
+                                                                                                ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
+                                                                                                ok(results.rawJSON.length === 2, "correct number of results");
+                                                                                                ok(((results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON") || (results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic")), "correct results");
+                                                                                                ok(Array.isArray(results.notFound), "result is Array, given notFound");
+                                                                                                ok(results.notFound.length === 0, "correct number of results");
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                );
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                );
+                                                            }
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+
+    asyncTest(
+        "Retrieve agent profile ids",
+        function () {
+            var raw = {
+                    mbox: "mailto:RetrieveAgentProfileIds@test.com"
+                },
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
+                dummy = {
+                    d1: {
+                        mbox: "mailto:test@test.com"
+                    },
+                    d2: raw,
+                    d3: raw
+                },
+                results = {};
+
+            obj.saveAgentProfile(
+                "notFound",
+                "TinCanJS",
+                {
+                    agent: new TinCan.Agent(dummy.d1),
+                    callback: function () {
+                        obj.saveAgentProfile(
+                            "basic",
+                            "TinCanJS",
+                            {
+                                agent: new TinCan.Agent(dummy.d2),
+                                callback: function () {
+                                    obj.saveAgentProfile(
+                                        "rawJSON",
+                                        "TinCanJS",
+                                        {
+                                            agent: new TinCan.Agent(dummy.d3),
+                                            callback: function () {
+                                                obj.retrieveAgentProfileIds(
+                                                    new TinCan.Agent(raw),
+                                                    {
+                                                        callback: function (err, xhr) {
+                                                            if (err === null) {
+                                                                results.basic = xhr;
+                                                                obj.retrieveAgentProfileIds(
+                                                                    raw,
+                                                                    {
+                                                                        callback: function (err, xhr) {
+                                                                            if (err === null) {
+                                                                                results.rawJSON = xhr;
+                                                                                obj.retrieveAgentProfileIds(
+                                                                                    {
+                                                                                        mbox: "mailto:RetrieveAgentProfileIds@testfail.com"
+                                                                                    },
+                                                                                    {
+                                                                                        callback: function (err, xhr) {
+                                                                                            if (err === null) {
+                                                                                                results.notFound = xhr;
+
+                                                                                                start();
+                                                                                                ok(Array.isArray(results.basic), "result is Array, given basic");
+                                                                                                ok(results.basic.length === 2, "correct number of results");
+                                                                                                ok(((results.basic[0] === "rawJSON" && results.basic[1] === "basic") || (results.basic[0] === "basic" && results.basic[1] === "rawJSON")), "correct results");
+                                                                                                ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
+                                                                                                ok(results.rawJSON.length === 2, "correct number of results");
+                                                                                                ok(((results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic") || (results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON")), "correct results");
+                                                                                                ok(Array.isArray(results.notFound), "result is Array, given notFound");
+                                                                                                ok(results.notFound.length === 0, "correct number of results");
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                );
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                );
+                                                            }
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+
+    asyncTest(
+        "Retrieve state ids",
+        function () {
+            var raw_agent = {
+                    mbox: "RetrieveStateIds@test.com"
+                },
+                raw_activity = {
+                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/0"
+                },
+                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
+                dummy = {
+                    d1: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d2: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
+                    },
+                    d3: {
+                        activity: raw_activity,
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d4: {
+                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
+                        agent: new TinCan.Agent(raw_agent)
+                    },
+                    d5: {
+                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
+                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
+                    }
+                },
+                results = {};
+
+            obj.saveState(
+                "notFound",
+                "TinCanJS",
+                {
+                    activity: dummy.d2.activity,
+                    agent: dummy.d2.agent,
+                    callback: function () {
+                        obj.saveState(
+                            "basic",
+                            "TinCanJS",
+                            {
+                                activity: dummy.d1.activity,
+                                agent: dummy.d1.agent,
+                                callback: function () {
+                                    obj.saveState(
+                                        "rawJSON",
+                                        "TinCanJS",
+                                        {
+                                            activity: dummy.d3.activity,
+                                            agent: dummy.d3.agent,
+                                            callback: function () {
+                                                obj.saveState(
+                                                    "notFound2",
+                                                    "TinCanJS",
+                                                    {
+                                                        activity: dummy.d4.activity,
+                                                        agent: dummy.d4.agent,
+                                                        callback: function () {
+                                                            obj.saveState(
+                                                                "notFound3",
+                                                                "TinCanJS",
+                                                                {
+                                                                    activity: dummy.d5.activity,
+                                                                    agent: dummy.d5.agent,
+                                                                    callback: function () {
+                                                                        obj.retrieveStateIds(
+                                                                            new TinCan.Activity(raw_activity),
+                                                                            new TinCan.Agent(raw_agent),
+                                                                            {
+                                                                                callback: function (err, xhr) {
+                                                                                    if (err === null) {
+                                                                                        results.basic = xhr;
+                                                                                        obj.retrieveStateIds(
+                                                                                            raw_activity,
+                                                                                            raw_agent,
+                                                                                            {
+                                                                                                callback: function (err, xhr) {
+                                                                                                    if (err === null) {
+                                                                                                        results.rawJSON = xhr;
+                                                                                                        obj.retrieveStateIds(
+                                                                                                            {
+                                                                                                                id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                mbox: "mailto:RetrieveAgentProfileIds@testfail.com"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                callback: function (err, xhr) {
+                                                                                                                    if (err === null) {
+                                                                                                                        results.notFound = xhr;
+
+                                                                                                                        start();
+                                                                                                                        ok(Array.isArray(results.basic), "result is Array, given basic");
+                                                                                                                        ok(results.basic.length === 2, "correct number of results");
+                                                                                                                        ok(((results.basic[0] === "rawJSON" && results.basic[1] === "basic") || (results.basic[0] === "basic" && results.basic[1] === "rawJSON")), "correct results");
+                                                                                                                        ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
+                                                                                                                        ok(results.rawJSON.length === 2, "correct number of results");
+                                                                                                                        ok(((results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic") || (results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON")), "correct results");
+                                                                                                                        ok(Array.isArray(results.notFound), "result is Array, given notFound");
+                                                                                                                        ok(results.notFound.length === 0, "correct number of results");
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        );
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        );
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        );
+                                                                    }
+                                                                }
+                                                            )
+                                                        }
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+
     (function () {
         var versions = TinCan.versions(),
             doAllowFailFalseAboutAsyncTest,

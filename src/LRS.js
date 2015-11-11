@@ -972,6 +972,97 @@ TinCan client library
         },
 
         /**
+        Retrieve the list of IDs for a state, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveStateIds
+        @param {Object} activity TinCan.Activity for this state
+        @param {Object} agent JSON of Agent object for this state
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
+        @return {Array} List of profileIds for this State
+
+        */
+        retrieveStateIds: function (activity, agent, cfg) {
+            this.log("retrieveStateIds");
+            var requestCfg,
+                requestHeaders,
+                requestResult,
+                callbackWrapper,
+                profileIds = [],
+                i;
+
+            cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (!(activity instanceof TinCan.Activity)) {
+                activity = new TinCan.Activity(activity);
+            }
+            if (!(agent instanceof TinCan.Agent)) {
+                agent = new TinCan.Agent(agent);
+            }
+
+            requestCfg = {
+                url: "activities/state",
+                method: "GET",
+                params: {
+                    activityId: activity.id,
+                    agent: JSON.stringify(agent.asVersion(this.version))
+                },
+                headers: requestHeaders,
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr,
+                        i;
+
+                    if (err === null) {
+                        try {
+                            result.content = JSON.parse(result.responseText);
+                        }
+                        catch (parseError) {
+                            LRS.prototype.log("retrieveStateProfileIds - JSON parse error: " + parseError);
+                        }
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, profileIds);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+            if (typeof cfg.since !== "undefined") {
+                requestCfg.params.since = cfg.since;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                if (requestResult.err === null && requestResult.xhr.status !== "404") {
+                    try {
+                        requestResult.content = JSON.parse(requestResult.xhr.responseText);
+                    }
+                    catch (parseError) {
+                        LRS.prototype.log("retrieveStateProfileIds - JSON parse error: " + parseError);
+                    }
+                    for (i in requestResult.content) {
+                        if (requestResult.content.hasOwnProperty(i)) {
+                            profileIds.push(requestResult.content[i]);
+                        }
+                    }
+                }
+                else {
+                    requestResult.content = "retrieveStateProfileIds - request failed: " + requestResult.err;
+                }
+            }
+            return profileIds;
+        },
+
+        /**
         Save a state value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method saveState
@@ -1221,6 +1312,92 @@ TinCan client library
         },
 
         /**
+        Retrieve the list of profileIds for an activity profile, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveActivityProfileIds
+        @param {Object} activity TinCan.Activity of which the profileIds will be retrieved
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
+        @return {Array} List of profileIds for this Activity
+
+        */
+        retrieveActivityProfileIds: function (activity, cfg) {
+            this.log("retrieveActivityProfileIds");
+            var requestCfg,
+                requestHeaders,
+                requestResult,
+                callbackWrapper,
+                profileIds = [],
+                i;
+
+            cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (!(activity instanceof TinCan.Activity)) {
+                activity = new TinCan.Activity(activity);
+            }
+
+            requestCfg = {
+                url: "activities/profile",
+                method: "GET",
+                params: {
+                    activityId: activity.id
+                },
+                headers: requestHeaders,
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr,
+                        i;
+
+                    if (err === null) {
+                        try {
+                            result.content = JSON.parse(result.responseText);
+                        }
+                        catch (parseError) {
+                            LRS.prototype.log("retrieveActivityProfileIds - JSON parse error: " + parseError);
+                        }
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, profileIds);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+            if (typeof cfg.since !== "undefined") {
+                requestCfg.params.since = cfg.since;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                if (requestResult.err === null && requestResult.xhr.status !== "404") {
+                    try {
+                        requestResult.content = JSON.parse(requestResult.xhr.responseText);
+                    }
+                    catch (parseError) {
+                        LRS.prototype.log("retrieveActivityProfileIds - JSON parse error: " + parseError);
+                    }
+                    for (i in requestResult.content) {
+                        if (requestResult.content.hasOwnProperty(i)) {
+                            profileIds.push(requestResult.content[i]);
+                        }
+                    }
+                }
+                else {
+                    requestResult.content = "retrieveStateProfileIds - request failed: " + requestResult.err;
+                }
+            }
+            return profileIds;
+        },
+
+        /**
         Save an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method saveActivityProfile
@@ -1439,6 +1616,88 @@ TinCan client library
             }
 
             return requestResult;
+        },
+
+        /**
+        Retrieve the list of profileIds for an agent profile, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveAgentProfileIds
+        @param {Object} agent JSON of Agent object of which the profileIds will be retrieved
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {String} [cfg.since] Match activity profiles saved since given timestamp
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
+        @return {Array} List of profileIds for this Agent
+
+        */
+        retrieveAgentProfileIds: function (agent, cfg) {
+            this.log("retrieveAgentProfileIds");
+            var requestCfg,
+                requestHeaders,
+                requestResult,
+                callbackWrapper,
+                profileIds = [],
+                i;
+
+            cfg = cfg || {};
+            requestHeaders = cfg.requestHeaders || {};
+
+            if (!(agent instanceof TinCan.Agent)) {
+                agent = new TinCan.Agent(agent);
+            }
+
+            requestCfg = {
+                url: "agents/profile",
+                method: "GET",
+                params: {
+                    agent: JSON.stringify(agent.asVersion(this.version))
+                },
+                headers: requestHeaders,
+                ignore404: true
+            };
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr,
+                        i;
+
+                    if (err === null) {
+                        try {
+                            result.content = JSON.parse(result.responseText);
+                        }
+                        catch (parseError) {
+                            LRS.prototype.log("retrieveAgentProfileIds - JSON parse error: " + parseError);
+                        }
+                        for (i in result.content) {
+                            if (result.content.hasOwnProperty(i)) {
+                                profileIds.push(result.content[i]);
+                            }
+                        }
+                    }
+
+                    cfg.callback(err, profileIds);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+            if (typeof cfg.since !== "undefined") {
+                requestCfg.params.since = cfg.since;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (requestResult.err === null && requestResult.xhr.status !== "404") {
+                try {
+                    requestResult.content = JSON.parse(requestResult.xhr.responseText);
+                }
+                catch (parseError) {
+                    LRS.prototype.log("retrieveAgentProfileIds - JSON parse error: " + parseError);
+                }
+                for (i = 0; i < requestResult.content.length; i += 1) {
+                    profileIds.push(requestResult.content[i]);
+                }
+            }
+            else {
+                requestResult.results = "retrieveAgentProfileIds - request failed: " + requestResult.err;
+            }
+            return profileIds;
         },
 
         /**
