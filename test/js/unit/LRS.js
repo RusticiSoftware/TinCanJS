@@ -299,6 +299,15 @@
                                                                                     activity: activity,
                                                                                     callback: function (err, result) {
                                                                                         start();
+
+                                                                                        //
+                                                                                        // some LRSs (Cloud in particular our Travis resource) may return capital letters
+                                                                                        // in the hash, so lowercase the received one to improve odds it matches ours
+                                                                                        //
+                                                                                        if (err === null) {
+                                                                                            result.etag = result.etag.toLowerCase();
+                                                                                        }
+
                                                                                         ok(err === null, "retrieveState (0) callback err is null" + postFix);
                                                                                         deepEqual(
                                                                                             result,
@@ -420,6 +429,15 @@
                                                                                     agent: agent,
                                                                                     callback: function (err, result) {
                                                                                         start();
+
+                                                                                        //
+                                                                                        // some LRSs (Cloud in particular our Travis resource) may return capital letters
+                                                                                        // in the hash, so lowercase the received one to improve odds it matches ours
+                                                                                        //
+                                                                                        if (err === null) {
+                                                                                            result.etag = result.etag.toLowerCase();
+                                                                                        }
+
                                                                                         ok(err === null, "retrieveAgentProfile (0) callback err is null" + postFix);
                                                                                         deepEqual(
                                                                                             result,
@@ -541,6 +559,15 @@
                                                                                     activity: activity,
                                                                                     callback: function (err, result) {
                                                                                         start();
+
+                                                                                        //
+                                                                                        // some LRSs (Cloud in particular our Travis resource) may return capital letters
+                                                                                        // in the hash, so lowercase the received one to improve odds it matches ours
+                                                                                        //
+                                                                                        if (err === null) {
+                                                                                            result.etag = result.etag.toLowerCase();
+                                                                                        }
+
                                                                                         ok(err === null, "retrieveActivityProfile (0) callback err is null" + postFix);
                                                                                         deepEqual(
                                                                                             result,
