@@ -15,6 +15,7 @@
 */
 (function () {
     var session = null,
+        versions = TinCan.versions(),
         endpoint = "https://cloud.scorm.com/tc/public/";
 
     QUnit.module("LRS Instance");
@@ -186,315 +187,401 @@
         }
     );
 
-    asyncTest(
-        "Retrieve activity profile ids",
-        function () {
-            var raw = {
-                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/0"
-                },
-                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
-                dummy = {
-                    d1: raw,
-                    d2: {
-                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/1"
-                    },
-                    d3: raw
-                },
-                results = {};
+    QUnit.module("LRS method calls");
 
-            obj.saveActivityProfile(
-                "basic",
-                "TinCanJS",
-                {
-                    activity: new TinCan.Activity(dummy.d1),
-                    callback: function () {
-                        obj.saveActivityProfile(
-                            "rawJSON",
-                            "TinCanJS",
-                            {
-                                activity: new TinCan.Activity(dummy.d3),
-                                callback: function () {
-                                    obj.saveActivityProfile(
-                                        "notFound",
-                                        "TinCanJS",
-                                        {
-                                            activity: new TinCan.Activity(dummy.d2),
-                                            callback: function () {
-                                                obj.retrieveActivityProfileIds(
-                                                    new TinCan.Activity(raw),
-                                                    {
-                                                        callback: function (err, xhr) {
-                                                            if (err === null) {
-                                                                results.basic = xhr;
-                                                                obj.retrieveActivityProfileIds(
-                                                                    raw,
-                                                                    {
-                                                                        callback: function (err, xhr) {
-                                                                            if (err === null) {
-                                                                                results.rawJSON = xhr;
-                                                                                obj.retrieveActivityProfileIds(
-                                                                                    {
-                                                                                        id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
-                                                                                    },
-                                                                                    {
-                                                                                        callback: function (err, xhr) {
-                                                                                            if (err === null) {
-                                                                                                results.notFound = xhr;
+    (function () {
+        var versions = TinCan.versions(),
+            doAsyncStateTest,
+            doAsyncAgentProfileTest,
+            doAsyncActivityProfileTest,
+            i;
 
-                                                                                                start();
-                                                                                                ok(Array.isArray(results.basic), "result is Array, given basic");
-                                                                                                ok(results.basic.length === 2, "correct number of results");
-                                                                                                ok(((results.basic[0] === "basic" && results.basic[1] === "rawJSON") || (results.basic[0] === "rawJSON" && results.basic[1] === "basic")), "correct results");
-                                                                                                ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
-                                                                                                ok(results.rawJSON.length === 2, "correct number of results");
-                                                                                                ok(((results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON") || (results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic")), "correct results");
-                                                                                                ok(Array.isArray(results.notFound), "result is Array, given notFound");
-                                                                                                ok(results.notFound.length === 0, "correct number of results");
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                );
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                );
-                                                            }
-                                                        }
-                                                    }
-                                                );
-                                            }
-                                        }
-                                    );
-                                }
-                            }
-                        );
-                    }
-                }
-            );
+        session = {};
+
+        for (i = 0; i < versions.length; i += 1) {
+            if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
+                session[versions[i]] = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+            }
         }
-    );
 
-    asyncTest(
-        "Retrieve agent profile ids",
-        function () {
-            var raw = {
-                    mbox: "mailto:RetrieveAgentProfileIds@test.com"
-                },
-                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
-                dummy = {
-                    d1: {
-                        mbox: "mailto:test@test.com"
-                    },
-                    d2: raw,
-                    d3: raw
-                },
-                results = {};
-
-            obj.saveAgentProfile(
-                "notFound",
-                "TinCanJS",
-                {
-                    agent: new TinCan.Agent(dummy.d1),
-                    callback: function () {
-                        obj.saveAgentProfile(
-                            "basic",
-                            "TinCanJS",
+        // TODO: need with registration
+        //       improve this to store a second value, get the list of two values,
+        //       delete a value, then get the list of one value again
+        doAsyncStateTest = function (v) {
+            asyncTest(
+                "asyncStateTest: " + v,
+                function () {
+                    var postFix = " (" + v + ")",
+                        lrs = session[v],
+                        agent = new TinCan.Agent(
                             {
-                                agent: new TinCan.Agent(dummy.d2),
-                                callback: function () {
-                                    obj.saveAgentProfile(
-                                        "rawJSON",
-                                        "TinCanJS",
-                                        {
-                                            agent: new TinCan.Agent(dummy.d3),
-                                            callback: function () {
-                                                obj.retrieveAgentProfileIds(
-                                                    new TinCan.Agent(raw),
-                                                    {
-                                                        callback: function (err, xhr) {
-                                                            if (err === null) {
-                                                                results.basic = xhr;
-                                                                obj.retrieveAgentProfileIds(
-                                                                    raw,
-                                                                    {
-                                                                        callback: function (err, xhr) {
-                                                                            if (err === null) {
-                                                                                results.rawJSON = xhr;
-                                                                                obj.retrieveAgentProfileIds(
-                                                                                    {
-                                                                                        mbox: "mailto:RetrieveAgentProfileIds@testfail.com"
-                                                                                    },
-                                                                                    {
-                                                                                        callback: function (err, xhr) {
-                                                                                            if (err === null) {
-                                                                                                results.notFound = xhr;
-
-                                                                                                start();
-                                                                                                ok(Array.isArray(results.basic), "result is Array, given basic");
-                                                                                                ok(results.basic.length === 2, "correct number of results");
-                                                                                                ok(((results.basic[0] === "rawJSON" && results.basic[1] === "basic") || (results.basic[0] === "basic" && results.basic[1] === "rawJSON")), "correct results");
-                                                                                                ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
-                                                                                                ok(results.rawJSON.length === 2, "correct number of results");
-                                                                                                ok(((results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic") || (results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON")), "correct results");
-                                                                                                ok(Array.isArray(results.notFound), "result is Array, given notFound");
-                                                                                                ok(results.notFound.length === 0, "correct number of results");
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                );
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                );
-                                                            }
-                                                        }
-                                                    }
-                                                );
-                                            }
-                                        }
-                                    );
-                                }
+                                mbox: "mailto:tincanjs-test-lrs+" + Date.now() + "@tincanapi.com"
                             }
-                        );
-                    }
-                }
-            );
-        }
-    );
-
-    asyncTest(
-        "Retrieve state ids",
-        function () {
-            var raw_agent = {
-                    mbox: "RetrieveStateIds@test.com"
-                },
-                raw_activity = {
-                    id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/0"
-                },
-                obj = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.1"]),
-                dummy = {
-                    d1: {
-                        activity: raw_activity,
-                        agent: new TinCan.Agent(raw_agent)
-                    },
-                    d2: {
-                        activity: raw_activity,
-                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
-                    },
-                    d3: {
-                        activity: raw_activity,
-                        agent: new TinCan.Agent(raw_agent)
-                    },
-                    d4: {
-                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
-                        agent: new TinCan.Agent(raw_agent)
-                    },
-                    d5: {
-                        activity: { id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveStateIds/1"},
-                        agent: new TinCan.Agent({ mbox: "mailto:test@test.com" })
-                    }
-                },
-                results = {};
-
-            obj.saveState(
-                "notFound",
-                "TinCanJS",
-                {
-                    activity: dummy.d2.activity,
-                    agent: dummy.d2.agent,
-                    callback: function () {
-                        obj.saveState(
-                            "basic",
-                            "TinCanJS",
+                        ),
+                        activity = new TinCan.Activity(
                             {
-                                activity: dummy.d1.activity,
-                                agent: dummy.d1.agent,
-                                callback: function () {
-                                    obj.saveState(
-                                        "rawJSON",
-                                        "TinCanJS",
-                                        {
-                                            activity: dummy.d3.activity,
-                                            agent: dummy.d3.agent,
-                                            callback: function () {
-                                                obj.saveState(
-                                                    "notFound2",
-                                                    "TinCanJS",
-                                                    {
-                                                        activity: dummy.d4.activity,
-                                                        agent: dummy.d4.agent,
-                                                        callback: function () {
-                                                            obj.saveState(
-                                                                "notFound3",
-                                                                "TinCanJS",
-                                                                {
-                                                                    activity: dummy.d5.activity,
-                                                                    agent: dummy.d5.agent,
-                                                                    callback: function () {
-                                                                        obj.retrieveStateIds(
-                                                                            new TinCan.Activity(raw_activity),
-                                                                            new TinCan.Agent(raw_agent),
-                                                                            {
-                                                                                callback: function (err, xhr) {
-                                                                                    if (err === null) {
-                                                                                        results.basic = xhr;
-                                                                                        obj.retrieveStateIds(
-                                                                                            raw_activity,
-                                                                                            raw_agent,
-                                                                                            {
-                                                                                                callback: function (err, xhr) {
-                                                                                                    if (err === null) {
-                                                                                                        results.rawJSON = xhr;
-                                                                                                        obj.retrieveStateIds(
-                                                                                                            {
-                                                                                                                id: "http://tincanapi.com/TinCanJS/Test/LRS_RetrieveActivityProfileIds/not_found"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                mbox: "mailto:RetrieveAgentProfileIds@testfail.com"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                callback: function (err, xhr) {
-                                                                                                                    if (err === null) {
-                                                                                                                        results.notFound = xhr;
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS_asyncStateTest/0"
+                            }
+                        ),
+                        documents = [
+                            {
+                                id: "TinCan.LRS.asyncStateTest1",
+                                contents: "0 index value",
+                                contentType: "text/plain",
+                                etag: "\"5a414c6aa9a74957250abcde4ab40d1d51a8e432\"",
+                                updated: false
+                            }
+                        ];
 
-                                                                                                                        start();
-                                                                                                                        ok(Array.isArray(results.basic), "result is Array, given basic");
-                                                                                                                        ok(results.basic.length === 2, "correct number of results");
-                                                                                                                        ok(((results.basic[0] === "rawJSON" && results.basic[1] === "basic") || (results.basic[0] === "basic" && results.basic[1] === "rawJSON")), "correct results");
-                                                                                                                        ok(Array.isArray(results.rawJSON), "result is Array, given rawJSON");
-                                                                                                                        ok(results.rawJSON.length === 2, "correct number of results");
-                                                                                                                        ok(((results.rawJSON[0] === "rawJSON" && results.rawJSON[1] === "basic") || (results.rawJSON[0] === "basic" && results.rawJSON[1] === "rawJSON")), "correct results");
-                                                                                                                        ok(Array.isArray(results.notFound), "result is Array, given notFound");
-                                                                                                                        ok(results.notFound.length === 0, "correct number of results");
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        );
-                                                                                                    }
-                                                                                                }
-                                                                                            }
+                    //
+                    // start off by dropping them all to clear from previous runs
+                    // and to test we can
+                    //
+                    lrs.dropState(
+                        null,
+                        {
+                            agent: agent,
+                            activity: activity,
+                            callback: function (err, result) {
+                                start();
+                                ok(err === null, "dropState (all) callback err is null" + postFix);
+                                TinCanTest.assertHttpRequestType(result, "dropState (all) callback result is xhr" + postFix);
+
+                                if (err === null) {
+                                    //
+                                    // since we deleted everything this should be empty
+                                    //
+                                    lrs.retrieveStateIds(
+                                        {
+                                            agent: agent,
+                                            activity: activity,
+                                            callback: function (err, result) {
+                                                start();
+                                                ok(err === null, "retrieveStateIds (empty) callback err is null" + postFix);
+                                                deepEqual(result, [], "retrieveStateIds (empty) callback result is empty array" + postFix);
+
+                                                //
+                                                // now populate a state value and verify we can get a list of one,
+                                                // and get the individual value itself
+                                                //
+                                                lrs.saveState(
+                                                    documents[0].id,
+                                                    documents[0].contents,
+                                                    {
+                                                        agent: agent,
+                                                        activity: activity,
+                                                        contentType: documents[0].contentType,
+                                                        callback: function (err, result) {
+                                                            start();
+                                                            ok(err === null, "saveState (0) callback err is null" + postFix);
+                                                            TinCanTest.assertHttpRequestType(result, "saveState (0) callback result is xhr" + postFix);
+
+                                                            if (err === null) {
+                                                                //
+                                                                // make sure we get back the list with a single value
+                                                                //
+                                                                lrs.retrieveStateIds(
+                                                                    {
+                                                                        agent: agent,
+                                                                        activity: activity,
+                                                                        callback: function (err, result) {
+                                                                            start();
+                                                                            ok(err === null, "retrieveStateIds (1) callback err is null" + postFix);
+                                                                            deepEqual(result, [documents[0].id], "retrieveStateIds (1) callback result array" + postFix);
+
+                                                                            //
+                                                                            // make sure we can get the state value back
+                                                                            //
+                                                                            lrs.retrieveState(
+                                                                                documents[0].id,
+                                                                                {
+                                                                                    agent: agent,
+                                                                                    activity: activity,
+                                                                                    callback: function (err, result) {
+                                                                                        start();
+                                                                                        ok(err === null, "retrieveState (0) callback err is null" + postFix);
+                                                                                        deepEqual(
+                                                                                            result,
+                                                                                            new TinCan.State(documents[0]),
+                                                                                            "retrieveState (0) callback result is verified" + postFix
                                                                                         );
+
+                                                                                        //stop();
                                                                                     }
                                                                                 }
-                                                                            }
-                                                                        );
+                                                                            );
+                                                                            stop();
+                                                                        }
                                                                     }
-                                                                }
-                                                            )
+                                                                );
+                                                            }
+                                                            stop();
                                                         }
                                                     }
-                                                )
+                                                );
+                                                stop();
                                             }
                                         }
                                     );
+                                    stop();
                                 }
                             }
-                        );
-                    }
+                        }
+                    );
                 }
             );
+        };
+
+        // TODO: improve this to store a second value, get the list of two values,
+        //       delete a value, then get the list of one value again
+        doAsyncAgentProfileTest = function (v) {
+            asyncTest(
+                "asyncAgentProfileTest: " + v,
+                function () {
+                    var postFix = " (" + v + ")",
+                        lrs = session[v],
+                        agent = new TinCan.Agent(
+                            {
+                                mbox: "mailto:tincanjs-test-lrs+" + Date.now() + "@tincanapi.com"
+                            }
+                        ),
+                        documents = [
+                            {
+                                id: "TinCan.LRS.asyncAgentProfileTest1",
+                                contents: "0 index value",
+                                contentType: "text/plain",
+                                etag: "\"5a414c6aa9a74957250abcde4ab40d1d51a8e432\"",
+                                updated: false,
+                                agent: agent
+                            }
+                        ];
+
+                    //
+                    // Agent Profile doesn't have a "clear" ability, but we know the information we need
+                    // to go ahead and delete the one id we set so hopefully that is all that exists, if
+                    // we have more than one document in the above list we need to delete them all first
+                    // or make sure we use the Etag, could consider in that case using the sync delete
+                    // to make this test code a little more manageable
+                    //
+                    lrs.dropAgentProfile(
+                        documents[0].id,
+                        {
+                            agent: agent,
+                            callback: function (err, result) {
+                                start();
+                                ok(err === null, "dropAgentProfile (all) callback err is null" + postFix);
+                                TinCanTest.assertHttpRequestType(result, "dropAgentProfile (all) callback result is xhr" + postFix);
+
+                                if (err === null) {
+                                    //
+                                    // since we deleted everything this should be empty
+                                    //
+                                    lrs.retrieveAgentProfileIds(
+                                        {
+                                            agent: agent,
+                                            callback: function (err, result) {
+                                                start();
+                                                ok(err === null, "retrieveAgentProfileIds (empty) callback err is null" + postFix);
+                                                deepEqual(result, [], "retrieveAgentProfileIds (empty) callback result is empty array" + postFix);
+
+                                                //
+                                                // now populate a state value and verify we can get a list of one,
+                                                // and get the individual value itself
+                                                //
+                                                lrs.saveAgentProfile(
+                                                    documents[0].id,
+                                                    documents[0].contents,
+                                                    {
+                                                        agent: agent,
+                                                        contentType: documents[0].contentType,
+                                                        callback: function (err, result) {
+                                                            start();
+                                                            ok(err === null, "saveAgentProfile (0) callback err is null" + postFix);
+                                                            TinCanTest.assertHttpRequestType(result, "saveAgentProfile (0) callback result is xhr" + postFix);
+
+                                                            if (err === null) {
+                                                                //
+                                                                // make sure we get back the list with a single value
+                                                                //
+                                                                lrs.retrieveAgentProfileIds(
+                                                                    {
+                                                                        agent: agent,
+                                                                        callback: function (err, result) {
+                                                                            start();
+                                                                            ok(err === null, "retrieveAgentProfileIds (1) callback err is null" + postFix);
+                                                                            deepEqual(result, [documents[0].id], "retrieveAgentProfileIds (1) callback result array" + postFix);
+
+                                                                            //
+                                                                            // make sure we can get the state value back
+                                                                            //
+                                                                            lrs.retrieveAgentProfile(
+                                                                                documents[0].id,
+                                                                                {
+                                                                                    agent: agent,
+                                                                                    callback: function (err, result) {
+                                                                                        start();
+                                                                                        ok(err === null, "retrieveAgentProfile (0) callback err is null" + postFix);
+                                                                                        deepEqual(
+                                                                                            result,
+                                                                                            new TinCan.AgentProfile(documents[0]),
+                                                                                            "retrieveAgentProfile (0) callback result is verified" + postFix
+                                                                                        );
+
+                                                                                        //stop();
+                                                                                    }
+                                                                                }
+                                                                            );
+                                                                            stop();
+                                                                        }
+                                                                    }
+                                                                );
+                                                            }
+                                                            stop();
+                                                        }
+                                                    }
+                                                );
+                                                stop();
+                                            }
+                                        }
+                                    );
+                                    stop();
+                                }
+                            }
+                        }
+                    );
+                }
+            );
+        };
+
+        // TODO: improve this to store a second value, get the list of two values,
+        //       delete a value, then get the list of one value again
+        doAsyncActivityProfileTest = function (v) {
+            asyncTest(
+                "asyncActivityProfileTest: " + v,
+                function () {
+                    var postFix = " (" + v + ")",
+                        lrs = session[v],
+                        activity = new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS_asyncActivityProfileTest/0"
+                            }
+                        ),
+                        documents = [
+                            {
+                                id: "TinCan.LRS.asyncActivityProfileTest1",
+                                contents: "0 index value",
+                                contentType: "text/plain",
+                                etag: "\"5a414c6aa9a74957250abcde4ab40d1d51a8e432\"",
+                                updated: false,
+                                activity: activity
+                            }
+                        ];
+
+                    //
+                    // Activity Profile doesn't have a "clear" ability, but we know the information we need
+                    // to go ahead and delete the one id we set so hopefully that is all that exists, if
+                    // we have more than one document in the above list we need to delete them all first
+                    // or make sure we use the Etag, could consider in that case using the sync delete
+                    // to make this test code a little more manageable
+                    //
+                    lrs.dropActivityProfile(
+                        documents[0].id,
+                        {
+                            activity: activity,
+                            callback: function (err, result) {
+                                start();
+                                ok(err === null, "dropActivityProfile (all) callback err is null" + postFix);
+                                TinCanTest.assertHttpRequestType(result, "dropActivityProfile (all) callback result is xhr" + postFix);
+
+                                if (err === null) {
+                                    //
+                                    // since we deleted everything this should be empty
+                                    //
+                                    lrs.retrieveActivityProfileIds(
+                                        {
+                                            activity: activity,
+                                            callback: function (err, result) {
+                                                start();
+                                                ok(err === null, "retrieveActivityProfileIds (empty) callback err is null" + postFix);
+                                                deepEqual(result, [], "retrieveActivityProfileIds (empty) callback result is empty array" + postFix);
+
+                                                //
+                                                // now populate a state value and verify we can get a list of one,
+                                                // and get the individual value itself
+                                                //
+                                                lrs.saveActivityProfile(
+                                                    documents[0].id,
+                                                    documents[0].contents,
+                                                    {
+                                                        activity: activity,
+                                                        contentType: documents[0].contentType,
+                                                        callback: function (err, result) {
+                                                            start();
+                                                            ok(err === null, "saveActivityProfile (0) callback err is null" + postFix);
+                                                            TinCanTest.assertHttpRequestType(result, "saveActivityProfile (0) callback result is xhr" + postFix);
+
+                                                            if (err === null) {
+                                                                //
+                                                                // make sure we get back the list with a single value
+                                                                //
+                                                                lrs.retrieveActivityProfileIds(
+                                                                    {
+                                                                        activity: activity,
+                                                                        callback: function (err, result) {
+                                                                            start();
+                                                                            ok(err === null, "retrieveActivityProfileIds (1) callback err is null" + postFix);
+                                                                            deepEqual(result, [documents[0].id], "retrieveActivityProfileIds (1) callback result array" + postFix);
+
+                                                                            //
+                                                                            // make sure we can get the state value back
+                                                                            //
+                                                                            lrs.retrieveActivityProfile(
+                                                                                documents[0].id,
+                                                                                {
+                                                                                    activity: activity,
+                                                                                    callback: function (err, result) {
+                                                                                        start();
+                                                                                        ok(err === null, "retrieveActivityProfile (0) callback err is null" + postFix);
+                                                                                        deepEqual(
+                                                                                            result,
+                                                                                            new TinCan.ActivityProfile(documents[0]),
+                                                                                            "retrieveActivityProfile (0) callback result is verified" + postFix
+                                                                                        );
+
+                                                                                        //stop();
+                                                                                    }
+                                                                                }
+                                                                            );
+                                                                            stop();
+                                                                        }
+                                                                    }
+                                                                );
+                                                            }
+                                                            stop();
+                                                        }
+                                                    }
+                                                );
+                                                stop();
+                                            }
+                                        }
+                                    );
+                                    stop();
+                                }
+                            }
+                        }
+                    );
+                }
+            );
+        };
+
+        for (i = 0; i < versions.length; i += 1) {
+            if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
+                doAsyncStateTest(versions[i]);
+                doAsyncAgentProfileTest(versions[i]);
+                doAsyncActivityProfileTest(versions[i]);
+            }
         }
-    );
+    }());
 
     (function () {
         var versions = TinCan.versions(),
