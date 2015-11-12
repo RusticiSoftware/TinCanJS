@@ -851,7 +851,8 @@ TinCan client library
                 requestCfg = {},
                 requestResult,
                 callbackWrapper,
-                requestHeaders;
+                requestHeaders,
+                self = this;
 
             requestHeaders = cfg.requestHeaders || {};
 
@@ -920,7 +921,7 @@ TinCan client library
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
-                                    this.log("retrieveState - failed to deserialize JSON: " + ex);
+                                    self.log("retrieveState - failed to deserialize JSON: " + ex);
                                 }
                             }
                         }
@@ -1214,7 +1215,8 @@ TinCan client library
             var requestCfg = {},
                 requestResult,
                 callbackWrapper,
-                requestHeaders;
+                requestHeaders,
+                self = this;
 
             requestHeaders = cfg.requestHeaders || {};
 
@@ -1266,7 +1268,7 @@ TinCan client library
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
-                                    this.log("retrieveActivityProfile - failed to deserialize JSON: " + ex);
+                                    self.log("retrieveActivityProfile - failed to deserialize JSON: " + ex);
                                 }
                             }
                         }
@@ -1511,7 +1513,8 @@ TinCan client library
             var requestCfg = {},
                 requestResult,
                 callbackWrapper,
-                requestHeaders;
+                requestHeaders,
+                self = this;
 
             requestHeaders = cfg.requestHeaders || {};
 
@@ -1569,7 +1572,7 @@ TinCan client library
                                 try {
                                     result.contents = JSON.parse(result.contents);
                                 } catch (ex) {
-                                    this.log("retrieveAgentProfile - failed to deserialize JSON: " + ex);
+                                    self.log("retrieveAgentProfile - failed to deserialize JSON: " + ex);
                                 }
                             }
                         }
