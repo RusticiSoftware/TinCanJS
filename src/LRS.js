@@ -303,7 +303,7 @@ TinCan client library
         Use a callback to make the call asynchronous.
 
         @method saveStatement
-        @param {Object} TinCan.Statement to send
+        @param {TinCan.Statement} statement to send
         @param {Object} [cfg] Configuration used when saving
             @param {Function} [cfg.callback] Callback to execute on completion
         */
@@ -372,7 +372,7 @@ TinCan client library
         @param {String} ID of statement to retrieve
         @param {Object} [cfg] Configuration options
             @param {Function} [cfg.callback] Callback to execute on completion
-        @return {Object} TinCan.Statement retrieved
+        @return {TinCan.Statement} Statement retrieved
         */
         retrieveStatement: function (stmtId, cfg) {
             this.log("retrieveStatement");
@@ -420,7 +420,7 @@ TinCan client library
         @param {String} ID of voided statement to retrieve
         @param {Object} [cfg] Configuration options
             @param {Function} [cfg.callback] Callback to execute on completion
-        @return {Object} TinCan.Statement retrieved
+        @return {TinCan.Statement} Statement retrieved
         */
         retrieveVoidedStatement: function (stmtId, cfg) {
             this.log("retrieveVoidedStatement");
@@ -836,14 +836,14 @@ TinCan client library
         @method retrieveState
         @param {String} key Key of state to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
                 @param {Object|Null} cfg.callback.error
                 @param {TinCan.State|null} cfg.callback.result null if state is 404
             @param {Object} [cfg.requestHeaders] Object containing additional headers to add to request
-        @return {Object} TinCan.State retrieved when synchronous, or result from sendRequest
+        @return {TinCan.State|Object} TinCan.State retrieved when synchronous, or result from sendRequest
         */
         retrieveState: function (key, cfg) {
             this.log("retrieveState");
@@ -976,8 +976,8 @@ TinCan client library
 
         @method retrieveStateIds
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity for this state
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
@@ -1076,8 +1076,8 @@ TinCan client library
         @param {String} key Key of state to save
         @param val Value to be stored
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {String} [cfg.registration] Registration
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing state
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
@@ -1149,8 +1149,8 @@ TinCan client library
         @method dropState
         @param {String|null} key Key of state to delete, or null for all
         @param {Object} cfg Configuration options
-            @param {Object} [cfg.activity] TinCan.Activity
-            @param {Object} [cfg.agent] TinCan.Agent
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {String} [cfg.registration] Registration
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
@@ -1204,7 +1204,7 @@ TinCan client library
         @method retrieveActivityProfile
         @param {String} key Key of activity profile to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         @return {Object} Value retrieved
@@ -1323,7 +1323,7 @@ TinCan client library
 
         @method retrieveActivityProfileIds
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity for the activity profile
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
@@ -1406,7 +1406,7 @@ TinCan client library
         @param {String} key Key of activity profile to retrieve
         @param val Value to be stored
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {String} [cfg.method] Method to use. Default: PUT
@@ -1458,12 +1458,13 @@ TinCan client library
         },
 
         /**
-        Drop an activity profile value or all of the activity profile, when used from a browser sends to the endpoint using the RESTful interface.
+        Drop an activity profile value, when used from a browser sends to the endpoint using the RESTful interface. Full activity profile
+        delete is not supported by the spec.
 
         @method dropActivityProfile
-        @param {String|null} key Key of activity profile to delete, or null for all
+        @param {String|null} key Key of activity profile to delete
         @param {Object} cfg Configuration options
-            @param {Object} cfg.activity TinCan.Activity
+            @param {TinCan.Activity} cfg.activity Activity in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         */
@@ -1500,7 +1501,7 @@ TinCan client library
         @method retrieveAgentProfile
         @param {String} key Key of agent profile to retrieve
         @param {Object} cfg Configuration options
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         @return {Object} Value retrieved
@@ -1625,7 +1626,7 @@ TinCan client library
 
         @method retrieveAgentProfileIds
         @param {Object} cfg Configuration options
-            @param {Object} cfg.agent TinCan.Agent for the agent profile
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {String} [cfg.since] Match activity profiles saved since given timestamp
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
@@ -1716,7 +1717,7 @@ TinCan client library
         @param {String} key Key of agent profile to retrieve
         @param val Value to be stored
         @param {Object} cfg Configuration options
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {String} [cfg.lastSHA1] SHA1 of the previously seen existing profile
             @param {String} [cfg.contentType] Content-Type to specify in headers (defaults to 'application/octet-stream')
             @param {String} [cfg.method] Method to use. Default: PUT
@@ -1774,12 +1775,13 @@ TinCan client library
         },
 
         /**
-        Drop an agent profile value or all of the agent profile, when used from a browser sends to the endpoint using the RESTful interface.
+        Drop an agent profile value, when used from a browser sends to the endpoint using the RESTful interface. Full agent profile
+        delete is not supported by the spec.
 
         @method dropAgentProfile
-        @param {String|null} key Key of agent profile to delete, or null for all
+        @param {String|null} key Key of agent profile to delete
         @param {Object} cfg Configuration options
-            @param {Object} cfg.agent TinCan.Agent
+            @param {TinCan.Agent} cfg.agent Agent in document identifier
             @param {Function} [cfg.callback] Callback to execute on completion
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         */
