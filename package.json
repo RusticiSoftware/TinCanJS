@@ -1,7 +1,7 @@
 {
   "name": "tincanjs",
   "description": "Tin Can API Library",
-  "version": "0.34.1",
+  "version": "0.40.0",
   "private": false,
   "main": "build/tincan-node.js",
   "directories": {
@@ -15,7 +15,7 @@
   "contributors": [
     {
       "name": "Brian J. Miller",
-      "email": "brian.miller@tincanapi.com"
+      "email": "brian.miller@rusticisoftware.com"
     }
   ],
   "repository": {
@@ -30,7 +30,8 @@
     "lrs",
     "experienceapi",
     "experience api",
-    "xapi"
+    "xapi",
+    "cmi5"
   ],
   "devDependencies": {
     "grunt": "0.4.4",

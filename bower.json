@@ -1,9 +1,9 @@
 {
   "name": "tincan",
-  "version": "0.34.1",
+  "version": "0.40.0",
   "homepage": "http://rusticisoftware.github.com/TinCanJS/",
   "authors": [
-    "Brian J. Miller <brian.miller@scorm.com>"
+    "Brian J. Miller <brian.miller@rusticisoftware.com>"
   ],
   "description": "A JavaScript library for talking Tin Can to the world.",
   "keywords": [
@@ -14,7 +14,8 @@
     "lrs",
     "experienceapi",
     "experience api",
-    "xapi"
+    "xapi",
+    "cmi5"
   ],
   "license": "Apache 2.0",
   "main": [
@@ -29,7 +30,6 @@
     "doc",
     "src",
     "test",
-    "vendor",
-    "yuidoc.json"
+    "vendor"
   ]
 }
