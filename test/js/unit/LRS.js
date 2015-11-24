@@ -194,6 +194,7 @@
             doAsyncStateTest,
             doAsyncAgentProfileTest,
             doAsyncActivityProfileTest,
+            doAsyncActivityTest,
             i;
 
         session = {};
@@ -601,11 +602,38 @@
             );
         };
 
+        doAsyncActivityTest = function (v) {
+            asyncTest(
+                "asyncActivityTest: " + v,
+                function () {
+                    var postFix = " (" + v + ")",
+                        lrs = session[v],
+                        activity = new TinCan.Activity(
+                            {
+                                id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS_asyncActivityTest/0"
+                            }
+                        );
+
+                    lrs.retrieveActivity(
+                        activity.id,
+                        {
+                            callback: function (err, result) {
+                                start();
+                                ok(err === null, "retrieveActivity callback err is null" + postFix);
+                                deepEqual(activity, result, "retrieveActivity callback result is activity" + postFix);
+                            }
+                        }
+                    );
+                }
+            );
+        };
+
         for (i = 0; i < versions.length; i += 1) {
             if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
                 doAsyncStateTest(versions[i]);
                 doAsyncAgentProfileTest(versions[i]);
                 doAsyncActivityProfileTest(versions[i]);
+                doAsyncActivityTest(versions[i]);
             }
         }
     }());
@@ -645,11 +673,14 @@
                                 // or any that doesn't have .indexOf
                                 //
                                 if (typeof Array.prototype.indexOf !== "undefined") {
-                                    // Will break if suite is ran against a version not
-                                    // supported by this library
-                                    for (i = 0; i < xhr.version.length; i += 1) {
-                                        ok(versions.indexOf(xhr.version[i]) !== -1,
-                                            "callback: xhr.version has valid version (" + xhr.version[i] + ")");
+                                    // skip to prevent uncaught exception, tested above
+                                    if (typeof xhr.version !== "undefined") {
+                                        // Will break if suite is ran against a version not
+                                        // supported by this library
+                                        for (i = 0; i < xhr.version.length; i += 1) {
+                                            ok(versions.indexOf(xhr.version[i]) !== -1,
+                                                "callback: xhr.version has valid version (" + xhr.version[i] + ")");
+                                        }
                                     }
                                 }
                             }

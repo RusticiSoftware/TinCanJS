@@ -1200,6 +1200,83 @@ TinCan client library
         },
 
         /**
+        Retrieve an activity, when used from a browser sends to the endpoint using the RESTful interface.
+
+        @method retrieveActivity
+        @param {String} activityId id of the Activity to retrieve
+        @param {Object} cfg Configuration options
+            @param {Function} [cfg.callback] Callback to execute on completion
+            @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
+        @return {Object} Value retrieved
+        */
+        retrieveActivity: function (activityId, cfg) {
+            this.log("retrieveActivity");
+            var requestCfg = {},
+                requestResult,
+                callbackWrapper,
+                requestHeaders;
+
+            requestHeaders = cfg.requestHeaders || {};
+
+            requestCfg = {
+                url: "activities",
+                method: "GET",
+                params: {
+                    activityId: activityId
+                },
+                ignore404: true,
+                headers: requestHeaders
+            };
+
+            if (typeof cfg.callback !== "undefined") {
+                callbackWrapper = function (err, xhr) {
+                    var result = xhr;
+
+                    if (err === null) {
+                        //
+                        // a 404 really shouldn't happen because the LRS can dynamically
+                        // build the response based on what has been passed to it, but
+                        // don't have the client fail in the condition that it does, because
+                        // we can do the same thing
+                        //
+                        if (xhr.status === 404) {
+                            result = new TinCan.Activity(
+                                {
+                                    id: activityId
+                                }
+                            );
+                        }
+                        else {
+                            result = TinCan.Activity.fromJSON(xhr.responseText);
+                        }
+                    }
+
+                    cfg.callback(err, result);
+                };
+                requestCfg.callback = callbackWrapper;
+            }
+
+            requestResult = this.sendRequest(requestCfg);
+            if (! callbackWrapper) {
+                requestResult.activity = null;
+                if (requestResult.err === null) {
+                    if (requestResult.xhr.status === 404) {
+                        requestResult.activity = new TinCan.Activity(
+                            {
+                                id: activityId
+                            }
+                        );
+                    }
+                    else {
+                        requestResult.activity = TinCan.Activity.fromJSON(requestResult.xhr.responseText);
+                    }
+                }
+            }
+
+            return requestResult;
+        },
+
+        /**
         Retrieve an activity profile value, when used from a browser sends to the endpoint using the RESTful interface.
 
         @method retrieveActivityProfile
