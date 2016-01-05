@@ -96,7 +96,7 @@ img {
 }
 
 header {
-  width:270px;
+  width:500px;
   float:left;
 }
 
@@ -168,7 +168,7 @@ section {
 }
 
 section.top {
-  width:500px;
+  width:300px;
   float:right;
   text-align: right;
 }
