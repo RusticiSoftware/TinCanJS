@@ -44,7 +44,7 @@ catch (ex) {
 The various "model" objects (such as Statement, Agent, Verb, Activity, Result, etc.) all work roughly the same, and include a constructor that takes an object literal, a `fromJSON` factory method that takes a string of JSON for deserialization, and an `asVersion` method for serialization. Additional specific properties and methods are available depending on the type of object (consult the [API documentation](http://rusticisoftware.github.io/TinCanJS/doc/api/latest/) for details).
 
 ```javascript
-var st = new TinCan.Statement(
+var statement = new TinCan.Statement(
     {
         actor: {
             mbox: "mailto:info@tincanapi.com"
@@ -142,7 +142,7 @@ lrs.queryStatements(
 
 ## Legacy Usage
 
-The following usage examples are outdated and use an interface (specifically the `TinCan` object) that is likely to be deprecated and removed in a future major version release. It is now recommened to use the `TinCan.LRS` interface directly as shown in the above examples.
+The following usage examples are outdated and use an interface (specifically the `TinCan` object) that is likely to be deprecated and removed in a future major version release. It is now recommended to use the `TinCan.LRS` interface directly as shown in the above examples.
 
 ### Basic Usage
 
