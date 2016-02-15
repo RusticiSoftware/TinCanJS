@@ -120,7 +120,11 @@ else {
 lrs.queryStatements(
     {
         params: {
-            verb: "http://adlnet.gov/expapi/verbs/experienced",
+            verb: new TinCan.Verb(
+                {
+                    id: "http://adlnet.gov/expapi/verbs/experienced"
+                }
+            ),
             since: "2016-01-05T08:34:16Z"
         },
         callback: function (err, sr) {
