@@ -1,4 +1,4 @@
-"0.41.0";
+"0.41.1";
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -2499,6 +2499,7 @@ TinCan client library
 
             compatibility["0.95"] = compatibility["0.9"];
             compatibility["1.0.1"] = compatibility["1.0.0"];
+            compatibility["1.0.2"] = compatibility["1.0.0"];
 
             if (cfg.params.hasOwnProperty("target")) {
                 cfg.params.object = cfg.params.target;
