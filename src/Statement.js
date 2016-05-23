@@ -35,6 +35,7 @@ TinCan client library
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
+        @param {TinCan.Attachment} [cfg.attachments] Statement Attachments
         @param {String} [cfg.timestamp] ISO8601 Date/time value
         @param {String} [cfg.stored] ISO8601 Date/time value
         @param {String} [cfg.version] Version of the statement (post 0.95)
@@ -117,6 +118,12 @@ TinCan client library
         this.authority = null;
 
         /**
+        @property attachments
+        @type Array of TinCan.Attachment
+        */
+        this.attachments = null;
+
+        /**
         @property version
         @type String
         */
@@ -179,7 +186,8 @@ TinCan client library
                     "version",
                     "inProgress",
                     "voided"
-                ];
+                ],
+                a;
 
             cfg = cfg || {};
 
@@ -278,6 +286,16 @@ TinCan client library
                     this.context = new TinCan.Context (cfg.context);
                 }
             }
+            if (cfg.hasOwnProperty("attachments") && cfg.attachments !== null && typeof cfg.attachments !== "undefined") {
+                this.attachments = [];
+                for (a = 0; a < cfg.attachments.length; a += 1) {
+                    if (!(cfg.attachments[a] instanceof TinCan.Attachment)) {
+                        this.attachments.push(new TinCan.Attachment (cfg.attachments[a]));
+                    } else {
+                        this.attachments.push(cfg.attachments[a]);
+                    }
+                }
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -321,7 +339,9 @@ TinCan client library
                     "context",
                     "authority"
                 ],
-                i;
+                a,
+                i,
+                temp;
 
             version = version || TinCan.versions()[0];
 
@@ -346,6 +366,20 @@ TinCan client library
             }
             if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
+            }
+            if (this.attachments !== null) {
+                if (!(version === "0.9" || version === "0.95")) {
+                    result.attachments = [];
+                    for (a = 0; a < this.attachments.length; a += 1) {
+                        if (this.attachments[a] instanceof TinCan.Attachment) {
+                            result.attachments.push(this.attachments[a].asVersion(version));
+                        }
+                        else {
+                            temp = new TinCan.Attachment(this.attachments[a]);
+                            result.attachments.push(temp.asVersion(version));
+                        }
+                    }
+                }
             }
 
             return result;

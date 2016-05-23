@@ -193,6 +193,18 @@ TinCan client library
         },
 
         /**
+        @method getSHA256String
+        @static
+        @param {String} str Content to hash
+        @return {String} SHA256 for contents
+        */
+        getSHA256String: function (str) {
+            /*global CryptoJS*/
+
+            return CryptoJS.SHA256(str).toString(CryptoJS.enc.Hex);
+        },
+
+        /**
         @method getBase64String
         @static
         @param {String} str Content to encode

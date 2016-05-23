@@ -74,6 +74,9 @@
                 result = new TinCan.Result(),
                 context = new TinCan.Context(),
                 authority = new TinCan.Agent({ mbox: "tincanjs-test-authority@tincanapi.com" }),
+                attachments = [
+                        new TinCan.Attachment({ usageType: "http://id.tincanapi.com/attachment/test-attachment" })
+                ],
                 set = [
                     {
                         name: "empty",
@@ -91,6 +94,7 @@
                             timestamp: null,
                             stored: null,
                             authority: null,
+                            attachments: null,
                             version: null,
                             degraded: false,
                             voided: null,
@@ -112,6 +116,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
+                            attachments: attachments,
                             version: "1.0.0",
 
                             // deprecated
@@ -128,6 +133,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
+                            attachments: attachments,
                             version: "1.0.0",
                             degraded: false,
                             voided: false,
@@ -142,7 +148,10 @@
                                 result: {},
                                 context: {},
                                 timestamp: timestamp,
-                                authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" }
+                                authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" },
+                                attachments: [
+                                    { contentType: null, description: null, display: null, fileUrl: null, length: null, sha2: null, usageType: "http://id.tincanapi.com/attachment/test-attachment" }
+                                ]
                             },
                             "0.95": {
                                 id: uuid,
@@ -182,7 +191,6 @@
                 row.instanceInitConfig = row.instanceInitConfig || {};
 
                 obj = new TinCan.Statement (row.instanceConfig, row.instanceInitConfig);
-
                 ok(obj instanceof TinCan.Statement, "object is TinCan.Statement (" + row.name + ")");
                 if (typeof row.checkProps !== "undefined") {
                     for (key in row.checkProps) {

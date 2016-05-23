@@ -158,6 +158,39 @@ TinCan client library
         },
 
         /**
+        Creates and returns a boundary for separating parts in
+        requests where the statement has an attachment
+
+        @method getBoundary
+        @private
+        */
+        getBoundary: function () {
+            return TinCan.Utils.getUUID().replace("-","");
+        },
+
+        /**
+        Returns the stringified version, with boundary and content-type,
+        of a statement to place in the request
+
+        @method createStatementSegment
+        @private
+        */
+        createStatementSegment: function (boundary, statement) {
+            return "--" + boundary + "\r\n" + "Content-Type:application/json" + "\r\n\r\n" + JSON.stringify(statement) + "\r\n";
+        },
+
+        /**
+        Returns the stringified version, with boundary and content-type,
+        of an attachment to place in the request
+
+        @method createAttachmentSegment
+        @private
+        */
+        createAttachmentSegment: function (boundary, content, sha2, contentType) {
+            return "--" + boundary + "\r\n" + "Content-Type:" + contentType + "\r\n" + "Content-Transfer-Encoding:binary" + "\r\n" + "X-Experience-API-Hash:" + sha2 + "\r\n\r\n" + content + "\r\n";
+        },
+
+        /**
         Method should be overloaded by an environment to do per
         environment specifics such that the LRS can make a call
         to set the version if not provided
@@ -310,7 +343,11 @@ TinCan client library
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
             var requestCfg,
-                versionedStatement;
+                versionedStatement,
+                boundary,
+                flag = true,
+                attachmentContent = [],
+                a;
 
             cfg = cfg || {};
 
@@ -341,13 +378,43 @@ TinCan client library
                 };
             }
 
-            requestCfg = {
-                url: "statements",
-                data: JSON.stringify(versionedStatement),
-                headers: {
-                    "Content-Type": "application/json"
+            if (versionedStatement.hasOwnProperty("attachments") && versionedStatement.attachments !== null) {
+                boundary = this.getBoundary();
+                requestCfg = {
+                    url: "statements",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
+                for (a = 0; a < versionedStatement.attachments.length; a += 1) {
+                    if (typeof versionedStatement.attachments[a].content !== "undefined" && versionedStatement.attachments[a].content !== null) {
+                        attachmentContent.push(versionedStatement.attachments[a].content);
+                        delete versionedStatement.attachments[a].content;
+                    }
                 }
-            };
+                if (attachmentContent.length !== 0) {
+                    flag = false;
+                    requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+                }
+                if (!flag) {
+                    requestCfg.data = this.createStatementSegment(boundary, versionedStatement);
+                    for (a = 0; a < attachmentContent.length; a += 1) {
+                        if (attachmentContent[a] !== null) {
+                            requestCfg.data += this.createAttachmentSegment(boundary, attachmentContent[a], versionedStatement.attachments[a].sha2, versionedStatement.attachments[a].contentType);
+                        }
+                    }
+                    requestCfg.data += "--" + boundary + "--";
+                }
+            }
+            else if (flag) {
+                requestCfg = {
+                    url: "statements",
+                    data: JSON.stringify(versionedStatement),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
+            }
             if (stmt.id !== null) {
                 requestCfg.method = "PUT";
                 requestCfg.params = {
@@ -542,6 +609,46 @@ TinCan client library
         },
 
         /**
+        Assigns attachment content to the correct attachment to create a StatementsResult object that is sent
+        to the callback of queryStatements()
+
+        @method _assignAttachmentContent
+        @private
+        @param {Array} Array of TinCan Statement JSON objects
+        @param {Array} Array containing lines from the HTTP response
+        @return {Array} Array of TinCan Statement JSON objects with correctly assigned attachment content
+        */
+        _assignAttachmentContent: function (stmts, lines) {
+            var hashToMatch,
+                content,
+                i,
+                x,
+                a;
+
+            for (i = 0; i < lines.length; i += 1) {
+                if (lines[i].startsWith("X-Experience-API-Hash")) {
+                    hashToMatch = lines[i].split(":")[1];
+                }
+                else if (lines[i] === "") {
+                    i += 1;
+                    content = lines[i];
+                    for (x = 0; x < stmts.statements.length; x += 1) {
+                        if (stmts.statements[x].hasOwnProperty("attachments") && stmts.statements[x].attachments !== null) {
+                            for (a = 0; a < stmts.statements[x].attachments.length; a += 1) {
+                                if (stmts.statements[x].attachments[a].sha2 === hashToMatch) {
+                                    stmts.statements[x].attachments[a].content = content;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return stmts;
+        },
+
+        /**
         Fetch a set of statements, when used from a browser sends to the endpoint using the
         RESTful interface.  Use a callback to make the call asynchronous.
 
@@ -558,7 +665,7 @@ TinCan client library
                 @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
                 @param {String} [cfg.params.format] One of "ids", "exact", "canonical" (default: "exact")
-                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (defualt: false)
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
 
                 @param {TinCan.Agent} [cfg.params.actor] (Removed in 1.0.0, use 'agent' instead) Agent matches 'actor'
@@ -583,7 +690,7 @@ TinCan client library
             cfg.params = cfg.params || {};
 
             //
-            // if they misconfigured (possibly do to version mismatches) the
+            // if they misconfigured (possibly due to version mismatches) the
             // query then don't try to send a request at all, rather than give
             // them invalid results
             //
@@ -604,10 +711,29 @@ TinCan client library
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        responseLines = xhr.responseText.split("\r\n"),
+                        statements,
+                        i;
 
                     if (err === null) {
-                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        if (!cfg.params.attachments) {
+                            result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        }
+                        else {
+                            for (i = 0; i < responseLines.length; i += 1) {
+                                if (responseLines[i].startsWith("Content-Type:application/json")) {
+                                    i += 2;
+                                    statements = JSON.parse(responseLines[i]);
+                                }
+                                else if (typeof statements !== "undefined" && statements !== null) {
+                                    statements = TinCan.LRS.prototype._assignAttachmentContent(statements, responseLines.slice(i, responseLines.length));
+                                    break;
+                                }
+                            }
+
+                            result = new TinCan.StatementsResult(statements);
+                        }
                     }
 
                     cfg.callback(err, result);
@@ -618,7 +744,7 @@ TinCan client library
             requestResult = this.sendRequest(requestCfg);
             requestResult.config = requestCfg;
 
-            if (! callbackWrapper) {
+            if (!callbackWrapper) {
                 requestResult.statementsResult = null;
                 if (requestResult.err === null) {
                     requestResult.statementsResult = TinCan.StatementsResult.fromJSON(requestResult.xhr.responseText);
