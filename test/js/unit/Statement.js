@@ -75,7 +75,7 @@
                 context = new TinCan.Context(),
                 authority = new TinCan.Agent({ mbox: "tincanjs-test-authority@tincanapi.com" }),
                 attachments = [
-                        new TinCan.Attachment({ usageType: "http://id.tincanapi.com/attachment/test-attachment" })
+                    new TinCan.Attachment({ usageType: "http://id.tincanapi.com/attachment/test-attachment" })
                 ],
                 set = [
                     {
@@ -150,7 +150,7 @@
                                 timestamp: timestamp,
                                 authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" },
                                 attachments: [
-                                    { contentType: null, description: null, display: null, fileUrl: null, length: null, sha2: null, usageType: "http://id.tincanapi.com/attachment/test-attachment" }
+                                    { contentType: null, display: null, length: null, sha2: null, usageType: "http://id.tincanapi.com/attachment/test-attachment" }
                                 ]
                             },
                             "0.95": {

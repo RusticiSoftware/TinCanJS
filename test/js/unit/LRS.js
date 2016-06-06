@@ -189,6 +189,45 @@
 
     QUnit.module("LRS method calls");
 
+    test(
+        "_getBoundary",
+        function () {
+            var re = /[a-f0-9]{8}[a-f0-9]{4}4[a-f0-9]{3}[89ab][a-f0-9]{3}[a-f0-9]{12}/,
+                i,
+                val,
+                list = [],
+                seen = {},
+                noDupe = true;
+            for (i = 0; i < 500; i += 1) {
+                val = TinCan.LRS.prototype._getBoundary();
+                ok(re.test(val), "formatted correctly: " + i);
+
+                list.push(val);
+            }
+            for (i = 0; i < 500; i += 1) {
+                if (seen.hasOwnProperty(list[i])) {
+                    noDupe = false;
+                }
+                seen[list[i]] = true;
+            }
+            ok(noDupe, "no duplicates in 500");
+        }
+    );
+    test(
+        "_createStatementSegment",
+        function () {
+            var testString = "--testBoundary\r\nContent-Type: application/json\r\n\r\n\"test\"\r\n";
+            deepEqual(TinCan.LRS.prototype._createStatementSegment("testBoundary", "test"), testString, "Statement segment created correctly");
+        }
+    );
+    test(
+        "_createAttachmentSegment",
+        function () {
+            var testString = "--testBoundary\r\nContent-Type: text/plain\r\nContent-Transfer-Encoding: binary\r\nX-Experience-API-Hash: testHash\r\n\r\ntest\r\n";
+            deepEqual(TinCan.LRS.prototype._createAttachmentSegment("testBoundary", "test", "testHash", "text/plain"), testString, "Statement segment created correctly");
+        }
+    );
+
     (function () {
         var versions = TinCan.versions(),
             doAsyncStateTest,

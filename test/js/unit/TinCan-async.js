@@ -157,6 +157,68 @@
         );
     };
 
+    doSendStatementWithAttachmentTest = function (v) {
+        asyncTest(
+            "sendStatementWithAttachment (prepared, async): " + v,
+            function () {
+                var preparedStmt,
+                    sendResult,
+                    //
+                    // Cloud is lowercasing the mbox value so just use a lowercase one
+                    // and make sure it is unique to prevent merging that was previously
+                    // possible, but leaving the commented version as a marker for something
+                    // that ought to be tested against a 1.0.0 spec
+                    //
+                    //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
+                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+
+                preparedStmt = session[v].prepareStatement(
+                    {
+                        actor: {
+                            mbox: actorMbox
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_sendStatement/async/" + v
+                        },
+                        attachments: [
+                            {
+                                display: {
+                                    "en-US": "Test Attachment"
+                                },
+                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                content: "test content",
+                                contentType: "text/plain"
+                            }
+                        ]
+                    }
+                );
+                sendResult = session[v].sendStatement(
+                    preparedStmt,
+                    function (results, statement) {
+                        start();
+                        ok(results.length === 1, "callback results argument: length (" + v + ")");
+                        ok(results[0].hasOwnProperty("err"), "callback results argument 0 has property: err (" + v + ")");
+                        deepEqual(results[0].err, null, "callback results argument 0 property value: err (" + v + ")");
+                        ok(results[0].hasOwnProperty("xhr"), "callback results argument 0 has property: xhr (" + v + ")");
+                        TinCanTest.assertHttpRequestType(results[0].xhr, "callback results argument 0 property value: xhr (" + v + ")");
+                        deepEqual(statement, preparedStmt, "callback: statement matches (" + v + ")");
+                    }
+                );
+                start();
+                ok(sendResult.hasOwnProperty("statement"), "sendResult has property: statement (" + v + ")");
+                deepEqual(preparedStmt, sendResult.statement, "sendResult property value: statement (" + v + ")");
+
+                ok(sendResult.hasOwnProperty("results"), "sendResult has property: results (" + v + ")");
+                strictEqual(sendResult.results.length, 1, "sendResult results property: length (" + v + ")");
+                TinCanTest.assertHttpRequestType(sendResult.results[0], "sendResult results 0 value is: xhr (" + v + ")");
+                stop();
+            }
+        );
+    };
+
     doGetStatementAsyncTest = function (v) {
         asyncTest(
             "getStatement (async): " + v,
@@ -180,7 +242,7 @@
                             id: "http://adlnet.gov/expapi/verbs/attempted"
                         },
                         target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatements/async/" + v
                         }
                     },
                     function (results, sentStatement) {
@@ -243,6 +305,7 @@
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
 
+
                 sendResult = session[v].sendStatement(
                     {
                         actor: {
@@ -254,6 +317,7 @@
                         target: {
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
                         }
+
                     },
                     function (results, sentStatement) {
                         // TODO: need to handle errors?
@@ -272,6 +336,7 @@
                         );
                     }
                 );
+
             }
         );
     };
@@ -290,6 +355,7 @@
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
 
+
                 sendResult = session[v].sendStatement(
                     {
                         actor: {
@@ -301,6 +367,7 @@
                         target: {
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
                         }
+
                     },
                     function (results, sentStatement) {
                         // TODO: need to handle errors?
@@ -309,11 +376,13 @@
                             {
                                 params: {
                                     activity: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
+
                                 },
                                 callback: function (err, statement) {
                                     start();
                                     deepEqual(err, null, "callback: err argument (" + v + ")");
                                     deepEqual(sentStatement.target.id, statement.statements[0].target.id, "callback: statement verb id matches (" + v + ")");
+
                                 }
                             }
                         );
@@ -323,16 +392,141 @@
         );
     };
 
+    doGetStatementWithAttachmentTest = function (v) {
+        asyncTest(
+            "getStatementWithAttachment (async): " + v,
+            function () {
+                var sendResult,
+                    //
+                    // Cloud is lowercasing the mbox value so just use a lowercase one
+                    // and make sure it is unique to prevent merging that was previously
+                    // possible, but leaving the commented version as a marker for something
+                    // that ought to be tested against a 1.0.0 spec
+                    //
+                    //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
+                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+
+                sendResult = session[v].sendStatement(
+                    {
+                        actor: {
+                            mbox: actorMbox
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatementWithAttachment/async/" + v
+                        },
+                        attachments: [
+                            {
+                                display: {
+                                    "en-US": "Test Attachment"
+                                },
+                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                content: "test content",
+                                contentType: "text/plain"
+                            }
+                        ]
+                    },
+                    function (results, sentStatement) {
+                        // TODO: need to handle errors?
+
+                        var getResult = session[v].getStatement(
+                            sentStatement.id,
+                            function (err, statement) {
+                                start();
+
+                                // clear the "stored" and "authority" properties since we couldn't have known them ahead of time
+                                // TODO: should we check the authority?
+                                statement.stored = null;
+                                statement.authority = null;
+
+                                deepEqual(err, null, "callback: err argument (" + v + ")");
+                                deepEqual(sentStatement.attachments[0], statement.attachments[0], "callback: statement matches (" + v + ")");
+                            },
+                            {
+                                params: {
+                                    attachments: true
+                                }
+                            }
+                        );
+                        // TODO: check getResult is an XHR?
+                    }
+                );
+                // TODO: check return value?
+            }
+        );
+    };
+
+    doGetStatementsWithAttachmentTest = function (v) {
+        asyncTest(
+            "getStatementsWithAttachment (async): " + v,
+            function () {
+                var sendResult,
+                    //
+                    // Cloud is lowercasing the mbox value so just use a lowercase one
+                    // and make sure it is unique to prevent merging that was previously
+                    // possible, but leaving the commented version as a marker for something
+                    // that ought to be tested against a 1.0.0 spec
+                    //
+                    //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
+                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+
+                sendResult = session[v].sendStatement(
+                    {
+                        actor: {
+                            mbox: actorMbox
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatementsWithAttachment/async/" + v
+                        },
+                        attachments: [
+                            {
+                                display: {
+                                    "en-US": "Test Attachment"
+                                },
+                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                content: "test content",
+                                contentType: "text/plain"
+                            }
+                        ]
+                    },
+                    function (results, sentStatement) {
+                        // TODO: need to handle errors?
+
+                        var getResult = session[v].getStatements(
+                            {
+                                params: {
+                                    attachments: true
+                                },
+                                callback: function (err, statement) {
+                                    start();
+                                    deepEqual(err, null, "callback: err argument (" + v + ")");
+                                    deepEqual(sentStatement.attachments[0], statement.statements[0].attachments[0], "callback: statement matches (" + v + ")");
+                                }
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    };
+
+
     for (i = 0; i < versions.length; i += 1) {
         version = versions[i];
         if (TinCanTestCfg.recordStores[version]) {
             doSendStatementAsyncTest(version);
             doGetStatementAsyncTest(version);
-            if (version !== "0.9") {
-                doGetStatementsVerbIDAsyncTest(version);
-            }
             if (version !== "0.9" && version !== "0.95") {
+                doGetStatementsVerbIDAsyncTest(version);
                 doGetStatementsActivityIDAsyncTest(version);
+                doSendStatementWithAttachmentTest(version);
+                doGetStatementWithAttachmentTest(version);
+                doGetStatementsWithAttachmentTest(version);
             }
         }
     }

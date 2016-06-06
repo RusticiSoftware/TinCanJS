@@ -30,7 +30,8 @@ else {
         "TinCan.js",
         "TinCan-async.js",
         "LRS.js",
-        "About.js"
+        "About.js",
+        "Attachment.js"
     ];
 }
 

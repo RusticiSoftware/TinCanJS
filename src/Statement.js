@@ -186,8 +186,7 @@ TinCan client library
                     "version",
                     "inProgress",
                     "voided"
-                ],
-                a;
+                ];
 
             cfg = cfg || {};
 
@@ -286,13 +285,14 @@ TinCan client library
                     this.context = new TinCan.Context (cfg.context);
                 }
             }
-            if (cfg.hasOwnProperty("attachments") && cfg.attachments !== null && typeof cfg.attachments !== "undefined") {
+            if (cfg.hasOwnProperty("attachments") && cfg.attachments !== null) {
                 this.attachments = [];
-                for (a = 0; a < cfg.attachments.length; a += 1) {
-                    if (!(cfg.attachments[a] instanceof TinCan.Attachment)) {
-                        this.attachments.push(new TinCan.Attachment (cfg.attachments[a]));
-                    } else {
-                        this.attachments.push(cfg.attachments[a]);
+                for (i = 0; i < cfg.attachments.length; i += 1) {
+                    if (! (cfg.attachments[i] instanceof TinCan.Attachment)) {
+                        this.attachments.push(new TinCan.Attachment (cfg.attachments[i]));
+                    }
+                    else {
+                        this.attachments.push(cfg.attachments[i]);
                     }
                 }
             }
@@ -339,9 +339,7 @@ TinCan client library
                     "context",
                     "authority"
                 ],
-                a,
-                i,
-                temp;
+                i;
 
             version = version || TinCan.versions()[0];
 
@@ -368,15 +366,14 @@ TinCan client library
                 result.inProgress = this.inProgress;
             }
             if (this.attachments !== null) {
-                if (!(version === "0.9" || version === "0.95")) {
+                if (! (version === "0.9" || version === "0.95")) {
                     result.attachments = [];
-                    for (a = 0; a < this.attachments.length; a += 1) {
-                        if (this.attachments[a] instanceof TinCan.Attachment) {
-                            result.attachments.push(this.attachments[a].asVersion(version));
+                    for (i = 0; i < this.attachments.length; i += 1) {
+                        if (this.attachments[i] instanceof TinCan.Attachment) {
+                            result.attachments.push(this.attachments[i].asVersion(version));
                         }
                         else {
-                            temp = new TinCan.Attachment(this.attachments[a]);
-                            result.attachments.push(temp.asVersion(version));
+                            result.attachments.push(new TinCan.Attachment(this.attachments[i]).asVersion(version));
                         }
                     }
                 }
@@ -398,6 +395,29 @@ TinCan client library
             if (this.timestamp === null) {
                 this.timestamp = TinCan.Utils.getISODateString(new Date());
             }
+        },
+
+        /**
+        Checks if the Statement has at least one attachment with content
+
+        @method hasAttachmentsWithContent
+        */
+        hasAttachmentWithContent: function () {
+            this.log("hasAttachmentWithContent");
+            var i;
+
+            if (! this.hasOwnProperty("attachments")) {
+                return false;
+            }
+            else {
+                for (i = 0; i < this.attachments.length; i += 1) {
+                    if (this.attachments[i].hasOwnProperty("content") && this.attachments[i].content !== null) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     };
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Rustici Software
+    Copyright 2016 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -72,6 +72,12 @@ TinCan client library
         */
         this.fileUrl = null;
 
+        /**
+        @property content
+        @type String
+        */
+        this.content = null;
+
         this.init(cfg);
     };
     Attachment.prototype = {
@@ -97,18 +103,13 @@ TinCan client library
                     "length",
                     "sha2",
                     "usageType",
-                    "display"
+                    "display",
+                    "description",
+                    "fileUrl"
                 ]
             ;
 
             cfg = cfg || {};
-
-            if (cfg.hasOwnProperty("description") && typeof cfg.description !== "undefined" && cfg.description !== null) {
-                this.description = cfg.description;
-            }
-            if (cfg.hasOwnProperty("fileUrl") && typeof cfg.fileUrl !== "undefined" && cfg.fileUrl !== null) {
-                this.fileUrl = cfg.fileUrl;
-            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -116,7 +117,7 @@ TinCan client library
                 }
             }
 
-            if (cfg.hasOwnProperty("content") && typeof cfg.content !== "undefined" && cfg.content !== null) {
+            if (cfg.hasOwnProperty("content") && cfg.content !== null) {
                 this.content = cfg.content;
                 this.length = cfg.content.length;
                 this.sha2 = TinCan.Utils.getSHA256String(cfg.content);
@@ -139,15 +140,17 @@ TinCan client library
             else {
                 result = {
                     contentType: this.contentType,
-                    description: this.description,
                     display: this.display,
-                    fileUrl: this.fileUrl,
                     length: this.length,
                     sha2: this.sha2,
                     usageType: this.usageType
                 };
-                if (this.hasOwnProperty("content") && typeof this.content !== "undefined" && this.content !== null) {
-                    result.content = this.content;
+
+                if (this.fileUrl !== null) {
+                    result.fileUrl = this.fileUrl;
+                }
+                if (this.description !== null) {
+                    result.description = this.description;
                 }
             }
 

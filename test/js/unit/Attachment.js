@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Rustici Software
+    Copyright 2016 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -57,7 +57,6 @@
             }
 
             strictEqual(obj.LOG_SRC, "Attachment", "object property LOG_SRC initial value");
-            //strictEqual(obj.objectType, "Attachment", "object property objectType initial value");
         }
     );
 
@@ -146,10 +145,9 @@
                     }
                 }
             ],
-                i,
-                obj,
-                result
-            ;
+            i,
+            obj,
+            result;
 
             for (i = 0; i < set.length; i += 1) {
                 row = set[i];
