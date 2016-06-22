@@ -229,11 +229,111 @@
         );
     };
 
+    doGetStatementsVerbIDAsyncTest = function (v) {
+        asyncTest(
+            "getStatementsVerbID (async): " + v,
+            function () {
+                var sendResult,
+                //
+                // Cloud is lowercasing the mbox value so just use a lowercase one
+                // and make sure it is unique to prevent merging that was previously
+                // possible, but leaving the commented version as a marker for something
+                // that ought to be tested against a 1.0.0 spec
+                //
+                //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
+                actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+
+                sendResult = session[v].sendStatement(
+                    {
+                        actor: {
+                            mbox: actorMbox
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
+                        }
+                    },
+                    function (results, sentStatement) {
+                        // TODO: need to handle errors?
+
+                        var getResult = session[v].getStatements(
+                            {
+                                params: {
+                                    verb: "http://adlnet.gov/expapi/verbs/attempted"
+                                },
+                                callback: function (err, statement) {
+                                    start();
+                                    deepEqual(err, null, "callback: err argument (" + v + ")");
+                                    deepEqual(sentStatement.verb.id, statement.statements[0].verb.id, "callback: statement verb id matches (" + v + ")");
+                                }
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    };
+
+    doGetStatementsActivityIDAsyncTest = function (v) {
+        asyncTest(
+            "getStatementsActivityID (async): " + v,
+            function () {
+                var sendResult,
+                //
+                // Cloud is lowercasing the mbox value so just use a lowercase one
+                // and make sure it is unique to prevent merging that was previously
+                // possible, but leaving the commented version as a marker for something
+                // that ought to be tested against a 1.0.0 spec
+                //
+                //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
+                actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+
+                sendResult = session[v].sendStatement(
+                    {
+                        actor: {
+                            mbox: actorMbox
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
+                        }
+                    },
+                    function (results, sentStatement) {
+                        // TODO: need to handle errors?
+
+                        var getResult = session[v].getStatements(
+                            {
+                                params: {
+                                    activity: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
+                                },
+                                callback: function (err, statement) {
+                                    start();
+                                    deepEqual(err, null, "callback: err argument (" + v + ")");
+                                    deepEqual(sentStatement.target.id, statement.statements[0].target.id, "callback: statement verb id matches (" + v + ")");
+                                }
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    };
+
     for (i = 0; i < versions.length; i += 1) {
         version = versions[i];
         if (TinCanTestCfg.recordStores[version]) {
             doSendStatementAsyncTest(version);
             doGetStatementAsyncTest(version);
+            if (version !== "0.9") {
+                doGetStatementsVerbIDAsyncTest(version);
+            }
+            if (version !== "0.9" && version !== "0.95") {
+                doGetStatementsActivityIDAsyncTest(version);
+            }
         }
     }
 }());

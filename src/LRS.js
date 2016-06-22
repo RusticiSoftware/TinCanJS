@@ -549,8 +549,8 @@ TinCan client library
         @param {Object} [cfg] Configuration used to query
             @param {Object} [cfg.params] Query parameters
                 @param {TinCan.Agent|TinCan.Group} [cfg.params.agent] Agent matches 'actor' or 'object'
-                @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
+                @param {TinCan.Verb|String} [cfg.params.verb] Verb (or verb ID) to query on
+                @param {TinCan.Activity|String} [cfg.params.activity] Activity (or activity ID) to query on
                 @param {String} [cfg.params.registration] Registration UUID
                 @param {Boolean} [cfg.params.related_activities] Match related activities
                 @param {Boolean} [cfg.params.related_agents] Match related agents
@@ -747,7 +747,12 @@ TinCan client library
 
             for (i = 0; i < idProps.length; i += 1) {
                 if (typeof cfg.params[idProps[i]] !== "undefined") {
-                    params[idProps[i]] = cfg.params[idProps[i]].id;
+                    if (typeof cfg.params[idProps[i]].id === "undefined") {
+                        params[idProps[i]] = cfg.params[idProps[i]];
+                    }
+                    else {
+                        params[idProps[i]] = cfg.params[idProps[i]].id;
+                    }
                 }
             }
 
