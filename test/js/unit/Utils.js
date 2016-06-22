@@ -367,6 +367,22 @@
         }
     );
     test(
+        "getXAPIHashFromHeader",
+        function () {
+            var testHash = "testHashValue",
+                strings = {
+                    "X-Experience-API-Hash:testHashValue": testHash,
+                    "X-Experience-API-Hash:    testHashValue    ": testHash,
+                    "X-Experience-API-Hash:\r\n\ttestHashValue\r\n\t": testHash,
+                    "X-Experience-API-Hash: \ntestHashValue\n ": testHash
+                },
+                prop;
+            for (prop in strings) {
+                ok(TinCan.Utils.getXAPIHashFromHeader(prop) === strings[prop], "'" + prop + "' matches '" + strings[prop]);
+            }
+        }
+    );
+    test(
         "isApplicationJSON",
         function () {
             var okStrings = [

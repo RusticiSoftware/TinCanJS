@@ -411,7 +411,7 @@ TinCan client library
             }
             else {
                 for (i = 0; i < this.attachments.length; i += 1) {
-                    if (this.attachments[i].hasOwnProperty("content") && this.attachments[i].content !== null) {
+                    if (this.attachments[i].content !== null) {
                         return true;
                     }
                 }

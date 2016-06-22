@@ -242,7 +242,7 @@
                             id: "http://adlnet.gov/expapi/verbs/attempted"
                         },
                         target: {
-                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatements/async/" + v
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
                         }
                     },
                     function (results, sentStatement) {

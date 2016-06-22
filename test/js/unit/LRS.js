@@ -197,9 +197,10 @@
                 val,
                 list = [],
                 seen = {},
-                noDupe = true;
+                noDupe = true,
+                lrs = new TinCan.LRS({ endpoint: endpoint });
             for (i = 0; i < 500; i += 1) {
-                val = TinCan.LRS.prototype._getBoundary();
+                val = lrs._getBoundary();
                 ok(re.test(val), "formatted correctly: " + i);
 
                 list.push(val);
@@ -216,15 +217,17 @@
     test(
         "_createStatementSegment",
         function () {
-            var testString = "--testBoundary\r\nContent-Type: application/json\r\n\r\n\"test\"\r\n";
-            deepEqual(TinCan.LRS.prototype._createStatementSegment("testBoundary", "test"), testString, "Statement segment created correctly");
+            var testString = "--testBoundary\r\nContent-Type: application/json\r\n\r\n\"test\"\r\n",
+                lrs = new TinCan.LRS({ endpoint: endpoint });
+            deepEqual(lrs._createStatementSegment("testBoundary", "test"), testString, "Statement segment created correctly");
         }
     );
     test(
         "_createAttachmentSegment",
         function () {
-            var testString = "--testBoundary\r\nContent-Type: text/plain\r\nContent-Transfer-Encoding: binary\r\nX-Experience-API-Hash: testHash\r\n\r\ntest\r\n";
-            deepEqual(TinCan.LRS.prototype._createAttachmentSegment("testBoundary", "test", "testHash", "text/plain"), testString, "Statement segment created correctly");
+            var testString = "--testBoundary\r\nContent-Type: text/plain\r\nContent-Transfer-Encoding: binary\r\nX-Experience-API-Hash: testHash\r\n\r\ntest\r\n",
+                lrs = new TinCan.LRS({ endpoint: endpoint });
+            deepEqual(lrs._createAttachmentSegment("testBoundary", "test", "testHash", "text/plain"), testString, "Statement segment created correctly");
         }
     );
 
