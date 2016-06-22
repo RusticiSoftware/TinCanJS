@@ -195,6 +195,7 @@
             doAsyncAgentProfileTest,
             doAsyncActivityProfileTest,
             doAsyncActivityTest,
+            _queryStatementsRequestCfgTest,
             i;
 
         session = {};
@@ -202,6 +203,103 @@
         for (i = 0; i < versions.length; i += 1) {
             if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
                 session[versions[i]] = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+            }
+        }
+
+        _queryStatementsRequestCfgTest = function (v) {
+            test(
+                "_queryStatementsRequestCfgTest, Verb object: " + v,
+                function () {
+                    var cfg = {
+                            method: "GET",
+                            params: {
+                                verb: "http://adlnet.gov/expapi/verbs/attempted"
+                            },
+                            url: "statements"
+                        },
+                        verb = new TinCan.Verb({
+                            id: "http://adlnet.gov/expapi/verbs/attempted"
+                        }),
+                        lrs = session[v];
+                    deepEqual(lrs._queryStatementsRequestCfg(
+                        {
+                            params: {
+                                verb: verb
+                            }
+                        }
+                    ),
+                    cfg);
+                }
+            );
+            test(
+                "_queryStatementsRequestCfgTest, Verb id: " + v,
+                function () {
+                    var cfg = {
+                            method: "GET",
+                            params: {
+                                verb: "http://adlnet.gov/expapi/verbs/attempted"
+                            },
+                            url: "statements"
+                        },
+                        verb = "http://adlnet.gov/expapi/verbs/attempted",
+                        lrs = session[v];
+                    deepEqual(lrs._queryStatementsRequestCfg(
+                        {
+                            params: {
+                                verb: verb
+                            }
+                        }
+                    ),
+                    cfg);
+                }
+            );
+            if (! (v === "0.9" || v === "0.95")) {
+                test(
+                    "_queryStatementsRequestCfgTest, Activity object: " + v,
+                    function () {
+                        var cfg = {
+                                method: "GET",
+                                params: {
+                                    activity: "http://TestActivity"
+                                },
+                                url: "statements"
+                            },
+                            activity = new TinCan.Activity({
+                                id: "http://TestActivity"
+                            }),
+                            lrs = session[v];
+                        deepEqual(lrs._queryStatementsRequestCfg(
+                            {
+                                params: {
+                                    activity: activity
+                                }
+                            }
+                        ),
+                        cfg);
+                    }
+                );
+                test(
+                    "_queryStatementsRequestCfgTest, Activity id: " + v,
+                    function () {
+                        var cfg = {
+                                method: "GET",
+                                params: {
+                                    activity: "http://TestActivity"
+                                },
+                                url: "statements"
+                            },
+                            activity = "http://TestActivity",
+                            lrs = session[v];
+                        deepEqual(lrs._queryStatementsRequestCfg(
+                            {
+                                params: {
+                                    activity: activity
+                                }
+                            }
+                        ),
+                        cfg);
+                    }
+                );
             }
         }
 
@@ -634,6 +732,7 @@
                 doAsyncAgentProfileTest(versions[i]);
                 doAsyncActivityProfileTest(versions[i]);
                 doAsyncActivityTest(versions[i]);
+                _queryStatementsRequestCfgTest(versions[i]);
             }
         }
     }());

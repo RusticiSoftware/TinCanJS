@@ -747,7 +747,7 @@ TinCan client library
 
             for (i = 0; i < idProps.length; i += 1) {
                 if (typeof cfg.params[idProps[i]] !== "undefined") {
-                    if (typeof cfg.params[idProps[i]] === "string") {
+                    if (typeof cfg.params[idProps[i]].id === "undefined") {
                         params[idProps[i]] = cfg.params[idProps[i]];
                     }
                     else {
