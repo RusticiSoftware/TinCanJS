@@ -455,10 +455,9 @@ TinCan client library
             }
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result,
+                    var result = xhr,
                         boundary,
-                        section,
-                        headers,
+                        parsedResponse,
                         statement,
                         attachmentMap = {},
                         i;
@@ -469,21 +468,14 @@ TinCan client library
                         }
                         else {
                             boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
-                            result = xhr.responseText.split("--" + boundary + "--")[0].split("--" + boundary);
 
-                            statement = JSON.parse(result[1].split("\r\n\r\n")[1]);
-
-                            for (i = 2; i < result.length; i += 1) {
-                                section = result[i].split("\r\n\r\n");
-                                headers = section[0].split("\r\n");
-                                for (i = 0; i < headers.length; i += 1) {
-                                    if (headers[i].indexOf("X-Experience-API-Hash") >= 0) {
-                                        attachmentMap[TinCan.Utils.getXAPIHashFromHeader(headers[i])] = section[1].replace(/^\s+|\s+$/g,"");
-                                    }
-                                }
+                            parsedResponse = lrs._parseMultipart(boundary, xhr.responseText);
+                            statement = JSON.parse(parsedResponse[0].body);
+                            for (i = 1; i < parsedResponse.length; i += 1) {
+                                attachmentMap[parsedResponse[i].head["X-Experience-API-Hash"]] = parsedResponse[i].body;
                             }
 
-                            statement = lrs._assignAttachmentContent([statement], attachmentMap);
+                            lrs._assignAttachmentContent([statement], attachmentMap);
                             result = new TinCan.Statement(statement);
                         }
                     }
@@ -722,10 +714,9 @@ TinCan client library
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result,
+                    var result = xhr,
+                        parsedResponse,
                         boundary,
-                        section,
-                        headers,
                         statements,
                         attachmentMap = {},
                         i;
@@ -736,22 +727,15 @@ TinCan client library
                         }
                         else {
                             boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
-                            result = xhr.responseText.split("--" + boundary + "--")[0].split("--" + boundary);
 
-                            statements = JSON.parse(result[1].split("\r\n\r\n")[1]);
-
-                            for (i = 2; i < result.length; i += 1) {
-                                section = result[i].split("\r\n\r\n");
-                                headers = section[0].split("\r\n");
-                                for (i = 0; i < headers.length; i += 1) {
-                                    if (headers[i].indexOf("X-Experience-API-Hash") >= 0) {
-                                        attachmentMap[TinCan.Utils.getXAPIHashFromHeader(headers[i])] = section[1].replace(/^\s+|\s+$/g,"");
-                                    }
-                                }
+                            parsedResponse = lrs._parseMultipart(boundary, xhr.responseText);
+                            statements = JSON.parse(parsedResponse[0].body);
+                            for (i = 1; i < parsedResponse.length; i += 1) {
+                                attachmentMap[parsedResponse[i].head["X-Experience-API-Hash"]] = parsedResponse[i].body;
                             }
 
-                            statements = lrs._assignAttachmentContent(statements.statements, attachmentMap);
-                            result = new TinCan.StatementsResult({ statements: statements });
+                            lrs._assignAttachmentContent(statements.statements, attachmentMap);
+                            result = new TinCan.StatementsResult({ statements: statements.statements });
 
                             for (i = 0; i < result.statements.length; i += 1) {
                                 if (! (result.statements[i] instanceof TinCan.Statement)) {
@@ -923,24 +907,97 @@ TinCan client library
         @method _assignAttachmentContent
         @private
         @param {Array} [stmts] Array of TinCan.Statement JSON objects
-        @param {Hashmap} [content] Hashmap of the content to place into its attachment
+        @param {Object} [attachmentMap] Map of the content to place into its attachment
         @return {Array} Array of TinCan.Statement JSON objects with correctly assigned attachment content
         */
-        _assignAttachmentContent: function (stmts, content) {
+        _assignAttachmentContent: function (stmts, attachmentMap) {
             var i,
                 j;
 
             for (i = 0; i < stmts.length; i += 1) {
                 if (stmts[i].hasOwnProperty("attachments") && stmts[i].attachments !== null) {
                     for (j = 0; j < stmts[i].attachments.length; j += 1) {
-                        if (content.hasOwnProperty(stmts[i].attachments[j].sha2)) {
-                            stmts[i].attachments[j].content = content[stmts[i].attachments[j].sha2];
+                        if (attachmentMap.hasOwnProperty(stmts[i].attachments[j].sha2)) {
+                            stmts[i].attachments[j].content = attachmentMap[stmts[i].attachments[j].sha2];
                         }
                     }
                 }
             }
+        },
 
-            return (stmts.length === 1 ? stmts[0] : stmts);
+        /**
+        Parses the different sections of a multipart/mixed response
+
+        @method _parseMultipart
+        @private
+        @param {String} [boundary] Boundary used to mark off the sections of the response
+        @param {String} [response] Text of the response
+        @return {Array} Array of objects containing the parsed headers and body of each part
+        */
+        _parseMultipart: function (boundary, response) {
+            var parts = [],
+                sections = [],
+                head,
+                body,
+                i;
+
+            parts = response.split("--" + boundary);
+            for (i = 0; i < parts.length; i += 1) {
+                parts[i] = parts[i].replace(/^\s+/g, "");
+                if (parts[i] === "") {
+                    continue;
+                }
+                else if (parts[i] === "--") {
+                    break;
+                }
+                parts[i] = parts[i].split("\r\n\r\n", 2);
+                head = parts[i][0];
+                body = parts[i][1];
+                body = body.replace(/\r\n$/, "");
+
+                sections.push(
+                    {
+                        head: this._parseHeaders(head),
+                        body: body
+                    }
+                );
+            }
+
+            return sections;
+        },
+
+        /**
+        Parses the headers of a multipart/mixed response section
+
+        @method _parseHeaders
+        @private
+        @param {String} [rawHeaders] String containing all the headers
+        @return {Object} Map of the headers
+        */
+        _parseHeaders: function (rawHeaders) {
+            var headers = {},
+                headerList,
+                key,
+                h,
+                i;
+
+            headerList = rawHeaders.split("\n");
+            for (i = 0; i < headerList.length; i += 1) {
+                h = headerList[i].split(":", 2);
+
+                if (h[1] !== null) {
+                    headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+
+                    key = h[0];
+                }
+                else {
+                    if (h[0].substring(0, 1) === "\t") {
+                        headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+                    }
+                }
+            }
+
+            return headers;
         },
 
         /**

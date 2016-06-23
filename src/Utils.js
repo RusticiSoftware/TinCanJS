@@ -383,16 +383,6 @@ TinCan client library
         },
 
         /**
-        @method getXAPIHashFromHeader
-        @static
-        @param {String} X-Experience-API-Hash header value
-        @return {String} Primary value from X-Experience-API-Hash
-        */
-        getXAPIHashFromHeader: function (header) {
-            return (String(header).split(":"))[1].replace(/^\s+|\s+$/g,"");
-        },
-
-        /**
         @method isApplicationJSON
         @static
         @param {String} Content-Type header value
