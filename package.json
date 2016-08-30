@@ -1,8 +1,9 @@
 {
   "name": "tincanjs",
-  "description": "Tin Can API Library",
+  "description": "Experience API (Tin Can API) Library",
   "version": "0.41.1",
   "private": false,
+  "license": "Apache-2.0",
   "main": "build/tincan-node.js",
   "directories": {
     "src": "src",
@@ -36,10 +37,10 @@
   "devDependencies": {
     "grunt": "0.4.4",
     "grunt-contrib-concat": "0.3.0",
-    "grunt-contrib-jshint": "0.9.2",
+    "grunt-contrib-jshint": "0.12.0",
     "grunt-contrib-uglify": "0.4.0",
     "grunt-contrib-watch": "0.6.1",
     "grunt-contrib-yuidoc": "^0.5.2",
-    "qunit": "0.5.16"
+    "qunit": "0.9.1"
   }
 }

@@ -84,7 +84,8 @@ module.exports = function(grunt) {
                 onevar: true,
                 strict: true,
                 globals: {
-                    TinCan: true
+                    TinCan: true,
+                    JSON: true
                 }
             }
         },
@@ -117,7 +118,7 @@ module.exports = function(grunt) {
             compile: {
                 version: "<%= pkg.version %>",
                 name: "TinCanJS",
-                description: "Library for working with Tin Can API in JavaScript",
+                description: "Library for working with the Experience API (Tin Can API) in JavaScript",
                 url: "http://rusticisoftware.github.com/TinCanJS/",
                 options: {
                     paths: "src/",
