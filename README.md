@@ -1,19 +1,22 @@
-A JavaScript library for implementing Tin Can API.
+A JavaScript library for implementing the Experience API (Tin Can API).
 
 [![Build Status](https://travis-ci.org/RusticiSoftware/TinCanJS.png)](https://travis-ci.org/RusticiSoftware/TinCanJS)
+[![GitHub release](https://img.shields.io/github/release/RusticiSoftware/TinCanJS.svg?maxAge=2592000)](https://github.com/RusticiSoftware/TinCanJS/releases)
+[![npm](https://img.shields.io/npm/v/tincanjs.svg?maxAge=2592000)](https://www.npmjs.com/package/tincanjs)
+[![license](https://img.shields.io/github/license/RUsticiSoftware/TinCanJS.svg?maxAge=2592000)]()
 
 For hosted API documentation, basic usage instructions, supported version listing, etc. visit the main project website at:
 
 http://rusticisoftware.github.io/TinCanJS/
 
-For more information about the Tin Can API visit:
+For more information about the Experience API visit:
 
-http://tincanapi.com/
+http://experienceapi.com/
 
 Browser Usage
 -------------
 
-TinCanJS is available via Bower.
+TinCanJS is available via `npm` and Bower.
 
 The browser environment is well tested and supports two kinds of Cross Origin requests which
 is sufficient to cover most versions of Chrome, FireFox, Safari as well as IE 8+. IE 6+ are
