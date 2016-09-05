@@ -21,7 +21,8 @@
         i,
         version,
         doSendStatementAsyncTest,
-        doGetStatementAsyncTest;
+        doGetStatementAsyncTest,
+        USAGE_TYPE = "http://id.tincanapi.com/attachment/supporting_media";
 
     QUnit.module(
         "TinCan-async No LRS",
@@ -188,7 +189,7 @@
                                 display: {
                                     "en-US": "Test Attachment"
                                 },
-                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                usageType: USAGE_TYPE,
                                 content: "test content",
                                 contentType: "text/plain"
                             }
@@ -305,7 +306,6 @@
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
 
-
                 sendResult = session[v].sendStatement(
                     {
                         actor: {
@@ -317,7 +317,6 @@
                         target: {
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
                         }
-
                     },
                     function (results, sentStatement) {
                         // TODO: need to handle errors?
@@ -336,7 +335,6 @@
                         );
                     }
                 );
-
             }
         );
     };
@@ -355,7 +353,6 @@
                 //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
                 actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
 
-
                 sendResult = session[v].sendStatement(
                     {
                         actor: {
@@ -367,7 +364,6 @@
                         target: {
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
                         }
-
                     },
                     function (results, sentStatement) {
                         // TODO: need to handle errors?
@@ -376,13 +372,11 @@
                             {
                                 params: {
                                     activity: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatement/async/" + v
-
                                 },
                                 callback: function (err, statement) {
                                     start();
                                     deepEqual(err, null, "callback: err argument (" + v + ")");
                                     deepEqual(sentStatement.target.id, statement.statements[0].target.id, "callback: statement verb id matches (" + v + ")");
-
                                 }
                             }
                         );
@@ -422,7 +416,7 @@
                                 display: {
                                     "en-US": "Test Attachment"
                                 },
-                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                usageType: USAGE_TYPE,
                                 content: "test content",
                                 contentType: "text/plain"
                             }
@@ -488,7 +482,7 @@
                                 display: {
                                     "en-US": "Test Attachment"
                                 },
-                                usageType: "http://id.tincanapi.com/attachment/test-attachment",
+                                usageType: USAGE_TYPE,
                                 content: "test content",
                                 contentType: "text/plain"
                             }
@@ -514,7 +508,6 @@
             }
         );
     };
-
 
     for (i = 0; i < versions.length; i += 1) {
         version = versions[i];

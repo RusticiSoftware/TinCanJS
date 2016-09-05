@@ -2,9 +2,10 @@
 module.exports = function(grunt) {
     "use strict";
     var coreFileList = [
-        "vendor/cryptojs-v3.0.2/rollups/sha1.js",
-        "vendor/cryptojs-v3.0.2/rollups/sha256.js",
-        "vendor/cryptojs-v3.0.2/components/enc-base64.js",
+        "vendor/cryptojs-v3.1.2/rollups/sha1.js",
+        "vendor/cryptojs-v3.1.2/rollups/sha256.js",
+        "vendor/cryptojs-v3.1.2/components/enc-base64.js",
+        "vendor/cryptojs-v3.1.2/components/lib-typedarrays.js",
         "src/TinCan.js",
         "src/Utils.js",
         "src/LRS.js",

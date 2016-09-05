@@ -14,7 +14,8 @@
     limitations under the License.
 */
 (function () {
-    var session = null;
+    var session = null,
+        USAGE_TYPE = "http://id.tincanapi.com/attachment/supporting_media";
 
     QUnit.module("Statement Statics");
 
@@ -75,7 +76,7 @@
                 context = new TinCan.Context(),
                 authority = new TinCan.Agent({ mbox: "tincanjs-test-authority@tincanapi.com" }),
                 attachments = [
-                    new TinCan.Attachment({ usageType: "http://id.tincanapi.com/attachment/test-attachment" })
+                    new TinCan.Attachment({ usageType: USAGE_TYPE })
                 ],
                 set = [
                     {
@@ -150,7 +151,7 @@
                                 timestamp: timestamp,
                                 authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" },
                                 attachments: [
-                                    { contentType: null, display: null, length: null, sha2: null, usageType: "http://id.tincanapi.com/attachment/test-attachment" }
+                                    { contentType: null, display: null, length: null, sha2: null, usageType: USAGE_TYPE }
                                 ]
                             },
                             "0.95": {

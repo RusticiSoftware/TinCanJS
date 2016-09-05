@@ -14,7 +14,8 @@
     limitations under the License.
 */
 (function () {
-    var session = null;
+    var session = null,
+        USAGE_TYPE = "http://id.tincanapi.com/attachment/supporting_media";
 
     QUnit.module("Attachment Statics");
 
@@ -22,7 +23,7 @@
         "Attachment.fromJSON",
         function () {
             var raw = {
-                    usageType: "http://id.tincanapi.com/attachment/test-attachment"
+                    usageType: USAGE_TYPE
                 },
                 string,
                 result;
@@ -67,10 +68,10 @@
                 {
                     name: "Attachment with usageType",
                     instanceConfig: {
-                        usageType: "http://id.tincanapi.com/attachment/test-attachment"
+                        usageType: USAGE_TYPE
                     },
                     checkProps: {
-                        usageType: "http://id.tincanapi.com/attachment/test-attachment"
+                        usageType: USAGE_TYPE
                     }
                 },
                 {
