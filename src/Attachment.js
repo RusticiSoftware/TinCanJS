@@ -74,7 +74,7 @@ TinCan client library
 
         /**
         @property content
-        @type String
+        @type ArrayBuffer
         */
         this.content = null;
 
@@ -118,9 +118,12 @@ TinCan client library
             }
 
             if (cfg.hasOwnProperty("content") && cfg.content !== null) {
-                this.content = cfg.content;
-                this.length = cfg.content.length;
-                this.sha2 = TinCan.Utils.getSHA256String(cfg.content);
+                if (typeof cfg.content === "string") {
+                    this.setContentFromString(cfg.content);
+                }
+                else {
+                    this.setContent(cfg.content);
+                }
             }
         },
 
@@ -162,7 +165,37 @@ TinCan client library
 
         @method getLangDictionaryValue
         */
-        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue,
+
+        /**
+        @method setContent
+        @param {ArrayBuffer} content Sets content from ArrayBuffer
+        */
+        setContent: function (content) {
+            this.content = content;
+            this.length = content.byteLength;
+            this.sha2 = TinCan.Utils.getSHA256String(content);
+        },
+
+        /**
+        @method setContentFromString
+        @param {String} content Sets the content property of the attachment from a string
+        */
+        setContentFromString: function (content) {
+            var _content = content;
+
+            _content = TinCan.Utils.stringToArrayBuffer(content);
+
+            this.setContent(_content);
+        },
+
+        /**
+        @method getContentAsString
+        @return {String} Value of content property as a string
+        */
+        getContentAsString: function () {
+            return TinCan.Utils.stringFromArrayBuffer(this.content);
+        }
     };
 
     /**
@@ -176,4 +209,6 @@ TinCan client library
 
         return new Attachment(_attachment);
     };
+
+    Attachment._defaultEncoding = "utf-8";
 }());

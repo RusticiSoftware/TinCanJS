@@ -14,10 +14,40 @@
     limitations under the License.
 */
 (function () {
-    module.exports = {
-        assertHttpRequestType: function (xhr, name) {
-            var desc = "(not implemented) assertHttpRequestType: " + name;
-            ok(true, desc);
-        }
-    };
+    var fs = require("fs"),
+        config = {
+            assertHttpRequestType: function (xhr, name) {
+                var desc = "(not implemented) assertHttpRequestType: " + name;
+                ok(true, desc);
+            },
+            loadBinaryFileContents: function (callback) {
+                fs.readFile(
+                    __dirname + "/../files/image.jpg",
+                    function (err, data) {
+                        var fileContents,
+                            ab,
+                            view,
+                            i;
+
+                        if (err) throw err;
+
+                        if (typeof data.buffer === "undefined") {
+                            ab = new ArrayBuffer(data.length);
+                            view = new Uint8Array(ab);
+                            for (i = 0; i < data.length; i += 1) {
+                                view[i] = data[i];
+                            }
+                            fileContents = ab;
+                        }
+                        else {
+                            fileContents = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+                        }
+                        callback.call(null, fileContents);
+                    }
+                );
+            },
+            testAttachments: true
+        };
+
+    module.exports = config;
 }());

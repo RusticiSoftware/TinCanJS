@@ -21,13 +21,15 @@ TinCan client library
 @submodule TinCan.Environment.Node
 **/
 (function () {
-    /* globals require */
+    /* globals require,Buffer,ArrayBuffer,Uint8Array */
     "use strict";
     var LOG_SRC = "Environment.Node",
         log = TinCan.prototype.log,
         querystring = require("querystring"),
         XMLHttpRequest = require("xhr2"),
-        requestComplete;
+        requestComplete,
+        __createJSONSegment,
+        __createAttachmentSegment;
 
     requestComplete = function (xhr, cfg) {
         log("requestComplete - xhr.status: " + xhr.status, LOG_SRC);
@@ -95,6 +97,11 @@ TinCan client library
 
         xhr = new XMLHttpRequest();
         xhr.open(cfg.method, url, async);
+
+        if (cfg.expectMultipart) {
+            xhr.responseType = "arraybuffer";
+        }
+
         for (prop in headers) {
             if (headers.hasOwnProperty(prop)) {
                 xhr.setRequestHeader(prop, headers[prop]);
@@ -127,4 +134,134 @@ TinCan client library
     // Synchronos xhr handling is unsupported in node
     //
     TinCan.LRS.syncEnabled = false;
+
+    TinCan.LRS.prototype._getMultipartRequestData = function (boundary, jsonContent, requestAttachments) {
+        var parts = [],
+            i;
+
+        parts.push(
+            __createJSONSegment(
+                boundary,
+                jsonContent
+            )
+        );
+        for (i = 0; i < requestAttachments.length; i += 1) {
+            if (requestAttachments[i].content !== null) {
+                parts.push(
+                    __createAttachmentSegment(
+                        boundary,
+                        requestAttachments[i].content,
+                        requestAttachments[i].sha2,
+                        requestAttachments[i].contentType
+                    )
+                );
+            }
+        }
+        if (typeof Buffer.from === "undefined") {
+            parts.push( new Buffer("\r\n--" + boundary + "--\r\n") );
+        }
+        else {
+            parts.push( Buffer.from("\r\n--" + boundary + "--\r\n") );
+        }
+
+        return Buffer.concat(parts);
+    };
+
+    __createJSONSegment = function (boundary, jsonContent) {
+        var content = [
+                "--" + boundary,
+                "Content-Type: application/json",
+                "",
+                JSON.stringify(jsonContent)
+            ].join("\r\n");
+
+        content += "\r\n";
+
+        if (typeof Buffer.from === "undefined") {
+            return new Buffer(content);
+        }
+        return Buffer.from(content);
+    };
+
+    __createAttachmentSegment = function (boundary, content, sha2, contentType) {
+        var bufferParts = [],
+            header = [
+                "--" + boundary,
+                "Content-Type: " + contentType,
+                "Content-Transfer-Encoding: binary",
+                "X-Experience-API-Hash: " + sha2
+            ].join("\r\n");
+
+        header += "\r\n\r\n";
+
+        if (typeof Buffer.from === "undefined") {
+            bufferParts.push( new Buffer(header) );
+            bufferParts.push( new Buffer(content) );
+        }
+        else {
+            bufferParts.push(Buffer.from(header));
+            bufferParts.push(Buffer.from(content));
+        }
+
+        return Buffer.concat(bufferParts);
+    };
+
+    TinCan.Utils.stringToArrayBuffer = function (content, encoding) {
+        var b,
+            ab,
+            view,
+            i;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        if (typeof Buffer.from === "undefined") {
+            // for Node.js prior to v4.x
+            b = new Buffer(content, encoding);
+
+            ab = new ArrayBuffer(b.length);
+            view = new Uint8Array(ab);
+            for (i = 0; i < b.length; i += 1) {
+                view[i] = b[i];
+            }
+
+            return ab;
+        }
+
+        b = Buffer.from(content, encoding);
+        ab = b.buffer;
+
+        //
+        // this .slice is required because of the internals of how Buffer is
+        // implemented, it uses a shared ArrayBuffer underneath for small buffers
+        // see http://stackoverflow.com/a/31394257/1464957
+        //
+        return ab.slice(b.byteOffset, b.byteOffset + b.byteLength);
+    };
+
+    TinCan.Utils.stringFromArrayBuffer = function (content, encoding) {
+        var b,
+            view,
+            i;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        if (typeof Buffer.from === "undefined") {
+            // for Node.js prior to v4.x
+            b = new Buffer(content.byteLength);
+
+            view = new Uint8Array(content);
+            for (i = 0; i < b.length; i += 1) {
+                b[i] = view[i];
+            }
+        }
+        else {
+            b = Buffer.from(content);
+        }
+
+        return b.toString(encoding);
+    };
 }());

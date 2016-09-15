@@ -33,9 +33,27 @@
     <script>
         var request = new XMLHttpRequest();
         request.open("GET", "../files/image.jpg", true);
-        request.responseType = "arraybuffer";
+
+        // new browsers (XMLHttpRequest2-compliant)
+        if ("responseType" in request) {
+            request.responseType = "arraybuffer";
+        }
+        // old browsers (XMLHttpRequest-compliant)
+        else if ("overrideMimeType" in request) {
+            request.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+        // IE9 (Microsoft.XMLHTTP-compliant)
+        else {
+            request.setRequestHeader("Accept-Charset", "x-user-defined");
+        }
 
         request.onload = function (e) {
+            if (! ("response" in request)) {
+                request.response = new ArrayBuffer(
+                    new VBArray(request.responseBody).toArray()
+                );
+            }
+
             var lrs = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.0"]),
                 st = new TinCan.Statement(
                     {
@@ -65,6 +83,9 @@
                 st,
                 {
                     callback: function (err, xhr) {
+                        if (err !== null) {
+                            throw err;
+                        }
                         lrs.retrieveStatement(
                             st.id,
                             {
@@ -72,6 +93,9 @@
                                     attachments: true
                                 },
                                 callback: function (err, result) {
+                                    if (err !== null) {
+                                        throw err;
+                                    }
                                     var blob = new Blob(
                                             [ result.attachments[0].content ],
                                             { type: "image/jpeg" }

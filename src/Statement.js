@@ -406,14 +406,13 @@ TinCan client library
             this.log("hasAttachmentWithContent");
             var i;
 
-            if (! this.hasOwnProperty("attachments")) {
+            if (this.attachments === null) {
                 return false;
             }
-            else {
-                for (i = 0; i < this.attachments.length; i += 1) {
-                    if (this.attachments[i].content !== null) {
-                        return true;
-                    }
+
+            for (i = 0; i < this.attachments.length; i += 1) {
+                if (this.attachments[i].content !== null) {
+                    return true;
                 }
             }
 

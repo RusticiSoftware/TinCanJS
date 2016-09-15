@@ -48,5 +48,19 @@ Environments
 ------------
 
 Implementing a new Environment should be straightforward and requires overloading a couple
-of methods on the `TinCan.LRS` prototype. There are currently two examples, `Environment/Browser`
+of methods in the library. There are currently two examples, `Environment/Browser`
 and `Environment/Node`.
+
+Attachment Support
+------------------
+
+Sending and retrieving statements with attachments via the multipart/mixed request/response
+cycle works end to end with binary attachments in Node.js 4+ and in the typical modern browsers:
+Chrome 53+, Firefox 48+, Safari 9+, IE 10+ (current versions at time of implementation, older versions
+may work without changes but have not been tested). Attachments without included content (those using
+only the `fileUrl` property) should be supported in all environments supported by the library.
+
+Several polyfills (TypedArrays, ArrayBuffer w/ slice, Blob, TextDecoder/TextEncoder) are needed
+to support various browser versions, if you are targeting a recent enough set of browsers you
+can reduce the overall size of the built library by commenting out those polyfills in the
+`Gruntfile.js` file and building yourself.

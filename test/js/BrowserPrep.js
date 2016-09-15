@@ -53,4 +53,22 @@ var TinCanTest,
 
         ok(false, desc + " (unrecognized request environment)");
     };
+
+    TinCanTest.loadBinaryFileContents = function (callback) {
+        var request = new XMLHttpRequest();
+        request.open("GET", "files/image.jpg", true);
+        request.responseType = "arraybuffer";
+
+        request.onload = function (e) {
+            if (request.status !== 200) {
+                throw "Failed to retrieve binary file contents (" + request.status + ")";
+            }
+            fileContents = request.response;
+            callback.call(null, fileContents);
+        };
+
+        request.send();
+    };
+
+    TinCanTest.testAttachments = true;
 }());

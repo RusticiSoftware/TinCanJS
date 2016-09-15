@@ -21,14 +21,16 @@ TinCan client library
 @submodule TinCan.Environment.Browser
 **/
 (function () {
-    /* globals window, XMLHttpRequest, XDomainRequest */
+    /* globals window, XMLHttpRequest, XDomainRequest, Blob */
     "use strict";
     var LOG_SRC = "Environment.Browser",
+        requestComplete,
+        __IEModeConversion,
         nativeRequest,
         xdrRequest,
-        requestComplete,
+        __createJSONSegment,
+        __createAttachmentSegment,
         __delay,
-        __IEModeConversion,
         env = {},
         log = TinCan.prototype.log;
 
@@ -268,18 +270,35 @@ TinCan client library
             // http://blogs.msdn.com/b/ie/archive/2006/01/23/516393.aspx
             //
             xhr = new ActiveXObject("Microsoft.XMLHTTP");
+
+            if (cfg.expectMultipart) {
+                err = new Error("Attachment support not available");
+                if (typeof cfg.callback !== "undefined") {
+                    cfg.callback(err, null);
+                }
+                return {
+                    err: err,
+                    xhr: null
+                };
+            }
         }
 
         xhr.open(cfg.method, fullUrl, async);
+
+        //
+        // setting the .responseType before .open was causing IE to fail
+        // with a StateError, so moved it to here
+        //
+        if (cfg.expectMultipart) {
+            xhr.responseType = "arraybuffer";
+        }
+
         for (prop in headers) {
             if (headers.hasOwnProperty(prop)) {
                 xhr.setRequestHeader(prop, headers[prop]);
             }
         }
 
-        if (typeof cfg.data !== "undefined") {
-            cfg.data += "";
-        }
         data = cfg.data;
 
         if (async) {
@@ -330,6 +349,16 @@ TinCan client library
             },
             err;
 
+        if (cfg.expectMultipart) {
+            err = new Error("Attachment support not available");
+            if (typeof cfg.callback !== "undefined") {
+                cfg.callback(err, null);
+            }
+            return {
+                err: err,
+                xhr: null
+            };
+        }
         if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
             err = new Error("Unsupported content type for IE Mode request");
             if (cfg.callback) {
@@ -565,4 +594,87 @@ TinCan client library
     // Synchronous xhr handling is accepted in the browser environment
     //
     TinCan.LRS.syncEnabled = true;
+
+    TinCan.LRS.prototype._getMultipartRequestData = function (boundary, jsonContent, requestAttachments) {
+        var parts = [],
+            i;
+
+        parts.push(
+            __createJSONSegment(
+                boundary,
+                jsonContent
+            )
+        );
+        for (i = 0; i < requestAttachments.length; i += 1) {
+            if (requestAttachments[i].content !== null) {
+                parts.push(
+                    __createAttachmentSegment(
+                        boundary,
+                        requestAttachments[i].content,
+                        requestAttachments[i].sha2,
+                        requestAttachments[i].contentType
+                    )
+                );
+            }
+        }
+        parts.push("\r\n--" + boundary + "--\r\n");
+
+        return new Blob(parts);
+    };
+
+    __createJSONSegment = function (boundary, jsonContent) {
+        var content = [
+                "--" + boundary,
+                "Content-Type: application/json",
+                "",
+                JSON.stringify(jsonContent)
+            ].join("\r\n");
+
+        content += "\r\n";
+
+        return content;
+    };
+
+    __createAttachmentSegment = function (boundary, content, sha2, contentType) {
+        var blobParts = [],
+            header = [
+                "--" + boundary,
+                "Content-Type: " + contentType,
+                "Content-Transfer-Encoding: binary",
+                "X-Experience-API-Hash: " + sha2
+            ].join("\r\n");
+
+        header += "\r\n\r\n";
+
+        blobParts.push(header);
+        blobParts.push(content);
+
+        return new Blob(blobParts);
+    };
+
+    TinCan.Utils.stringToArrayBuffer = function (content, encoding) {
+        /* global TextEncoder */
+        var encoder;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        encoder = new TextEncoder(encoding);
+
+        return encoder.encode(content).buffer;
+    };
+
+    TinCan.Utils.stringFromArrayBuffer = function (content, encoding) {
+        /* global TextDecoder */
+        var decoder;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        decoder = new TextDecoder(encoding);
+
+        return decoder.decode(content);
+    };
 }());

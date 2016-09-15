@@ -79,7 +79,14 @@
     test(
         "getSHA256String",
         function () {
-            ok(TinCan.Utils.getSHA256String("test") === "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "return value");
+            var str = "test",
+                strAB = TinCan.Utils.stringToArrayBuffer(str);
+
+            ok(TinCan.Utils.getSHA256String(str) === "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "string content return value");
+
+            if (Object.prototype.toString.call(strAB) === "[object ArrayBuffer]") {
+                ok(TinCan.Utils.getSHA256String(strAB) === "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "array buffer content return value");
+            }
         }
     );
     test(
@@ -387,6 +394,34 @@
             for (i = 0; i < notOkStrings.length; i += 1) {
                 ok(! TinCan.Utils.isApplicationJSON(notOkStrings[i]), "'" + notOkStrings[i] + "' not matched");
             }
+        }
+    );
+
+    test(
+        "stringToArrayBuffer/stringFromArrayBuffer",
+        function () {
+            var str = "string of test content",
+                bytes = [115, 116, 114, 105, 110, 103, 32, 111, 102, 32, 116, 101, 115, 116, 32, 99, 111, 110, 116, 101, 110, 116],
+                ab = new ArrayBuffer(str.length),
+                abView = new Uint8Array(ab);
+
+            if (Object.prototype.toString.call(ab) !== "[object ArrayBuffer]") {
+                expect(0);
+                return;
+            }
+
+            for (i = 0; i < bytes.length; i += 1) {
+                abView[i] = bytes[i];
+            }
+
+            result = TinCan.Utils.stringFromArrayBuffer(ab);
+            equal(Object.prototype.toString.call(result), "[object String]", "string from array buffer: toString type");
+            ok(str === result, "string from array buffer: result");
+
+            result = TinCan.Utils.stringToArrayBuffer(str);
+            equal(Object.prototype.toString.call(result), "[object ArrayBuffer]", "string to array buffer: toString type");
+            equal(result.byteLength, bytes.length, "string to array buffer: byteLength");
+            deepEqual(bytes, Array.prototype.slice.call(new Uint8Array(result)), "string to array buffer: result");
         }
     );
 }());

@@ -214,22 +214,6 @@
             ok(noDupe, "no duplicates in 500");
         }
     );
-    test(
-        "_createStatementSegment",
-        function () {
-            var testString = "--testBoundary\r\nContent-Type: application/json\r\n\r\n\"test\"\r\n",
-                lrs = new TinCan.LRS({ endpoint: endpoint });
-            deepEqual(lrs._createStatementSegment("testBoundary", "test"), testString, "Statement segment created correctly");
-        }
-    );
-    test(
-        "_createAttachmentSegment",
-        function () {
-            var testString = "--testBoundary\r\nContent-Type: text/plain\r\nContent-Transfer-Encoding: binary\r\nX-Experience-API-Hash: testHash\r\n\r\ntest\r\n",
-                lrs = new TinCan.LRS({ endpoint: endpoint });
-            deepEqual(lrs._createAttachmentSegment("testBoundary", "test", "testHash", "text/plain"), testString, "Statement segment created correctly");
-        }
-    );
 
     (function () {
         var versions = TinCan.versions(),
@@ -1136,4 +1120,100 @@
             }
         }
     }());
+
+    if (TinCanTest.testAttachments) {
+        (function () {
+            var versions = TinCan.versions(),
+                stCfg = {
+                    actor: {
+                        mbox: "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com"
+                    },
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/experienced"
+                    },
+                    target: {
+                        id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS"
+                    }
+                },
+                fileContents,
+                testBinaryAttachmentRoundTrip = function (lrs) {
+                    asyncTest(
+                        "Binary Attachment - round trip (" + lrs.version + ")",
+                        function () {
+                            var stCfgAtt = JSON.parse(JSON.stringify(stCfg)),
+                                statement;
+
+                            stCfgAtt.target.id = stCfgAtt.target.id + "/binary-attachment-roundtrip/" + lrs.version;
+
+                            stCfgAtt.attachments = [
+                                {
+                                    display: {
+                                        "en-US": "Test Attachment"
+                                    },
+                                    usageType: "http://id.tincanapi.com/attachment/supporting_media",
+                                    contentType: "image/jpeg",
+                                    content: fileContents
+                                }
+                            ];
+
+                            statement = new TinCan.Statement(stCfgAtt);
+
+                            lrs.saveStatement(
+                                statement,
+                                {
+                                    callback: function (err, xhr) {
+                                        start();
+                                        ok(err === null, "statement saved successfully");
+                                        if (err !== null) {
+                                            console.log("save statement failed: " + err);
+                                            console.log(xhr.responseText);
+                                        }
+                                        ok(xhr.status === 204, "xhr received 204");
+                                        stop();
+
+                                        lrs.retrieveStatement(
+                                            statement.id,
+                                            {
+                                                params: {
+                                                    attachments: true
+                                                },
+                                                callback: function (err, result) {
+                                                    start();
+                                                    ok(err === null, "statement retrieved successfully");
+                                                    ok(statement.attachments[0].sha2 === result.attachments[0].sha2, "re-hash matches original");
+                                                }
+                                            }
+                                        );
+                                    }
+                                }
+                            );
+                        }
+                    );
+                };
+
+            QUnit.module(
+                "LRS - Binary Attachments",
+                {
+                    setup: function () {
+                        TinCanTest.loadBinaryFileContents(
+                            function (contents) {
+                                fileContents = contents;
+                                start();
+                            }
+                        );
+                        stop();
+                    }
+                }
+            );
+
+            for (i = 0; i < versions.length; i += 1) {
+                if ((! (versions[i] === "0.9" || versions[i] === "0.95")) && TinCanTestCfg.recordStores[versions[i]]) {
+                    lrs = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                    lrs.allowFail = false;
+
+                    testBinaryAttachmentRoundTrip(lrs);
+                }
+            }
+        }());
+    }
 }());

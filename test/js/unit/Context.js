@@ -288,7 +288,7 @@
                                     result = obj.asVersion();
                                 },
                                 Error,
-                                message + " (exception)"
+                                "asVersion throws Error"
                             );
                             continue;
                         }

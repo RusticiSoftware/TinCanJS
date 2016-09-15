@@ -165,29 +165,7 @@ TinCan client library
         @private
         */
         _getBoundary: function () {
-            return TinCan.Utils.getUUID().replace(/-/g,"");
-        },
-
-        /**
-        Returns the stringified version, with boundary and content-type,
-        of a statement to place in the request
-
-        @method _createStatementSegment
-        @private
-        */
-        _createStatementSegment: function (boundary, statement) {
-            return "--" + boundary + "\r\n" + "Content-Type: application/json" + "\r\n\r\n" + JSON.stringify(statement) + "\r\n";
-        },
-
-        /**
-        Returns the stringified version, with boundary and content-type,
-        of an attachment to place in the request
-
-        @method _createAttachmentSegment
-        @private
-        */
-        _createAttachmentSegment: function (boundary, content, sha2, contentType) {
-            return "--" + boundary + "\r\n" + "Content-Type: " + contentType + "\r\n" + "Content-Transfer-Encoding: binary" + "\r\n" + "X-Experience-API-Hash: " + sha2 + "\r\n\r\n" + content + "\r\n";
+            return TinCan.Utils.getUUID().replace(/-/g, "");
         },
 
         /**
@@ -214,6 +192,17 @@ TinCan client library
         },
 
         /**
+        Method should be overloaded by an environment to do per
+        environment specifics for building multipart request data
+
+        @method _getMultipartRequestData
+        @private
+        */
+        _getMultipartRequestData: function () {
+            this.log("_getMultipartRequestData not overloaded - no environment loaded?");
+        },
+
+        /**
         Method is overloaded by the browser environment in order to test converting an
         HTTP request that is greater than a defined length
 
@@ -224,6 +213,30 @@ TinCan client library
             this.log("_IEModeConversion not overloaded - browser environment not loaded.");
         },
 
+        _processGetStatementResult: function (xhr, params) {
+            var boundary,
+                parsedResponse,
+                statement,
+                attachmentMap = {},
+                i;
+
+            if (! params.attachments) {
+                return TinCan.Statement.fromJSON(xhr.responseText);
+            }
+
+            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
+
+            parsedResponse = this._parseMultipart(boundary, xhr.response);
+            statement = JSON.parse(parsedResponse[0].body);
+            for (i = 1; i < parsedResponse.length; i += 1) {
+                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
+            }
+
+            this._assignAttachmentContent([statement], attachmentMap);
+
+            return new TinCan.Statement(statement);
+        },
+
         /**
         Method used to send a request via browser objects to the LRS
 
@@ -232,13 +245,14 @@ TinCan client library
             @param {String} cfg.url URL portion to add to endpoint
             @param {String} [cfg.method] GET, PUT, POST, etc.
             @param {Object} [cfg.params] Parameters to set on the querystring
-            @param {String} [cfg.data] String of body content
+            @param {String|ArrayBuffer} [cfg.data] Body content as a String or ArrayBuffer
             @param {Object} [cfg.headers] Additional headers to set in the request
             @param {Function} [cfg.callback] Function to run at completion
                 @param {String|Null} cfg.callback.err If an error occurred, this parameter will contain the HTTP status code.
                     If the operation succeeded, err will be null.
                 @param {Object} cfg.callback.xhr XHR object
             @param {Boolean} [cfg.ignore404] Whether 404 status codes should be considered an error
+            @param {Boolean} [cfg.expectMultipart] Whether to expect the response to be a multipart response
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
@@ -342,8 +356,12 @@ TinCan client library
         */
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
-            var requestCfg,
+            var requestCfg = {
+                    url: "statements",
+                    headers: {}
+                },
                 versionedStatement,
+                requestAttachments = [],
                 boundary,
                 i;
 
@@ -376,34 +394,47 @@ TinCan client library
                 };
             }
 
-            if (versionedStatement.hasOwnProperty("attachments") && versionedStatement.attachments !== null) {
+            if (versionedStatement.hasOwnProperty("attachments") && stmt.hasAttachmentWithContent()) {
                 boundary = this._getBoundary();
-                requestCfg = {
-                    url: "statements",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                };
 
-                if (stmt.hasAttachmentWithContent()) {
-                    requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
-                    requestCfg.data = this._createStatementSegment(boundary, versionedStatement);
-                    for (i = 0; i < stmt.attachments.length; i += 1) {
-                        if (stmt.attachments[i].content !== null) {
-                            requestCfg.data += this._createAttachmentSegment(boundary, stmt.attachments[i].content, versionedStatement.attachments[i].sha2, versionedStatement.attachments[i].contentType);
-                        }
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                for (i = 0; i < stmt.attachments.length; i += 1) {
+                    if (stmt.attachments[i].content !== null) {
+                        requestAttachments.push(stmt.attachments[i]);
                     }
-                    requestCfg.data += "--" + boundary + "--";
+                }
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatement, requestAttachments);
+                }
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
                 }
             }
             else {
-                requestCfg = {
-                    url: "statements",
-                    data: JSON.stringify(versionedStatement),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                };
+                requestCfg.headers["Content-Type"] = "application/json";
+                requestCfg.data = JSON.stringify(versionedStatement);
             }
             if (stmt.id !== null) {
                 requestCfg.method = "PUT";
@@ -452,32 +483,14 @@ TinCan client library
             };
             if (cfg.params.attachments) {
                 requestCfg.params.attachments = true;
+                requestCfg.expectMultipart = true;
             }
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr,
-                        boundary,
-                        parsedResponse,
-                        statement,
-                        attachmentMap = {},
-                        i;
+                    var result = xhr;
 
                     if (err === null) {
-                        if (! cfg.params.attachments) {
-                            result = TinCan.Statement.fromJSON(xhr.responseText);
-                        }
-                        else {
-                            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
-
-                            parsedResponse = lrs._parseMultipart(boundary, xhr.responseText);
-                            statement = JSON.parse(parsedResponse[0].body);
-                            for (i = 1; i < parsedResponse.length; i += 1) {
-                                attachmentMap[parsedResponse[i].head["X-Experience-API-Hash"]] = parsedResponse[i].body;
-                            }
-
-                            lrs._assignAttachmentContent([statement], attachmentMap);
-                            result = new TinCan.Statement(statement);
-                        }
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -489,7 +502,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -502,6 +515,8 @@ TinCan client library
         @method retrieveVoidedStatement
         @param {String} ID of voided statement to retrieve
         @param {Object} [cfg] Configuration options
+            @param {Object} [cfg.params] Query parameters
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {TinCan.Statement} Statement retrieved
         */
@@ -509,9 +524,11 @@ TinCan client library
             this.log("retrieveVoidedStatement");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             requestCfg = {
                 url: "statements",
@@ -523,6 +540,10 @@ TinCan client library
             }
             else {
                 requestCfg.params.voidedStatementId = stmtId;
+                if (cfg.params.attachments) {
+                    requestCfg.params.attachments = true;
+                    requestCfg.expectMultipart = true;
+                }
             }
 
             if (typeof cfg.callback !== "undefined") {
@@ -530,7 +551,7 @@ TinCan client library
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -542,7 +563,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -560,13 +581,17 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var requestCfg,
+            var requestCfg = {
+                    url: "statements",
+                    method: "POST",
+                    headers: {}
+                },
                 versionedStatement,
                 versionedStatements = [],
                 requestAttachments = [],
                 boundary,
                 i,
-                x;
+                j;
 
             cfg = cfg || {};
 
@@ -580,14 +605,6 @@ TinCan client library
                     xhr: null
                 };
             }
-
-            requestCfg = {
-                url: "statements",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            };
 
             for (i = 0; i < stmts.length; i += 1) {
                 try {
@@ -618,9 +635,9 @@ TinCan client library
                 }
 
                 if (stmts[i].hasAttachmentWithContent()) {
-                    for (x = 0; x < stmts[i].attachments.length; x += 1) {
-                        if (stmts[i].attachments[x].content !== null) {
-                            requestAttachments.push(stmts[i].attachments[x]);
+                    for (j = 0; j < stmts[i].attachments.length; j += 1) {
+                        if (stmts[i].attachments[j].content !== null) {
+                            requestAttachments.push(stmts[i].attachments[j]);
                         }
                     }
                 }
@@ -630,17 +647,38 @@ TinCan client library
 
             if (requestAttachments.length !== 0) {
                 boundary = this._getBoundary();
-                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
-                requestCfg.data = this._createStatementSegment(boundary, versionedStatements);
 
-                for (i = 0; i < requestAttachments.length; i += 1) {
-                    if (requestAttachments[i] !== null) {
-                        requestCfg.data += this._createAttachmentSegment(boundary, requestAttachments[x].content, requestAttachments[x].sha2, requestAttachments[x].contentType);
-                    }
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatements, requestAttachments);
                 }
-                requestCfg.data += "--" + boundary + "--";
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
             }
             else {
+                requestCfg.headers["Content-Type"] = "application/json";
                 requestCfg.data = JSON.stringify(versionedStatements);
             }
 
@@ -699,6 +737,10 @@ TinCan client library
             //
             try {
                 requestCfg = this._queryStatementsRequestCfg(cfg);
+
+                if (cfg.params.attachments) {
+                    requestCfg.expectMultipart = true;
+                }
             }
             catch (ex) {
                 this.log("[error] Query statements failed - " + ex);
@@ -728,10 +770,10 @@ TinCan client library
                         else {
                             boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
 
-                            parsedResponse = lrs._parseMultipart(boundary, xhr.responseText);
+                            parsedResponse = lrs._parseMultipart(boundary, xhr.response);
                             statements = JSON.parse(parsedResponse[0].body);
                             for (i = 1; i < parsedResponse.length; i += 1) {
-                                attachmentMap[parsedResponse[i].head["X-Experience-API-Hash"]] = parsedResponse[i].body;
+                                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
                             }
 
                             lrs._assignAttachmentContent(statements.statements, attachmentMap);
@@ -931,39 +973,92 @@ TinCan client library
         @method _parseMultipart
         @private
         @param {String} [boundary] Boundary used to mark off the sections of the response
-        @param {String} [response] Text of the response
+        @param {ArrayBuffer} [response] Body of the response
         @return {Array} Array of objects containing the parsed headers and body of each part
         */
         _parseMultipart: function (boundary, response) {
-            var parts = [],
-                sections = [],
-                head,
+            /* global Uint8Array */
+            var __boundary = "--" + boundary,
+                byteArray,
+                bodyEncodedInString,
+                fullBodyEnd,
+                sliceStart,
+                sliceEnd,
+                headerStart,
+                headerEnd,
+                bodyStart,
+                bodyEnd,
+                headers,
                 body,
-                i;
+                parts = [],
+                CRLF = 2;
 
-            parts = response.split("--" + boundary);
-            for (i = 0; i < parts.length; i += 1) {
-                parts[i] = parts[i].replace(/^\s+/g, "");
-                if (parts[i] === "") {
-                    continue;
-                }
-                else if (parts[i] === "--") {
-                    break;
-                }
-                parts[i] = parts[i].split("\r\n\r\n", 2);
-                head = parts[i][0];
-                body = parts[i][1];
-                body = body.replace(/\r\n$/, "");
+            //
+            // treating the reponse as a stream of bytes and assuming that headers
+            // and related mime boundaries are all US-ASCII (which is a safe assumption)
+            // allows us to treat the whole response as a string when looking for offsets
+            // but then slice on the raw array buffer
+            //
+            byteArray = new Uint8Array(response);
+            bodyEncodedInString = this.__uint8ToString(byteArray);
 
-                sections.push(
+            fullBodyEnd = bodyEncodedInString.indexOf(__boundary + "--");
+
+            sliceStart = bodyEncodedInString.indexOf(__boundary);
+            while (sliceStart !== -1) {
+                sliceEnd = bodyEncodedInString.indexOf(__boundary, sliceStart + __boundary.length);
+
+                headerStart = sliceStart + __boundary.length + CRLF;
+                headerEnd = bodyEncodedInString.indexOf("\r\n\r\n", sliceStart);
+                bodyStart = headerEnd + CRLF + CRLF;
+                bodyEnd = sliceEnd - 2;
+
+                headers = this._parseHeaders(
+                    this.__uint8ToString(
+                        new Uint8Array( response.slice(headerStart, headerEnd) )
+                    )
+                );
+                body = response.slice(bodyStart, bodyEnd);
+
+                //
+                // we know the first slice is the statement, and we know it is a string in UTF-8 (spec requirement)
+                //
+                if (parts.length === 0) {
+                    body = TinCan.Utils.stringFromArrayBuffer(body);
+                }
+
+                parts.push(
                     {
-                        head: this._parseHeaders(head),
+                        headers: headers,
                         body: body
                     }
                 );
+
+                if (sliceEnd === fullBodyEnd) {
+                    sliceStart = -1;
+                }
+                else {
+                    sliceStart = sliceEnd;
+                }
             }
 
-            return sections;
+            return parts;
+        },
+
+        //
+        // implemented as a function to avoid 'RangeError: Maximum call stack size exceeded'
+        // when calling .fromCharCode on the full byteArray which results in a too long
+        // argument list for large arrays
+        //
+        __uint8ToString: function (byteArray) {
+            var result = "",
+                len = byteArray.byteLength,
+                i;
+
+            for (i = 0; i < len; i += 1) {
+                result += String.fromCharCode(byteArray[i]);
+            }
+            return result;
         },
 
         /**

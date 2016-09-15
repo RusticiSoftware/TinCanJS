@@ -97,6 +97,7 @@
                                 ]
                             }
                         );
+                        session[v].recordStores[0].allowFail = false;
                     }
                 }
             },
@@ -398,7 +399,18 @@
                     // that ought to be tested against a 1.0.0 spec
                     //
                     //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
-                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    attachment = new TinCan.Attachment(
+                        {
+                            display: {
+                                "en-US": "Test Attachment"
+                            },
+                            usageType: USAGE_TYPE,
+                            contentType: "text/plain"
+                        }
+                    );
+
+                attachment.setContentFromString("test content");
 
                 sendResult = session[v].sendStatement(
                     {
@@ -412,14 +424,7 @@
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatementWithAttachment/async/" + v
                         },
                         attachments: [
-                            {
-                                display: {
-                                    "en-US": "Test Attachment"
-                                },
-                                usageType: USAGE_TYPE,
-                                content: "test content",
-                                contentType: "text/plain"
-                            }
+                            attachment
                         ]
                     },
                     function (results, sentStatement) {
@@ -464,7 +469,18 @@
                     // that ought to be tested against a 1.0.0 spec
                     //
                     //actorMbox = "mailto:TinCanJS-test-TinCan+" + Date.now() + "@tincanapi.com";
-                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com";
+                    actorMbox = "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com",
+                    attachment = new TinCan.Attachment(
+                        {
+                            display: {
+                                "en-US": "Test Attachment"
+                            },
+                            usageType: USAGE_TYPE,
+                            contentType: "text/plain"
+                        }
+                    );
+
+                attachment.setContentFromString("test content");
 
                 sendResult = session[v].sendStatement(
                     {
@@ -478,14 +494,7 @@
                             id: "http://tincanapi.com/TinCanJS/Test/TinCan_getStatementsWithAttachment/async/" + v
                         },
                         attachments: [
-                            {
-                                display: {
-                                    "en-US": "Test Attachment"
-                                },
-                                usageType: USAGE_TYPE,
-                                content: "test content",
-                                contentType: "text/plain"
-                            }
+                            attachment
                         ]
                     },
                     function (results, sentStatement) {
@@ -517,9 +526,11 @@
             if (version !== "0.9" && version !== "0.95") {
                 doGetStatementsVerbIDAsyncTest(version);
                 doGetStatementsActivityIDAsyncTest(version);
-                doSendStatementWithAttachmentTest(version);
-                doGetStatementWithAttachmentTest(version);
-                doGetStatementsWithAttachmentTest(version);
+                if (TinCanTest.testAttachments) {
+                    doSendStatementWithAttachmentTest(version);
+                    doGetStatementWithAttachmentTest(version);
+                    doGetStatementsWithAttachmentTest(version);
+                }
             }
         }
     }

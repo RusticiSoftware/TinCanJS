@@ -210,4 +210,32 @@
             }
         }
     );
+
+    test(
+        "hasAttachmentWithContent",
+        function () {
+            var st;
+
+            st = new TinCan.Statement();
+            ok(st.hasAttachmentWithContent() === false, "no attachments");
+
+            st = new TinCan.Statement(
+                {
+                    attachments: [
+                        new TinCan.Attachment({ usageType: USAGE_TYPE })
+                    ]
+                }
+            );
+            ok(st.hasAttachmentWithContent() === false, "attachment without content");
+
+            st = new TinCan.Statement(
+                {
+                    attachments: [
+                        new TinCan.Attachment({ content: "some content" })
+                    ]
+                }
+            );
+            ok(st.hasAttachmentWithContent() === true, "attachment with content");
+        }
+    );
 }());
