@@ -228,14 +228,16 @@
             );
             ok(st.hasAttachmentWithContent() === false, "attachment without content");
 
-            st = new TinCan.Statement(
-                {
-                    attachments: [
-                        new TinCan.Attachment({ content: "some content" })
-                    ]
-                }
-            );
-            ok(st.hasAttachmentWithContent() === true, "attachment with content");
+            if (TinCanTest.testAttachments) {
+                st = new TinCan.Statement(
+                    {
+                        attachments: [
+                            new TinCan.Attachment({ content: "some content" })
+                        ]
+                    }
+                );
+                ok(st.hasAttachmentWithContent() === true, "attachment with content");
+            }
         }
     );
 }());

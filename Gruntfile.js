@@ -36,14 +36,14 @@ module.exports = function(grunt) {
     bower;
 
     browserFileList.push(
+        "src/Environment/Browser.js",
         // needed because IE10 doesn't support Uint8ClampedArray
         // which is required by CryptoJS for typedarray support
         "node_modules/js-polyfills/typedarray.js",
         // needed because IE10 doesn't have ArrayBuffer slice
         "node_modules/arraybuffer-slice/index.js",
         // needed for IE and Safari for TextDecoder/TextEncoder
-        "node_modules/text-encoding/lib/encoding.js",
-        "src/Environment/Browser.js"
+        "node_modules/text-encoding/lib/encoding.js"
     );
     nodeFileList.push(
         "src/Environment/Node.js"

@@ -1236,20 +1236,25 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
 
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType,
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
 
@@ -1280,19 +1285,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.state.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.state.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.state.contentType)) {
@@ -1662,19 +1672,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -1705,19 +1720,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
@@ -1966,19 +1986,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -2009,19 +2034,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {

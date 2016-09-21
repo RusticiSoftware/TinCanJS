@@ -86,6 +86,33 @@ TinCan client library
         };
     }
 
+    //
+    // Add .forEach implementation for supporting our string encoding polyfill
+    // imported from js-polyfills to avoid bringing in the whole es5 shim
+    // for now, a rewrite probably moves all shims out of the main build or at
+    // least Environment file and leverages more of them
+    //
+
+    // ES5 15.4.4.18 Array.prototype.forEach ( callbackfn [ , thisArg ] )
+    // From https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/forEach
+    if (!Array.prototype.forEach) {
+      /* jshint freeze:false,bitwise:false */
+      Array.prototype.forEach = function (fun /*, thisp */) {
+        if (this === void 0 || this === null) { throw new TypeError(); }
+
+        var t = Object(this);
+        var len = t.length >>> 0;
+        if (typeof fun !== "function") { throw new TypeError(); }
+
+        var thisp = arguments[1], i;
+        for (i = 0; i < len; i += 1) {
+          if (i in t) {
+            fun.call(thisp, t[i], i, t);
+          }
+        }
+      };
+    }
+
     /* Detect CORS and XDR support */
     env.hasCORS = false;
     env.useXDR = false;
@@ -232,18 +259,6 @@ TinCan client library
         }
 
         if (fullRequest.length >= MAX_REQUEST_LENGTH) {
-            // This may change based upon what content is supported in IE Mode
-            if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
-                err = new Error("Unsupported content type for IE Mode request");
-                if (typeof cfg.callback !== "undefined") {
-                    cfg.callback(err, null);
-                }
-                return {
-                    err: err,
-                    xhr: null
-                };
-            }
-
             if (typeof cfg.method === "undefined") {
                 err = new Error("method must not be undefined for an IE Mode Request conversion");
                 if (typeof cfg.callback !== "undefined") {
@@ -353,17 +368,6 @@ TinCan client library
             err = new Error("Attachment support not available");
             if (typeof cfg.callback !== "undefined") {
                 cfg.callback(err, null);
-            }
-            return {
-                err: err,
-                xhr: null
-            };
-        }
-        if (typeof headers["Content-Type"] !== "undefined" && headers["Content-Type"] !== "application/json") {
-            err = new Error("Unsupported content type for IE Mode request");
-            if (cfg.callback) {
-                cfg.callback(err, null);
-                return null;
             }
             return {
                 err: err,

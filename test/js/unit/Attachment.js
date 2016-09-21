@@ -135,33 +135,38 @@
                     checkProps: {
                         fileUrl: "http://id.tincanapi.com/attachment/test-attachment.pdf"
                     }
-                },
-                {
-                    name: "Attachment with string content",
-                    instanceConfig: {
-                        content: "test text content"
-                    },
-                    checkProps: {
-                        sha2: "889f4b4a820461e25c2431acab679831f7eed2fc25f42a809769045527e7a73b",
-                        length: 17,
-                        content: TinCan.Utils.stringToArrayBuffer("test text content")
-                    }
-                },
-                {
-                    name: "Attachment with binary content",
-                    instanceConfig: {
-                        content: TinCan.Utils.stringToArrayBuffer("test text content")
-                    },
-                    checkProps: {
-                        sha2: "889f4b4a820461e25c2431acab679831f7eed2fc25f42a809769045527e7a73b",
-                        length: 17,
-                        content: TinCan.Utils.stringToArrayBuffer("test text content")
-                    }
                 }
             ],
             i,
             obj,
             result;
+
+            if (TinCanTest.testAttachments) {
+                set.push(
+                    {
+                        name: "Attachment with string content",
+                        instanceConfig: {
+                            content: "test text content"
+                        },
+                        checkProps: {
+                            sha2: "889f4b4a820461e25c2431acab679831f7eed2fc25f42a809769045527e7a73b",
+                            length: 17,
+                            content: TinCan.Utils.stringToArrayBuffer("test text content")
+                        }
+                    },
+                    {
+                        name: "Attachment with binary content",
+                        instanceConfig: {
+                            content: TinCan.Utils.stringToArrayBuffer("test text content")
+                        },
+                        checkProps: {
+                            sha2: "889f4b4a820461e25c2431acab679831f7eed2fc25f42a809769045527e7a73b",
+                            length: 17,
+                            content: TinCan.Utils.stringToArrayBuffer("test text content")
+                        }
+                    }
+                );
+            }
 
             for (i = 0; i < set.length; i += 1) {
                 row = set[i];

@@ -71,4 +71,14 @@ var TinCanTest,
     };
 
     TinCanTest.testAttachments = true;
+
+    //
+    // can't support attachments with content in browsers that don't support
+    // an XHR2 implementation, essentially IE < 10, so set a flag to skip
+    // testing related functionality
+    //
+    if (! ("withCredentials" in new XMLHttpRequest())) {
+        TinCanTest.testAttachments = false;
+        alert("Not testing attachments with content");
+    }
 }());

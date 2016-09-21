@@ -198,7 +198,15 @@
                 list = [],
                 seen = {},
                 noDupe = true,
-                lrs = new TinCan.LRS({ endpoint: endpoint });
+                lrs;
+
+            for (i = 0; i < versions.length; i += 1) {
+                if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
+                    lrs = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                    break;
+                }
+            }
+
             for (i = 0; i < 500; i += 1) {
                 val = lrs._getBoundary();
                 ok(re.test(val), "formatted correctly: " + i);
@@ -373,6 +381,8 @@
                                 TinCanTest.assertHttpRequestType(result, "dropState (all) callback result is xhr" + postFix);
 
                                 if (err === null) {
+                                    stop();
+
                                     //
                                     // since we deleted everything this should be empty
                                     //
@@ -385,79 +395,83 @@
                                                 ok(err === null, "retrieveStateIds (empty) callback err is null" + postFix);
                                                 deepEqual(result, [], "retrieveStateIds (empty) callback result is empty array" + postFix);
 
-                                                //
-                                                // now populate a state value and verify we can get a list of one,
-                                                // and get the individual value itself
-                                                //
-                                                lrs.saveState(
-                                                    documents[0].id,
-                                                    documents[0].contents,
-                                                    {
-                                                        agent: agent,
-                                                        activity: activity,
-                                                        contentType: documents[0].contentType,
-                                                        callback: function (err, result) {
-                                                            start();
-                                                            ok(err === null, "saveState (0) callback err is null" + postFix);
-                                                            TinCanTest.assertHttpRequestType(result, "saveState (0) callback result is xhr" + postFix);
+                                                if (err === null) {
+                                                    stop();
 
-                                                            if (err === null) {
-                                                                //
-                                                                // make sure we get back the list with a single value
-                                                                //
-                                                                lrs.retrieveStateIds(
-                                                                    {
-                                                                        agent: agent,
-                                                                        activity: activity,
-                                                                        callback: function (err, result) {
-                                                                            start();
-                                                                            ok(err === null, "retrieveStateIds (1) callback err is null" + postFix);
-                                                                            deepEqual(result, [documents[0].id], "retrieveStateIds (1) callback result array" + postFix);
+                                                    //
+                                                    // now populate a state value and verify we can get a list of one,
+                                                    // and get the individual value itself
+                                                    //
+                                                    lrs.saveState(
+                                                        documents[0].id,
+                                                        documents[0].contents,
+                                                        {
+                                                            agent: agent,
+                                                            activity: activity,
+                                                            contentType: documents[0].contentType,
+                                                            callback: function (err, result) {
+                                                                start();
+                                                                ok(err === null, "saveState (0) callback err is null" + postFix);
+                                                                TinCanTest.assertHttpRequestType(result, "saveState (0) callback result is xhr" + postFix);
 
-                                                                            //
-                                                                            // make sure we can get the state value back
-                                                                            //
-                                                                            lrs.retrieveState(
-                                                                                documents[0].id,
-                                                                                {
-                                                                                    agent: agent,
-                                                                                    activity: activity,
-                                                                                    callback: function (err, result) {
-                                                                                        start();
+                                                                if (err === null) {
+                                                                    stop();
 
-                                                                                        //
-                                                                                        // some LRSs (Cloud in particular our Travis resource) may return capital letters
-                                                                                        // in the hash, so lowercase the received one to improve odds it matches ours
-                                                                                        //
-                                                                                        if (err === null) {
-                                                                                            result.etag = result.etag.toLowerCase();
+                                                                    //
+                                                                    // make sure we get back the list with a single value
+                                                                    //
+                                                                    lrs.retrieveStateIds(
+                                                                        {
+                                                                            agent: agent,
+                                                                            activity: activity,
+                                                                            callback: function (err, result) {
+                                                                                start();
+                                                                                ok(err === null, "retrieveStateIds (1) callback err is null" + postFix);
+                                                                                deepEqual(result, [documents[0].id], "retrieveStateIds (1) callback result array" + postFix);
+
+                                                                                if (err === null) {
+                                                                                    stop();
+
+                                                                                    //
+                                                                                    // make sure we can get the state value back
+                                                                                    //
+                                                                                    lrs.retrieveState(
+                                                                                        documents[0].id,
+                                                                                        {
+                                                                                            agent: agent,
+                                                                                            activity: activity,
+                                                                                            callback: function (err, result) {
+                                                                                                start();
+
+                                                                                                //
+                                                                                                // some LRSs (Cloud in particular our Travis resource) may return capital letters
+                                                                                                // in the hash, so lowercase the received one to improve odds it matches ours
+                                                                                                //
+                                                                                                if (err === null) {
+                                                                                                    result.etag = result.etag.toLowerCase();
+                                                                                                }
+
+                                                                                                ok(err === null, "retrieveState (0) callback err is null" + postFix);
+                                                                                                deepEqual(
+                                                                                                    result,
+                                                                                                    new TinCan.State(documents[0]),
+                                                                                                    "retrieveState (0) callback result is verified" + postFix
+                                                                                                );
+                                                                                            }
                                                                                         }
-
-                                                                                        ok(err === null, "retrieveState (0) callback err is null" + postFix);
-                                                                                        deepEqual(
-                                                                                            result,
-                                                                                            new TinCan.State(documents[0]),
-                                                                                            "retrieveState (0) callback result is verified" + postFix
-                                                                                        );
-
-                                                                                        //stop();
-                                                                                    }
+                                                                                    );
                                                                                 }
-                                                                            );
-                                                                            stop();
+                                                                            }
                                                                         }
-                                                                    }
-                                                                );
+                                                                    );
+                                                                }
                                                             }
-                                                            stop();
                                                         }
-                                                    }
-                                                );
-                                                stop();
+                                                    );
+                                                }
                                             }
                                         }
                                     );
-                                    stop();
                                 }
                             }
                         }
@@ -730,6 +744,17 @@
             asyncTest(
                 "asyncActivityTest: " + v,
                 function () {
+                    // skip check for 0.9 when in XDomainRequest land because at least on
+                    // Rustici LRSs we don't support getting back the Activity from only
+                    // the id passed in, and in IE 8+9 the fakeStatus results in a 400
+                    // instead of a 404 which is what our library uses to trigger setting
+                    // the Activity automatically to pass this check
+                    if (typeof XDomainRequest !== "undefined" && v === "0.9") {
+                        start();
+                        expect(0);
+                        return;
+                    }
+
                     var postFix = " (" + v + ")",
                         lrs = session[v],
                         activity = new TinCan.Activity(

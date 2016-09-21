@@ -90,12 +90,16 @@
                         name: "activity with definition (raw definition)",
                         instanceConfig: {
                             id: "http://TestActivity",
-                            definition: { name: "Test" }
+                            definition: {
+                                name: {
+                                    en: "Test"
+                                }
+                            }
                         },
-                        toString: (new TinCan.ActivityDefinition({ name: "Test" })).toString(),
+                        toString: (new TinCan.ActivityDefinition({ name: { en: "Test" } })).toString(),
                         checkProps: {
                             id: "http://TestActivity",
-                            definition: new TinCan.ActivityDefinition({ name: "Test" })
+                            definition: new TinCan.ActivityDefinition({ name: { en: "Test" } })
                         }
                     }
                 ],
