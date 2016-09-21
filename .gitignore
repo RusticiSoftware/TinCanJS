@@ -1,0 +1,10 @@
+# Third party libraries
+
+# buildables
+_site
+Gemfile.lock
+
+# bad.
+.DS_Store
+*.swp
+tmp/
