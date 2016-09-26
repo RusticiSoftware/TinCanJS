@@ -27,6 +27,8 @@ TinCan client library
     @class TinCan.Utils
     */
     TinCan.Utils = {
+        defaultEncoding: "utf8",
+
         /**
         Generates a UUIDv4 compliant string that should be reasonably unique
 
@@ -190,6 +192,21 @@ TinCan client library
             /*global CryptoJS*/
 
             return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
+        },
+
+        /**
+        @method getSHA256String
+        @static
+        @param {ArrayBuffer|String} content Content to hash
+        @return {String} SHA256 for contents
+        */
+        getSHA256String: function (content) {
+            /*global CryptoJS*/
+
+            if (Object.prototype.toString.call(content) === "[object ArrayBuffer]") {
+                content = CryptoJS.lib.WordArray.create(content);
+            }
+            return CryptoJS.SHA256(content).toString(CryptoJS.enc.Hex);
         },
 
         /**
@@ -363,7 +380,7 @@ TinCan client library
         /**
         @method getContentTypeFromHeader
         @static
-        @param {String} Content-Type header value
+        @param {String} header Content-Type header value
         @return {String} Primary value from Content-Type
         */
         getContentTypeFromHeader: function (header) {
@@ -373,11 +390,33 @@ TinCan client library
         /**
         @method isApplicationJSON
         @static
-        @param {String} Content-Type header value
+        @param {String} header Content-Type header value
         @return {Boolean} whether "application/json" was matched
         */
         isApplicationJSON: function (header) {
             return TinCan.Utils.getContentTypeFromHeader(header).toLowerCase().indexOf("application/json") === 0;
+        },
+
+        /**
+        @method stringToArrayBuffer
+        @static
+        @param {String} content String of content to convert to an ArrayBuffer
+        @param {String} [encoding] Encoding to use for conversion
+        @return {ArrayBuffer} Converted content
+        */
+        stringToArrayBuffer: function () {
+            TinCan.prototype.log("stringToArrayBuffer not overloaded - no environment loaded?");
+        },
+
+        /**
+        @method stringFromArrayBuffer
+        @static
+        @param {ArrayBuffer} content ArrayBuffer of content to convert to a String
+        @param {String} [encoding] Encoding to use for conversion
+        @return {String} Converted content
+        */
+        stringFromArrayBuffer: function () {
+            TinCan.prototype.log("stringFromArrayBuffer not overloaded - no environment loaded?");
         }
     };
 }());

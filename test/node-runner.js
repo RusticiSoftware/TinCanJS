@@ -30,7 +30,8 @@ else {
         "TinCan.js",
         "TinCan-async.js",
         "LRS.js",
-        "About.js"
+        "About.js",
+        "Attachment.js"
     ];
 }
 
@@ -79,6 +80,9 @@ testRunner.run(
     },
     function (err, report) {
         if (err) {
+            if (err instanceof Error) {
+                throw err;
+            }
             throw new Error(err);
         }
         if (report.failed > 0) {

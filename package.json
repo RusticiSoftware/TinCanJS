@@ -10,7 +10,10 @@
     "doc": "doc"
   },
   "dependencies": {
-    "xhr2": "0.0.7"
+    "xhr2": "0.0.7",
+    "js-polyfills": "0.1.22",
+    "text-encoding": "0.6.0",
+    "arraybuffer-slice": "0.1.2"
   },
   "author": "Rustici Software <support@tincanapi.com>",
   "contributors": [

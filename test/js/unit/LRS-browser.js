@@ -99,12 +99,12 @@
                     {
                         agent: new TinCan.Agent(stCfg.actor),
                         activity: {
-                            id: "testId"
+                            id: stCfg.target.id
                         },
                         callback: function (err, xhr) {
                             start();
-                            ok(err !== null, "saveState request was denied");
-                            ok(xhr === null, "saveState request did not return an XHR as no request was made");
+                            ok(err === null, "saveState request was successful");
+                            ok((xhr.status === 204 || (typeof XDomainRequest !== "undefined" && (xhr.status === 1223 || typeof xhr.status === "undefined"))), "xhr received 204");
                         }
                     }
                 );
@@ -221,9 +221,6 @@
 
     // Integration testing: test common LRS functionality with an LRS
     // configuration that will trigger an IE Mode conversion automatically
-    // - saveStatement is expected to work as this library supports application/json for post requests
-    // - saveState is expected to fail as application/octet-stream is unsupported
-    // these semantics may change as other content types become supported
     for (i = 0; i < versions.length; i += 1) {
         if (TinCanTestCfg.recordStores[versions[i]]) {
             lrs = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);

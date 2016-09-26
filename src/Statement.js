@@ -35,6 +35,7 @@ TinCan client library
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
+        @param {TinCan.Attachment} [cfg.attachments] Statement Attachments
         @param {String} [cfg.timestamp] ISO8601 Date/time value
         @param {String} [cfg.stored] ISO8601 Date/time value
         @param {String} [cfg.version] Version of the statement (post 0.95)
@@ -115,6 +116,12 @@ TinCan client library
         @type TinCan.Agent|null
         */
         this.authority = null;
+
+        /**
+        @property attachments
+        @type Array of TinCan.Attachment
+        */
+        this.attachments = null;
 
         /**
         @property version
@@ -278,6 +285,17 @@ TinCan client library
                     this.context = new TinCan.Context (cfg.context);
                 }
             }
+            if (cfg.hasOwnProperty("attachments") && cfg.attachments !== null) {
+                this.attachments = [];
+                for (i = 0; i < cfg.attachments.length; i += 1) {
+                    if (! (cfg.attachments[i] instanceof TinCan.Attachment)) {
+                        this.attachments.push(new TinCan.Attachment (cfg.attachments[i]));
+                    }
+                    else {
+                        this.attachments.push(cfg.attachments[i]);
+                    }
+                }
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -347,6 +365,19 @@ TinCan client library
             if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
+            if (this.attachments !== null) {
+                if (! (version === "0.9" || version === "0.95")) {
+                    result.attachments = [];
+                    for (i = 0; i < this.attachments.length; i += 1) {
+                        if (this.attachments[i] instanceof TinCan.Attachment) {
+                            result.attachments.push(this.attachments[i].asVersion(version));
+                        }
+                        else {
+                            result.attachments.push(new TinCan.Attachment(this.attachments[i]).asVersion(version));
+                        }
+                    }
+                }
+            }
 
             return result;
         },
@@ -364,6 +395,28 @@ TinCan client library
             if (this.timestamp === null) {
                 this.timestamp = TinCan.Utils.getISODateString(new Date());
             }
+        },
+
+        /**
+        Checks if the Statement has at least one attachment with content
+
+        @method hasAttachmentsWithContent
+        */
+        hasAttachmentWithContent: function () {
+            this.log("hasAttachmentWithContent");
+            var i;
+
+            if (this.attachments === null) {
+                return false;
+            }
+
+            for (i = 0; i < this.attachments.length; i += 1) {
+                if (this.attachments[i].content !== null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     };
 

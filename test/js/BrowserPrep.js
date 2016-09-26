@@ -53,4 +53,32 @@ var TinCanTest,
 
         ok(false, desc + " (unrecognized request environment)");
     };
+
+    TinCanTest.loadBinaryFileContents = function (callback) {
+        var request = new XMLHttpRequest();
+        request.open("GET", "files/image.jpg", true);
+        request.responseType = "arraybuffer";
+
+        request.onload = function (e) {
+            if (request.status !== 200) {
+                throw "Failed to retrieve binary file contents (" + request.status + ")";
+            }
+            fileContents = request.response;
+            callback.call(null, fileContents);
+        };
+
+        request.send();
+    };
+
+    TinCanTest.testAttachments = true;
+
+    //
+    // can't support attachments with content in browsers that don't support
+    // an XHR2 implementation, essentially IE < 10, so set a flag to skip
+    // testing related functionality
+    //
+    if (! ("withCredentials" in new XMLHttpRequest())) {
+        TinCanTest.testAttachments = false;
+        alert("Not testing attachments with content");
+    }
 }());

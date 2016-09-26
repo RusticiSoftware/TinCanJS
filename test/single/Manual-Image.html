@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+    Copyright 2016 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<html>
+<head>
+    <title>TinCanJS Tests (Image)</title>
+    <script type="text/javascript" src="../../build/tincan.js"></script>
+</head>
+<body>
+    <h1>Image Test</h1>
+    <p>On load you should see an image.</p>
+    <p>
+        <img id="testImage">
+    </p>
+
+    <script>
+        var module = {};
+    </script>
+    <script src="../config.js"></script>
+    <script>
+        var request = new XMLHttpRequest();
+        request.open("GET", "../files/image.jpg", true);
+
+        // new browsers (XMLHttpRequest2-compliant)
+        if ("responseType" in request) {
+            request.responseType = "arraybuffer";
+        }
+        // old browsers (XMLHttpRequest-compliant)
+        else if ("overrideMimeType" in request) {
+            request.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+        // IE9 (Microsoft.XMLHTTP-compliant)
+        else {
+            request.setRequestHeader("Accept-Charset", "x-user-defined");
+        }
+
+        request.onload = function (e) {
+            if (! ("response" in request)) {
+                request.response = new ArrayBuffer(
+                    new VBArray(request.responseBody).toArray()
+                );
+            }
+
+            var lrs = new TinCan.LRS(TinCanTestCfg.recordStores["1.0.0"]),
+                st = new TinCan.Statement(
+                    {
+                        actor: {
+                            mbox: "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com"
+                        },
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/experienced"
+                        },
+                        target: {
+                            id: "http://tincanapi.com/TinCanJS/Test/TinCan.Image"
+                        },
+                        attachments: [
+                            {
+                                display: {
+                                    "en": "Image Attachment"
+                                },
+                                usageType: "http://id.tincanapi.com/attachment/supporting_media",
+                                contentType: "image/jpeg",
+                                content: request.response
+                            }
+                        ]
+                    }
+                );
+
+            lrs.saveStatement(
+                st,
+                {
+                    callback: function (err, xhr) {
+                        if (err !== null) {
+                            throw err;
+                        }
+                        lrs.retrieveStatement(
+                            st.id,
+                            {
+                                params: {
+                                    attachments: true
+                                },
+                                callback: function (err, result) {
+                                    if (err !== null) {
+                                        throw err;
+                                    }
+                                    var blob = new Blob(
+                                            [ result.attachments[0].content ],
+                                            { type: "image/jpeg" }
+                                        ),
+                                        reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        var img = document.getElementById("testImage");
+
+                                        img.src = e.target.result;
+                                    };
+                                    reader.readAsDataURL(blob);
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        };
+
+        request.send();
+    </script>
+</body>
+</html>

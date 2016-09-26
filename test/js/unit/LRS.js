@@ -189,6 +189,40 @@
 
     QUnit.module("LRS method calls");
 
+    test(
+        "_getBoundary",
+        function () {
+            var re = /[a-f0-9]{8}[a-f0-9]{4}4[a-f0-9]{3}[89ab][a-f0-9]{3}[a-f0-9]{12}/,
+                i,
+                val,
+                list = [],
+                seen = {},
+                noDupe = true,
+                lrs;
+
+            for (i = 0; i < versions.length; i += 1) {
+                if (typeof TinCanTestCfg.recordStores[versions[i]] !== "undefined") {
+                    lrs = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                    break;
+                }
+            }
+
+            for (i = 0; i < 500; i += 1) {
+                val = lrs._getBoundary();
+                ok(re.test(val), "formatted correctly: " + i);
+
+                list.push(val);
+            }
+            for (i = 0; i < 500; i += 1) {
+                if (seen.hasOwnProperty(list[i])) {
+                    noDupe = false;
+                }
+                seen[list[i]] = true;
+            }
+            ok(noDupe, "no duplicates in 500");
+        }
+    );
+
     (function () {
         var versions = TinCan.versions(),
             doAsyncStateTest,
@@ -347,6 +381,8 @@
                                 TinCanTest.assertHttpRequestType(result, "dropState (all) callback result is xhr" + postFix);
 
                                 if (err === null) {
+                                    stop();
+
                                     //
                                     // since we deleted everything this should be empty
                                     //
@@ -359,79 +395,83 @@
                                                 ok(err === null, "retrieveStateIds (empty) callback err is null" + postFix);
                                                 deepEqual(result, [], "retrieveStateIds (empty) callback result is empty array" + postFix);
 
-                                                //
-                                                // now populate a state value and verify we can get a list of one,
-                                                // and get the individual value itself
-                                                //
-                                                lrs.saveState(
-                                                    documents[0].id,
-                                                    documents[0].contents,
-                                                    {
-                                                        agent: agent,
-                                                        activity: activity,
-                                                        contentType: documents[0].contentType,
-                                                        callback: function (err, result) {
-                                                            start();
-                                                            ok(err === null, "saveState (0) callback err is null" + postFix);
-                                                            TinCanTest.assertHttpRequestType(result, "saveState (0) callback result is xhr" + postFix);
+                                                if (err === null) {
+                                                    stop();
 
-                                                            if (err === null) {
-                                                                //
-                                                                // make sure we get back the list with a single value
-                                                                //
-                                                                lrs.retrieveStateIds(
-                                                                    {
-                                                                        agent: agent,
-                                                                        activity: activity,
-                                                                        callback: function (err, result) {
-                                                                            start();
-                                                                            ok(err === null, "retrieveStateIds (1) callback err is null" + postFix);
-                                                                            deepEqual(result, [documents[0].id], "retrieveStateIds (1) callback result array" + postFix);
+                                                    //
+                                                    // now populate a state value and verify we can get a list of one,
+                                                    // and get the individual value itself
+                                                    //
+                                                    lrs.saveState(
+                                                        documents[0].id,
+                                                        documents[0].contents,
+                                                        {
+                                                            agent: agent,
+                                                            activity: activity,
+                                                            contentType: documents[0].contentType,
+                                                            callback: function (err, result) {
+                                                                start();
+                                                                ok(err === null, "saveState (0) callback err is null" + postFix);
+                                                                TinCanTest.assertHttpRequestType(result, "saveState (0) callback result is xhr" + postFix);
 
-                                                                            //
-                                                                            // make sure we can get the state value back
-                                                                            //
-                                                                            lrs.retrieveState(
-                                                                                documents[0].id,
-                                                                                {
-                                                                                    agent: agent,
-                                                                                    activity: activity,
-                                                                                    callback: function (err, result) {
-                                                                                        start();
+                                                                if (err === null) {
+                                                                    stop();
 
-                                                                                        //
-                                                                                        // some LRSs (Cloud in particular our Travis resource) may return capital letters
-                                                                                        // in the hash, so lowercase the received one to improve odds it matches ours
-                                                                                        //
-                                                                                        if (err === null) {
-                                                                                            result.etag = result.etag.toLowerCase();
+                                                                    //
+                                                                    // make sure we get back the list with a single value
+                                                                    //
+                                                                    lrs.retrieveStateIds(
+                                                                        {
+                                                                            agent: agent,
+                                                                            activity: activity,
+                                                                            callback: function (err, result) {
+                                                                                start();
+                                                                                ok(err === null, "retrieveStateIds (1) callback err is null" + postFix);
+                                                                                deepEqual(result, [documents[0].id], "retrieveStateIds (1) callback result array" + postFix);
+
+                                                                                if (err === null) {
+                                                                                    stop();
+
+                                                                                    //
+                                                                                    // make sure we can get the state value back
+                                                                                    //
+                                                                                    lrs.retrieveState(
+                                                                                        documents[0].id,
+                                                                                        {
+                                                                                            agent: agent,
+                                                                                            activity: activity,
+                                                                                            callback: function (err, result) {
+                                                                                                start();
+
+                                                                                                //
+                                                                                                // some LRSs (Cloud in particular our Travis resource) may return capital letters
+                                                                                                // in the hash, so lowercase the received one to improve odds it matches ours
+                                                                                                //
+                                                                                                if (err === null) {
+                                                                                                    result.etag = result.etag.toLowerCase();
+                                                                                                }
+
+                                                                                                ok(err === null, "retrieveState (0) callback err is null" + postFix);
+                                                                                                deepEqual(
+                                                                                                    result,
+                                                                                                    new TinCan.State(documents[0]),
+                                                                                                    "retrieveState (0) callback result is verified" + postFix
+                                                                                                );
+                                                                                            }
                                                                                         }
-
-                                                                                        ok(err === null, "retrieveState (0) callback err is null" + postFix);
-                                                                                        deepEqual(
-                                                                                            result,
-                                                                                            new TinCan.State(documents[0]),
-                                                                                            "retrieveState (0) callback result is verified" + postFix
-                                                                                        );
-
-                                                                                        //stop();
-                                                                                    }
+                                                                                    );
                                                                                 }
-                                                                            );
-                                                                            stop();
+                                                                            }
                                                                         }
-                                                                    }
-                                                                );
+                                                                    );
+                                                                }
                                                             }
-                                                            stop();
                                                         }
-                                                    }
-                                                );
-                                                stop();
+                                                    );
+                                                }
                                             }
                                         }
                                     );
-                                    stop();
                                 }
                             }
                         }
@@ -704,6 +744,17 @@
             asyncTest(
                 "asyncActivityTest: " + v,
                 function () {
+                    // skip check for 0.9 when in XDomainRequest land because at least on
+                    // Rustici LRSs we don't support getting back the Activity from only
+                    // the id passed in, and in IE 8+9 the fakeStatus results in a 400
+                    // instead of a 404 which is what our library uses to trigger setting
+                    // the Activity automatically to pass this check
+                    if (typeof XDomainRequest !== "undefined" && v === "0.9") {
+                        start();
+                        expect(0);
+                        return;
+                    }
+
                     var postFix = " (" + v + ")",
                         lrs = session[v],
                         activity = new TinCan.Activity(
@@ -1094,4 +1145,100 @@
             }
         }
     }());
+
+    if (TinCanTest.testAttachments) {
+        (function () {
+            var versions = TinCan.versions(),
+                stCfg = {
+                    actor: {
+                        mbox: "mailto:tincanjs-test-tincan+" + Date.now() + "@tincanapi.com"
+                    },
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/experienced"
+                    },
+                    target: {
+                        id: "http://tincanapi.com/TinCanJS/Test/TinCan.LRS"
+                    }
+                },
+                fileContents,
+                testBinaryAttachmentRoundTrip = function (lrs) {
+                    asyncTest(
+                        "Binary Attachment - round trip (" + lrs.version + ")",
+                        function () {
+                            var stCfgAtt = JSON.parse(JSON.stringify(stCfg)),
+                                statement;
+
+                            stCfgAtt.target.id = stCfgAtt.target.id + "/binary-attachment-roundtrip/" + lrs.version;
+
+                            stCfgAtt.attachments = [
+                                {
+                                    display: {
+                                        "en-US": "Test Attachment"
+                                    },
+                                    usageType: "http://id.tincanapi.com/attachment/supporting_media",
+                                    contentType: "image/jpeg",
+                                    content: fileContents
+                                }
+                            ];
+
+                            statement = new TinCan.Statement(stCfgAtt);
+
+                            lrs.saveStatement(
+                                statement,
+                                {
+                                    callback: function (err, xhr) {
+                                        start();
+                                        ok(err === null, "statement saved successfully");
+                                        if (err !== null) {
+                                            console.log("save statement failed: " + err);
+                                            console.log(xhr.responseText);
+                                        }
+                                        ok(xhr.status === 204, "xhr received 204");
+                                        stop();
+
+                                        lrs.retrieveStatement(
+                                            statement.id,
+                                            {
+                                                params: {
+                                                    attachments: true
+                                                },
+                                                callback: function (err, result) {
+                                                    start();
+                                                    ok(err === null, "statement retrieved successfully");
+                                                    ok(statement.attachments[0].sha2 === result.attachments[0].sha2, "re-hash matches original");
+                                                }
+                                            }
+                                        );
+                                    }
+                                }
+                            );
+                        }
+                    );
+                };
+
+            QUnit.module(
+                "LRS - Binary Attachments",
+                {
+                    setup: function () {
+                        TinCanTest.loadBinaryFileContents(
+                            function (contents) {
+                                fileContents = contents;
+                                start();
+                            }
+                        );
+                        stop();
+                    }
+                }
+            );
+
+            for (i = 0; i < versions.length; i += 1) {
+                if ((! (versions[i] === "0.9" || versions[i] === "0.95")) && TinCanTestCfg.recordStores[versions[i]]) {
+                    lrs = new TinCan.LRS(TinCanTestCfg.recordStores[versions[i]]);
+                    lrs.allowFail = false;
+
+                    testBinaryAttachmentRoundTrip(lrs);
+                }
+            }
+        }());
+    }
 }());

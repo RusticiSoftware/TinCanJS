@@ -158,6 +158,17 @@ TinCan client library
         },
 
         /**
+        Creates and returns a boundary for separating parts in
+        requests where the statement has an attachment
+
+        @method _getBoundary
+        @private
+        */
+        _getBoundary: function () {
+            return TinCan.Utils.getUUID().replace(/-/g, "");
+        },
+
+        /**
         Method should be overloaded by an environment to do per
         environment specifics such that the LRS can make a call
         to set the version if not provided
@@ -181,6 +192,17 @@ TinCan client library
         },
 
         /**
+        Method should be overloaded by an environment to do per
+        environment specifics for building multipart request data
+
+        @method _getMultipartRequestData
+        @private
+        */
+        _getMultipartRequestData: function () {
+            this.log("_getMultipartRequestData not overloaded - no environment loaded?");
+        },
+
+        /**
         Method is overloaded by the browser environment in order to test converting an
         HTTP request that is greater than a defined length
 
@@ -191,6 +213,30 @@ TinCan client library
             this.log("_IEModeConversion not overloaded - browser environment not loaded.");
         },
 
+        _processGetStatementResult: function (xhr, params) {
+            var boundary,
+                parsedResponse,
+                statement,
+                attachmentMap = {},
+                i;
+
+            if (! params.attachments) {
+                return TinCan.Statement.fromJSON(xhr.responseText);
+            }
+
+            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
+
+            parsedResponse = this._parseMultipart(boundary, xhr.response);
+            statement = JSON.parse(parsedResponse[0].body);
+            for (i = 1; i < parsedResponse.length; i += 1) {
+                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
+            }
+
+            this._assignAttachmentContent([statement], attachmentMap);
+
+            return new TinCan.Statement(statement);
+        },
+
         /**
         Method used to send a request via browser objects to the LRS
 
@@ -199,13 +245,14 @@ TinCan client library
             @param {String} cfg.url URL portion to add to endpoint
             @param {String} [cfg.method] GET, PUT, POST, etc.
             @param {Object} [cfg.params] Parameters to set on the querystring
-            @param {String} [cfg.data] String of body content
+            @param {String|ArrayBuffer} [cfg.data] Body content as a String or ArrayBuffer
             @param {Object} [cfg.headers] Additional headers to set in the request
             @param {Function} [cfg.callback] Function to run at completion
                 @param {String|Null} cfg.callback.err If an error occurred, this parameter will contain the HTTP status code.
                     If the operation succeeded, err will be null.
                 @param {Object} cfg.callback.xhr XHR object
             @param {Boolean} [cfg.ignore404] Whether 404 status codes should be considered an error
+            @param {Boolean} [cfg.expectMultipart] Whether to expect the response to be a multipart response
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
@@ -309,8 +356,14 @@ TinCan client library
         */
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
-            var requestCfg,
-                versionedStatement;
+            var requestCfg = {
+                    url: "statements",
+                    headers: {}
+                },
+                versionedStatement,
+                requestAttachments = [],
+                boundary,
+                i;
 
             cfg = cfg || {};
 
@@ -341,13 +394,48 @@ TinCan client library
                 };
             }
 
-            requestCfg = {
-                url: "statements",
-                data: JSON.stringify(versionedStatement),
-                headers: {
-                    "Content-Type": "application/json"
+            if (versionedStatement.hasOwnProperty("attachments") && stmt.hasAttachmentWithContent()) {
+                boundary = this._getBoundary();
+
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                for (i = 0; i < stmt.attachments.length; i += 1) {
+                    if (stmt.attachments[i].content !== null) {
+                        requestAttachments.push(stmt.attachments[i]);
+                    }
                 }
-            };
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatement, requestAttachments);
+                }
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+            }
+            else {
+                requestCfg.headers["Content-Type"] = "application/json";
+                requestCfg.data = JSON.stringify(versionedStatement);
+            }
             if (stmt.id !== null) {
                 requestCfg.method = "PUT";
                 requestCfg.params = {
@@ -371,6 +459,8 @@ TinCan client library
         @method retrieveStatement
         @param {String} ID of statement to retrieve
         @param {Object} [cfg] Configuration options
+            @param {Object} [cfg.params] Query parameters
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {TinCan.Statement} Statement retrieved
         */
@@ -378,9 +468,11 @@ TinCan client library
             this.log("retrieveStatement");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             requestCfg = {
                 url: "statements",
@@ -389,12 +481,16 @@ TinCan client library
                     statementId: stmtId
                 }
             };
+            if (cfg.params.attachments) {
+                requestCfg.params.attachments = true;
+                requestCfg.expectMultipart = true;
+            }
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -406,7 +502,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -419,6 +515,8 @@ TinCan client library
         @method retrieveVoidedStatement
         @param {String} ID of voided statement to retrieve
         @param {Object} [cfg] Configuration options
+            @param {Object} [cfg.params] Query parameters
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {TinCan.Statement} Statement retrieved
         */
@@ -426,9 +524,11 @@ TinCan client library
             this.log("retrieveVoidedStatement");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             requestCfg = {
                 url: "statements",
@@ -440,6 +540,10 @@ TinCan client library
             }
             else {
                 requestCfg.params.voidedStatementId = stmtId;
+                if (cfg.params.attachments) {
+                    requestCfg.params.attachments = true;
+                    requestCfg.expectMultipart = true;
+                }
             }
 
             if (typeof cfg.callback !== "undefined") {
@@ -447,7 +551,7 @@ TinCan client library
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -459,7 +563,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -477,11 +581,17 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var requestCfg,
+            var requestCfg = {
+                    url: "statements",
+                    method: "POST",
+                    headers: {}
+                },
                 versionedStatement,
                 versionedStatements = [],
-                i
-            ;
+                requestAttachments = [],
+                boundary,
+                i,
+                j;
 
             cfg = cfg || {};
 
@@ -523,17 +633,55 @@ TinCan client library
                         xhr: null
                     };
                 }
+
+                if (stmts[i].hasAttachmentWithContent()) {
+                    for (j = 0; j < stmts[i].attachments.length; j += 1) {
+                        if (stmts[i].attachments[j].content !== null) {
+                            requestAttachments.push(stmts[i].attachments[j]);
+                        }
+                    }
+                }
+
                 versionedStatements.push(versionedStatement);
             }
 
-            requestCfg = {
-                url: "statements",
-                method: "POST",
-                data: JSON.stringify(versionedStatements),
-                headers: {
-                    "Content-Type": "application/json"
+            if (requestAttachments.length !== 0) {
+                boundary = this._getBoundary();
+
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatements, requestAttachments);
                 }
-            };
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+            }
+            else {
+                requestCfg.headers["Content-Type"] = "application/json";
+                requestCfg.data = JSON.stringify(versionedStatements);
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -558,7 +706,6 @@ TinCan client library
                 @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
                 @param {String} [cfg.params.format] One of "ids", "exact", "canonical" (default: "exact")
-                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (defualt: false)
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
 
                 @param {TinCan.Agent} [cfg.params.actor] (Removed in 1.0.0, use 'agent' instead) Agent matches 'actor'
@@ -577,18 +724,23 @@ TinCan client library
             this.log("queryStatements");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
             //
-            // if they misconfigured (possibly do to version mismatches) the
+            // if they misconfigured (possibly due to version mismatches) the
             // query then don't try to send a request at all, rather than give
             // them invalid results
             //
             try {
                 requestCfg = this._queryStatementsRequestCfg(cfg);
+
+                if (cfg.params.attachments) {
+                    requestCfg.expectMultipart = true;
+                }
             }
             catch (ex) {
                 this.log("[error] Query statements failed - " + ex);
@@ -604,10 +756,35 @@ TinCan client library
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        parsedResponse,
+                        boundary,
+                        statements,
+                        attachmentMap = {},
+                        i;
 
                     if (err === null) {
-                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        if (! cfg.params.attachments) {
+                            result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        }
+                        else {
+                            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
+
+                            parsedResponse = lrs._parseMultipart(boundary, xhr.response);
+                            statements = JSON.parse(parsedResponse[0].body);
+                            for (i = 1; i < parsedResponse.length; i += 1) {
+                                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
+                            }
+
+                            lrs._assignAttachmentContent(statements.statements, attachmentMap);
+                            result = new TinCan.StatementsResult({ statements: statements.statements });
+
+                            for (i = 0; i < result.statements.length; i += 1) {
+                                if (! (result.statements[i] instanceof TinCan.Statement)) {
+                                    result.statements[i] = new TinCan.Statement(result.statements[i]);
+                                }
+                            }
+                        }
                     }
 
                     cfg.callback(err, result);
@@ -766,6 +943,159 @@ TinCan client library
         },
 
         /**
+        Assigns attachment content to the correct attachment to create a StatementsResult object that is sent
+        to the callback of queryStatements()
+
+        @method _assignAttachmentContent
+        @private
+        @param {Array} [stmts] Array of TinCan.Statement JSON objects
+        @param {Object} [attachmentMap] Map of the content to place into its attachment
+        @return {Array} Array of TinCan.Statement JSON objects with correctly assigned attachment content
+        */
+        _assignAttachmentContent: function (stmts, attachmentMap) {
+            var i,
+                j;
+
+            for (i = 0; i < stmts.length; i += 1) {
+                if (stmts[i].hasOwnProperty("attachments") && stmts[i].attachments !== null) {
+                    for (j = 0; j < stmts[i].attachments.length; j += 1) {
+                        if (attachmentMap.hasOwnProperty(stmts[i].attachments[j].sha2)) {
+                            stmts[i].attachments[j].content = attachmentMap[stmts[i].attachments[j].sha2];
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+        Parses the different sections of a multipart/mixed response
+
+        @method _parseMultipart
+        @private
+        @param {String} [boundary] Boundary used to mark off the sections of the response
+        @param {ArrayBuffer} [response] Body of the response
+        @return {Array} Array of objects containing the parsed headers and body of each part
+        */
+        _parseMultipart: function (boundary, response) {
+            /* global Uint8Array */
+            var __boundary = "--" + boundary,
+                byteArray,
+                bodyEncodedInString,
+                fullBodyEnd,
+                sliceStart,
+                sliceEnd,
+                headerStart,
+                headerEnd,
+                bodyStart,
+                bodyEnd,
+                headers,
+                body,
+                parts = [],
+                CRLF = 2;
+
+            //
+            // treating the reponse as a stream of bytes and assuming that headers
+            // and related mime boundaries are all US-ASCII (which is a safe assumption)
+            // allows us to treat the whole response as a string when looking for offsets
+            // but then slice on the raw array buffer
+            //
+            byteArray = new Uint8Array(response);
+            bodyEncodedInString = this.__uint8ToString(byteArray);
+
+            fullBodyEnd = bodyEncodedInString.indexOf(__boundary + "--");
+
+            sliceStart = bodyEncodedInString.indexOf(__boundary);
+            while (sliceStart !== -1) {
+                sliceEnd = bodyEncodedInString.indexOf(__boundary, sliceStart + __boundary.length);
+
+                headerStart = sliceStart + __boundary.length + CRLF;
+                headerEnd = bodyEncodedInString.indexOf("\r\n\r\n", sliceStart);
+                bodyStart = headerEnd + CRLF + CRLF;
+                bodyEnd = sliceEnd - 2;
+
+                headers = this._parseHeaders(
+                    this.__uint8ToString(
+                        new Uint8Array( response.slice(headerStart, headerEnd) )
+                    )
+                );
+                body = response.slice(bodyStart, bodyEnd);
+
+                //
+                // we know the first slice is the statement, and we know it is a string in UTF-8 (spec requirement)
+                //
+                if (parts.length === 0) {
+                    body = TinCan.Utils.stringFromArrayBuffer(body);
+                }
+
+                parts.push(
+                    {
+                        headers: headers,
+                        body: body
+                    }
+                );
+
+                if (sliceEnd === fullBodyEnd) {
+                    sliceStart = -1;
+                }
+                else {
+                    sliceStart = sliceEnd;
+                }
+            }
+
+            return parts;
+        },
+
+        //
+        // implemented as a function to avoid 'RangeError: Maximum call stack size exceeded'
+        // when calling .fromCharCode on the full byteArray which results in a too long
+        // argument list for large arrays
+        //
+        __uint8ToString: function (byteArray) {
+            var result = "",
+                len = byteArray.byteLength,
+                i;
+
+            for (i = 0; i < len; i += 1) {
+                result += String.fromCharCode(byteArray[i]);
+            }
+            return result;
+        },
+
+        /**
+        Parses the headers of a multipart/mixed response section
+
+        @method _parseHeaders
+        @private
+        @param {String} [rawHeaders] String containing all the headers
+        @return {Object} Map of the headers
+        */
+        _parseHeaders: function (rawHeaders) {
+            var headers = {},
+                headerList,
+                key,
+                h,
+                i;
+
+            headerList = rawHeaders.split("\n");
+            for (i = 0; i < headerList.length; i += 1) {
+                h = headerList[i].split(":", 2);
+
+                if (h[1] !== null) {
+                    headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+
+                    key = h[0];
+                }
+                else {
+                    if (h[0].substring(0, 1) === "\t") {
+                        headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+                    }
+                }
+            }
+
+            return headers;
+        },
+
+        /**
         Fetch more statements from a previous query, when used from a browser sends to the endpoint using the
         RESTful interface.  Use a callback to make the call asynchronous.
 
@@ -906,20 +1236,25 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
 
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType,
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
 
@@ -950,19 +1285,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.state.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.state.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.state.contentType)) {
@@ -1332,19 +1672,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -1375,19 +1720,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
@@ -1636,19 +1986,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -1679,19 +2034,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {

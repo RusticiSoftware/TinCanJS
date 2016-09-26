@@ -448,16 +448,22 @@ var TinCan;
         Calls retrieveStatement on the first LRS, provide callback to make it asynchronous
 
         @method getStatement
-        @param {String} statement Statement ID to get
+        @param {String} [stmtId] Statement ID to get
         @param {Function} [callback] Callback function to execute on completion
+        @param {Object} [cfg] Configuration data
+            @param {Object} [params] Query parameters
+                @param {Boolean} [attachments] Include attachments in multipart response or don't (defualt: false)
         @return {Array|Result} Array of results, or single result
 
         TODO: make TinCan track statements it has seen in a local cache to be returned easily
         */
-        getStatement: function (stmtId, callback) {
+        getStatement: function (stmtId, callback, cfg) {
             this.log("getStatement");
 
             var lrs;
+
+            cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             if (this.recordStores.length > 0) {
                 //
@@ -471,7 +477,7 @@ var TinCan;
                 //
                 lrs = this.recordStores[0];
 
-                return lrs.retrieveStatement(stmtId, { callback: callback });
+                return lrs.retrieveStatement(stmtId, { callback: callback, params: cfg.params });
             }
 
             this.log("[warning] getStatement: No LRSs added yet (statement not retrieved)");

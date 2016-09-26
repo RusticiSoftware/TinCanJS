@@ -76,6 +76,22 @@
             ok(TinCan.Utils.getSHA1String("test") === "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", "return value");
         }
     );
+
+    if (TinCanTest.testAttachments) {
+        test(
+            "getSHA256String",
+            function () {
+                var str = "test",
+                    strAB = TinCan.Utils.stringToArrayBuffer(str);
+
+                ok(TinCan.Utils.getSHA256String(str) === "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "string content return value");
+
+                if (Object.prototype.toString.call(strAB) === "[object ArrayBuffer]") {
+                    ok(TinCan.Utils.getSHA256String(strAB) === "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "array buffer content return value");
+                }
+            }
+        );
+    }
     test(
         "getBase64String",
         function () {
@@ -85,7 +101,15 @@
     test(
         "parseURL",
         function () {
-            var result;
+            var result,
+                handleUndefined = undefined;
+
+            // check to see if this browser splices undefined normally
+            // cause IE 8 doesn't
+            match = "someString".match(/(.+)(?::([0-9]+))?/);
+            if (match[2] === "") {
+                handleUndefined = "";
+            }
 
             result = TinCan.Utils.parseURL("http://tincanapi.com");
             deepEqual(
@@ -94,7 +118,7 @@
                     protocol: "http:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/",
                     search: "",
                     hash: "",
@@ -111,7 +135,7 @@
                     protocol: "https:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/",
                     search: "",
                     hash: "",
@@ -128,7 +152,7 @@
                     protocol: "http:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/",
                     search: "",
                     hash: "",
@@ -145,7 +169,7 @@
                     protocol: "https:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/",
                     search: "",
                     hash: "",
@@ -162,7 +186,7 @@
                     protocol: "https:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/TinCanJS",
                     search: "",
                     hash: "",
@@ -179,7 +203,7 @@
                     protocol: "https:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/TinCanJS/",
                     search: "",
                     hash: "",
@@ -196,7 +220,7 @@
                     protocol: "http:",
                     host: "localhost",
                     hostname: "localhost",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/",
                     search: "",
                     hash: "",
@@ -213,7 +237,7 @@
                     protocol: "http:",
                     host: "localhost",
                     hostname: "localhost",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/TinCanJS/Test",
                     search: "",
                     hash: "",
@@ -267,7 +291,7 @@
                     protocol: "https:",
                     host: "tincanapi.com",
                     hostname: "tincanapi.com",
-                    port: undefined,
+                    port: handleUndefined,
                     pathname: "/TinCanJS/Test/TinCan.Utils_parseURL/test",
                     search: "?paramA=1&paramB=2&weirdParam=odd?secondQuestionMark",
                     hash: "#withHash",
@@ -381,6 +405,34 @@
             for (i = 0; i < notOkStrings.length; i += 1) {
                 ok(! TinCan.Utils.isApplicationJSON(notOkStrings[i]), "'" + notOkStrings[i] + "' not matched");
             }
+        }
+    );
+
+    test(
+        "stringToArrayBuffer/stringFromArrayBuffer",
+        function () {
+            var str = "string of test content",
+                bytes = [115, 116, 114, 105, 110, 103, 32, 111, 102, 32, 116, 101, 115, 116, 32, 99, 111, 110, 116, 101, 110, 116],
+                ab = new ArrayBuffer(str.length),
+                abView = new Uint8Array(ab);
+
+            if (Object.prototype.toString.call(ab) !== "[object ArrayBuffer]") {
+                expect(0);
+                return;
+            }
+
+            for (i = 0; i < bytes.length; i += 1) {
+                abView[i] = bytes[i];
+            }
+
+            result = TinCan.Utils.stringFromArrayBuffer(ab);
+            equal(Object.prototype.toString.call(result), "[object String]", "string from array buffer: toString type");
+            ok(str === result, "string from array buffer: result");
+
+            result = TinCan.Utils.stringToArrayBuffer(str);
+            equal(Object.prototype.toString.call(result), "[object ArrayBuffer]", "string to array buffer: toString type");
+            equal(result.byteLength, bytes.length, "string to array buffer: byteLength");
+            deepEqual(bytes, Array.prototype.slice.call(new Uint8Array(result)), "string to array buffer: result");
         }
     );
 }());

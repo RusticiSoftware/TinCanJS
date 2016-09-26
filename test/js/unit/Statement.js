@@ -14,7 +14,8 @@
     limitations under the License.
 */
 (function () {
-    var session = null;
+    var session = null,
+        USAGE_TYPE = "http://id.tincanapi.com/attachment/supporting_media";
 
     QUnit.module("Statement Statics");
 
@@ -74,6 +75,9 @@
                 result = new TinCan.Result(),
                 context = new TinCan.Context(),
                 authority = new TinCan.Agent({ mbox: "tincanjs-test-authority@tincanapi.com" }),
+                attachments = [
+                    new TinCan.Attachment({ usageType: USAGE_TYPE })
+                ],
                 set = [
                     {
                         name: "empty",
@@ -91,6 +95,7 @@
                             timestamp: null,
                             stored: null,
                             authority: null,
+                            attachments: null,
                             version: null,
                             degraded: false,
                             voided: null,
@@ -112,6 +117,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
+                            attachments: attachments,
                             version: "1.0.0",
 
                             // deprecated
@@ -128,6 +134,7 @@
                             timestamp: timestamp,
                             stored: timestamp,
                             authority: authority,
+                            attachments: attachments,
                             version: "1.0.0",
                             degraded: false,
                             voided: false,
@@ -142,7 +149,10 @@
                                 result: {},
                                 context: {},
                                 timestamp: timestamp,
-                                authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" }
+                                authority: { objectType: "Agent", mbox: "mailto:tincanjs-test-authority@tincanapi.com" },
+                                attachments: [
+                                    { contentType: null, display: null, length: null, sha2: null, usageType: USAGE_TYPE }
+                                ]
                             },
                             "0.95": {
                                 id: uuid,
@@ -182,7 +192,6 @@
                 row.instanceInitConfig = row.instanceInitConfig || {};
 
                 obj = new TinCan.Statement (row.instanceConfig, row.instanceInitConfig);
-
                 ok(obj instanceof TinCan.Statement, "object is TinCan.Statement (" + row.name + ")");
                 if (typeof row.checkProps !== "undefined") {
                     for (key in row.checkProps) {
@@ -198,6 +207,36 @@
                         deepEqual(callResult, (row.checkAsVersions.hasOwnProperty(versions[v]) ? row.checkAsVersions[versions[v]] : row.checkAsVersions.latest), "object.asVersion() " + versions[v] + " : " + row.name);
                     }
                 }
+            }
+        }
+    );
+
+    test(
+        "hasAttachmentWithContent",
+        function () {
+            var st;
+
+            st = new TinCan.Statement();
+            ok(st.hasAttachmentWithContent() === false, "no attachments");
+
+            st = new TinCan.Statement(
+                {
+                    attachments: [
+                        new TinCan.Attachment({ usageType: USAGE_TYPE })
+                    ]
+                }
+            );
+            ok(st.hasAttachmentWithContent() === false, "attachment without content");
+
+            if (TinCanTest.testAttachments) {
+                st = new TinCan.Statement(
+                    {
+                        attachments: [
+                            new TinCan.Attachment({ content: "some content" })
+                        ]
+                    }
+                );
+                ok(st.hasAttachmentWithContent() === true, "attachment with content");
             }
         }
     );
