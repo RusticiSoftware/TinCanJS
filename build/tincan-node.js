@@ -1,23 +1,41 @@
-"0.41.1";
+"0.50.0";
 /*
-CryptoJS v3.0.2
+CryptoJS v3.1.2
 code.google.com/p/crypto-js
-(c) 2009-2012 by Jeff Mott. All rights reserved.
+(c) 2009-2013 by Jeff Mott. All rights reserved.
 code.google.com/p/crypto-js/wiki/License
 */
-var CryptoJS=CryptoJS||function(i,m){var p={},h=p.lib={},n=h.Base=function(){function a(){}return{extend:function(b){a.prototype=this;var c=new a;b&&c.mixIn(b);c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.$super.extend(this)}}}(),o=h.WordArray=n.extend({init:function(a,b){a=
-this.words=a||[];this.sigBytes=b!=m?b:4*a.length},toString:function(a){return(a||e).stringify(this)},concat:function(a){var b=this.words,c=a.words,d=this.sigBytes,a=a.sigBytes;this.clamp();if(d%4)for(var f=0;f<a;f++)b[d+f>>>2]|=(c[f>>>2]>>>24-8*(f%4)&255)<<24-8*((d+f)%4);else if(65535<c.length)for(f=0;f<a;f+=4)b[d+f>>>2]=c[f>>>2];else b.push.apply(b,c);this.sigBytes+=a;return this},clamp:function(){var a=this.words,b=this.sigBytes;a[b>>>2]&=4294967295<<32-8*(b%4);a.length=i.ceil(b/4)},clone:function(){var a=
-n.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var b=[],c=0;c<a;c+=4)b.push(4294967296*i.random()|0);return o.create(b,a)}}),q=p.enc={},e=q.Hex={stringify:function(a){for(var b=a.words,a=a.sigBytes,c=[],d=0;d<a;d++){var f=b[d>>>2]>>>24-8*(d%4)&255;c.push((f>>>4).toString(16));c.push((f&15).toString(16))}return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d+=2)c[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return o.create(c,b/2)}},g=q.Latin1={stringify:function(a){for(var b=
-a.words,a=a.sigBytes,c=[],d=0;d<a;d++)c.push(String.fromCharCode(b[d>>>2]>>>24-8*(d%4)&255));return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d++)c[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%4);return o.create(c,b)}},j=q.Utf8={stringify:function(a){try{return decodeURIComponent(escape(g.stringify(a)))}catch(b){throw Error("Malformed UTF-8 data");}},parse:function(a){return g.parse(unescape(encodeURIComponent(a)))}},k=h.BufferedBlockAlgorithm=n.extend({reset:function(){this._data=o.create();
-this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=j.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var b=this._data,c=b.words,d=b.sigBytes,f=this.blockSize,e=d/(4*f),e=a?i.ceil(e):i.max((e|0)-this._minBufferSize,0),a=e*f,d=i.min(4*a,d);if(a){for(var g=0;g<a;g+=f)this._doProcessBlock(c,g);g=c.splice(0,a);b.sigBytes-=d}return o.create(g,d)},clone:function(){var a=n.clone.call(this);a._data=this._data.clone();return a},_minBufferSize:0});h.Hasher=k.extend({init:function(){this.reset()},
-reset:function(){k.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);this._doFinalize();return this._hash},clone:function(){var a=k.clone.call(this);a._hash=this._hash.clone();return a},blockSize:16,_createHelper:function(a){return function(b,c){return a.create(c).finalize(b)}},_createHmacHelper:function(a){return function(b,c){return l.HMAC.create(a,c).finalize(b)}}});var l=p.algo={};return p}(Math);
-(function(){var i=CryptoJS,m=i.lib,p=m.WordArray,m=m.Hasher,h=[],n=i.algo.SHA1=m.extend({_doReset:function(){this._hash=p.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(o,i){for(var e=this._hash.words,g=e[0],j=e[1],k=e[2],l=e[3],a=e[4],b=0;80>b;b++){if(16>b)h[b]=o[i+b]|0;else{var c=h[b-3]^h[b-8]^h[b-14]^h[b-16];h[b]=c<<1|c>>>31}c=(g<<5|g>>>27)+a+h[b];c=20>b?c+((j&k|~j&l)+1518500249):40>b?c+((j^k^l)+1859775393):60>b?c+((j&k|j&l|k&l)-1894007588):c+((j^k^l)-
-899497514);a=l;l=k;k=j<<30|j>>>2;j=g;g=c}e[0]=e[0]+g|0;e[1]=e[1]+j|0;e[2]=e[2]+k|0;e[3]=e[3]+l|0;e[4]=e[4]+a|0},_doFinalize:function(){var i=this._data,h=i.words,e=8*this._nDataBytes,g=8*i.sigBytes;h[g>>>5]|=128<<24-g%32;h[(g+64>>>9<<4)+15]=e;i.sigBytes=4*h.length;this._process()}});i.SHA1=m._createHelper(n);i.HmacSHA1=m._createHmacHelper(n)})();
+var CryptoJS=CryptoJS||function(e,m){var p={},j=p.lib={},l=function(){},f=j.Base={extend:function(a){l.prototype=this;var c=new l;a&&c.mixIn(a);c.hasOwnProperty("init")||(c.init=function(){c.$super.init.apply(this,arguments)});c.init.prototype=c;c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.init.prototype.extend(this)}},
+n=j.WordArray=f.extend({init:function(a,c){a=this.words=a||[];this.sigBytes=c!=m?c:4*a.length},toString:function(a){return(a||h).stringify(this)},concat:function(a){var c=this.words,q=a.words,d=this.sigBytes;a=a.sigBytes;this.clamp();if(d%4)for(var b=0;b<a;b++)c[d+b>>>2]|=(q[b>>>2]>>>24-8*(b%4)&255)<<24-8*((d+b)%4);else if(65535<q.length)for(b=0;b<a;b+=4)c[d+b>>>2]=q[b>>>2];else c.push.apply(c,q);this.sigBytes+=a;return this},clamp:function(){var a=this.words,c=this.sigBytes;a[c>>>2]&=4294967295<<
+32-8*(c%4);a.length=e.ceil(c/4)},clone:function(){var a=f.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var c=[],b=0;b<a;b+=4)c.push(4294967296*e.random()|0);return new n.init(c,a)}}),b=p.enc={},h=b.Hex={stringify:function(a){var c=a.words;a=a.sigBytes;for(var b=[],d=0;d<a;d++){var f=c[d>>>2]>>>24-8*(d%4)&255;b.push((f>>>4).toString(16));b.push((f&15).toString(16))}return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d+=2)b[d>>>3]|=parseInt(a.substr(d,
+2),16)<<24-4*(d%8);return new n.init(b,c/2)}},g=b.Latin1={stringify:function(a){var c=a.words;a=a.sigBytes;for(var b=[],d=0;d<a;d++)b.push(String.fromCharCode(c[d>>>2]>>>24-8*(d%4)&255));return b.join("")},parse:function(a){for(var c=a.length,b=[],d=0;d<c;d++)b[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%4);return new n.init(b,c)}},r=b.Utf8={stringify:function(a){try{return decodeURIComponent(escape(g.stringify(a)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(a){return g.parse(unescape(encodeURIComponent(a)))}},
+k=j.BufferedBlockAlgorithm=f.extend({reset:function(){this._data=new n.init;this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=r.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var c=this._data,b=c.words,d=c.sigBytes,f=this.blockSize,h=d/(4*f),h=a?e.ceil(h):e.max((h|0)-this._minBufferSize,0);a=h*f;d=e.min(4*a,d);if(a){for(var g=0;g<a;g+=f)this._doProcessBlock(b,g);g=b.splice(0,a);c.sigBytes-=d}return new n.init(g,d)},clone:function(){var a=f.clone.call(this);
+a._data=this._data.clone();return a},_minBufferSize:0});j.Hasher=k.extend({cfg:f.extend(),init:function(a){this.cfg=this.cfg.extend(a);this.reset()},reset:function(){k.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);return this._doFinalize()},blockSize:16,_createHelper:function(a){return function(c,b){return(new a.init(b)).finalize(c)}},_createHmacHelper:function(a){return function(b,f){return(new s.HMAC.init(a,
+f)).finalize(b)}}});var s=p.algo={};return p}(Math);
+(function(){var e=CryptoJS,m=e.lib,p=m.WordArray,j=m.Hasher,l=[],m=e.algo.SHA1=j.extend({_doReset:function(){this._hash=new p.init([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(f,n){for(var b=this._hash.words,h=b[0],g=b[1],e=b[2],k=b[3],j=b[4],a=0;80>a;a++){if(16>a)l[a]=f[n+a]|0;else{var c=l[a-3]^l[a-8]^l[a-14]^l[a-16];l[a]=c<<1|c>>>31}c=(h<<5|h>>>27)+j+l[a];c=20>a?c+((g&e|~g&k)+1518500249):40>a?c+((g^e^k)+1859775393):60>a?c+((g&e|g&k|e&k)-1894007588):c+((g^e^
+k)-899497514);j=k;k=e;e=g<<30|g>>>2;g=h;h=c}b[0]=b[0]+h|0;b[1]=b[1]+g|0;b[2]=b[2]+e|0;b[3]=b[3]+k|0;b[4]=b[4]+j|0},_doFinalize:function(){var f=this._data,e=f.words,b=8*this._nDataBytes,h=8*f.sigBytes;e[h>>>5]|=128<<24-h%32;e[(h+64>>>9<<4)+14]=Math.floor(b/4294967296);e[(h+64>>>9<<4)+15]=b;f.sigBytes=4*e.length;this._process();return this._hash},clone:function(){var e=j.clone.call(this);e._hash=this._hash.clone();return e}});e.SHA1=j._createHelper(m);e.HmacSHA1=j._createHmacHelper(m)})();
 
 /*
-CryptoJS v3.0.2
+CryptoJS v3.1.2
 code.google.com/p/crypto-js
-(c) 2009-2012 by Jeff Mott. All rights reserved.
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+var CryptoJS=CryptoJS||function(h,s){var f={},t=f.lib={},g=function(){},j=t.Base={extend:function(a){g.prototype=this;var c=new g;a&&c.mixIn(a);c.hasOwnProperty("init")||(c.init=function(){c.$super.init.apply(this,arguments)});c.init.prototype=c;c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.init.prototype.extend(this)}},
+q=t.WordArray=j.extend({init:function(a,c){a=this.words=a||[];this.sigBytes=c!=s?c:4*a.length},toString:function(a){return(a||u).stringify(this)},concat:function(a){var c=this.words,d=a.words,b=this.sigBytes;a=a.sigBytes;this.clamp();if(b%4)for(var e=0;e<a;e++)c[b+e>>>2]|=(d[e>>>2]>>>24-8*(e%4)&255)<<24-8*((b+e)%4);else if(65535<d.length)for(e=0;e<a;e+=4)c[b+e>>>2]=d[e>>>2];else c.push.apply(c,d);this.sigBytes+=a;return this},clamp:function(){var a=this.words,c=this.sigBytes;a[c>>>2]&=4294967295<<
+32-8*(c%4);a.length=h.ceil(c/4)},clone:function(){var a=j.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var c=[],d=0;d<a;d+=4)c.push(4294967296*h.random()|0);return new q.init(c,a)}}),v=f.enc={},u=v.Hex={stringify:function(a){var c=a.words;a=a.sigBytes;for(var d=[],b=0;b<a;b++){var e=c[b>>>2]>>>24-8*(b%4)&255;d.push((e>>>4).toString(16));d.push((e&15).toString(16))}return d.join("")},parse:function(a){for(var c=a.length,d=[],b=0;b<c;b+=2)d[b>>>3]|=parseInt(a.substr(b,
+2),16)<<24-4*(b%8);return new q.init(d,c/2)}},k=v.Latin1={stringify:function(a){var c=a.words;a=a.sigBytes;for(var d=[],b=0;b<a;b++)d.push(String.fromCharCode(c[b>>>2]>>>24-8*(b%4)&255));return d.join("")},parse:function(a){for(var c=a.length,d=[],b=0;b<c;b++)d[b>>>2]|=(a.charCodeAt(b)&255)<<24-8*(b%4);return new q.init(d,c)}},l=v.Utf8={stringify:function(a){try{return decodeURIComponent(escape(k.stringify(a)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(a){return k.parse(unescape(encodeURIComponent(a)))}},
+x=t.BufferedBlockAlgorithm=j.extend({reset:function(){this._data=new q.init;this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=l.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var c=this._data,d=c.words,b=c.sigBytes,e=this.blockSize,f=b/(4*e),f=a?h.ceil(f):h.max((f|0)-this._minBufferSize,0);a=f*e;b=h.min(4*a,b);if(a){for(var m=0;m<a;m+=e)this._doProcessBlock(d,m);m=d.splice(0,a);c.sigBytes-=b}return new q.init(m,b)},clone:function(){var a=j.clone.call(this);
+a._data=this._data.clone();return a},_minBufferSize:0});t.Hasher=x.extend({cfg:j.extend(),init:function(a){this.cfg=this.cfg.extend(a);this.reset()},reset:function(){x.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);return this._doFinalize()},blockSize:16,_createHelper:function(a){return function(c,d){return(new a.init(d)).finalize(c)}},_createHmacHelper:function(a){return function(c,d){return(new w.HMAC.init(a,
+d)).finalize(c)}}});var w=f.algo={};return f}(Math);
+(function(h){for(var s=CryptoJS,f=s.lib,t=f.WordArray,g=f.Hasher,f=s.algo,j=[],q=[],v=function(a){return 4294967296*(a-(a|0))|0},u=2,k=0;64>k;){var l;a:{l=u;for(var x=h.sqrt(l),w=2;w<=x;w++)if(!(l%w)){l=!1;break a}l=!0}l&&(8>k&&(j[k]=v(h.pow(u,0.5))),q[k]=v(h.pow(u,1/3)),k++);u++}var a=[],f=f.SHA256=g.extend({_doReset:function(){this._hash=new t.init(j.slice(0))},_doProcessBlock:function(c,d){for(var b=this._hash.words,e=b[0],f=b[1],m=b[2],h=b[3],p=b[4],j=b[5],k=b[6],l=b[7],n=0;64>n;n++){if(16>n)a[n]=
+c[d+n]|0;else{var r=a[n-15],g=a[n-2];a[n]=((r<<25|r>>>7)^(r<<14|r>>>18)^r>>>3)+a[n-7]+((g<<15|g>>>17)^(g<<13|g>>>19)^g>>>10)+a[n-16]}r=l+((p<<26|p>>>6)^(p<<21|p>>>11)^(p<<7|p>>>25))+(p&j^~p&k)+q[n]+a[n];g=((e<<30|e>>>2)^(e<<19|e>>>13)^(e<<10|e>>>22))+(e&f^e&m^f&m);l=k;k=j;j=p;p=h+r|0;h=m;m=f;f=e;e=r+g|0}b[0]=b[0]+e|0;b[1]=b[1]+f|0;b[2]=b[2]+m|0;b[3]=b[3]+h|0;b[4]=b[4]+p|0;b[5]=b[5]+j|0;b[6]=b[6]+k|0;b[7]=b[7]+l|0},_doFinalize:function(){var a=this._data,d=a.words,b=8*this._nDataBytes,e=8*a.sigBytes;
+d[e>>>5]|=128<<24-e%32;d[(e+64>>>9<<4)+14]=h.floor(b/4294967296);d[(e+64>>>9<<4)+15]=b;a.sigBytes=4*d.length;this._process();return this._hash},clone:function(){var a=g.clone.call(this);a._hash=this._hash.clone();return a}});s.SHA256=g._createHelper(f);s.HmacSHA256=g._createHmacHelper(f)})(Math);
+
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
 code.google.com/p/crypto-js/wiki/License
 */
 (function () {
@@ -92,9 +110,6 @@ code.google.com/p/crypto-js/wiki/License
          *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
          */
         parse: function (base64Str) {
-            // Ignore whitespaces
-            base64Str = base64Str.replace(/\s/g, '');
-
             // Shortcuts
             var base64StrLength = base64Str.length;
             var map = this._map;
@@ -113,9 +128,9 @@ code.google.com/p/crypto-js/wiki/License
             var nBytes = 0;
             for (var i = 0; i < base64StrLength; i++) {
                 if (i % 4) {
-                    var bitsHigh = map.indexOf(base64Str.charAt(i - 1)) << ((i % 4) * 2);
-                    var bitsLow  = map.indexOf(base64Str.charAt(i)) >>> (6 - (i % 4) * 2);
-                    words[nBytes >>> 2] |= (bitsHigh | bitsLow) << (24 - (nBytes % 4) * 8);
+                    var bits1 = map.indexOf(base64Str.charAt(i - 1)) << ((i % 4) * 2);
+                    var bits2 = map.indexOf(base64Str.charAt(i)) >>> (6 - (i % 4) * 2);
+                    words[nBytes >>> 2] |= (bits1 | bits2) << (24 - (nBytes % 4) * 8);
                     nBytes++;
                 }
             }
@@ -125,6 +140,69 @@ code.google.com/p/crypto-js/wiki/License
 
         _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
     };
+}());
+
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+(function () {
+    // Check if typed arrays are supported
+    if (typeof ArrayBuffer != 'function') {
+        return;
+    }
+
+    // Shortcuts
+    var C = CryptoJS;
+    var C_lib = C.lib;
+    var WordArray = C_lib.WordArray;
+
+    // Reference original init
+    var superInit = WordArray.init;
+
+    // Augment WordArray.init to handle typed arrays
+    var subInit = WordArray.init = function (typedArray) {
+        // Convert buffers to uint8
+        if (typedArray instanceof ArrayBuffer) {
+            typedArray = new Uint8Array(typedArray);
+        }
+
+        // Convert other array views to uint8
+        if (
+            typedArray instanceof Int8Array ||
+            typedArray instanceof Uint8ClampedArray ||
+            typedArray instanceof Int16Array ||
+            typedArray instanceof Uint16Array ||
+            typedArray instanceof Int32Array ||
+            typedArray instanceof Uint32Array ||
+            typedArray instanceof Float32Array ||
+            typedArray instanceof Float64Array
+        ) {
+            typedArray = new Uint8Array(typedArray.buffer, typedArray.byteOffset, typedArray.byteLength);
+        }
+
+        // Handle Uint8Array
+        if (typedArray instanceof Uint8Array) {
+            // Shortcut
+            var typedArrayByteLength = typedArray.byteLength;
+
+            // Extract bytes
+            var words = [];
+            for (var i = 0; i < typedArrayByteLength; i++) {
+                words[i >>> 2] |= typedArray[i] << (24 - (i % 4) * 8);
+            }
+
+            // Initialize this word array
+            superInit.call(this, words, typedArrayByteLength);
+        } else {
+            // Else call normal init
+            superInit.apply(this, arguments);
+        }
+    };
+
+    subInit.prototype = WordArray;
 }());
 
 /*!
@@ -577,16 +655,22 @@ var TinCan;
         Calls retrieveStatement on the first LRS, provide callback to make it asynchronous
 
         @method getStatement
-        @param {String} statement Statement ID to get
+        @param {String} [stmtId] Statement ID to get
         @param {Function} [callback] Callback function to execute on completion
+        @param {Object} [cfg] Configuration data
+            @param {Object} [params] Query parameters
+                @param {Boolean} [attachments] Include attachments in multipart response or don't (defualt: false)
         @return {Array|Result} Array of results, or single result
 
         TODO: make TinCan track statements it has seen in a local cache to be returned easily
         */
-        getStatement: function (stmtId, callback) {
+        getStatement: function (stmtId, callback, cfg) {
             this.log("getStatement");
 
             var lrs;
+
+            cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             if (this.recordStores.length > 0) {
                 //
@@ -600,7 +684,7 @@ var TinCan;
                 //
                 lrs = this.recordStores[0];
 
-                return lrs.retrieveStatement(stmtId, { callback: callback });
+                return lrs.retrieveStatement(stmtId, { callback: callback, params: cfg.params });
             }
 
             this.log("[warning] getStatement: No LRSs added yet (statement not retrieved)");
@@ -1428,6 +1512,8 @@ TinCan client library
     @class TinCan.Utils
     */
     TinCan.Utils = {
+        defaultEncoding: "utf8",
+
         /**
         Generates a UUIDv4 compliant string that should be reasonably unique
 
@@ -1591,6 +1677,21 @@ TinCan client library
             /*global CryptoJS*/
 
             return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
+        },
+
+        /**
+        @method getSHA256String
+        @static
+        @param {ArrayBuffer|String} content Content to hash
+        @return {String} SHA256 for contents
+        */
+        getSHA256String: function (content) {
+            /*global CryptoJS*/
+
+            if (Object.prototype.toString.call(content) === "[object ArrayBuffer]") {
+                content = CryptoJS.lib.WordArray.create(content);
+            }
+            return CryptoJS.SHA256(content).toString(CryptoJS.enc.Hex);
         },
 
         /**
@@ -1764,7 +1865,7 @@ TinCan client library
         /**
         @method getContentTypeFromHeader
         @static
-        @param {String} Content-Type header value
+        @param {String} header Content-Type header value
         @return {String} Primary value from Content-Type
         */
         getContentTypeFromHeader: function (header) {
@@ -1774,11 +1875,33 @@ TinCan client library
         /**
         @method isApplicationJSON
         @static
-        @param {String} Content-Type header value
+        @param {String} header Content-Type header value
         @return {Boolean} whether "application/json" was matched
         */
         isApplicationJSON: function (header) {
             return TinCan.Utils.getContentTypeFromHeader(header).toLowerCase().indexOf("application/json") === 0;
+        },
+
+        /**
+        @method stringToArrayBuffer
+        @static
+        @param {String} content String of content to convert to an ArrayBuffer
+        @param {String} [encoding] Encoding to use for conversion
+        @return {ArrayBuffer} Converted content
+        */
+        stringToArrayBuffer: function () {
+            TinCan.prototype.log("stringToArrayBuffer not overloaded - no environment loaded?");
+        },
+
+        /**
+        @method stringFromArrayBuffer
+        @static
+        @param {ArrayBuffer} content ArrayBuffer of content to convert to a String
+        @param {String} [encoding] Encoding to use for conversion
+        @return {String} Converted content
+        */
+        stringFromArrayBuffer: function () {
+            TinCan.prototype.log("stringFromArrayBuffer not overloaded - no environment loaded?");
         }
     };
 }());
@@ -1943,6 +2066,17 @@ TinCan client library
         },
 
         /**
+        Creates and returns a boundary for separating parts in
+        requests where the statement has an attachment
+
+        @method _getBoundary
+        @private
+        */
+        _getBoundary: function () {
+            return TinCan.Utils.getUUID().replace(/-/g, "");
+        },
+
+        /**
         Method should be overloaded by an environment to do per
         environment specifics such that the LRS can make a call
         to set the version if not provided
@@ -1966,6 +2100,17 @@ TinCan client library
         },
 
         /**
+        Method should be overloaded by an environment to do per
+        environment specifics for building multipart request data
+
+        @method _getMultipartRequestData
+        @private
+        */
+        _getMultipartRequestData: function () {
+            this.log("_getMultipartRequestData not overloaded - no environment loaded?");
+        },
+
+        /**
         Method is overloaded by the browser environment in order to test converting an
         HTTP request that is greater than a defined length
 
@@ -1976,6 +2121,30 @@ TinCan client library
             this.log("_IEModeConversion not overloaded - browser environment not loaded.");
         },
 
+        _processGetStatementResult: function (xhr, params) {
+            var boundary,
+                parsedResponse,
+                statement,
+                attachmentMap = {},
+                i;
+
+            if (! params.attachments) {
+                return TinCan.Statement.fromJSON(xhr.responseText);
+            }
+
+            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
+
+            parsedResponse = this._parseMultipart(boundary, xhr.response);
+            statement = JSON.parse(parsedResponse[0].body);
+            for (i = 1; i < parsedResponse.length; i += 1) {
+                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
+            }
+
+            this._assignAttachmentContent([statement], attachmentMap);
+
+            return new TinCan.Statement(statement);
+        },
+
         /**
         Method used to send a request via browser objects to the LRS
 
@@ -1984,13 +2153,14 @@ TinCan client library
             @param {String} cfg.url URL portion to add to endpoint
             @param {String} [cfg.method] GET, PUT, POST, etc.
             @param {Object} [cfg.params] Parameters to set on the querystring
-            @param {String} [cfg.data] String of body content
+            @param {String|ArrayBuffer} [cfg.data] Body content as a String or ArrayBuffer
             @param {Object} [cfg.headers] Additional headers to set in the request
             @param {Function} [cfg.callback] Function to run at completion
                 @param {String|Null} cfg.callback.err If an error occurred, this parameter will contain the HTTP status code.
                     If the operation succeeded, err will be null.
                 @param {Object} cfg.callback.xhr XHR object
             @param {Boolean} [cfg.ignore404] Whether 404 status codes should be considered an error
+            @param {Boolean} [cfg.expectMultipart] Whether to expect the response to be a multipart response
         @return {Object} XHR if called in a synchronous way (in other words no callback)
         */
         sendRequest: function (cfg) {
@@ -2094,8 +2264,14 @@ TinCan client library
         */
         saveStatement: function (stmt, cfg) {
             this.log("saveStatement");
-            var requestCfg,
-                versionedStatement;
+            var requestCfg = {
+                    url: "statements",
+                    headers: {}
+                },
+                versionedStatement,
+                requestAttachments = [],
+                boundary,
+                i;
 
             cfg = cfg || {};
 
@@ -2126,13 +2302,48 @@ TinCan client library
                 };
             }
 
-            requestCfg = {
-                url: "statements",
-                data: JSON.stringify(versionedStatement),
-                headers: {
-                    "Content-Type": "application/json"
+            if (versionedStatement.hasOwnProperty("attachments") && stmt.hasAttachmentWithContent()) {
+                boundary = this._getBoundary();
+
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                for (i = 0; i < stmt.attachments.length; i += 1) {
+                    if (stmt.attachments[i].content !== null) {
+                        requestAttachments.push(stmt.attachments[i]);
+                    }
                 }
-            };
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatement, requestAttachments);
+                }
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+            }
+            else {
+                requestCfg.headers["Content-Type"] = "application/json";
+                requestCfg.data = JSON.stringify(versionedStatement);
+            }
             if (stmt.id !== null) {
                 requestCfg.method = "PUT";
                 requestCfg.params = {
@@ -2156,6 +2367,8 @@ TinCan client library
         @method retrieveStatement
         @param {String} ID of statement to retrieve
         @param {Object} [cfg] Configuration options
+            @param {Object} [cfg.params] Query parameters
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {TinCan.Statement} Statement retrieved
         */
@@ -2163,9 +2376,11 @@ TinCan client library
             this.log("retrieveStatement");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             requestCfg = {
                 url: "statements",
@@ -2174,12 +2389,16 @@ TinCan client library
                     statementId: stmtId
                 }
             };
+            if (cfg.params.attachments) {
+                requestCfg.params.attachments = true;
+                requestCfg.expectMultipart = true;
+            }
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -2191,7 +2410,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -2204,6 +2423,8 @@ TinCan client library
         @method retrieveVoidedStatement
         @param {String} ID of voided statement to retrieve
         @param {Object} [cfg] Configuration options
+            @param {Object} [cfg.params] Query parameters
+                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (default: false)
             @param {Function} [cfg.callback] Callback to execute on completion
         @return {TinCan.Statement} Statement retrieved
         */
@@ -2211,9 +2432,11 @@ TinCan client library
             this.log("retrieveVoidedStatement");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
+            cfg.params = cfg.params || {};
 
             requestCfg = {
                 url: "statements",
@@ -2225,6 +2448,10 @@ TinCan client library
             }
             else {
                 requestCfg.params.voidedStatementId = stmtId;
+                if (cfg.params.attachments) {
+                    requestCfg.params.attachments = true;
+                    requestCfg.expectMultipart = true;
+                }
             }
 
             if (typeof cfg.callback !== "undefined") {
@@ -2232,7 +2459,7 @@ TinCan client library
                     var result = xhr;
 
                     if (err === null) {
-                        result = TinCan.Statement.fromJSON(xhr.responseText);
+                        result = lrs._processGetStatementResult(xhr, cfg.params);
                     }
 
                     cfg.callback(err, result);
@@ -2244,7 +2471,7 @@ TinCan client library
             if (! callbackWrapper) {
                 requestResult.statement = null;
                 if (requestResult.err === null) {
-                    requestResult.statement = TinCan.Statement.fromJSON(requestResult.xhr.responseText);
+                    requestResult.statement = lrs._processGetStatementResult(requestResult.xhr, cfg.params);
                 }
             }
 
@@ -2262,11 +2489,17 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var requestCfg,
+            var requestCfg = {
+                    url: "statements",
+                    method: "POST",
+                    headers: {}
+                },
                 versionedStatement,
                 versionedStatements = [],
-                i
-            ;
+                requestAttachments = [],
+                boundary,
+                i,
+                j;
 
             cfg = cfg || {};
 
@@ -2308,17 +2541,55 @@ TinCan client library
                         xhr: null
                     };
                 }
+
+                if (stmts[i].hasAttachmentWithContent()) {
+                    for (j = 0; j < stmts[i].attachments.length; j += 1) {
+                        if (stmts[i].attachments[j].content !== null) {
+                            requestAttachments.push(stmts[i].attachments[j]);
+                        }
+                    }
+                }
+
                 versionedStatements.push(versionedStatement);
             }
 
-            requestCfg = {
-                url: "statements",
-                method: "POST",
-                data: JSON.stringify(versionedStatements),
-                headers: {
-                    "Content-Type": "application/json"
+            if (requestAttachments.length !== 0) {
+                boundary = this._getBoundary();
+
+                requestCfg.headers["Content-Type"] = "multipart/mixed; boundary=" + boundary;
+
+                try {
+                    requestCfg.data = this._getMultipartRequestData(boundary, versionedStatements, requestAttachments);
                 }
-            };
+                catch (ex) {
+                    if (this.allowFail) {
+                        this.log("[warning] multipart request data could not be created (attachments probably not supported): " + ex);
+                        if (typeof cfg.callback !== "undefined") {
+                            cfg.callback(null, null);
+                            return;
+                        }
+                        return {
+                            err: null,
+                            xhr: null
+                        };
+                    }
+
+                    this.log("[error] multipart request data could not be created (attachments probably not supported): " + ex);
+                    if (typeof cfg.callback !== "undefined") {
+                        cfg.callback(ex, null);
+                        return;
+                    }
+                    return {
+                        err: ex,
+                        xhr: null
+                    };
+                }
+            }
+            else {
+                requestCfg.headers["Content-Type"] = "application/json";
+                requestCfg.data = JSON.stringify(versionedStatements);
+            }
+
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
@@ -2334,8 +2605,8 @@ TinCan client library
         @param {Object} [cfg] Configuration used to query
             @param {Object} [cfg.params] Query parameters
                 @param {TinCan.Agent|TinCan.Group} [cfg.params.agent] Agent matches 'actor' or 'object'
-                @param {TinCan.Verb} [cfg.params.verb] Verb to query on
-                @param {TinCan.Activity} [cfg.params.activity] Activity to query on
+                @param {TinCan.Verb|String} [cfg.params.verb] Verb (or verb ID) to query on
+                @param {TinCan.Activity|String} [cfg.params.activity] Activity (or activity ID) to query on
                 @param {String} [cfg.params.registration] Registration UUID
                 @param {Boolean} [cfg.params.related_activities] Match related activities
                 @param {Boolean} [cfg.params.related_agents] Match related agents
@@ -2343,7 +2614,6 @@ TinCan client library
                 @param {String} [cfg.params.until] Match statements stored at or before specified timestamp
                 @param {Integer} [cfg.params.limit] Number of results to retrieve
                 @param {String} [cfg.params.format] One of "ids", "exact", "canonical" (default: "exact")
-                @param {Boolean} [cfg.params.attachments] Include attachments in multipart response or don't (defualt: false)
                 @param {Boolean} [cfg.params.ascending] Return results in ascending order of stored time
 
                 @param {TinCan.Agent} [cfg.params.actor] (Removed in 1.0.0, use 'agent' instead) Agent matches 'actor'
@@ -2362,18 +2632,23 @@ TinCan client library
             this.log("queryStatements");
             var requestCfg,
                 requestResult,
-                callbackWrapper;
+                callbackWrapper,
+                lrs = this;
 
             cfg = cfg || {};
             cfg.params = cfg.params || {};
 
             //
-            // if they misconfigured (possibly do to version mismatches) the
+            // if they misconfigured (possibly due to version mismatches) the
             // query then don't try to send a request at all, rather than give
             // them invalid results
             //
             try {
                 requestCfg = this._queryStatementsRequestCfg(cfg);
+
+                if (cfg.params.attachments) {
+                    requestCfg.expectMultipart = true;
+                }
             }
             catch (ex) {
                 this.log("[error] Query statements failed - " + ex);
@@ -2389,10 +2664,35 @@ TinCan client library
 
             if (typeof cfg.callback !== "undefined") {
                 callbackWrapper = function (err, xhr) {
-                    var result = xhr;
+                    var result = xhr,
+                        parsedResponse,
+                        boundary,
+                        statements,
+                        attachmentMap = {},
+                        i;
 
                     if (err === null) {
-                        result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        if (! cfg.params.attachments) {
+                            result = TinCan.StatementsResult.fromJSON(xhr.responseText);
+                        }
+                        else {
+                            boundary = xhr.getResponseHeader("Content-Type").split("boundary=")[1];
+
+                            parsedResponse = lrs._parseMultipart(boundary, xhr.response);
+                            statements = JSON.parse(parsedResponse[0].body);
+                            for (i = 1; i < parsedResponse.length; i += 1) {
+                                attachmentMap[parsedResponse[i].headers["X-Experience-API-Hash"]] = parsedResponse[i].body;
+                            }
+
+                            lrs._assignAttachmentContent(statements.statements, attachmentMap);
+                            result = new TinCan.StatementsResult({ statements: statements.statements });
+
+                            for (i = 0; i < result.statements.length; i += 1) {
+                                if (! (result.statements[i] instanceof TinCan.Statement)) {
+                                    result.statements[i] = new TinCan.Statement(result.statements[i]);
+                                }
+                            }
+                        }
                     }
 
                     cfg.callback(err, result);
@@ -2532,7 +2832,12 @@ TinCan client library
 
             for (i = 0; i < idProps.length; i += 1) {
                 if (typeof cfg.params[idProps[i]] !== "undefined") {
-                    params[idProps[i]] = cfg.params[idProps[i]].id;
+                    if (typeof cfg.params[idProps[i]].id === "undefined") {
+                        params[idProps[i]] = cfg.params[idProps[i]];
+                    }
+                    else {
+                        params[idProps[i]] = cfg.params[idProps[i]].id;
+                    }
                 }
             }
 
@@ -2543,6 +2848,159 @@ TinCan client library
             }
 
             return returnCfg;
+        },
+
+        /**
+        Assigns attachment content to the correct attachment to create a StatementsResult object that is sent
+        to the callback of queryStatements()
+
+        @method _assignAttachmentContent
+        @private
+        @param {Array} [stmts] Array of TinCan.Statement JSON objects
+        @param {Object} [attachmentMap] Map of the content to place into its attachment
+        @return {Array} Array of TinCan.Statement JSON objects with correctly assigned attachment content
+        */
+        _assignAttachmentContent: function (stmts, attachmentMap) {
+            var i,
+                j;
+
+            for (i = 0; i < stmts.length; i += 1) {
+                if (stmts[i].hasOwnProperty("attachments") && stmts[i].attachments !== null) {
+                    for (j = 0; j < stmts[i].attachments.length; j += 1) {
+                        if (attachmentMap.hasOwnProperty(stmts[i].attachments[j].sha2)) {
+                            stmts[i].attachments[j].content = attachmentMap[stmts[i].attachments[j].sha2];
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+        Parses the different sections of a multipart/mixed response
+
+        @method _parseMultipart
+        @private
+        @param {String} [boundary] Boundary used to mark off the sections of the response
+        @param {ArrayBuffer} [response] Body of the response
+        @return {Array} Array of objects containing the parsed headers and body of each part
+        */
+        _parseMultipart: function (boundary, response) {
+            /* global Uint8Array */
+            var __boundary = "--" + boundary,
+                byteArray,
+                bodyEncodedInString,
+                fullBodyEnd,
+                sliceStart,
+                sliceEnd,
+                headerStart,
+                headerEnd,
+                bodyStart,
+                bodyEnd,
+                headers,
+                body,
+                parts = [],
+                CRLF = 2;
+
+            //
+            // treating the reponse as a stream of bytes and assuming that headers
+            // and related mime boundaries are all US-ASCII (which is a safe assumption)
+            // allows us to treat the whole response as a string when looking for offsets
+            // but then slice on the raw array buffer
+            //
+            byteArray = new Uint8Array(response);
+            bodyEncodedInString = this.__uint8ToString(byteArray);
+
+            fullBodyEnd = bodyEncodedInString.indexOf(__boundary + "--");
+
+            sliceStart = bodyEncodedInString.indexOf(__boundary);
+            while (sliceStart !== -1) {
+                sliceEnd = bodyEncodedInString.indexOf(__boundary, sliceStart + __boundary.length);
+
+                headerStart = sliceStart + __boundary.length + CRLF;
+                headerEnd = bodyEncodedInString.indexOf("\r\n\r\n", sliceStart);
+                bodyStart = headerEnd + CRLF + CRLF;
+                bodyEnd = sliceEnd - 2;
+
+                headers = this._parseHeaders(
+                    this.__uint8ToString(
+                        new Uint8Array( response.slice(headerStart, headerEnd) )
+                    )
+                );
+                body = response.slice(bodyStart, bodyEnd);
+
+                //
+                // we know the first slice is the statement, and we know it is a string in UTF-8 (spec requirement)
+                //
+                if (parts.length === 0) {
+                    body = TinCan.Utils.stringFromArrayBuffer(body);
+                }
+
+                parts.push(
+                    {
+                        headers: headers,
+                        body: body
+                    }
+                );
+
+                if (sliceEnd === fullBodyEnd) {
+                    sliceStart = -1;
+                }
+                else {
+                    sliceStart = sliceEnd;
+                }
+            }
+
+            return parts;
+        },
+
+        //
+        // implemented as a function to avoid 'RangeError: Maximum call stack size exceeded'
+        // when calling .fromCharCode on the full byteArray which results in a too long
+        // argument list for large arrays
+        //
+        __uint8ToString: function (byteArray) {
+            var result = "",
+                len = byteArray.byteLength,
+                i;
+
+            for (i = 0; i < len; i += 1) {
+                result += String.fromCharCode(byteArray[i]);
+            }
+            return result;
+        },
+
+        /**
+        Parses the headers of a multipart/mixed response section
+
+        @method _parseHeaders
+        @private
+        @param {String} [rawHeaders] String containing all the headers
+        @return {Object} Map of the headers
+        */
+        _parseHeaders: function (rawHeaders) {
+            var headers = {},
+                headerList,
+                key,
+                h,
+                i;
+
+            headerList = rawHeaders.split("\n");
+            for (i = 0; i < headerList.length; i += 1) {
+                h = headerList[i].split(":", 2);
+
+                if (h[1] !== null) {
+                    headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+
+                    key = h[0];
+                }
+                else {
+                    if (h[0].substring(0, 1) === "\t") {
+                        headers[h[0]] = h[1].replace(/^\s+|\s+$/g, "");
+                    }
+                }
+            }
+
+            return headers;
         },
 
         /**
@@ -2686,20 +3144,25 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
 
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType,
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
 
@@ -2730,19 +3193,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.state.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.state.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.state.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.state.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.state.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.state.contentType)) {
@@ -3112,19 +3580,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -3155,19 +3628,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
@@ -3416,19 +3894,24 @@ TinCan client library
                             );
                             if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("ETag") !== null && xhr.getResponseHeader("ETag") !== "") {
                                 result.etag = xhr.getResponseHeader("ETag");
-                            } else {
+                            }
+                            else {
                                 //
                                 // either XHR didn't have getResponseHeader (probably cause it is an IE
                                 // XDomainRequest object which doesn't) or not populated by LRS so create
                                 // the hash ourselves
                                 //
-                                result.etag = TinCan.Utils.getSHA1String(xhr.responseText);
+                                // the LRS is responsible for quoting the Etag value so we need to mimic
+                                // that behavior here as well
+                                //
+                                result.etag = "\"" + TinCan.Utils.getSHA1String(xhr.responseText) + "\"";
                             }
                             if (typeof xhr.contentType !== "undefined") {
                                 // most likely an XDomainRequest which has .contentType
                                 // for the ones that it supports
                                 result.contentType = xhr.contentType;
-                            } else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
+                            }
+                            else if (typeof xhr.getResponseHeader !== "undefined" && xhr.getResponseHeader("Content-Type") !== null && xhr.getResponseHeader("Content-Type") !== "") {
                                 result.contentType = xhr.getResponseHeader("Content-Type");
                             }
                             if (TinCan.Utils.isApplicationJSON(result.contentType)) {
@@ -3459,19 +3942,24 @@ TinCan client library
                     );
                     if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("ETag") !== null && requestResult.xhr.getResponseHeader("ETag") !== "") {
                         requestResult.profile.etag = requestResult.xhr.getResponseHeader("ETag");
-                    } else {
+                    }
+                    else {
                         //
                         // either XHR didn't have getResponseHeader (probably cause it is an IE
                         // XDomainRequest object which doesn't) or not populated by LRS so create
                         // the hash ourselves
                         //
-                        requestResult.profile.etag = TinCan.Utils.getSHA1String(requestResult.xhr.responseText);
+                        // the LRS is responsible for quoting the Etag value so we need to mimic
+                        // that behavior here as well
+                        //
+                        requestResult.profile.etag = "\"" + TinCan.Utils.getSHA1String(requestResult.xhr.responseText) + "\"";
                     }
                     if (typeof requestResult.xhr.contentType !== "undefined") {
                         // most likely an XDomainRequest which has .contentType
                         // for the ones that it supports
                         requestResult.profile.contentType = requestResult.xhr.contentType;
-                    } else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
+                    }
+                    else if (typeof requestResult.xhr.getResponseHeader !== "undefined" && requestResult.xhr.getResponseHeader("Content-Type") !== null && requestResult.xhr.getResponseHeader("Content-Type") !== "") {
                         requestResult.profile.contentType = requestResult.xhr.getResponseHeader("Content-Type");
                     }
                     if (TinCan.Utils.isApplicationJSON(requestResult.profile.contentType)) {
@@ -6238,6 +6726,7 @@ TinCan client library
         @param {TinCan.Result} [cfg.result] Statement Result
         @param {TinCan.Context} [cfg.context] Statement Context
         @param {TinCan.Agent} [cfg.authority] Statement Authority
+        @param {TinCan.Attachment} [cfg.attachments] Statement Attachments
         @param {String} [cfg.timestamp] ISO8601 Date/time value
         @param {String} [cfg.stored] ISO8601 Date/time value
         @param {String} [cfg.version] Version of the statement (post 0.95)
@@ -6318,6 +6807,12 @@ TinCan client library
         @type TinCan.Agent|null
         */
         this.authority = null;
+
+        /**
+        @property attachments
+        @type Array of TinCan.Attachment
+        */
+        this.attachments = null;
 
         /**
         @property version
@@ -6481,6 +6976,17 @@ TinCan client library
                     this.context = new TinCan.Context (cfg.context);
                 }
             }
+            if (cfg.hasOwnProperty("attachments") && cfg.attachments !== null) {
+                this.attachments = [];
+                for (i = 0; i < cfg.attachments.length; i += 1) {
+                    if (! (cfg.attachments[i] instanceof TinCan.Attachment)) {
+                        this.attachments.push(new TinCan.Attachment (cfg.attachments[i]));
+                    }
+                    else {
+                        this.attachments.push(cfg.attachments[i]);
+                    }
+                }
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
@@ -6550,6 +7056,19 @@ TinCan client library
             if (version === "0.9" && this.inProgress !== null) {
                 result.inProgress = this.inProgress;
             }
+            if (this.attachments !== null) {
+                if (! (version === "0.9" || version === "0.95")) {
+                    result.attachments = [];
+                    for (i = 0; i < this.attachments.length; i += 1) {
+                        if (this.attachments[i] instanceof TinCan.Attachment) {
+                            result.attachments.push(this.attachments[i].asVersion(version));
+                        }
+                        else {
+                            result.attachments.push(new TinCan.Attachment(this.attachments[i]).asVersion(version));
+                        }
+                    }
+                }
+            }
 
             return result;
         },
@@ -6567,6 +7086,28 @@ TinCan client library
             if (this.timestamp === null) {
                 this.timestamp = TinCan.Utils.getISODateString(new Date());
             }
+        },
+
+        /**
+        Checks if the Statement has at least one attachment with content
+
+        @method hasAttachmentsWithContent
+        */
+        hasAttachmentWithContent: function () {
+            this.log("hasAttachmentWithContent");
+            var i;
+
+            if (this.attachments === null) {
+                return false;
+            }
+
+            for (i = 0; i < this.attachments.length; i += 1) {
+                if (this.attachments[i].content !== null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     };
 
@@ -7169,6 +7710,221 @@ TinCan client library
 }());
 
 /*
+    Copyright 2016 Rustici Software
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+TinCan client library
+
+@module TinCan
+@submodule TinCan.Attachment
+**/
+(function () {
+    "use strict";
+
+    /**
+    @class TinCan.Attachment
+    @constructor
+    */
+    var Attachment = TinCan.Attachment = function (cfg) {
+        this.log("constructor");
+
+        /**
+        @property usageType
+        @type String
+        */
+        this.usageType = null;
+
+        /**
+        @property display
+        @type Object
+        */
+        this.display = null;
+
+        /**
+        @property contentType
+        @type String
+        */
+        this.contentType = null;
+
+        /**
+        @property length
+        @type int
+        */
+        this.length = null;
+
+        /**
+        @property sha2
+        @type String
+        */
+        this.sha2 = null;
+
+        /**
+        @property description
+        @type Object
+        */
+        this.description = null;
+
+        /**
+        @property fileUrl
+        @type String
+        */
+        this.fileUrl = null;
+
+        /**
+        @property content
+        @type ArrayBuffer
+        */
+        this.content = null;
+
+        this.init(cfg);
+    };
+    Attachment.prototype = {
+        /**
+        @property LOG_SRC
+        */
+        LOG_SRC: "Attachment",
+
+        /**
+        @method log
+        */
+        log: TinCan.prototype.log,
+
+        /**
+        @method init
+        @param {Object} [options] Configuration used to initialize
+        */
+        init: function (cfg) {
+            this.log("init");
+            var i,
+                directProps = [
+                    "contentType",
+                    "length",
+                    "sha2",
+                    "usageType",
+                    "display",
+                    "description",
+                    "fileUrl"
+                ]
+            ;
+
+            cfg = cfg || {};
+
+            for (i = 0; i < directProps.length; i += 1) {
+                if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
+                    this[directProps[i]] = cfg[directProps[i]];
+                }
+            }
+
+            if (cfg.hasOwnProperty("content") && cfg.content !== null) {
+                if (typeof cfg.content === "string") {
+                    this.setContentFromString(cfg.content);
+                }
+                else {
+                    this.setContent(cfg.content);
+                }
+            }
+        },
+
+        /**
+        @method asVersion
+        @param {String} [version] Version to return (defaults to newest supported)
+        */
+        asVersion: function (version) {
+            this.log("asVersion");
+            var result;
+
+            version = version || TinCan.versions()[0];
+
+            if (version === "0.9" || version === "0.95") {
+                result = null;
+            }
+            else {
+                result = {
+                    contentType: this.contentType,
+                    display: this.display,
+                    length: this.length,
+                    sha2: this.sha2,
+                    usageType: this.usageType
+                };
+
+                if (this.fileUrl !== null) {
+                    result.fileUrl = this.fileUrl;
+                }
+                if (this.description !== null) {
+                    result.description = this.description;
+                }
+            }
+
+            return result;
+        },
+
+        /**
+        See {{#crossLink "TinCan.Utils/getLangDictionaryValue"}}{{/crossLink}}
+
+        @method getLangDictionaryValue
+        */
+        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue,
+
+        /**
+        @method setContent
+        @param {ArrayBuffer} content Sets content from ArrayBuffer
+        */
+        setContent: function (content) {
+            this.content = content;
+            this.length = content.byteLength;
+            this.sha2 = TinCan.Utils.getSHA256String(content);
+        },
+
+        /**
+        @method setContentFromString
+        @param {String} content Sets the content property of the attachment from a string
+        */
+        setContentFromString: function (content) {
+            var _content = content;
+
+            _content = TinCan.Utils.stringToArrayBuffer(content);
+
+            this.setContent(_content);
+        },
+
+        /**
+        @method getContentAsString
+        @return {String} Value of content property as a string
+        */
+        getContentAsString: function () {
+            return TinCan.Utils.stringFromArrayBuffer(this.content);
+        }
+    };
+
+    /**
+    @method fromJSON
+    @return {Object} Attachment
+    @static
+    */
+    Attachment.fromJSON = function (attachmentJSON) {
+        Attachment.prototype.log("fromJSON");
+        var _attachment = JSON.parse(attachmentJSON);
+
+        return new Attachment(_attachment);
+    };
+
+    Attachment._defaultEncoding = "utf-8";
+}());
+
+/*
     Copyright 2012-2013 Rustici Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -7191,13 +7947,15 @@ TinCan client library
 @submodule TinCan.Environment.Node
 **/
 (function () {
-    /* globals require */
+    /* globals require,Buffer,ArrayBuffer,Uint8Array */
     "use strict";
     var LOG_SRC = "Environment.Node",
         log = TinCan.prototype.log,
         querystring = require("querystring"),
         XMLHttpRequest = require("xhr2"),
-        requestComplete;
+        requestComplete,
+        __createJSONSegment,
+        __createAttachmentSegment;
 
     requestComplete = function (xhr, cfg) {
         log("requestComplete - xhr.status: " + xhr.status, LOG_SRC);
@@ -7265,6 +8023,11 @@ TinCan client library
 
         xhr = new XMLHttpRequest();
         xhr.open(cfg.method, url, async);
+
+        if (cfg.expectMultipart) {
+            xhr.responseType = "arraybuffer";
+        }
+
         for (prop in headers) {
             if (headers.hasOwnProperty(prop)) {
                 xhr.setRequestHeader(prop, headers[prop]);
@@ -7297,4 +8060,134 @@ TinCan client library
     // Synchronos xhr handling is unsupported in node
     //
     TinCan.LRS.syncEnabled = false;
+
+    TinCan.LRS.prototype._getMultipartRequestData = function (boundary, jsonContent, requestAttachments) {
+        var parts = [],
+            i;
+
+        parts.push(
+            __createJSONSegment(
+                boundary,
+                jsonContent
+            )
+        );
+        for (i = 0; i < requestAttachments.length; i += 1) {
+            if (requestAttachments[i].content !== null) {
+                parts.push(
+                    __createAttachmentSegment(
+                        boundary,
+                        requestAttachments[i].content,
+                        requestAttachments[i].sha2,
+                        requestAttachments[i].contentType
+                    )
+                );
+            }
+        }
+        if (typeof Buffer.from === "undefined") {
+            parts.push( new Buffer("\r\n--" + boundary + "--\r\n") );
+        }
+        else {
+            parts.push( Buffer.from("\r\n--" + boundary + "--\r\n") );
+        }
+
+        return Buffer.concat(parts);
+    };
+
+    __createJSONSegment = function (boundary, jsonContent) {
+        var content = [
+                "--" + boundary,
+                "Content-Type: application/json",
+                "",
+                JSON.stringify(jsonContent)
+            ].join("\r\n");
+
+        content += "\r\n";
+
+        if (typeof Buffer.from === "undefined") {
+            return new Buffer(content);
+        }
+        return Buffer.from(content);
+    };
+
+    __createAttachmentSegment = function (boundary, content, sha2, contentType) {
+        var bufferParts = [],
+            header = [
+                "--" + boundary,
+                "Content-Type: " + contentType,
+                "Content-Transfer-Encoding: binary",
+                "X-Experience-API-Hash: " + sha2
+            ].join("\r\n");
+
+        header += "\r\n\r\n";
+
+        if (typeof Buffer.from === "undefined") {
+            bufferParts.push( new Buffer(header) );
+            bufferParts.push( new Buffer(content) );
+        }
+        else {
+            bufferParts.push(Buffer.from(header));
+            bufferParts.push(Buffer.from(content));
+        }
+
+        return Buffer.concat(bufferParts);
+    };
+
+    TinCan.Utils.stringToArrayBuffer = function (content, encoding) {
+        var b,
+            ab,
+            view,
+            i;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        if (typeof Buffer.from === "undefined") {
+            // for Node.js prior to v4.x
+            b = new Buffer(content, encoding);
+
+            ab = new ArrayBuffer(b.length);
+            view = new Uint8Array(ab);
+            for (i = 0; i < b.length; i += 1) {
+                view[i] = b[i];
+            }
+
+            return ab;
+        }
+
+        b = Buffer.from(content, encoding);
+        ab = b.buffer;
+
+        //
+        // this .slice is required because of the internals of how Buffer is
+        // implemented, it uses a shared ArrayBuffer underneath for small buffers
+        // see http://stackoverflow.com/a/31394257/1464957
+        //
+        return ab.slice(b.byteOffset, b.byteOffset + b.byteLength);
+    };
+
+    TinCan.Utils.stringFromArrayBuffer = function (content, encoding) {
+        var b,
+            view,
+            i;
+
+        if (! encoding) {
+            encoding = TinCan.Utils.defaultEncoding;
+        }
+
+        if (typeof Buffer.from === "undefined") {
+            // for Node.js prior to v4.x
+            b = new Buffer(content.byteLength);
+
+            view = new Uint8Array(content);
+            for (i = 0; i < b.length; i += 1) {
+                b[i] = view[i];
+            }
+        }
+        else {
+            b = Buffer.from(content);
+        }
+
+        return b.toString(encoding);
+    };
 }());

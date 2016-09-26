@@ -1,7 +1,7 @@
 {
   "name": "tincanjs",
   "description": "Experience API (Tin Can API) Library",
-  "version": "0.41.1",
+  "version": "0.50.0",
   "private": false,
   "license": "Apache-2.0",
   "main": "build/tincan-node.js",
