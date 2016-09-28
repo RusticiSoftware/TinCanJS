@@ -29,7 +29,19 @@
             ;
 
             result = TinCan.Agent.fromJSON(JSON.stringify(raw));
-            ok(result instanceof TinCan.Agent, "returns TinCan.Agent");
+            ok(result instanceof TinCan.Agent, "returns TinCan.Agent (objectType omitted)");
+
+            raw.objectType = 'Agent';
+            result = TinCan.Agent.fromJSON(JSON.stringify(raw));
+            ok(result instanceof TinCan.Agent, "returns TinCan.Agent (objectType set explicitly)");
+
+            raw.objectType = 'invalid';
+            throws(
+                function () {
+                    TinCan.Agent.fromJSON(JSON.stringify(raw));
+                },
+                "exception on invalid objectType"
+            );
         }
     );
 
