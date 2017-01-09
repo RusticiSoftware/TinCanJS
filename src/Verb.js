@@ -96,15 +96,15 @@ TinCan client library
 
             if (typeof cfg === "string") {
                 this.id = cfg;
-                this.display = {
-                    und: this.id
-                };
 
                 //If simple string like "attempted" was passed in (0.9 verbs), 
                 //upconvert the ID to the 0.95 ADL version
                 for (prop in _downConvertMap) {
                     if (_downConvertMap.hasOwnProperty(prop) && _downConvertMap[prop] === cfg) {
                         this.id = prop;
+                        this.display = {
+                            en: cfg
+                        };
                         break;
                     }
                 }
@@ -120,7 +120,7 @@ TinCan client library
 
                 if (this.display === null && typeof _downConvertMap[this.id] !== "undefined") {
                     this.display = {
-                        "und": _downConvertMap[this.id]
+                        "en": _downConvertMap[this.id]
                     };
                 }
             }
