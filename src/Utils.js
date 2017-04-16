@@ -88,6 +88,92 @@ TinCan client library
                 pad(d.getUTCSeconds()) + "." +
                 pad(d.getUTCMilliseconds(), 3) + "Z";
         },
+		
+		/**
+		@method convertISO8601DurationToMilliseconds
+		@static
+		@param {String} ISO8601Duration Duration in ISO8601 format
+		@return {Int} Duration in milliseconds
+		*/
+		//Note: does not handle years, months and days
+		convertISO8601DurationToMilliseconds: function (ISO8601Duration)
+		{
+			var isValueNegative = (ISO8601Duration.indexOf('-') >= 0);
+			var indexOfT = ISO8601Duration.indexOf("T");
+			var indexOfH = ISO8601Duration.indexOf("H");
+			var indexOfM = ISO8601Duration.indexOf("M");
+			var indexOfS = ISO8601Duration.indexOf("S");
+			
+			var hours;
+			var minutes;
+			var seconds;
+			
+			if (indexOfH == -1) {
+				indexOfH = indexOfT;
+				hours = 0;
+			}
+			else {
+				hours = parseInt(ISO8601Duration.slice(indexOfT + 1, indexOfH));    
+			};
+				
+			if (indexOfM == -1) {
+				indexOfM = indexOfT
+				minutes = 0;
+			}
+			else
+			{
+				minutes = parseInt(ISO8601Duration.slice(indexOfH + 1, indexOfM));
+			};
+			
+			seconds = parseFloat(ISO8601Duration.slice(indexOfM + 1, indexOfS));
+			
+			var durationInMilliseconds = parseInt(((((hours * 60) + minutes) * 60) + seconds) * 1000);
+			if (isNaN(durationInMilliseconds)){
+				durationInMilliseconds=0
+			};
+			if (isValueNegative) {
+				durationInMilliseconds = durationInMilliseconds * -1;
+			};
+			
+			return durationInMilliseconds;
+		},
+		
+		/**
+		@method convertMillisecondsToISO8601Duration
+		@static
+		@param {Int} inputMilliseconds Duration in milliseconds
+		@return {String} Duration in ISO8601 format
+		*/
+		convertMillisecondsToISO8601Duration: function (inputMilliseconds)
+		{
+			var hours, minutes, seconds,
+			i_inputMilliseconds = parseInt(inputMilliseconds);
+			var inputIsNegative = "";
+			if (i_inputMilliseconds < 0)
+			{
+				inputIsNegative = "-";
+				i_inputMilliseconds = i_inputMilliseconds * -1;
+			}
+			
+			hours = parseInt((i_inputMilliseconds) / 3600000);
+			minutes = parseInt(((i_inputMilliseconds) % 3600000) / 60000);
+			seconds =(((i_inputMilliseconds) % 3600000) % 60000) / 1000;
+			
+			var rtnStr = inputIsNegative + "PT";
+			if (hours > 0)
+			{
+				rtnStr += hours +"H";
+			}
+			
+			if (minutes > 0)
+			{
+				rtnStr += minutes +"M";
+			}
+			
+			rtnStr += seconds +"S";
+			
+			return rtnStr;
+		},
 
         /**
         @method convertISO8601DurationToMilliseconds
