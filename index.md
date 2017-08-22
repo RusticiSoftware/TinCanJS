@@ -34,7 +34,7 @@ try {
     );
 }
 catch (ex) {
-    console.log("Failed to setup LRS object: " + ex);
+    console.log("Failed to setup LRS object: ", ex);
     // TODO: do something with error, can't communicate with LRS
 }
 ```
