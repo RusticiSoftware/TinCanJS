@@ -25,6 +25,11 @@ supported for non-CORS (because they don't support it).
 Include *one* of build/tincan-min.js or build/tincan.js as follows:
 
     <script src="build/tincan-min.js"></script>
+    
+If you use cryptoJs in your project
+
+    <script src="build/tincan-no-crypto-min.js"></script>
+    
 
 Node.js Usage
 -------------

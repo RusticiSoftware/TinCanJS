@@ -31,5 +31,8 @@
     "src",
     "test",
     "vendor"
-  ]
+  ],
+  "dependencies": {
+    "crypto-js": "^3.1.9"
+  }
 }

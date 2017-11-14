@@ -1,4 +1,7 @@
+.idea/
+
 *.swp
 doc/api/*
+bower_components/
 node_modules/
 test/config.js

@@ -1,11 +1,13 @@
 /*global module:false*/
 module.exports = function(grunt) {
     "use strict";
+    var cryptoFileList = [
+        "bower_components/crypto-js/sha1.js",
+        "bower_components/crypto-js/sha256.js",
+        "bower_components/crypto-js/enc-base64.js",
+        "bower_components/crypto-js/lib-typedarrays.js"
+    ];
     var coreFileList = [
-        "vendor/cryptojs-v3.1.2/rollups/sha1.js",
-        "vendor/cryptojs-v3.1.2/rollups/sha256.js",
-        "vendor/cryptojs-v3.1.2/components/enc-base64.js",
-        "vendor/cryptojs-v3.1.2/components/lib-typedarrays.js",
         "src/TinCan.js",
         "src/Utils.js",
         "src/LRS.js",
@@ -106,6 +108,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
+                    "build/tincan-crypto.js": cryptoFileList,
                     "build/tincan.js": browserFileList,
                     "build/tincan-node.js": nodeFileList
                 },
@@ -116,7 +119,8 @@ module.exports = function(grunt) {
         uglify: {
             dist: {
                 files: {
-                    "build/tincan-min.js": ["build/tincan.js"]
+                    "build/tincan-no-crypto-min.js": ["build/tincan.js"],
+                    "build/tincan-min.js": ["build/tincan-crypto.js", "build/tincan.js"]
                 },
                 options: {
                     sourceMap: true

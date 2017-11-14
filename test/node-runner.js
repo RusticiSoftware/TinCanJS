@@ -73,7 +73,8 @@ testRunner.run(
     {
         deps: [
             { path: __dirname + "/js/NodePrep.js", namespace: "TinCanTest" },
-            { path: __dirname + "/config.js", namespace: "TinCanTestCfg" }
+            { path: __dirname + "/config.js", namespace: "TinCanTestCfg" },
+            { path: __dirname + "/../build/tincan-crypto.js", namespace: "TinCanCrypto" }
         ],
         code: { path: __dirname + "/../build/tincan-node.js", namespace: "TinCan" },
         tests: tests
