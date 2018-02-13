@@ -9,6 +9,10 @@
     "src": "src",
     "doc": "doc"
   },
+  "scripts": {
+    "build": "grunt",
+    "doc": "grunt yuidoc"
+  },
   "dependencies": {
     "xhr2": "0.0.7",
     "js-polyfills": "0.1.22",

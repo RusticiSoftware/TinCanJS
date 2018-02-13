@@ -51,6 +51,16 @@ Implementing a new Environment should be straightforward and requires overloadin
 of methods in the library. There are currently two examples, `Environment/Browser`
 and `Environment/Node`.
 
+Build instructions
+------------------
+
+With Node.js installed and the requisite modules present, issue:
+
+    npm run build
+
+This will generate build/tincan.js and build/tincan-min.js files.
+
+
 Attachment Support
 ------------------
 
