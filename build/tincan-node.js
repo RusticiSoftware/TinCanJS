@@ -3757,6 +3757,8 @@ TinCan client library
             @param {Object} [cfg.requestHeaders] Optional object containing additional headers to add to request
         */
         saveActivityProfile: function (key, val, cfg) {
+            
+            
             this.log("saveActivityProfile");
             var requestCfg,
                 requestHeaders;
@@ -3764,7 +3766,7 @@ TinCan client library
             requestHeaders = cfg.requestHeaders || {};
 
             if (typeof cfg.contentType === "undefined") {
-                cfg.contentType = "application/octet-stream";
+                cfg.contentType = "application/json";
             }
             requestHeaders["Content-Type"] = cfg.contentType;
 
@@ -3775,27 +3777,30 @@ TinCan client library
             if (typeof val === "object" && TinCan.Utils.isApplicationJSON(cfg.contentType)) {
                 val = JSON.stringify(val);
             }
-
+            
+            
             requestCfg = {
                 url: "activities/profile",
                 method: cfg.method,
                 params: {
                     profileId: key,
-                    activityId: cfg.activity.id
+                    activityId: cfg.activity.activity
                 },
                 data: val,
                 headers: requestHeaders
             };
-
+            
+            
+            
             if (typeof cfg.callback !== "undefined") {
                 requestCfg.callback = cfg.callback;
             }
             if (typeof cfg.lastSHA1 !== "undefined" && cfg.lastSHA1 !== null) {
                 requestCfg.headers["If-Match"] = cfg.lastSHA1;
             }
-            else {
-                requestCfg.headers["If-None-Match"] = "*";
-            }
+            // else {
+            //     requestCfg.headers["If-None-Match"] = "*";
+            // }
 
             return this.sendRequest(requestCfg);
         },
@@ -4122,7 +4127,7 @@ TinCan client library
                 requestCfg.headers["If-Match"] = cfg.lastSHA1;
             }
             else {
-                requestCfg.headers["If-None-Match"] = "*";
+                // requestCfg.headers["If-None-Match"] = "*";
             }
 
             return this.sendRequest(requestCfg);
