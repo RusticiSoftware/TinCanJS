@@ -13,7 +13,7 @@ For more information about the Experience API visit:
 
 http://experienceapi.com/
 
-Browser Usage
+## Browser Usage
 -------------
 
 TinCanJS is available via `npm` and Bower.
@@ -26,7 +26,7 @@ Include *one* of build/tincan-min.js or build/tincan.js as follows:
 
     <script src="build/tincan-min.js"></script>
 
-Node.js Usage
+## Node.js Usage
 -------------
 
 TinCanJS is available via `npm`.
@@ -44,14 +44,14 @@ And within code:
 
     var TinCan = require('tincanjs');
 
-Environments
+## Environments
 ------------
 
 Implementing a new Environment should be straightforward and requires overloading a couple
 of methods in the library. There are currently two examples, `Environment/Browser`
 and `Environment/Node`.
 
-Attachment Support
+## Attachment Support
 ------------------
 
 Sending and retrieving statements with attachments via the multipart/mixed request/response
